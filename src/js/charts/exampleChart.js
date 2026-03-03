@@ -1,22 +1,23 @@
 function renderExampleChart(selector = "#example-chart-container") {
     const container = d3.select(selector);
-    if (container.empty()) return; 
-    container.html(""); 
+    if (container.empty()) return;
+    container.html("");
 
-    const width = 600;
-    const height = 400;
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 560;
+    const height = 360;
+    const margin = { top: 30, right: 30, bottom: 40, left: 50 };
 
     const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .style("display", "block")
-        .style("margin", "0 auto");
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "100%")
+        .style("display", "block");
 
-    const dataCount = Math.floor(Math.random() * 6) + 5; 
+    const dataCount = Math.floor(Math.random() * 6) + 5;
     const data = Array.from({ length: dataCount }, () => Math.floor(Math.random() * 90) + 10);
 
-    
+
     const colors = ["#2a7700ff", "#1461a9ff", "#d84f05ff", "#e377c2", "#17becf", "#8c564b", "#bcbd22"];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 

@@ -19,90 +19,10 @@
 
   <body>
     
-    <header id="navbar-container"></header>
-
-    
     <main>
-      
-      <div id="page-home" class="page-container">
-        
-        <section class="snap-section bg-intro" id="intro-container">
-          <div class="section-content">
-            <h1 class="display-4 fw-bold mb-4">
-              Progetto di Data Visualization
-            </h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <p class="text-muted">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur.
-            </p>
-            <div class="mt-5">
-              <a href="#section-1" class="btn btn-primary btn-lg"
-                >Inizia l'Esplorazione →</a
-              >
-            </div>
-          </div>
-        </section>
-
-        
-        <div id="section-1-container"></div>
-        <div id="section-2-container"></div>
-        <div id="section-3-container"></div>
-      </div>
-
-      
-      <div id="page-datasets" class="page-container" style="display: none">
-        <div id="section-datasets-container"></div>
-      </div>
-
-      
-      <div id="page-about" class="page-container" style="display: none">
-        <div id="section-about-container"></div>
-      </div>
+      <div id="scrolly-main-container"></div>
     </main>
 
-    
-    <footer
-      class="footer-normal bg-dark text-white d-flex align-items-center justify-content-center"
-    >
-      <div class="container text-center">
-        <div class="mb-3">
-          <a
-            href="#"
-            id="btn-back"
-            data-link="home"
-            class="btn btn-outline-light btn-sm me-3"
-            style="display: none"
-            >← Indietro</a
-          >
-          <a
-            href="#"
-            data-link="datasets"
-            class="btn btn-outline-light btn-sm me-3"
-            id="btn-datasets"
-            >Dataset</a
-          >
-          <a
-            href="#"
-            data-link="about"
-            class="btn btn-outline-light btn-sm"
-            id="btn-about"
-            >Chi Siamo</a
-          >
-        </div>
-        <hr class="my-3 border-secondary" />
-        <p class="mb-0" style="font-size: 0.9rem">
-          &copy; 2026 Veni Vidi Viz. Tutti i diritti riservati.
-        </p>
-      </div>
-    </footer>
-
-    
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -111,10 +31,9 @@
     ></script>
     <script src="js/util/dataLoader.js"></script>
     <script src="js/util/domManipulation.js"></script>
-    <script src="js/util/navbarScroll.js"></script>
     <script src="js/util/common.js"></script>
+    <script src="js/util/scrollytelling.js"></script>
     <script src="js/charts/exampleChart.js"></script>
-    <script src="js/router.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

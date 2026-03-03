@@ -115,7 +115,7 @@ main {
   position: relative;
   padding: 0;
   margin: 0;
-  
+
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -124,15 +124,13 @@ main {
   max-width: 1200px;
   width: 100%;
   text-align: left;
-  
-  background-color: #ffffff;
-  padding: 3rem 3rem;
+  background-color: transparent;
   border-radius: 0;
   box-shadow: none;
 }
 
 .snap-section .section-content {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 
@@ -251,14 +249,14 @@ header#navbar-container {
   left: 0;
   width: 100%;
   height: 70px;
-  
+
   z-index: 1000;
   background-color: transparent;
 }
 
 header#navbar-container .navbar {
   height: 70px;
-  
+
   transition: all 0.3s ease-in-out;
   background-color: transparent !important;
   backdrop-filter: none !important;
@@ -304,13 +302,13 @@ h6 {
 p {
   font-size: 1.1rem;
   line-height: 1.8;
-  
+
   max-width: 100%;
-  
+
   margin: 0 0 1.5rem 0;
-  
+
   text-align: left;
-  
+
 }
 
 
@@ -323,7 +321,7 @@ p:not(.lead) {
   margin-bottom: 2.5rem;
   color: #444;
   text-align: center;
-  
+
 }
 
 
@@ -338,7 +336,7 @@ svg text,
 .split-layout {
   display: flex;
   flex-direction: column;
-  
+
   align-items: flex-start;
   justify-content: flex-start;
   gap: 2rem;
@@ -349,7 +347,7 @@ svg text,
 
 .split-layout.reverse {
   flex-direction: column;
-  
+
 }
 
 .split-text {
@@ -372,20 +370,233 @@ svg text,
 
 header#navbar-container .navbar.glass-navbar {
   background-color: rgba(255, 255, 255, 0.85) !important;
-  
+
   backdrop-filter: blur(24px) !important;
-  
+
   -webkit-backdrop-filter: blur(24px) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
 }
 
 #mainNavbar .nav-link:hover {
   color: #333 !important;
-  
+
 }
 
 #mainNavbar .nav-link.active {
   color: #000 !important;
-  
+
   border-bottom: 3px solid #000;
+}
+
+/* --- SLIDER COMPONENT --- */
+
+body.slide-mode {
+  overflow: hidden;
+  /* Blocca la rotellina nativa nella pagina del viz */
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+}
+
+/* Header Navbar: va sopra a tutto */
+header#navbar-container {
+  z-index: 1000;
+}
+
+.scrolly-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scrolly-bg-layer.is-active {
+  opacity: 1;
+}
+
+.scrolly-container {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+  /* Centra verticalmente entrambe le colonne */
+  gap: 2rem;
+  z-index: 10;
+}
+
+.scrolly-steps {
+  width: 50%;
+  height: 100%;
+  overflow-y: scroll;
+  /* Abilita lo scroll VERTICALE interno */
+  padding-bottom: 50vh;
+  /* Permette all'ultimo step di scorrere fino al centro */
+  padding-top: 25vh;
+  /* Distanzia il primo */
+  position: relative;
+  z-index: 20;
+
+  /* Nascondi la rotellina */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE e Edge */
+}
+
+.scrolly-steps::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+/* Modifica sostanziale: tornano nel normale flusso per essere scrollate fisicamente */
+.scrolly-step {
+  position: relative;
+  width: 85%;
+  margin: 0 auto 60vh auto;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  transition: opacity 0.8s ease, transform 0.5s ease;
+  opacity: 0.3;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.scrolly-step.is-active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Full-width steps: last section, intro etc */
+.scrolly-step-last {
+  margin-bottom: 0 !important;
+}
+
+/* Wide mode: expand text column fully, hide stage */
+.scrolly-container.wide-mode .scrolly-steps {
+  width: 100%;
+}
+
+.scrolly-container.wide-mode .scrolly-stage {
+  width: 0;
+  flex: 0 0 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scrolly-container.wide-mode .scrolly-step-wide {
+  width: 70%;
+}
+
+.scrolly-steps {
+  transition: width 0.6s ease;
+}
+
+.scrolly-stage {
+  transition: width 0.6s ease, opacity 0.4s ease;
+}
+
+.scrolly-stage {
+  width: 50%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  flex-shrink: 0;
+  overflow: hidden;
+  /* Clips sliding charts */
+}
+
+.scrolly-stage .chart-container {
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: 5%;
+  right: 5%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  /* Start hidden, off screen below */
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.scrolly-stage .chart-container.is-active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+/* Outgoing chart: slides up out of view */
+.scrolly-stage .chart-container.slide-exit-up {
+  transform: translateY(-110%);
+  opacity: 0;
+}
+
+/* Outgoing chart: slides down out of view */
+.scrolly-stage .chart-container.slide-exit-down {
+  transform: translateY(110%);
+  opacity: 0;
+}
+
+/* Incoming chart from below (user scrolls down) */
+.scrolly-stage .chart-container.slide-enter-down {
+  transform: translateY(110%);
+  opacity: 0;
+}
+
+/* Incoming chart from above (user scrolls up) */
+.scrolly-stage .chart-container.slide-enter-up {
+  transform: translateY(-110%);
+  opacity: 0;
+}
+
+.scrolly-stage .chart-container>div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 991px) {
+  .scrolly-container {
+    flex-direction: column-reverse;
+  }
+
+  .scrolly-stage {
+    height: 45vh;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .scrolly-steps {
+    width: 100%;
+    height: 45vh;
+  }
+
+  .scrolly-step {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1.5rem;
+  }
 }
