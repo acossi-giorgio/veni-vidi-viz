@@ -1,0 +1,391 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto Slab", serif;
+  color: #222;
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+.page-container {
+  width: 100%;
+  min-height: calc(100vh - 70px - auto);
+  padding-top: 70px;
+  animation: fadeIn 0.4s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+#page-home {
+  padding-top: 0;
+}
+
+#intro-container {
+  padding-top: 70px;
+}
+
+#page-datasets,
+#page-about {
+  background-color: #ffffff;
+}
+
+
+.about-section,
+.datasets-section {
+  width: 100%;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.about-section {
+  background-color: #f8f9fa;
+}
+
+.datasets-section {
+  background-color: #ffffff;
+}
+
+.member-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.member-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+
+.team-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.team-member {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+
+.snap-section {
+  min-height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+
+.section-content {
+  max-width: 1200px;
+  width: 100%;
+  text-align: left;
+  
+  background-color: #ffffff;
+  padding: 3rem 3rem;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.snap-section .section-content {
+  background-color: #ffffff;
+}
+
+
+.bg-intro {
+  background-image: url("../images/bg-intro.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;
+}
+
+.bg-intro::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-intro .section-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bg-sec-1 {
+  background-image: url("../images/bg-section-1.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;
+}
+
+.bg-sec-1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-sec-1 .section-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bg-sec-2 {
+  background-image: url("../images/bg-section-2.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;
+}
+
+.bg-sec-2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-sec-2 .section-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bg-sec-3 {
+  background-image: url("../images/bg-section-3.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  position: relative;
+}
+
+.bg-sec-3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-sec-3 .section-content {
+  position: relative;
+  z-index: 1;
+}
+
+
+header#navbar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  
+  z-index: 1000;
+  background-color: transparent;
+}
+
+header#navbar-container .navbar {
+  height: 70px;
+  
+  transition: all 0.3s ease-in-out;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+
+.footer-normal {
+  background: #333;
+  color: white;
+  width: 100%;
+  padding: 1rem 0;
+  text-align: center;
+  margin-top: auto;
+  border-top: 1px solid #444;
+}
+
+.footer-normal .btn-outline-light {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.footer-normal p {
+  text-align: center;
+  text-indent: 0;
+  margin: 0;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto Slab", serif;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  
+  max-width: 100%;
+  
+  margin: 0 0 1.5rem 0;
+  
+  text-align: left;
+  
+}
+
+
+p:not(.lead) {
+  text-indent: 1.5rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  color: #444;
+  text-align: center;
+  
+}
+
+
+svg text,
+.chart text,
+.d3-chart text {
+  font-family: "Roboto Slab", serif !important;
+  fill: #222;
+}
+
+
+.split-layout {
+  display: flex;
+  flex-direction: column;
+  
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.split-layout.reverse {
+  flex-direction: column;
+  
+}
+
+.split-text {
+  width: 100%;
+}
+
+.split-text h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.split-chart {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+
+header#navbar-container .navbar.glass-navbar {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  
+  backdrop-filter: blur(24px) !important;
+  
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+#mainNavbar .nav-link:hover {
+  color: #333 !important;
+  
+}
+
+#mainNavbar .nav-link.active {
+  color: #000 !important;
+  
+  border-bottom: 3px solid #000;
+}
