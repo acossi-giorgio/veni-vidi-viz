@@ -1,50 +1,82 @@
-<section class="snap-section" id="scrolly-main" style="position: relative; height: auto; min-height: 100vh; overflow: hidden;">
-  
+<section
+  class="snap-section"
+  id="scrolly-main"
+  style="position: relative; height: auto; min-height: 100vh; overflow: hidden"
+>
   <!-- Livelli per gli Sfondi Dinamici -->
   <div class="scrolly-bg-layer bg-intro is-active" id="bg-layer-0"></div>
   <div class="scrolly-bg-layer bg-sec-1" id="bg-layer-1"></div>
   <div class="scrolly-bg-layer bg-sec-2" id="bg-layer-2"></div>
   <div class="scrolly-bg-layer bg-sec-3" id="bg-layer-3"></div>
 
-  <div class="section-content" style="position: relative; z-index: 2; background: transparent; box-shadow: none; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
-
+  <div
+    class="section-content"
+    style="
+      position: relative;
+      z-index: 2;
+      background: transparent;
+      box-shadow: none;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    "
+  >
     <div class="scrolly-container wide-mode" id="scrolly-unified">
       <article class="scrolly-steps">
-        
-        <!-- INTRO (Slide 0) -->
-        <div class="scrolly-step scrolly-step-wide is-active" data-step="0" data-bg="0">
+        <!-- INTRO (Slide 0) - nessun grafico -->
+        <div
+          class="scrolly-step scrolly-step-wide is-active"
+          data-step="0"
+          data-bg="0"
+          data-chart="none"
+        >
           <h1 class="display-4 fw-bold mb-3">Veni Vidi Viz</h1>
-          <h2 class="h5 fw-semibold text-muted mb-4">L'arte di esplorare e comprendere i dati</h2>
-          <hr class="my-3">
-          <p style="text-align: justify; font-size: 1.05rem;" class="text-muted">
-            Il mondo odierno è costantemente attraversato da un flusso inarrestabile di informazioni complessi. Questo progetto nasce per abbattere le barriere della complessità utilizzando la visualizzazione dati come potente strumento di sintesi.
+          <h2 class="h5 fw-semibold text-muted mb-4">
+            L'arte di esplorare e comprendere i dati
+          </h2>
+          <hr class="my-3" />
+          <p style="text-align: justify; font-size: 1.05rem" class="text-muted">
+            Il mondo odierno è costantemente attraversato da un flusso
+            inarrestabile di informazioni complessi. Questo progetto nasce per
+            abbattere le barriere della complessità utilizzando la
+            visualizzazione dati come potente strumento di sintesi.
           </p>
-          <p style="text-align: justify; font-size: 1.05rem;" class="text-muted">
-            Preparatevi a un denso viaggio esplorativo scorrendo lungo i 3 differenti livelli di analisi.
+          <p style="text-align: justify; font-size: 1.05rem" class="text-muted">
+            Preparatevi a un denso viaggio esplorativo scorrendo lungo i 3
+            differenti livelli di analisi.
           </p>
         </div>
 
-        <!-- PARTE 1 -->
-        <div class="scrolly-step" data-step="1" data-bg="1">
-          <h2 class="mb-4" style="color: #666; font-size: 1.4rem; text-transform: uppercase;">1. Analisi Preliminare</h2>
-          <p style="text-align: justify; font-size: 1.05rem;" class="text-muted">
+        <!-- PARTE 1 - Card 1 (grafico 1) -->
+        <div class="scrolly-step" data-step="1" data-bg="1" data-chart="1">
+          <h2
+            class="mb-4"
+            style="color: #666; font-size: 1.4rem; text-transform: uppercase"
+          >
+            1. Analisi Preliminare
+          </h2>
+          <p style="text-align: justify; font-size: 1.05rem" class="text-muted">
             In questa prima sezione esploriamo i fondamenti della nostra analisi
-            attraverso l'uso di molteplici visualizzazioni destinate a mappare il
-            quadro generale. L'approccio iniziale ci permette di evidenziare trend storici, anomalie e picchi.
+            attraverso l'uso di molteplici visualizzazioni destinate a mappare
+            il quadro generale. L'approccio iniziale ci permette di evidenziare
+            trend storici, anomalie e picchi.
           </p>
-          <hr class="my-4">
+          <hr class="my-4" />
           <h3>Frequenza Assoluta Mensile</h3>
           <p style="text-align: justify">
             L'aggregazione temporale dei dati su scala mensile ci restituisce
-            una curva ricca di micro-oscillazioni, spesso dipendenti da
-            fattori stagionali o da eventi politici di breve durata. Come si
-            evince analizzando le barre del grafico, ci sono momenti dell'anno
-            in cui il volume delle occorrenze subisce un'accelerazione
-            improvvisa, seguita da fasi di inesorabile ristagno.
+            una curva ricca di micro-oscillazioni, spesso dipendenti da fattori
+            stagionali o da eventi politici di breve durata. Come si evince
+            analizzando le barre del grafico, ci sono momenti dell'anno in cui
+            il volume delle occorrenze subisce un'accelerazione improvvisa,
+            seguita da fasi di inesorabile ristagno.
           </p>
         </div>
 
-        <div class="scrolly-step" data-step="2" data-bg="1">
+        <!-- PARTE 1 - Card 2 (stesso grafico 1) -->
+        <div class="scrolly-step" data-step="2" data-bg="1" data-chart="1">
           <h3>Distribuzione Geografica Macroregionale</h3>
           <p style="text-align: justify">
             Oltre la variabile temporale, l'espansione spaziale degli
@@ -57,28 +89,34 @@
           </p>
         </div>
 
-        <!-- PARTE 2 -->
-        <div class="scrolly-step" data-step="3" data-bg="2">
-          <h2 class="mb-4" style="color: #666; font-size: 1.4rem; text-transform: uppercase;">2. Analisi Approfondita Delle Categorie</h2>
-          <p style="text-align: justify; font-size: 1.05rem;" class="text-muted">
+        <!-- PARTE 2 - Card 1 (grafico 2) -->
+        <div class="scrolly-step" data-step="3" data-bg="2" data-chart="2">
+          <h2
+            class="mb-4"
+            style="color: #666; font-size: 1.4rem; text-transform: uppercase"
+          >
+            2. Analisi Approfondita Delle Categorie
+          </h2>
+          <p style="text-align: justify; font-size: 1.05rem" class="text-muted">
             Continuando lo storytelling delineato nella prima parte, questa
             seconda fase della ricerca si focalizza sulla scomposizione accurata
             dei totali in categorie parallele, introducendo incroci relazionali
             più elaborati.
           </p>
-          <hr class="my-4">
+          <hr class="my-4" />
           <h3>Correlazione tra Investimenti e Risultati</h3>
           <p style="text-align: justify">
             Mettendo nello stesso piano visivo due vettori diametralmente
-            distanti come il budget allocato in fase strategica e l'efficacia misurata in campo, lo schema a punti
-            emergenti si rivela a dir poco inatteso. Notiamo immediatamente
-            come enormi somme destinate ad alcuni comparti non producano
-            affatto esiti coerenti. L'efficienza si nasconde dove meno ci si
-            aspetterebbe trovarla.
+            distanti come il budget allocato in fase strategica e l'efficacia
+            misurata in campo, lo schema a punti emergenti si rivela a dir poco
+            inatteso. Notiamo immediatamente come enormi somme destinate ad
+            alcuni comparti non producano affatto esiti coerenti. L'efficienza
+            si nasconde dove meno ci si aspetterebbe trovarla.
           </p>
         </div>
 
-        <div class="scrolly-step" data-step="4" data-bg="2">
+        <!-- PARTE 2 - Card 2 (stesso grafico 2) -->
+        <div class="scrolly-step" data-step="4" data-bg="2" data-chart="2">
           <h3>Età, Demografia e Prospettive</h3>
           <p style="text-align: justify">
             Confrontando gli stessi eventi contro i dati relativi all'indotto
@@ -86,80 +124,139 @@
             strutturali ben chiari. Le curve che mappano l'età media per le
             rilevazioni più estreme mostrano picchi isolati con un grado di
             reazione inversamente proporzionale. Le dinamiche registrate non
-            sono universalmente distribuite; piuttosto
-            sembrano essere guidate dall'accesso ai canali comunicativi.
+            sono universalmente distribuite; piuttosto sembrano essere guidate
+            dall'accesso ai canali comunicativi.
           </p>
         </div>
 
-        <!-- PARTE 3 -->
-        <div class="scrolly-step" data-step="5" data-bg="3">
-          <h2 class="mb-4" style="color: #666; font-size: 1.4rem; text-transform: uppercase;">3. Sintesi e Conclusioni</h2>
-          <p style="text-align: justify; font-size: 1.05rem;" class="text-muted">
+        <!-- PARTE 3 - Card 1 (grafico 3) -->
+        <div class="scrolly-step" data-step="5" data-bg="3" data-chart="3">
+          <h2
+            class="mb-4"
+            style="color: #666; font-size: 1.4rem; text-transform: uppercase"
+          >
+            3. Sintesi e Conclusioni
+          </h2>
+          <p style="text-align: justify; font-size: 1.05rem" class="text-muted">
             Dopo aver vagliato le macro-tendenze dall'alto e poi affondato la
-            lente d'ingrandimento negli squilibri e nelle disparità sistemiche dei
-            singoli frammenti, raccogliamo tutti i
-            fili narrativi dell'esplorazione appena compiuta.
+            lente d'ingrandimento negli squilibri e nelle disparità sistemiche
+            dei singoli frammenti, raccogliamo tutti i fili narrativi
+            dell'esplorazione appena compiuta.
           </p>
-          <hr class="my-4">
+          <hr class="my-4" />
           <h3>Riassunto degli Impatti Chiave</h3>
           <p style="text-align: justify">
-            Provando a proiettare sul lungo raggio gli scostamenti
-            riscontrati, non possiamo esimerci dal tirare le somme. Gli
-            impatti misurati su base normalizzata ci rivelano che
-            l'allocazione delle risorse dovrà in futuro adattarsi in modo
-            asimmetrico e mirato, specialmente durante i picchi dei mesi
-            invernali e per le zone ad elevato tasso di dispersione geografica.
+            Provando a proiettare sul lungo raggio gli scostamenti riscontrati,
+            non possiamo esimerci dal tirare le somme. Gli impatti misurati su
+            base normalizzata ci rivelano che l'allocazione delle risorse dovrà
+            in futuro adattarsi in modo asimmetrico e mirato, specialmente
+            durante i picchi dei mesi invernali e per le zone ad elevato tasso
+            di dispersione geografica.
           </p>
         </div>
 
-        <div class="scrolly-step" data-step="6" data-bg="3">
+        <!-- PARTE 3 - Card 2 (stesso grafico 3) -->
+        <div class="scrolly-step" data-step="6" data-bg="3" data-chart="3">
           <h3>Sviluppi, Prospettive Future ed Etica</h3>
           <p style="text-align: justify">
             Scongiurando le visioni puramente utilitaristiche, il progetto
             traccia perciò vie e raccomandazioni precise e applicabili. Nuovi
             modelli previsionali integrati con tecnologie di machine learning
-            promettono di ridurre l'odierno margine d'errore. Il
-            prossimo passo, e forse la prospettiva più sfidante e promettente,
-            riguarderà la modellazione in the edge: analisi del dato quasi in tempo reale.
+            promettono di ridurre l'odierno margine d'errore. Il prossimo passo,
+            e forse la prospettiva più sfidante e promettente, riguarderà la
+            modellazione in the edge: analisi del dato quasi in tempo reale.
           </p>
         </div>
 
-        <!-- PARTE 4 (DATASETS) -->
-        <div class="scrolly-step scrolly-step-wide" data-step="none" data-bg="3">
-          <h2 class="mb-4" style="color: #666; font-size: 1.4rem; text-transform: uppercase;">I Nostri Dataset</h2>
-          <hr class="my-4">
+        <!-- DATASETS (nessun grafico) -->
+        <div
+          class="scrolly-step scrolly-step-wide"
+          data-step="none"
+          data-bg="3"
+          data-chart="none"
+        >
+          <h2
+            class="mb-4"
+            style="color: #666; font-size: 1.4rem; text-transform: uppercase"
+          >
+            I Nostri Dataset
+          </h2>
+          <hr class="my-4" />
           <h3>Fonti e Raccolta Dati</h3>
           <p style="text-align: justify; line-height: 1.8">
-            Il fondamento di questa visualizzazione riposa su un rigoroso processo di data mining e classificazione. Abbiamo attinto a database internazionali open-source, estraendo milioni di record grezzi tramite API dedicate e script di scraping automatizzati in Python. Ogni riga di dato è stata validata incrociando diverse fonti secondarie per garantirne l'affidabilità spaziale e temporale.
+            Il fondamento di questa visualizzazione riposa su un rigoroso
+            processo di data mining e classificazione. Abbiamo attinto a
+            database internazionali open-source, estraendo milioni di record
+            grezzi tramite API dedicate e script di scraping automatizzati in
+            Python. Ogni riga di dato è stata validata incrociando diverse fonti
+            secondarie per garantirne l'affidabilità spaziale e temporale.
           </p>
           <p style="text-align: justify; line-height: 1.8">
-            Nello specifico, i dataset primari coprono un orizzonte temporale di dieci anni (2015-2024), registrando eventi con granularità giornaliera. Le metriche estratte comprendono coordinate geografiche, tipologia di evento, attori coinvolti e stime numeriche. Il processo di pulizia ha richiesto una normalizzazione complessa per gestire i valori mancanti e uniformare le nomenclature eterogenee provenienti dai vari istituti di ricerca.
+            Nello specifico, i dataset primari coprono un orizzonte temporale di
+            dieci anni (2015-2024), registrando eventi con granularità
+            giornaliera. Le metriche estratte comprendono coordinate
+            geografiche, tipologia di evento, attori coinvolti e stime
+            numeriche. Il processo di pulizia ha richiesto una normalizzazione
+            complessa per gestire i valori mancanti e uniformare le nomenclature
+            eterogenee provenienti dai vari istituti di ricerca.
           </p>
         </div>
 
-        <!-- PARTE 5 (CHI SIAMO) -->
-        <div class="scrolly-step scrolly-step-wide scrolly-step-last" data-step="none" data-bg="3">
-          <h2 class="mb-4" style="color: #666; font-size: 1.4rem; text-transform: uppercase;">Chi Siamo</h2>
-          <hr class="my-4">
+        <!-- CHI SIAMO (nessun grafico) -->
+        <div
+          class="scrolly-step scrolly-step-wide scrolly-step-last"
+          data-step="none"
+          data-bg="3"
+          data-chart="none"
+        >
+          <h2
+            class="mb-4"
+            style="color: #666; font-size: 1.4rem; text-transform: uppercase"
+          >
+            Chi Siamo
+          </h2>
+          <hr class="my-4" />
           <div class="team-container mt-4">
             <div class="team-member mb-4 d-flex align-items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=Giorgio+Acossi&background=random&size=100" alt="Foto Giorgio Acossi" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover; flex-shrink: 0;" />
+              <img
+                src="https://ui-avatars.com/api/?name=Giorgio+Acossi&background=random&size=100"
+                alt="Foto Giorgio Acossi"
+                class="rounded-circle shadow-sm"
+                style="
+                  width: 80px;
+                  height: 80px;
+                  object-fit: cover;
+                  flex-shrink: 0;
+                "
+              />
               <div class="member-info">
                 <h3 class="h6 fw-bold mb-1">Giorgio Acossi</h3>
-                <p class="text-primary small mb-1">Data Scientist & Visualizer</p>
+                <p class="text-primary small mb-1">
+                  Data Scientist & Visualizer
+                </p>
               </div>
             </div>
-            
             <div class="team-member d-flex align-items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=Eleonora+Ventura&background=random&size=100" alt="Foto Eleonora Ventura" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover; flex-shrink: 0;" />
+              <img
+                src="https://ui-avatars.com/api/?name=Eleonora+Ventura&background=random&size=100"
+                alt="Foto Eleonora Ventura"
+                class="rounded-circle shadow-sm"
+                style="
+                  width: 80px;
+                  height: 80px;
+                  object-fit: cover;
+                  flex-shrink: 0;
+                "
+              />
               <div class="member-info">
                 <h3 class="h6 fw-bold mb-1">Eleonora Ventura</h3>
-                <p class="text-primary small mb-1">Data Scientist & Visualizer</p>
+                <p class="text-primary small mb-1">
+                  Data Scientist & Visualizer
+                </p>
               </div>
             </div>
           </div>
         </div>
-
       </article>
 
       <!-- Il Palco Centrale per i grafici -->
@@ -173,19 +270,8 @@
         <div class="chart-container" data-chart="3">
           <div id="chart-2-1" class="w-100 bg-white rounded shadow-sm"></div>
         </div>
-        <div class="chart-container" data-chart="4">
-          <div id="chart-2-2" class="w-100 bg-white rounded shadow-sm"></div>
-        </div>
-        <div class="chart-container" data-chart="5">
-          <div id="chart-3-1" class="w-100 bg-white rounded shadow-sm"></div>
-        </div>
-        <div class="chart-container" data-chart="6">
-          <div id="chart-3-2" class="w-100 bg-white rounded shadow-sm"></div>
-        </div>
-        <!-- Contenitore vuoto finale data-chart="none" per far sfumare i grafici quando si arriva in fondo (Chi Siamo / Dataset) -->
         <div class="chart-container" data-chart="none"></div>
       </figure>
-
     </div>
   </div>
 </section>
