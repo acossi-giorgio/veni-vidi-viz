@@ -1,8 +1,8 @@
 async function init() {
-  // Carica l'unico componente rimasto
+  // Carica il componente scrollytelling
   await loadComponent('scrolly-main-container', 'components/scrolly-main.html');
 
-  // Inizializza i grafici D3.js se presenti
+  // Inizializza i grafici D3.js
   if (document.getElementById('chart-1-1')) renderGdpLineChart("#chart-1-1");
   if (document.getElementById('chart-1-2')) renderExampleChart("#chart-1-2");
   if (document.getElementById('chart-2-1')) renderExampleChart("#chart-2-1");

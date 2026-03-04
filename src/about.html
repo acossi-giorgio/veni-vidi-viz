@@ -5,123 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chi Siamo - Veni Vidi Viz</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&family=Fira+Sans:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&display=swap"
       rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    
-    <header id="navbar-container"></header>
+    <nav class="navbar">
+      <a class="navbar-brand" href="index.html">Veni Vidi Viz</a>
+    </nav>
 
-    
-    <main style="padding-top: 80px">
-      
-      <section class="bg-white" id="section-about" style="padding: 10rem 0">
-        <div class="section-content mx-auto">
-          <header class="text-center mb-5">
+    <main>
+      <section class="section" id="section-about">
+        <div class="section-content">
+          <div class="section-header">
             <h2>Chi Siamo</h2>
-            <p class="lead text-muted">Il Team dietro al Progetto</p>
-          </header>
+            <p class="subtitle">Il Team dietro al Progetto</p>
+          </div>
 
-          <div class="row justify-content-center">
-            <div class="col-lg-10">
-              <div class="row justify-content-center g-4">
-                
-                <div class="col-md-6">
-                  <div class="text-center p-4">
-                    <img
-                      src="https://ui-avatars.com/api/?name=Alice+Rossi&background=random&size=150"
-                      alt="Foto Alice Rossi"
-                      class="rounded-circle mx-auto mb-3"
-                      style="width: 150px; height: 150px; object-fit: cover"
-                    />
-                    <div class="member-info">
-                      <h3 class="h5">Alice Rossi</h3>
-                      <h4 class="mb-3 text-muted h6">
-                        Data Scientist & Analyst
-                      </h4>
-                      <p class="small text-muted" style="text-align: justify">
-                        Specializzata in analisi statistica computazionale e
-                        machine learning. Nel progetto si è occupata della
-                        pulizia dei dataset, della costruzione dei modelli
-                        predittivi e della validazione delle metriche estratte
-                        dalle fonti primarie.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+          <div class="team-grid">
+            <div class="team-card">
+              <img
+                src="https://ui-avatars.com/api/?name=Alice+Rossi&background=random&size=150"
+                alt="Foto Alice Rossi"
+                class="team-avatar"
+              />
+              <h3 class="team-name">Alice Rossi</h3>
+              <p class="team-role">Data Scientist &amp; Analyst</p>
+              <p class="team-bio">
+                Specializzata in analisi statistica computazionale e machine
+                learning. Nel progetto si è occupata della pulizia dei dataset,
+                della costruzione dei modelli predittivi e della validazione
+                delle metriche estratte dalle fonti primarie.
+              </p>
+            </div>
 
-                
-                <div class="col-md-6">
-                  <div class="text-center p-4">
-                    <img
-                      src="https://ui-avatars.com/api/?name=Bob+Bianchi&background=random&size=150"
-                      alt="Foto Bob Bianchi"
-                      class="rounded-circle mx-auto mb-3"
-                      style="width: 150px; height: 150px; object-fit: cover"
-                    />
-                    <div class="member-info">
-                      <h3 class="h5">Bob Bianchi</h3>
-                      <h4 class="mb-3 text-muted h6">
-                        Frontend & Dataviz Engineer
-                      </h4>
-                      <p class="small text-muted" style="text-align: justify">
-                        Appassionato di interfacce interattive e librerie
-                        grafiche. Ha curato l'architettura visiva del sito,
-                        sviluppando le dashboard interattive in D3.js per
-                        trasformare i dati complessi in narrative visive
-                        accessibili e dinamiche.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="team-card">
+              <img
+                src="https://ui-avatars.com/api/?name=Bob+Bianchi&background=random&size=150"
+                alt="Foto Bob Bianchi"
+                class="team-avatar"
+              />
+              <h3 class="team-name">Bob Bianchi</h3>
+              <p class="team-role">Frontend &amp; Dataviz Engineer</p>
+              <p class="team-bio">
+                Appassionato di interfacce interattive e librerie grafiche. Ha
+                curato l'architettura visiva del sito, sviluppando le dashboard
+                interattive in D3.js per trasformare i dati complessi in
+                narrative visive accessibili e dinamiche.
+              </p>
             </div>
           </div>
         </div>
       </section>
-   </main>
+    </main>
 
-    
-    <footer
-      class="footer-normal mt-auto py-5 bg-dark text-white d-flex align-items-center justify-content-center"
-    >
-      <div class="container text-center">
-        <div class="mb-4">
-          <a href="index.html" class="btn btn-outline-light btn-lg me-3"
-            >← Visualizzazione Principale</a
-          >
-          <a href="datasets.html" class="btn btn-outline-light btn-lg"
-            >Dataset</a
-          >
-        </div>
-        <p class="mb-0">
-          &copy; 2026 Veni Vidi Viz. Tutti i diritti riservati.
-        </p>
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="index.html" class="footer-link"
+          >&larr; Visualizzazione Principale</a
+        >
+        <a href="datasets.html" class="footer-link">Dataset</a>
       </div>
+      <p>&copy; 2026 Veni Vidi Viz. Tutti i diritti riservati.</p>
     </footer>
 
-    
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
     <script src="js/util/dataLoader.js"></script>
     <script src="js/util/domManipulation.js"></script>
-    <script src="js/util/navbarScroll.js"></script>
-    <script src="js/charts/exampleChart.js"></script>
-
-    <script src="js/main.js"></script>
     <script src="js/util/common.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
