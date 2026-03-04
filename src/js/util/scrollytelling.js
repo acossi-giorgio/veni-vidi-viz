@@ -1,223 +1,108 @@
 function initScrollytelling() {
-    const scrollyContainer = document.getElementById('scrolly-unified');
-    if (!scrollyContainer) return;
+    const scrollContainer = document.getElementById('scrolly-unified');
+    if (!scrollContainer) return;
 
     document.body.classList.add('slide-mode');
 
-    const scrollyStepsContainer = scrollyContainer.querySelector('.scrolly-steps');
-    const steps = Array.from(scrollyContainer.querySelectorAll('.scrolly-step'));
-    const stage = scrollyContainer.querySelector('.scrolly-stage');
-    const mainSection = scrollyContainer.closest('.snap-section');
+    const mainSection = scrollContainer.closest('.section');
+    const sections = Array.from(scrollContainer.querySelectorAll('.scrolly-section'));
+    const steps = Array.from(scrollContainer.querySelectorAll('.scrolly-step'));
+    const stages = Array.from(scrollContainer.querySelectorAll('.scrolly-section-stage'));
 
-    let lastScrollY = 0;
     let lastActiveStep = null;
+    let lastActiveBg = null;
 
-    // Apply wide-mode on init based on the already-active step
-    const initialActive = scrollyContainer.querySelector('.scrolly-step.is-active');
-    if (initialActive && initialActive.classList.contains('scrolly-step-wide')) {
-        scrollyContainer.classList.add('wide-mode');
+    /* ── Background switching ─────────────────────────────────
+       Find the section whose vertical centre is closest to the
+       viewport centre and activate its background layer.        */
+    function updateBackground() {
+        const h = scrollContainer.clientHeight;
+        const center = h / 2;
+        let best = null;
+        let bestDist = Infinity;
+
+        sections.forEach(sec => {
+            const r = sec.getBoundingClientRect();
+            const scrollR = scrollContainer.getBoundingClientRect();
+            const secCenter = r.top - scrollR.top + r.height / 2;
+            const dist = Math.abs(secCenter - center);
+            if (dist < bestDist) { bestDist = dist; best = sec; }
+        });
+
+        if (best && mainSection) {
+            const bgId = best.getAttribute('data-bg');
+            if (bgId && bgId !== lastActiveBg) {
+                mainSection.querySelectorAll('.scrolly-bg-layer')
+                    .forEach(bg => bg.classList.remove('is-active'));
+
+                const target = bgId === '0'
+                    ? mainSection.querySelector('.scrolly-bg-layer.bg-intro')
+                    : mainSection.querySelector(`.scrolly-bg-layer.bg-sec-${bgId}`);
+                if (target) target.classList.add('is-active');
+                lastActiveBg = bgId;
+            }
+        }
     }
 
-    function activateStep(step, scrollingDown) {
-        if (step === lastActiveStep) return;
-
-        // 1. Text activation
-        steps.forEach(s => s.classList.remove('is-active'));
-        step.classList.add('is-active');
-
-        // 2. Wide-mode toggle
-        if (step.classList.contains('scrolly-step-wide')) {
-            scrollyContainer.classList.add('wide-mode');
-        } else {
-            scrollyContainer.classList.remove('wide-mode');
-        }
-
-        // 3. Chart activation with directional slide
-        const chartId = step.getAttribute('data-step');
-        if (stage && chartId !== null) {
-            const currentActiveChart = stage.querySelector('.chart-container.is-active');
-            const targetChart = stage.querySelector(`.chart-container[data-chart="${chartId}"]`);
-
-            if (currentActiveChart && currentActiveChart !== targetChart) {
-                const outClass = scrollingDown ? 'slide-exit-up' : 'slide-exit-down';
-                currentActiveChart.classList.add(outClass);
-                currentActiveChart.addEventListener('transitionend', () => {
-                    currentActiveChart.classList.remove('is-active', 'slide-exit-up', 'slide-exit-down');
-                }, { once: true });
-            }
-
-            if (targetChart && targetChart !== currentActiveChart) {
-                const inClass = scrollingDown ? 'slide-enter-down' : 'slide-enter-up';
-                targetChart.classList.add(inClass);
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        targetChart.classList.remove('slide-enter-down', 'slide-enter-up');
-                        targetChart.classList.add('is-active');
-                    });
-                });
-            } else if (!targetChart && currentActiveChart) {
-                const outClass = scrollingDown ? 'slide-exit-up' : 'slide-exit-down';
-                currentActiveChart.classList.add(outClass);
-                currentActiveChart.addEventListener('transitionend', () => {
-                    currentActiveChart.classList.remove('is-active', 'slide-exit-up', 'slide-exit-down');
-                }, { once: true });
-            }
-        }
-
-        // 4. Background activation
-        const bgId = step.getAttribute('data-bg');
-        if (mainSection && bgId) {
-            mainSection.querySelectorAll('.scrolly-bg-layer').forEach(bg => bg.classList.remove('is-active'));
-            let targetBg;
-            if (bgId === '0') {
-                targetBg = mainSection.querySelector('.scrolly-bg-layer.bg-intro');
-            } else {
-                targetBg = mainSection.querySelector(`.scrolly-bg-layer.bg-sec-${bgId}`);
-            }
-            if (targetBg) targetBg.classList.add('is-active');
-        }
-
-        lastActiveStep = step;
-    }
-
-    function getStepNearestCenter() {
-        const containerRect = scrollyStepsContainer.getBoundingClientRect();
-        const center = containerRect.top + containerRect.height / 2;
+    /* ── Step activation ──────────────────────────────────────
+       The step card nearest the vertical centre of the scroll
+       container gets the .is-active class (full opacity).       */
+    function updateActiveStep() {
+        const h = scrollContainer.clientHeight;
+        const center = h / 2;
         let nearest = null;
         let nearestDist = Infinity;
+
         steps.forEach(step => {
-            const rect = step.getBoundingClientRect();
-            const stepCenter = rect.top + rect.height / 2;
+            const r = step.getBoundingClientRect();
+            const scrollR = scrollContainer.getBoundingClientRect();
+            const stepCenter = r.top - scrollR.top + r.height / 2;
             const dist = Math.abs(stepCenter - center);
-            if (dist < nearestDist) {
-                nearestDist = dist;
-                nearest = step;
-            }
+            if (dist < nearestDist) { nearestDist = dist; nearest = step; }
         });
-        return nearest;
+
+        if (nearest && nearest !== lastActiveStep) {
+            steps.forEach(s => s.classList.remove('is-active'));
+            nearest.classList.add('is-active');
+            lastActiveStep = nearest;
+
+            if (typeof updateSectionTitle === 'function') {
+                updateSectionTitle();
+            }
+        }
     }
 
-    let ticking = false;
-    scrollyStepsContainer.addEventListener('scroll', () => {
-        const currentScrollY = scrollyStepsContainer.scrollTop;
-        const scrollingDown = currentScrollY >= lastScrollY;
-        lastScrollY = currentScrollY;
+    /* ── Chart stage visibility ───────────────────────────────
+       IntersectionObserver adds .is-visible to each stage when
+       its parent split-section scrolls into view, triggering
+       the CSS slide-up / fade-in transition on the chart box.  */
+    const stageObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        });
+    }, {
+        root: scrollContainer,
+        threshold: 0.15
+    });
 
+    stages.forEach(stage => stageObserver.observe(stage));
+
+    /* ── Scroll handler (throttled via rAF) ───────────────── */
+    let ticking = false;
+    scrollContainer.addEventListener('scroll', () => {
         if (!ticking) {
             requestAnimationFrame(() => {
-                const nearest = getStepNearestCenter();
-                if (nearest) activateStep(nearest, scrollingDown);
+                updateActiveStep();
+                updateBackground();
                 ticking = false;
             });
             ticking = true;
         }
     });
 
-    // Initial activation using nearest-to-center
-    const initialNearest = getStepNearestCenter();
-    if (initialNearest) activateStep(initialNearest, true);
+    /* ── Initial state ────────────────────────────────────── */
+    updateActiveStep();
+    updateBackground();
 }
 
 window.initScrollytelling = initScrollytelling;
-
-
-    let lastScrollY = 0;
-    let lastActiveStep = null;
-
-    // Apply wide-mode on init based on the already-active step
-    const initialActive = scrollyContainer.querySelector('.scrolly-step.is-active');
-    if (initialActive && initialActive.classList.contains('scrolly-step-wide')) {
-        scrollyContainer.classList.add('wide-mode');
-    }
-
-    scrollyStepsContainer.addEventListener('scroll', () => {
-        lastScrollY = scrollyStepsContainer.scrollTop;
-    });
-
-    const observerOptions = {
-        root: scrollyStepsContainer,
-        rootMargin: '-40% 0px -40% 0px',
-        threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const step = entry.target;
-            if (step === lastActiveStep) return;
-
-            // Determine scroll direction for chart slide direction
-            const currentScrollY = scrollyStepsContainer.scrollTop;
-            const scrollingDown = currentScrollY >= lastScrollY;
-            lastScrollY = currentScrollY;
-
-            // 1. Text activation
-            steps.forEach(s => s.classList.remove('is-active'));
-            step.classList.add('is-active');
-
-            // 2. Wide-mode toggle: if step has class scrolly-step-wide, expand container
-            if (step.classList.contains('scrolly-step-wide')) {
-                scrollyContainer.classList.add('wide-mode');
-            } else {
-                scrollyContainer.classList.remove('wide-mode');
-            }
-
-            // 3. Chart activation with directional slide
-            const chartId = step.getAttribute('data-step');
-            if (stage && chartId !== null) {
-                const currentActiveChart = stage.querySelector('.chart-container.is-active');
-                const targetChart = stage.querySelector(`.chart-container[data-chart="${chartId}"]`);
-
-                if (currentActiveChart && currentActiveChart !== targetChart) {
-                    // Slide outgoing chart in the direction the user came FROM
-                    const outClass = scrollingDown ? 'slide-exit-up' : 'slide-exit-down';
-                    currentActiveChart.classList.add(outClass);
-                    currentActiveChart.addEventListener('transitionend', () => {
-                        currentActiveChart.classList.remove('is-active', 'slide-exit-up', 'slide-exit-down');
-                    }, { once: true });
-                }
-
-                if (targetChart) {
-                    // Start new chart from opposite side
-                    const inClass = scrollingDown ? 'slide-enter-down' : 'slide-enter-up';
-                    targetChart.classList.add(inClass);
-                    // Force reflow before adding is-active so the transition fires
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            targetChart.classList.remove('slide-enter-down', 'slide-enter-up');
-                            targetChart.classList.add('is-active');
-                        });
-                    });
-                } else if (!targetChart && currentActiveChart) {
-                    // 'none' chart - just slide out existing
-                    const outClass = scrollingDown ? 'slide-exit-up' : 'slide-exit-down';
-                    currentActiveChart.classList.add(outClass);
-                    currentActiveChart.addEventListener('transitionend', () => {
-                        currentActiveChart.classList.remove('is-active', 'slide-exit-up', 'slide-exit-down');
-                    }, { once: true });
-                }
-            }
-
-            // 4. Background activation
-            const bgId = step.getAttribute('data-bg');
-            if (mainSection && bgId) {
-                // Handle bg-intro (id=0) specially
-                mainSection.querySelectorAll('.scrolly-bg-layer').forEach(bg => bg.classList.remove('is-active'));
-                let targetBg;
-                if (bgId === '0') {
-                    targetBg = mainSection.querySelector('.scrolly-bg-layer.bg-intro');
-                } else {
-                    targetBg = mainSection.querySelector(`.scrolly-bg-layer.bg-sec-${bgId}`);
-                }
-                if (targetBg) targetBg.classList.add('is-active');
-            }
-
-            lastActiveStep = step;
-        });
-    }, observerOptions);
-
-    steps.forEach(step => observer.observe(step));
-}
-
-window.initScrollytelling = initScrollytelling;
-
