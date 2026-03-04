@@ -13,19 +13,150 @@
 
   <body>
     <nav class="navbar">
-      <a class="navbar-brand" href="#home">Veni Vidi Viz</a>
-      <div class="section-title-nav" id="sectionTitleNav"></div>
+      <div class="navbar-container">
+        <a class="navbar-brand" href="#home">Veni Vidi Viz</a>
+        <div class="section-title-nav" id="sectionTitleNav"></div>
+        <div class="navbar-spacer"></div>
+      </div>
     </nav>
 
     <main>
-      <div id="scrolly-main-container"></div>
+      <div class="scrolly-main">
+        <section class="section" id="scrolly-main-container">
+          <!-- Background layers -->
+          <div class="scrolly-bg-layer bg-intro is-active" id="bg-layer-0"></div>
+          <div class="scrolly-bg-layer bg-sec-1" id="bg-layer-1"></div>
+          <div class="scrolly-bg-layer bg-sec-2" id="bg-layer-2"></div>
+          <div class="scrolly-bg-layer bg-sec-3" id="bg-layer-3"></div>
+
+          <div class="scrolly-scroll-container" id="scrolly-unified">
+            <!-- ====== INTRO (wide) ====== -->
+            <div class="scrolly-section scrolly-section-wide" data-bg="0">
+              <div class="scrolly-step scrolly-step-wide is-active" data-step="0">
+                <h1 class="step-title">Veni Vidi Viz</h1>
+                <h2 class="subtitle">L'arte di esplorare e comprendere i dati</h2>
+                <hr />
+                <p class="text-justify text-muted">
+                  Il mondo odierno è costantemente attraversato da un flusso
+                  inarrestabile di informazioni complessi. Questo progetto nasce per
+                  abbattere le barriere della complessità utilizzando la visualizzazione
+                  dati come potente strumento di sintesi.
+                </p>
+                <p class="text-justify text-muted">
+                  Preparatevi a un denso viaggio esplorativo scorrendo lungo i 3
+                  differenti livelli di analisi.
+                </p>
+              </div>
+            </div>
+
+            <!-- ====== PARTE 1 (split — chart 1) ====== -->
+            <div class="scrolly-section scrolly-section-split" data-bg="1">
+              <div class="scrolly-section-steps">
+                <div class="scrolly-step" data-step="1">
+                  <h2 class="step-label">1. Analisi Preliminare</h2>
+                  <p class="text-justify text-muted">
+                    In questa prima sezione esploriamo i fondamenti della nostra analisi
+                    attraverso l'uso di molteplici visualizzazioni destinate a mappare
+                    il quadro generale. L'approccio iniziale ci permette di evidenziare
+                    trend storici, anomalie e picchi.
+                  </p>
+                </div>
+                <div class="scrolly-step" data-step="2">
+                  <h3>Distribuzione Geografica Macroregionale</h3>
+                  <p class="text-justify">
+                    Oltre la variabile temporale, l'espansione spaziale degli
+                    avvenimenti rivela dinamiche molto differenziate a seconda dei
+                    confini geografici. Suddividendo il dataset originale per
+                    macroregioni o per continenti, constatiamo che il rumore di fondo
+                    globale svanisce per lasciare intravedere hub molto attivi da un
+                    lato e vaste aree del mondo quasi immobili dall'altro. Questa
+                    polarizzazione conferma le nostre teorie iniziali.
+                  </p>
+                </div>
+              </div>
+              <div class="scrolly-section-stage">
+                <div id="chart-1-1" class="chart-box"></div>
+              </div>
+            </div>
+
+            <!-- ====== PARTE 2 (split — chart 2) ====== -->
+            <div class="scrolly-section scrolly-section-split" data-bg="2">
+              <div class="scrolly-section-steps">
+                <div class="scrolly-step" data-step="3">
+                  <h2 class="step-label">2. Analisi Approfondita Delle Categorie</h2>
+                  <p class="text-justify text-muted">
+                    Continuando lo storytelling delineato nella prima parte, questa
+                    seconda fase della ricerca si focalizza sulla scomposizione accurata
+                    dei totali in categorie parallele, introducendo incroci relazionali
+                    più elaborati.
+                  </p>
+                </div>
+                <div class="scrolly-step" data-step="4">
+                  <h3>Età, Demografia e Prospettive</h3>
+                  <p class="text-justify">
+                    Confrontando gli stessi eventi contro i dati relativi all'indotto
+                    demografico e alle coorti generazionali coinvolte, emergono divari
+                    strutturali ben chiari. Le curve che mappano l'età media per le
+                    rilevazioni più estreme mostrano picchi isolati con un grado di
+                    reazione inversamente proporzionale. Le dinamiche registrate non
+                    sono universalmente distribuite; piuttosto sembrano essere guidate
+                    dall'accesso ai canali comunicativi.
+                  </p>
+                </div>
+              </div>
+              <div class="scrolly-section-stage">
+                <div id="chart-1-2" class="chart-box"></div>
+              </div>
+            </div>
+
+            <!-- ====== PARTE 3 (split — chart 3) ====== -->
+            <div class="scrolly-section scrolly-section-split" data-bg="3">
+              <div class="scrolly-section-steps">
+                <div class="scrolly-step" data-step="5">
+                  <h2 class="step-label">3. Sintesi e Conclusioni</h2>
+                  <p class="text-justify text-muted">
+                    Dopo aver vagliato le macro-tendenze dall'alto e poi affondato la
+                    lente d'ingrandimento negli squilibri e nelle disparità sistemiche
+                    dei singoli frammenti, raccogliamo tutti i fili narrativi
+                    dell'esplorazione appena compiuta.
+                  </p>
+                </div>
+                <div class="scrolly-step" data-step="6">
+                  <h3>Sviluppi, Prospettive Future ed Etica</h3>
+                  <p class="text-justify">
+                    Scongiurando le visioni puramente utilitaristiche, il progetto
+                    traccia perciò vie e raccomandazioni precise e applicabili. Nuovi
+                    modelli previsionali integrati con tecnologie di machine learning
+                    promettono di ridurre l'odierno margine d'errore. Il prossimo passo,
+                    e forse la prospettiva più sfidante e promettente, riguarderà la
+                    modellazione in the edge: analisi del dato quasi in tempo reale.
+                  </p>
+                </div>
+              </div>
+              <div class="scrolly-section-stage">
+                <div id="chart-2-1" class="chart-box"></div>
+              </div>
+            </div>
+
+          <!-- Footer with slide-up animation -->
+          <div class="scrolly-footer" id="scrolly-footer">
+            <div class="scrolly-footer-content">
+              <p>&copy; 2026 Veni Vidi Viz. Un progetto di visualizzazione dati.</p>
+              <div class="scrolly-footer-links">
+                <a href="index.html" class="scrolly-footer-link">Home</a>
+                <a href="datasets.html" class="scrolly-footer-link">Dataset</a>
+                <a href="about.html" class="scrolly-footer-link">Chi Siamo</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="js/util/dataLoader.js"></script>
     <script src="js/util/domManipulation.js"></script>
     <script src="js/util/common.js"></script>
-    <script src="js/util/scrollytelling.js"></script>
     <script src="js/charts/exampleChart.js"></script>
     <script src="js/charts/gdpLineChart.js"></script>
     <script src="js/main.js"></script>

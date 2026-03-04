@@ -25,7 +25,7 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  padding-top: 60px;
+  padding-top: 80px;
 }
 
 /* --- TYPOGRAPHY --- */
@@ -145,11 +145,19 @@ main {
   z-index: 1000;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  width: 100%;
   padding: 0 2.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
 }
 
 .navbar-brand {
@@ -158,6 +166,7 @@ main {
   letter-spacing: 1px;
   color: #333;
   text-decoration: none;
+  flex-shrink: 0;
 }
 .navbar-brand:hover {
   color: #111;
@@ -171,6 +180,11 @@ main {
   text-align: center;
   flex: 1;
   margin: 0 1rem;
+}
+
+.navbar-spacer {
+  width: 176px;
+  flex-shrink: 0;
 }
 
 /* Glass variant (scrollytelling) */
@@ -300,6 +314,7 @@ main {
   text-align: center;
   margin-top: auto;
   border-top: 1px solid #444;
+  height: 80px;
 }
 
 .footer-links {
@@ -397,22 +412,34 @@ svg text,
   }
 }
 
-/* Scrolly Footer — glass effect, slides up from bottom */
+/* Scrolly Footer — glass effect, hidden by default, slides up from bottom */
 .scrolly-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: 1100;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem 2.5rem;
-  animation: slideUpFooter 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  animation-delay: 0.2s;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 2.5rem;
+  transform: translateY(100%);
   opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.scrolly-footer.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .scrolly-footer-content {
@@ -454,9 +481,9 @@ svg text,
   text-decoration: none;
 }
 
-/* Hide footer in slide-mode (scrollytelling) */
+/* In slide-mode the body is fixed — footer visibility is JS-controlled */
 body.slide-mode .scrolly-footer {
-  display: none;
+  z-index: 1100;
 }
 
 /* ============================================================
@@ -487,7 +514,7 @@ body.slide-mode {
 #scrolly-main {
   position: relative;
   height: auto;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 80px);
   overflow: hidden;
   padding: 0 !important;
   margin: 0;
@@ -498,10 +525,11 @@ body.slide-mode {
   position: relative;
   z-index: 2;
   width: 100%;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 80px);
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding-bottom: 120px;
 }
 .scrolly-scroll-container::-webkit-scrollbar {
   display: none;
@@ -520,7 +548,7 @@ body.slide-mode {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 80px);
   padding: 10vh 4rem;
 }
 
@@ -534,8 +562,15 @@ body.slide-mode {
 /* Left column: text cards */
 .scrolly-section-steps {
   width: 40%;
-  padding-top: 40vh;
-  padding-bottom: 40vh;
+  padding-top: 20vh;
+  padding-bottom: 20vh;
+}
+
+/* Last step in the last split section: no extra bottom scroll room */
+.scrolly-section-split:last-of-type
+  .scrolly-section-steps
+  .scrolly-step:last-child {
+  margin-bottom: 0;
 }
 
 /* Right column: sticky chart */
@@ -543,7 +578,7 @@ body.slide-mode {
   width: 60%;
   position: sticky;
   top: 0;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 80px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -551,24 +586,16 @@ body.slide-mode {
   align-self: flex-start;
 }
 
-/* Chart entrance animation */
+/* Chart box — no animations */
 .scrolly-section-stage .chart-box {
-  opacity: 0;
-  transform: translateY(50px);
-  transition:
-    opacity 0.6s ease,
-    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.scrolly-section-stage.is-visible .chart-box {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* --- STEP CARDS --- */
 .scrolly-step {
   position: relative;
   width: 95%;
-  margin: 0 auto 50vh auto;
+  margin: 0 auto 20vh auto;
   padding: 2.5rem 3rem;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
@@ -593,7 +620,7 @@ body.slide-mode {
 
 /* Last step in a steps column: reduce trailing space */
 .scrolly-section-steps .scrolly-step:last-child {
-  margin-bottom: 30vh;
+  margin-bottom: 10vh;
 }
 
 /* Step headings inside cards */
