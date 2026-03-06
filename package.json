@@ -2,6 +2,6 @@
     "name": "veni-vidi-viz",
     "version": "1.0.0",
     "scripts": {
-        "dev": "npx live-server --port=5500 --open=/src/"
+        "start": "npx live-server --port=5500 --open=/src/"
     }
 }
