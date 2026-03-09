@@ -7,6 +7,7 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
 
   // Load data
   const data = await loadData('datasets/clean/gdp_per_capita.csv');
+  console.table(data);
   if (!data || data.length === 0) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Errore nel caricamento dei dati</p>';
     return;
@@ -27,30 +28,54 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
     return;
   }
 
-  // Country name mapping (CSV names -> GeoJSON names)
-  const countryNameMap = {
-    'United States': 'United States of America',
-    'USA': 'United States of America',
-    'United Kingdom': 'United Kingdom',
-    'UK': 'United Kingdom',
-    'South Korea': 'South Korea',
-    'Korea': 'South Korea',
-    'UAE': 'United Arab Emirates',
+  // Build country name lookup from CSV data (for tooltip display)
+  const codeToName = {};
+  data.forEach(d => { if (d.Code && d['Country Name']) codeToName[d.Code] = d['Country Name']; });
+
+  // ISO numeric → ISO alpha-3 lookup
+  // world-atlas@2 features have numeric id but empty properties (no name)
+  const numericToAlpha3 = {
+    4:'AFG',8:'ALB',12:'DZA',16:'ASM',20:'AND',24:'AGO',28:'ATG',32:'ARG',36:'AUS',40:'AUT',
+    31:'AZE',44:'BHS',48:'BHR',50:'BGD',52:'BRB',112:'BLR',56:'BEL',84:'BLZ',204:'BEN',
+    64:'BTN',68:'BOL',70:'BIH',72:'BWA',76:'BRA',96:'BRN',100:'BGR',854:'BFA',108:'BDI',
+    132:'CPV',116:'KHM',120:'CMR',124:'CAN',140:'CAF',148:'TCD',152:'CHL',156:'CHN',
+    170:'COL',174:'COM',180:'COD',178:'COG',188:'CRI',384:'CIV',191:'HRV',192:'CUB',
+    196:'CYP',203:'CZE',208:'DNK',262:'DJI',212:'DMA',214:'DOM',218:'ECU',818:'EGY',
+    222:'SLV',226:'GNQ',232:'ERI',233:'EST',231:'ETH',238:'FLK',242:'FJI',246:'FIN',
+    250:'FRA',266:'GAB',270:'GMB',268:'GEO',276:'DEU',288:'GHA',300:'GRC',308:'GRD',
+    304:'GRL',320:'GTM',324:'GIN',624:'GNB',328:'GUY',332:'HTI',340:'HND',348:'HUN',
+    352:'ISL',356:'IND',360:'IDN',364:'IRN',368:'IRQ',372:'IRL',376:'ISR',380:'ITA',
+    388:'JAM',392:'JPN',400:'JOR',398:'KAZ',404:'KEN',296:'KIR',408:'PRK',410:'KOR',
+    414:'KWT',417:'KGZ',418:'LAO',422:'LBN',426:'LSO',430:'LBR',434:'LBY',438:'LIE',
+    440:'LTU',442:'LUX',450:'MDG',454:'MWI',458:'MYS',462:'MDV',466:'MLI',470:'MLT',
+    584:'MHL',478:'MRT',480:'MUS',484:'MEX',583:'FSM',498:'MDA',492:'MCO',496:'MNG',
+    499:'MNE',504:'MAR',508:'MOZ',516:'NAM',524:'NPL',528:'NLD',554:'NZL',558:'NIC',
+    562:'NER',566:'NGA',807:'MKD',578:'NOR',512:'OMN',586:'PAK',585:'PLW',591:'PAN',
+    598:'PNG',600:'PRY',604:'PER',608:'PHL',616:'POL',620:'PRT',634:'QAT',642:'ROU',
+    643:'RUS',646:'RWA',659:'KNA',662:'LCA',670:'VCT',882:'WSM',674:'SMR',678:'STP',
+    682:'SAU',686:'SEN',688:'SRB',694:'SLE',703:'SVK',705:'SVN',706:'SOM',710:'ZAF',
+    728:'SSD',724:'ESP',144:'LKA',729:'SDN',740:'SUR',748:'SWZ',752:'SWE',756:'CHE',
+    760:'SYR',762:'TJK',764:'THA',626:'TLS',768:'TGO',776:'TON',780:'TTO',788:'TUN',
+    792:'TUR',795:'TKM',798:'TUV',800:'UGA',804:'UKR',784:'ARE',826:'GBR',840:'USA',
+    858:'URY',860:'UZB',548:'VUT',862:'VEN',704:'VNM',887:'YEM',894:'ZMB',716:'ZWE',
+    60:'BMU',136:'CYM',234:'FRO',258:'PYF',316:'GUM',344:'HKG',446:'MAC',540:'NCL',
+    580:'MNP',630:'PRI',533:'ABW',531:'CUW',534:'SXM',850:'VIR',833:'IMN',
   };
 
-  // Pre-compute GDP maps for all years at once
+  // Pre-compute GDP maps for all years at once (keyed by ISO alpha-3 code)
   const gdpByYear = {};
   data.forEach((d) => {
     const year = +d.Year;
     if (!gdpByYear[year]) gdpByYear[year] = {};
-    const csvName = d['Country Name'];
-    const geoName = countryNameMap[csvName] || csvName;
-    const val = parseFloat(d['GDPPerCapita']);
-    if (val > 0 && isFinite(val)) gdpByYear[year][geoName] = val;
+    const val = parseFloat(d['GDP_Per_Capita (USD)']);
+    if (d.Code && val > 0 && isFinite(val)) gdpByYear[year][d.Code] = val;
   });
 
+  // Sorted list of available years
+  const years = Object.keys(gdpByYear).map(y => +y).sort((a, b) => a - b);
+
   // Global min/max for consistent color scale across all years
-  const allValues = data.map((d) => parseFloat(d['GDPPerCapita'])).filter((v) => v > 0 && isFinite(v));
+  const allValues = data.map((d) => parseFloat(d['GDP_Per_Capita (USD)'])).filter((v) => v > 0 && isFinite(v));
   const minGdp = d3.min(allValues) || 0;
   const maxGdp = d3.max(allValues) || 1000;
 
@@ -58,7 +83,7 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
 
   // Dimensions
   const width = container.clientWidth || 800;
-  const height = Math.max(container.clientHeight || 0, 450);
+  const height = Math.max(container.clientHeight || 0, 600);
 
   // Tooltip
   let tooltip = d3.select('#gdp-map-tooltip');
@@ -121,7 +146,7 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
   const pathGenerator = d3.geoPath().projection(projection);
 
   // Draw country paths
-  let currentYear = initialYear;
+  let currentYear = years.includes(initialYear) ? initialYear : years[0];
 
   mapGroup
     .selectAll('path.country')
@@ -133,13 +158,14 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
     .attr('stroke', '#fff')
     .attr('stroke-width', 0.5)
     .attr('fill', (d) => {
-      const val = (gdpByYear[currentYear] || {})[d.properties?.name || ''] || 0;
+      const alpha3 = numericToAlpha3[d.id] || '';
+      const val = (gdpByYear[currentYear] || {})[alpha3] || 0;
       return val > 0 ? colorScale(val) : '#e8e8e8';
     })
     .on('mouseenter', function (event, d) {
-      d3.select(this).attr('stroke-width', 2).raise();
-      const name = d.properties?.name || 'Unknown';
-      const val = (gdpByYear[currentYear] || {})[name] || 0;
+      const alpha3 = numericToAlpha3[d.id] || '';
+      const name = codeToName[alpha3] || alpha3 || 'Unknown';
+      const val = (gdpByYear[currentYear] || {})[alpha3] || 0;
       showTooltip(
         event,
         `<div style="text-align:center;font-weight:bold;margin-bottom:4px;">${name}</div>` +
@@ -149,8 +175,9 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
       );
     })
     .on('mousemove', function (event, d) {
-      const name = d.properties?.name || 'Unknown';
-      const val = (gdpByYear[currentYear] || {})[name] || 0;
+      const alpha3 = numericToAlpha3[d.id] || '';
+      const name = codeToName[alpha3] || alpha3 || 'Unknown';
+      const val = (gdpByYear[currentYear] || {})[alpha3] || 0;
       showTooltip(
         event,
         `<div style="text-align:center;font-weight:bold;margin-bottom:4px;">${name}</div>` +
@@ -160,7 +187,6 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
       );
     })
     .on('mouseleave', function () {
-      d3.select(this).attr('stroke-width', 0.5).attr('stroke', '#fff');
       hideTooltip();
     });
 
@@ -177,6 +203,72 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
     .attr('opacity', 0.12)
     .attr('pointer-events', 'none')
     .text(currentYear);
+
+  // Play/Pause icon (same style as year label, bottom left)
+  const playPauseLabel = svg
+    .append('text')
+    .attr('class', 'play-pause-label')
+    .attr('x', 12)
+    .attr('y', height - 12)
+    .attr('text-anchor', 'start')
+    .attr('font-size', 48)
+    .attr('font-weight', 'bold')
+    .attr('fill', '#000')
+    .attr('opacity', 0.12)
+    .attr('pointer-events', 'auto')
+    .style('cursor', 'pointer')
+    .text('▶');
+
+  let isAnimationPlaying = true;
+
+  playPauseLabel.on('click', function(event) {
+    event.stopPropagation();
+    if (!isAnimationPlaying) {
+      isAnimationPlaying = true;
+      playPauseLabel.text('⏸');
+      if (container._gdpStartAnimation) container._gdpStartAnimation(1000);
+    } else {
+      isAnimationPlaying = false;
+      playPauseLabel.text('▶');
+      if (container._gdpClearAnimation) container._gdpClearAnimation();
+    }
+  });
+
+  // Year slider between play button and year watermark
+  const sliderPadL = 72;
+  const sliderPadR = 148;
+  const sliderFO = svg.append('foreignObject')
+    .attr('x', sliderPadL)
+    .attr('y', height - 46)
+    .attr('width', width - sliderPadL - sliderPadR)
+    .attr('height', 32)
+    .attr('pointer-events', 'auto')
+    .on('mousedown', (e) => e.stopPropagation())
+    .on('touchstart', (e) => e.stopPropagation());
+
+  const sliderNode = sliderFO.append('xhtml:input')
+    .attr('id', 'gdp-map-slider')
+    .attr('type', 'range')
+    .attr('min', years[0])
+    .attr('max', years[years.length - 1])
+    .attr('step', 1)
+    .attr('value', currentYear)
+    .style('margin-top', '14px')
+    .style('-webkit-appearance', 'none')
+    .style('appearance', 'none')
+    .style('width', '100%')
+    .style('height', '4px')
+    .style('background', 'rgba(0,0,0,0.18)')
+    .style('border-radius', '2px')
+    .style('outline', 'none')
+    .style('cursor', 'pointer')
+    .on('input', function() {
+      const y = +this.value;
+      container._gdpClearAnimation();
+      isAnimationPlaying = false;
+      playPauseLabel.text('▶');
+      update(y);
+    });
 
   // Legend (TOP of chart, won't zoom) - styled like choroplethMap
   const legendData = [
@@ -275,37 +367,33 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
     svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
   });
 
+  // Play/Pause button handler (duplicate removed — handled above)
+
   // Animation state
   let animationInterval = null;
-  let isPlaying = false;
-  const years = Object.keys(gdpByYear).map(y => +y).sort((a, b) => a - b);
 
   // Update function — only repaints fills, preserves zoom state
   function update(year) {
     currentYear = year;
     yearLabel.text(year);
+    sliderNode.property('value', year);
     mapGroup
       .selectAll('path.country')
       .transition()
       .duration(300)
       .attr('fill', (d) => {
-        const val = (gdpByYear[year] || {})[d.properties?.name || ''] || 0;
+        const alpha3 = numericToAlpha3[d.id] || '';
+        const val = (gdpByYear[year] || {})[alpha3] || 0;
         return val > 0 ? colorScale(val) : '#e8e8e8';
       });
   }
 
   function startAnimation(speed) {
     animationInterval = setInterval(() => {
-      const yearSlider = document.getElementById('year-selector');
       let currentIndex = years.indexOf(currentYear);
       currentIndex++;
-      
-      if (currentIndex >= years.length) {
-        currentIndex = 0;
-      }
-      
+      if (currentIndex >= years.length) currentIndex = 0;
       const nextYear = years[currentIndex];
-      if (yearSlider) yearSlider.value = nextYear;
       updateGdpMapChart(selector, nextYear);
     }, speed);
   }
@@ -314,14 +402,20 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
   container._gdpUpdate = update;
   container._gdpStartAnimation = startAnimation;
   container._gdpYears = years;
-  container._gdpIsPlaying = () => isPlaying;
-  container._gdpSetPlaying = (v) => { isPlaying = v; };
+  container._gdpIsPlaying = () => isAnimationPlaying;
+  container._gdpSetPlaying = (v) => { isAnimationPlaying = v; };
   container._gdpClearAnimation = () => {
     if (animationInterval) {
       clearInterval(animationInterval);
       animationInterval = null;
     }
   };
+
+  // Start animation by default
+  if (startAnimation) {
+    startAnimation(2000);
+    playPauseLabel.text('⏸');
+  }
 
   // Region zoom functions
   container._gdpZoomToEurope = function() {
