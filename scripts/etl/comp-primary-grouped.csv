@@ -1,0 +1,582 @@
+iso_code,country,region,comp_prim_avg
+AGO,Angola,Bengo,0.5377
+AGO,Angola,Benguela,0.6168
+AGO,Angola,Bie,0.4104
+AGO,Angola,Cabinda,0.6905
+AGO,Angola,Cuando Cubango,0.2633
+AGO,Angola,Cuanza Norte,0.5584
+AGO,Angola,Cuanza Sul,0.3376
+AGO,Angola,Cunene,0.3667
+AGO,Angola,Huambo,0.4886
+AGO,Angola,Huila,0.4071
+AGO,Angola,Luanda,0.8091
+AGO,Angola,Lunda Norte,0.3388
+AGO,Angola,Lunda Sul,0.4548
+AGO,Angola,Malanje,0.5346
+AGO,Angola,Moxico,0.4744
+AGO,Angola,Namibe,0.6479
+AGO,Angola,Uige,0.4475
+AGO,Angola,Zaire,0.6889
+BDI,Burundi,Bujumbura,0.5923
+BDI,Burundi,Centre East,0.3322
+BDI,Burundi,Nord,0.3003
+BDI,Burundi,Ouest,0.411
+BDI,Burundi,Sud,0.495
+BEN,Benin,Alibori,0.2387
+BEN,Benin,Atacora,0.3724
+BEN,Benin,Atlantic,0.5768
+BEN,Benin,Atlantique,0.6344
+BEN,Benin,Borgou,0.4067
+BEN,Benin,Collines,0.6431
+BEN,Benin,Couffo,0.5399
+BEN,Benin,Donga,0.5217
+BEN,Benin,Littoral,0.7795
+BEN,Benin,Mono,0.5754
+BEN,Benin,Oueme,0.632
+BEN,Benin,Plateau,0.5199
+BEN,Benin,Zou,0.5657
+BFA,Burkina Faso,Boucle De Mouhoun,0.235
+BFA,Burkina Faso,Boucle du Mouhoun,0.5082
+BFA,Burkina Faso,Cascades,0.4569
+BFA,Burkina Faso,Centre,0.7451
+BFA,Burkina Faso,Centre (Sans Ouagadougou),0.2179
+BFA,Burkina Faso,Centre Est,0.2962
+BFA,Burkina Faso,Centre Nord,0.1683
+BFA,Burkina Faso,Centre Ouest,0.3092
+BFA,Burkina Faso,Centre Sud,0.2896
+BFA,Burkina Faso,Centre-Est,0.7248
+BFA,Burkina Faso,Centre-Nord,0.498
+BFA,Burkina Faso,Centre-Ouest,0.6776
+BFA,Burkina Faso,Centre-Sud,0.881
+BFA,Burkina Faso,Est,0.2316
+BFA,Burkina Faso,Hauts Bassins,0.45
+BFA,Burkina Faso,Nord,0.3471
+BFA,Burkina Faso,Ouagadougou,0.5944
+BFA,Burkina Faso,Plateau Central,0.2497
+BFA,Burkina Faso,Plateau-Central,0.8143
+BFA,Burkina Faso,Sahel,0.1768
+BFA,Burkina Faso,Sud Ouest,0.2322
+BFA,Burkina Faso,Sud-Ouest,0.6929
+CAF,C. A. R.,Baminigui Bangoran,0.5118
+CAF,C. A. R.,Bangui,0.7439
+CAF,C. A. R.,Basse Kotto,0.2172
+CAF,C. A. R.,Haut Mbomou,0.3803
+CAF,C. A. R.,Haute Kotto,0.2945
+CAF,C. A. R.,Kemo,0.3752
+CAF,C. A. R.,Lobaye,0.3925
+CAF,C. A. R.,Mambere Kadei,0.3146
+CAF,C. A. R.,Mbomou,0.2894
+CAF,C. A. R.,Nana Grebizi,0.4513
+CAF,C. A. R.,Nana Mambere,0.2807
+CAF,C. A. R.,Ombella M'Poko,0.3938
+CAF,C. A. R.,Ouaka,0.2886
+CAF,C. A. R.,Ouham,0.2418
+CAF,C. A. R.,Ouham Pende,0.3041
+CAF,C. A. R.,Sangha Mbaere,0.4177
+CIV,Côte d'Ivoire,Centre,0.5455
+CIV,Côte d'Ivoire,Centre Est,0.4599
+CIV,Côte d'Ivoire,Centre Nord,0.5323
+CIV,Côte d'Ivoire,Centre Ouest,0.4563
+CIV,Côte d'Ivoire,Nord,0.3345
+CIV,Côte d'Ivoire,Nord Est,0.4628
+CIV,Côte d'Ivoire,Nord Ouest,0.2552
+CIV,Côte d'Ivoire,Ouest,0.4079
+CIV,Côte d'Ivoire,Sud (Sans Ville D'Abidjan),0.578
+CIV,Côte d'Ivoire,Sud Ouest,0.436
+CIV,Côte d'Ivoire,Ville D'Abidjan,0.6303
+CMR,Cameroon,Adamaoua,0.4447
+CMR,Cameroon,Centre,0.779
+CMR,Cameroon,Douala,0.8903
+CMR,Cameroon,Est,0.6362
+CMR,Cameroon,Extreme Nord,0.2701
+CMR,Cameroon,Littoral,0.8417
+CMR,Cameroon,Nord,0.3351
+CMR,Cameroon,Nord Ouest,0.8707
+CMR,Cameroon,Ouest,0.8111
+CMR,Cameroon,Sud,0.8237
+CMR,Cameroon,Sud Ouest,0.8984
+CMR,Cameroon,Yaounde,0.9058
+COD,D. R. Congo,Bandundu,0.5
+COD,D. R. Congo,Bas Congo,0.5082
+COD,D. R. Congo,Equateur,0.3899
+COD,D. R. Congo,Kasai Occidental,0.4772
+COD,D. R. Congo,Kasai Oriental,0.5806
+COD,D. R. Congo,Katanga,0.5107
+COD,D. R. Congo,Kinshasa,0.8609
+COD,D. R. Congo,Maniema,0.5435
+COD,D. R. Congo,Nord Kivu,0.4909
+COD,D. R. Congo,Province Orientale,0.4073
+COD,D. R. Congo,Sud Kivu,0.5466
+COG,Congo,Bouenza,0.6375
+COG,Congo,Brazzaville,0.8677
+COG,Congo,Cuvette,0.6434
+COG,Congo,Cuvette Ouest,0.4885
+COG,Congo,Kouilou,0.5492
+COG,Congo,Lekoumou,0.5205
+COG,Congo,Likouala,0.6047
+COG,Congo,Niari,0.6079
+COG,Congo,Nord,0.5381
+COG,Congo,Plateaux,0.5311
+COG,Congo,Pointe Noire,0.798
+COG,Congo,Pool,0.5121
+COG,Congo,Sangha,0.663
+COG,Congo,Sud,0.4679
+COM,Comoros,Moheli,0.6964
+COM,Comoros,Ndzouani,0.7384
+COM,Comoros,Ngazidja,0.8114
+DZA,Algeria,Haut Plateau Centre,0.9302
+DZA,Algeria,Haut Plateau Est,0.9645
+DZA,Algeria,Haut Plateau Ouest,0.9687
+DZA,Algeria,Nord Centre,0.9714
+DZA,Algeria,Nord Est,0.9694
+DZA,Algeria,Nord Ouest,0.9676
+DZA,Algeria,Sud,0.9495
+EGY,Egypt,Alexandria,0.8868
+EGY,Egypt,Assiut,0.8613
+EGY,Egypt,Aswan,0.9593
+EGY,Egypt,Bani Swef,0.8985
+EGY,Egypt,Bani swef,0.8771
+EGY,Egypt,Beheira,0.8938
+EGY,Egypt,Cairo,0.9426
+EGY,Egypt,Dakahlia,0.9483
+EGY,Egypt,Damietta,0.9454
+EGY,Egypt,Fayoum,0.8641
+EGY,Egypt,Frontier Governorates,0.866
+EGY,Egypt,Gharbia,0.9657
+EGY,Egypt,Giza,0.9479
+EGY,Egypt,Ismailya,0.9502
+EGY,Egypt,Kafr Elsheikh,0.9836
+EGY,Egypt,Kafr elsheikh,0.913
+EGY,Egypt,Lower Egypt Rural,0.8647
+EGY,Egypt,Lower Egypt Urban,0.9186
+EGY,Egypt,Luxor,0.9673
+EGY,Egypt,Matrouh,0.8701
+EGY,Egypt,Menia,0.8993
+EGY,Egypt,Monofia,0.9189
+EGY,Egypt,North sinai,1.0
+EGY,Egypt,Port Said,0.983
+EGY,Egypt,Port said,0.9891
+EGY,Egypt,Qena,0.9431
+EGY,Egypt,Qualioubia,0.9213
+EGY,Egypt,Sharkia,0.9652
+EGY,Egypt,Sohag,0.8875
+EGY,Egypt,Suez,0.9679
+EGY,Egypt,Upper Egypt Rural,0.7705
+EGY,Egypt,Upper Egypt Urban,0.8956
+EGY,Egypt,Urban Governorates,0.9019
+ETH,Ethiopia,Addis Ababa,0.6928
+ETH,Ethiopia,Afar,0.1789
+ETH,Ethiopia,Amhara,0.2567
+ETH,Ethiopia,Benishangul Gumuz,0.2462
+ETH,Ethiopia,Dire Dawa,0.5769
+ETH,Ethiopia,Gambela,0.4128
+ETH,Ethiopia,Harari,0.5165
+ETH,Ethiopia,Oromia,0.2628
+ETH,Ethiopia,SNNPR,0.2637
+ETH,Ethiopia,Somali,0.1414
+ETH,Ethiopia,Tigray,0.3637
+GAB,Gabon,Big Cities,0.6047
+GAB,Gabon,Estuaire,0.7502
+GAB,Gabon,Haut Ogooue,0.6072
+GAB,Gabon,Libreville Port Gentil,0.8402
+GAB,Gabon,Moyen Ogooue,0.594
+GAB,Gabon,Ngounie,0.48
+GAB,Gabon,Nyanga,0.5304
+GAB,Gabon,Ogooue Ivindo,0.3499
+GAB,Gabon,Ogooue Lolo,0.4552
+GAB,Gabon,Ogooue Maritime,0.5549
+GAB,Gabon,Woleu Ntem,0.6087
+GHA,Ghana,Ashanti,0.7645
+GHA,Ghana,Brong Ahafo,0.5715
+GHA,Ghana,Central,0.6627
+GHA,Ghana,Eastern,0.6717
+GHA,Ghana,Greater Accra,0.7334
+GHA,Ghana,Northern,0.3863
+GHA,Ghana,Upper East,0.3984
+GHA,Ghana,Upper West,0.4429
+GHA,Ghana,Volta,0.5631
+GHA,Ghana,Western,0.6908
+GIN,Guinea,Boke,0.4375
+GIN,Guinea,Conakry,0.7269
+GIN,Guinea,Faranah,0.308
+GIN,Guinea,Kankan,0.2195
+GIN,Guinea,Kindia,0.4018
+GIN,Guinea,Labe,0.352
+GIN,Guinea,Mamou,0.3986
+GIN,Guinea,N'Zerekore,0.4087
+GMB,Gambia,Banjul,0.8266
+GMB,Gambia,Basse,0.2992
+GMB,Gambia,Brikama,0.7333
+GMB,Gambia,Janjanbureh,0.476
+GMB,Gambia,Kanifing,0.7884
+GMB,Gambia,Kerewan,0.5439
+GMB,Gambia,Kuntaur,0.363
+GMB,Gambia,Mansakonko,0.6473
+GNB,Guinea-Bissau,Bafata,0.1033
+GNB,Guinea-Bissau,Biombo,0.2555
+GNB,Guinea-Bissau,Bolama/Bijagos,0.3107
+GNB,Guinea-Bissau,Cacheu,0.2606
+GNB,Guinea-Bissau,Gabu,0.0879
+GNB,Guinea-Bissau,Oio,0.1417
+GNB,Guinea-Bissau,Quinara,0.1239
+GNB,Guinea-Bissau,Sab,0.5306
+GNB,Guinea-Bissau,Tombali,0.1269
+KEN,Kenya,Central,0.8852
+KEN,Kenya,Coast,0.5714
+KEN,Kenya,Eastern,0.7073
+KEN,Kenya,Nairobi,0.8637
+KEN,Kenya,North Eastern,0.3968
+KEN,Kenya,Nyanza,0.6724
+KEN,Kenya,Rift Valley,0.6786
+KEN,Kenya,Western,0.6549
+LBR,Liberia,Monrovia,0.3596
+LBR,Liberia,North Central,0.1535
+LBR,Liberia,North Western,0.2446
+LBR,Liberia,South Central,0.3483
+LBR,Liberia,South Eastern A,0.1321
+LBR,Liberia,South Eastern B,0.1739
+LSO,Lesotho,Berea,0.7472
+LSO,Lesotho,Butha Buthe,0.7061
+LSO,Lesotho,Leribe,0.7001
+LSO,Lesotho,Mafeteng,0.6242
+LSO,Lesotho,Maseru,0.7192
+LSO,Lesotho,Mohale's Hoek,0.5786
+LSO,Lesotho,Mokhotlong,0.4461
+LSO,Lesotho,Qacha's Nek,0.6041
+LSO,Lesotho,Quthing,0.5308
+LSO,Lesotho,Thaba Tseka,0.4753
+MDG,Madagascar,Alaotra Mangoro,0.5669
+MDG,Madagascar,Amoron I Mania,0.4314
+MDG,Madagascar,Amoron'I Mania,0.5545
+MDG,Madagascar,Amoron'i Mania,0.3928
+MDG,Madagascar,Analamanga,0.7443
+MDG,Madagascar,Analanjirofo,0.5755
+MDG,Madagascar,Androy,0.2015
+MDG,Madagascar,Anosy,0.2328
+MDG,Madagascar,Antananarivo,0.6428
+MDG,Madagascar,Antsiranana,0.2106
+MDG,Madagascar,Atsimo Andrefana,0.3201
+MDG,Madagascar,Atsimo Atsinanana,0.2691
+MDG,Madagascar,Atsinanana,0.5049
+MDG,Madagascar,Betsiboka,0.3641
+MDG,Madagascar,Boeny,0.4267
+MDG,Madagascar,Bongolava,0.4764
+MDG,Madagascar,Diana,0.5596
+MDG,Madagascar,Fianarantsoa,0.2585
+MDG,Madagascar,Haute Matsiatra,0.4786
+MDG,Madagascar,Ihorombe,0.2763
+MDG,Madagascar,Itasy,0.4958
+MDG,Madagascar,Mahajanga,0.1716
+MDG,Madagascar,Melaky,0.2137
+MDG,Madagascar,Menabe,0.2766
+MDG,Madagascar,Sava,0.5612
+MDG,Madagascar,Sofia,0.5101
+MDG,Madagascar,Toamasina,0.2526
+MDG,Madagascar,Toliary,0.1376
+MDG,Madagascar,Vakinankaratra,0.5873
+MDG,Madagascar,Vatovavy Fitovinany,0.3331
+MLI,Mali,Bamako,0.6418
+MLI,Mali,Gao,0.3873
+MLI,Mali,Kayes,0.2449
+MLI,Mali,Kidal,0.2311
+MLI,Mali,Koulikoro,0.3736
+MLI,Mali,Mopti,0.261
+MLI,Mali,Segou,0.309
+MLI,Mali,Sikasso,0.357
+MLI,Mali,SÃÂ©gou,0.4355
+MLI,Mali,Tombouctou,0.2515
+MLI,Mali,Toumbouctou,0.3379
+MOZ,Mozambique,Cabo Delgado,0.1334
+MOZ,Mozambique,Gaza,0.2782
+MOZ,Mozambique,Inhambane,0.3539
+MOZ,Mozambique,Manica,0.3224
+MOZ,Mozambique,Maputo Cidade,0.5073
+MOZ,Mozambique,Maputo Provincia,0.4633
+MOZ,Mozambique,Nampula,0.2354
+MOZ,Mozambique,Niassa,0.2239
+MOZ,Mozambique,Sofala,0.2551
+MOZ,Mozambique,Tete,0.1715
+MOZ,Mozambique,Zambezia,0.1447
+MRT,Mauritania,Adrar,0.5901
+MRT,Mauritania,Assaba,0.316
+MRT,Mauritania,Brakna,0.391
+MRT,Mauritania,Dakhlet Nouadhibou,0.754
+MRT,Mauritania,Dakhlett Nouadibou,0.6558
+MRT,Mauritania,Gorgol,0.316
+MRT,Mauritania,Guidimagha,0.2895
+MRT,Mauritania,Hodh Ech Charghi,0.376
+MRT,Mauritania,Hodh Echargui,0.2027
+MRT,Mauritania,Hodh El Gharbi,0.3296
+MRT,Mauritania,Hodh Gharbi,0.2241
+MRT,Mauritania,Nouakchott,0.5936
+MRT,Mauritania,Nouakchott Nord,0.5517
+MRT,Mauritania,Nouakchott Ouest,0.6233
+MRT,Mauritania,Nouakchott Sud,0.5574
+MRT,Mauritania,Tagant,0.4446
+MRT,Mauritania,Tiris Zemmour,0.7299
+MRT,Mauritania,Tiris Zemour Et Inchiri,0.7018
+MRT,Mauritania,Trarza,0.49
+MWI,Malawi,Central,0.4352
+MWI,Malawi,North,0.6105
+MWI,Malawi,Northern,0.6701
+MWI,Malawi,South,0.5072
+MWI,Malawi,Southern,0.4808
+NAM,Namibia,Caprivi,0.7767
+NAM,Namibia,Erongo,0.9587
+NAM,Namibia,Hardap,0.853
+NAM,Namibia,Karas,0.898
+NAM,Namibia,Kavango,0.6478
+NAM,Namibia,Khomas,0.9099
+NAM,Namibia,Kunene,0.5878
+NAM,Namibia,Ohangwena,0.6426
+NAM,Namibia,Omaheke,0.6481
+NAM,Namibia,Omusati,0.7907
+NAM,Namibia,Oshana,0.8342
+NAM,Namibia,Oshikoto,0.7101
+NAM,Namibia,Otjozondjupa,0.7427
+NER,Niger,Agadez,0.5073
+NER,Niger,Diffa,0.2595
+NER,Niger,Dosso,0.3828
+NER,Niger,Maradi,0.3226
+NER,Niger,Niamey,0.6549
+NER,Niger,Tahoua,0.2108
+NER,Niger,Tillaberi,0.3014
+NER,Niger,Zinder,0.2999
+NGA,Nigeria,Abia,0.8709
+NGA,Nigeria,Adamawa,0.6473
+NGA,Nigeria,Akwa Ibom,0.9128
+NGA,Nigeria,Anambra,0.8854
+NGA,Nigeria,Bauchi,0.3516
+NGA,Nigeria,Bayelsa,0.8904
+NGA,Nigeria,Benue,0.6558
+NGA,Nigeria,Borno,0.5124
+NGA,Nigeria,Cross River,0.8951
+NGA,Nigeria,Delta,0.8077
+NGA,Nigeria,Ebonyi,0.6988
+NGA,Nigeria,Edo,0.8853
+NGA,Nigeria,Ekiti,0.9308
+NGA,Nigeria,Enugu,0.8681
+NGA,Nigeria,FCT (Abuja),0.8444
+NGA,Nigeria,Gombe,0.4835
+NGA,Nigeria,Imo,0.9059
+NGA,Nigeria,Jigawa,0.4258
+NGA,Nigeria,Kaduna,0.7684
+NGA,Nigeria,Kano,0.679
+NGA,Nigeria,Katsina,0.5312
+NGA,Nigeria,Kebbi,0.3387
+NGA,Nigeria,Kogi,0.8412
+NGA,Nigeria,Kwara,0.765
+NGA,Nigeria,Lagos,0.9712
+NGA,Nigeria,Nasarawa,0.5995
+NGA,Nigeria,Niger,0.4516
+NGA,Nigeria,North Central,0.7104
+NGA,Nigeria,North East,0.3994
+NGA,Nigeria,North West,0.4561
+NGA,Nigeria,Ogun,0.9164
+NGA,Nigeria,Ondo,0.9245
+NGA,Nigeria,Osun,0.9504
+NGA,Nigeria,Oyo,0.8084
+NGA,Nigeria,Plateau,0.7267
+NGA,Nigeria,Rivers,0.9367
+NGA,Nigeria,Sokoto,0.3713
+NGA,Nigeria,South East,0.8796
+NGA,Nigeria,South South,0.8974
+NGA,Nigeria,South West,0.901
+NGA,Nigeria,Taraba,0.5761
+NGA,Nigeria,Yobe,0.4182
+NGA,Nigeria,Zamfara,0.5068
+RWA,Rwanda,Butare,0.1796
+RWA,Rwanda,Byumba,0.1653
+RWA,Rwanda,Cyangugu,0.1988
+RWA,Rwanda,East,0.4767
+RWA,Rwanda,Gikongoro,0.1757
+RWA,Rwanda,Gisenyi,0.1539
+RWA,Rwanda,Gitarama,0.2201
+RWA,Rwanda,Kibungo,0.1244
+RWA,Rwanda,Kibuye,0.1311
+RWA,Rwanda,Kigali,0.7553
+RWA,Rwanda,Kigali City,0.4935
+RWA,Rwanda,Kigali Rural,0.2306
+RWA,Rwanda,North,0.5437
+RWA,Rwanda,Ruhengeri,0.1682
+RWA,Rwanda,South,0.4985
+RWA,Rwanda,Umutara,0.1293
+RWA,Rwanda,West,0.5242
+SDN,Sudan,Blue Nile,0.5244
+SDN,Sudan,Central Darfur,0.4752
+SDN,Sudan,East Darfur,0.5505
+SDN,Sudan,Gadarif,0.5652
+SDN,Sudan,Gezira,0.8063
+SDN,Sudan,Kassala,0.5259
+SDN,Sudan,Khartoum,0.9234
+SDN,Sudan,North Darfur,0.6935
+SDN,Sudan,North Kordofan,0.6246
+SDN,Sudan,Northern,0.8302
+SDN,Sudan,Red Sea,0.6398
+SDN,Sudan,River Nile,0.7949
+SDN,Sudan,Sinnar,0.6476
+SDN,Sudan,South Darfur,0.573
+SDN,Sudan,South Kordofan,0.596
+SDN,Sudan,West Darfur,0.5001
+SDN,Sudan,West Kordofan,0.4951
+SDN,Sudan,White Nile,0.7176
+SEN,Senegal,Dakar,0.6719
+SEN,Senegal,Diourbel,0.2118
+SEN,Senegal,Fatick,0.5804
+SEN,Senegal,Kaffrine,0.2553
+SEN,Senegal,Kaolack,0.4604
+SEN,Senegal,Kedougou,0.5372
+SEN,Senegal,Kolda,0.4548
+SEN,Senegal,Louga,0.3483
+SEN,Senegal,Matam,0.4014
+SEN,Senegal,Saint Louis,0.4878
+SEN,Senegal,Sedhiou,0.5608
+SEN,Senegal,Tambacounda,0.3134
+SEN,Senegal,Thies,0.532
+SEN,Senegal,Ziguinchor,0.7718
+SLE,Sierra Leone,East,0.543
+SLE,Sierra Leone,Eastern,0.6948
+SLE,Sierra Leone,North,0.5612
+SLE,Sierra Leone,North Western,0.6239
+SLE,Sierra Leone,Northern,0.7017
+SLE,Sierra Leone,South,0.4906
+SLE,Sierra Leone,Southern,0.5499
+SLE,Sierra Leone,West,0.807
+SLE,Sierra Leone,Western,0.8578
+SSD,South Sudan,Central Equatoria,0.4519
+SSD,South Sudan,Eastern Equatoria,0.2269
+SSD,South Sudan,Jonglei,0.1035
+SSD,South Sudan,Lakes,0.1572
+SSD,South Sudan,Northern Bahr El Ghazal,0.1518
+SSD,South Sudan,Unity,0.1549
+SSD,South Sudan,Upper Nile,0.4381
+SSD,South Sudan,Warap,0.0686
+SSD,South Sudan,Western Bahr El Ghazal,0.3162
+SSD,South Sudan,Western Equatoria,0.2325
+STP,S. Tome/Principe,Centro Este,0.835
+STP,S. Tome/Principe,Distrito De Agua Grande,0.9452
+STP,S. Tome/Principe,Norte Oeste,0.8159
+STP,S. Tome/Principe,Principe,0.7773
+STP,S. Tome/Principe,Sul Este,0.7963
+SWZ,Eswatini,Hhohho,0.6872
+SWZ,Eswatini,Lubombo,0.6007
+SWZ,Eswatini,Manzini,0.7082
+SWZ,Eswatini,Shiselweni,0.6733
+TCD,Chad,Bar Azoum,0.0276
+TCD,Chad,Barh El Gazal,0.0871
+TCD,Chad,Batha,0.0908
+TCD,Chad,Borkou,0.1612
+TCD,Chad,Borkou/Ennedi/Tibesti,0.0969
+TCD,Chad,Centre Est,0.0742
+TCD,Chad,Chari Baguirmi,0.127
+TCD,Chad,Ennedi Est,0.1187
+TCD,Chad,Ennedi Ouest,0.1636
+TCD,Chad,Guera,0.2131
+TCD,Chad,Hadjer Lamis,0.061
+TCD,Chad,Kanem,0.0599
+TCD,Chad,Lac,0.1252
+TCD,Chad,Logone Occidental,0.3399
+TCD,Chad,Logone Oriental,0.3285
+TCD,Chad,Mandoul,0.3494
+TCD,Chad,Mayo Kebbi,0.3032
+TCD,Chad,Mayo Kebbi Est,0.4989
+TCD,Chad,Mayo Kebbi Ouest,0.6055
+TCD,Chad,Moyen Chari,0.3419
+TCD,Chad,N'Djamena,0.5831
+TCD,Chad,Ouaddae,0.1062
+TCD,Chad,Ouaddai,0.1051
+TCD,Chad,Ouaddai Est,0.0558
+TCD,Chad,Salamat,0.0936
+TCD,Chad,Sila,0.06
+TCD,Chad,Tandjile,0.3953
+TCD,Chad,Wadi Fira,0.0893
+TGO,Togo,Centrale,0.6573
+TGO,Togo,Kara,0.5959
+TGO,Togo,Lome,0.7657
+TGO,Togo,Maritime,0.6082
+TGO,Togo,Plateaux,0.5777
+TGO,Togo,Savanes,0.3725
+TUN,Tunisia,Centre Est,0.9477
+TUN,Tunisia,Centre Ouest,0.8913
+TUN,Tunisia,District Tunis,0.9779
+TUN,Tunisia,Kairouan,0.8735
+TUN,Tunisia,Kasserine,0.7842
+TUN,Tunisia,Nord Est,0.9574
+TUN,Tunisia,Nord Ouest,0.9234
+TUN,Tunisia,Sidi Bouzid,0.9275
+TUN,Tunisia,Sud Est,0.9685
+TUN,Tunisia,Sud Ouest,0.9783
+TZA,U. R. Tanzania,Arusha,0.8025
+TZA,U. R. Tanzania,Dar Es Salaam,0.9046
+TZA,U. R. Tanzania,Dodoma,0.5795
+TZA,U. R. Tanzania,Geita,0.6515
+TZA,U. R. Tanzania,Iringa,0.8343
+TZA,U. R. Tanzania,Kagera,0.6396
+TZA,U. R. Tanzania,Katavi,0.5612
+TZA,U. R. Tanzania,Kigoma,0.6209
+TZA,U. R. Tanzania,Kilimanjaro,0.8832
+TZA,U. R. Tanzania,Lindi,0.5945
+TZA,U. R. Tanzania,Manyara,0.5817
+TZA,U. R. Tanzania,Mara,0.7242
+TZA,U. R. Tanzania,Mbeya,0.7324
+TZA,U. R. Tanzania,Mjini Magharibi,0.9544
+TZA,U. R. Tanzania,Morogoro,0.7017
+TZA,U. R. Tanzania,Mtwara,0.6596
+TZA,U. R. Tanzania,Mwanza,0.609
+TZA,U. R. Tanzania,Njombe,0.9032
+TZA,U. R. Tanzania,Pemba North,0.5937
+TZA,U. R. Tanzania,Pemba South,0.7046
+TZA,U. R. Tanzania,Pwani,0.6595
+TZA,U. R. Tanzania,Rukwa,0.4744
+TZA,U. R. Tanzania,Ruvuma,0.7816
+TZA,U. R. Tanzania,Shinyanga,0.6424
+TZA,U. R. Tanzania,Simiyu,0.8272
+TZA,U. R. Tanzania,Singida,0.6593
+TZA,U. R. Tanzania,Tabora,0.4879
+TZA,U. R. Tanzania,Tanga,0.6664
+TZA,U. R. Tanzania,Town West,0.7858
+TZA,U. R. Tanzania,Unguja North,0.7125
+TZA,U. R. Tanzania,Unguja South,0.9133
+TZA,U. R. Tanzania,Zanzibar North,0.589
+TZA,U. R. Tanzania,Zanzibar South,0.774
+UGA,Uganda,Central,0.4747
+UGA,Uganda,Central 1,0.5108
+UGA,Uganda,Central 2,0.4757
+UGA,Uganda,East Central,0.38
+UGA,Uganda,Eastern,0.2887
+UGA,Uganda,Kampala,0.7525
+UGA,Uganda,Karamoja,0.1501
+UGA,Uganda,North,0.1777
+UGA,Uganda,Northern,0.1588
+UGA,Uganda,Southwest,0.3268
+UGA,Uganda,West Nile,0.2041
+UGA,Uganda,Western,0.2802
+ZAF,South Africa,Eastern Cape,0.9177
+ZAF,South Africa,Free State,0.956
+ZAF,South Africa,Gauteng,0.9979
+ZAF,South Africa,Kwazulu Natal,0.9744
+ZAF,South Africa,Limpopo,0.9816
+ZAF,South Africa,Mpumalanga,0.9367
+ZAF,South Africa,North West,0.9357
+ZAF,South Africa,Northern Cape,0.9496
+ZAF,South Africa,Western Cape,0.9949
+ZMB,Zambia,Central,0.6918
+ZMB,Zambia,Copperbelt,0.8446
+ZMB,Zambia,Eastern,0.4853
+ZMB,Zambia,Luapula,0.5779
+ZMB,Zambia,Lusaka,0.8301
+ZMB,Zambia,Muchinga,0.6997
+ZMB,Zambia,North Western,0.6231
+ZMB,Zambia,Northern,0.5895
+ZMB,Zambia,Southern,0.7556
+ZMB,Zambia,Western,0.6102
+ZWE,Zimbabwe,Bulawayo,0.979
+ZWE,Zimbabwe,Harare,0.9711
+ZWE,Zimbabwe,Manicaland,0.872
+ZWE,Zimbabwe,Mashonaland Central,0.7838
+ZWE,Zimbabwe,Mashonaland East,0.9243
+ZWE,Zimbabwe,Mashonaland West,0.8589
+ZWE,Zimbabwe,Masvingo,0.874
+ZWE,Zimbabwe,Matabeleland North,0.8671
+ZWE,Zimbabwe,Matabeleland South,0.8932
+ZWE,Zimbabwe,Midlands,0.8627
