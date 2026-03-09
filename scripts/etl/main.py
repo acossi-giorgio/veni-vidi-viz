@@ -141,8 +141,8 @@ def process_gdp():
     gdp_with_region = gdp_long.merge(country_regions, on='Code', how='left')
     gdp_with_region = gdp_with_region[gdp_with_region['Continent'].notna()].copy()
     gdp_long_path = os.path.join(CLEAN_DATA_DIR, 'gdp_per_capita.csv')
-    gdp_with_region.to_csv(gdp_long_path, index=False)
-    logging.info(f"GDP Per Capita saved to {gdp_long_path}")
+    gdp_with_region.to_csv( Capita saved to {gdp_long_path}")gdp_long_path, index=False)
+    logging.info(f"GDP Per
     logging.info(f"Country names have been mapped to valid GeoJSON names")
 
 
