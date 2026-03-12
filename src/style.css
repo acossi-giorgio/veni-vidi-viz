@@ -349,7 +349,8 @@ main {
 .bg-intro,
 .bg-sec-1,
 .bg-sec-2,
-.bg-sec-3 {
+.bg-sec-3,
+.bg-sec-4 {
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
@@ -372,7 +373,8 @@ main {
 .bg-intro::before,
 .bg-sec-1::before,
 .bg-sec-2::before,
-.bg-sec-3::before {
+.bg-sec-3::before,
+.bg-sec-4::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -386,7 +388,8 @@ main {
 .bg-intro .section-content,
 .bg-sec-1 .section-content,
 .bg-sec-2 .section-content,
-.bg-sec-3 .section-content {
+.bg-sec-3 .section-content,
+.bg-sec-4 .section-content {
   position: relative;
   z-index: 1;
 }
@@ -550,7 +553,7 @@ body.slide-mode {
   padding: 10vh 4rem;
 }
 
-/* Split sections (text left + sticky chart right) */
+/* Split secFions (text left + sticky chart right) */
 .scrolly-section-split {
   display: flex;
   gap: 1.5rem;

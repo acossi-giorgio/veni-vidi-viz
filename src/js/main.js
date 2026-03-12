@@ -159,6 +159,7 @@ async function init() {
     // Inizializza i grafici D3.js
     if (document.getElementById('chart-1-1')) renderGdpLineChart("#chart-1-1");
     if (document.getElementById('chart-1-2')) await renderGdpMapChart("#chart-1-2");
+    if (document.getElementById('chart-2-1')) renderDumbbellChart("#chart-2-1");
 
     // Avvia lo scrollytelling
     if (typeof setupScrollytelling === 'function') {
