@@ -578,7 +578,7 @@ body.slide-mode {
 .scrolly-section-stage {
   width: 65%;
   position: sticky;
-  top: 0;
+  top: 80px;
   height: calc(100vh - 80px);
   display: flex;
   align-items: center;
@@ -640,14 +640,35 @@ body.slide-mode {
 /* Chart box (white card inside stage) */
 .chart-box {
   width: 100%;
+  max-width: 800px;
+  min-height: 400px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* Chart wrapper (SVG container) */
+.chart-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
 /* Chart controls (selectors, dropdowns) */
 .chart-container {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-controls {
@@ -809,4 +830,212 @@ body.slide-mode {
     margin: 0.5rem auto;
     max-width: 280px;
   }
+}
+
+/* ============================================================
+   FULLSCREEN MODAL & CHART WRAPPER
+   ============================================================ */
+
+/* Chart wrapper — contains button and chart */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fullscreen button */
+.chart-fullscreen-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+}
+
+.chart-fullscreen-btn:hover {
+  background: #fff;
+  border-color: #1461a9;
+  color: #1461a9;
+  box-shadow: 0 4px 12px rgba(20, 97, 169, 0.2);
+  transform: scale(1.05);
+}
+
+.chart-fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+.chart-fullscreen-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* Fullscreen Modal */
+.fullscreen-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.fullscreen-modal.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal content */
+.fullscreen-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 95vw;
+  height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Close button */
+.fullscreen-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 11;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fullscreen-modal-close:hover {
+  background: #f0f0f0;
+  border-color: #d0d0d0;
+  color: #d32f2f;
+}
+
+.fullscreen-modal-close svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* Chart container inside modal */
+#fullscreenChartContainer {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+  position: relative;
+}
+
+/* SVG must be responsive */
+#fullscreenChartContainer svg {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+/* Tooltip e elementi interattivi rimangono visibili */
+#fullscreenChartContainer .tooltip,
+#fullscreenChartContainer .d3-tip,
+#fullscreenChartContainer .gdp-tooltip,
+#fullscreenChartContainer .tooltip-dumbbell {
+  pointer-events: auto !important;
+  z-index: 10001 !important;
+}
+
+/* Responsive fullscreen modal */
+@media (max-width: 768px) {
+  .fullscreen-modal-content {
+    max-width: 98vw;
+    height: 95vh;
+    border-radius: 8px;
+  }
+
+  .chart-fullscreen-btn,
+  .fullscreen-modal-close {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+
+  .chart-fullscreen-btn svg,
+  .fullscreen-modal-close svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #fullscreenChartContainer {
+    padding: 1rem;
+  }
+
+  #fullscreenChartContainer svg {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+}
+
+/* Ensure charts in fullscreen don't use fixed viewBox that causes overflow */
+#fullscreenChartContainer {
+  position: relative;
+}
+
+#fullscreenChartContainer svg {
+  display: block !important;
+  margin: auto;
+  flex-shrink: 0;
 }

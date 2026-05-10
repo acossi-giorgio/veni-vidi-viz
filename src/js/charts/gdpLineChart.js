@@ -1,10 +1,12 @@
-﻿async function renderGdpLineChart(selector = "#chart-1-1") {
+﻿async function renderGdpLineChart(selector = "#chart-1-1", isFullscreen = false) {
     const container = d3.select(selector);
     if (container.empty()) return;
     container.html("");
 
-    const width = 700;
-    const height = 400;
+    const boundingBox = container.node().getBoundingClientRect();
+    const width = boundingBox.width || (isFullscreen ? window.innerWidth * 0.9 : 700);
+    const height = boundingBox.height || (isFullscreen ? window.innerHeight * 0.8 : 400);
+
     const margin = { top: 30, right: 140, bottom: 50, left: 70 };
 
     const continentColors = {

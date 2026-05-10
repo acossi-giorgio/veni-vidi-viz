@@ -166,6 +166,9 @@ async function init() {
       setupScrollytelling();
     }
 
+    // Inizializza il modale fullscreen
+    initFullscreenModal();
+
     // Aggiorna il titolo della sezione nella navbar
     updateSectionTitle();
     window.addEventListener('scroll', updateSectionTitle);
@@ -369,6 +372,161 @@ function setupScrollytelling() {
     updateActiveStep();
     updateBackground();
     updateFooter();
+}
+
+/* ────────────────────────────────────────────────────────────
+   FULLSCREEN MODAL FUNCTIONALITY
+   ──────────────────────────────────────────────────────────── */
+
+function initFullscreenModal() {
+  const modal = document.getElementById('fullscreenModal');
+  const closeBtn = document.querySelector('.fullscreen-modal-close');
+  const fullscreenBtns = document.querySelectorAll('.chart-fullscreen-btn');
+  const chartContainer = document.getElementById('fullscreenChartContainer');
+
+  if (!modal || !closeBtn || fullscreenBtns.length === 0) {
+    console.warn('Fullscreen modal elements not found');
+    return;
+  }
+
+  // Close modal function
+  function closeModal() {
+    modal.classList.remove('is-active');
+    chartContainer.innerHTML = '';
+    document.body.style.overflow = 'auto';
+  }
+
+  // Open modal and regenerate chart
+  async function openModal(chartId) {
+    const originalChart = document.getElementById(chartId);
+    if (!originalChart) {
+      console.warn('Chart not found:', chartId);
+      return;
+    }
+
+    // Show modal
+    modal.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+    chartContainer.innerHTML = '';
+
+    // Create a wrapper for the fullscreen chart
+    const wrapper = document.createElement('div');
+    wrapper.id = `fullscreen-${chartId}`;
+    wrapper.setAttribute('data-fullscreen', 'true');
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.justifyContent = 'center';
+    wrapper.style.overflow = 'hidden';
+    chartContainer.appendChild(wrapper);
+
+    // Regenerate the chart in fullscreen based on ID
+    try {
+      if (chartId === 'chart-1-1') {
+        await renderGdpLineChart(`#fullscreen-${chartId}`, true);
+      } else if (chartId === 'chart-1-2') {
+        await renderGdpMapChart(`#fullscreen-${chartId}`, 2023, true);
+      } else if (chartId === 'chart-2-1') {
+        await renderDumbbellChart(`#fullscreen-${chartId}`, true);
+      }
+
+      // Post-render scaling adjustments
+      // Removed resizeChartInFullscreen call as charts now self-size to the container
+    } catch (error) {
+      console.error('Error regenerating chart:', error);
+      wrapper.innerHTML = '<p style="color:#e74c3c;">Errore nel caricamento del grafico</p>';
+    }
+  }
+
+  // Helper function to resize and fit chart in fullscreen
+  function resizeChartInFullscreen(wrapperId) {
+    const wrapper = document.getElementById(wrapperId);
+    if (!wrapper) return;
+
+    const svg = wrapper.querySelector('svg');
+    if (!svg) return;
+
+    // Get wrapper dimensions
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const availWidth = wrapperRect.width - 20;
+    const availHeight = wrapperRect.height - 20;
+
+    // Remove fixed width/height if present, let CSS handle it
+    svg.removeAttribute('width');
+    svg.removeAttribute('height');
+    svg.style.width = '100%';
+    svg.style.height = 'auto';
+
+    // For SVGs with viewBox, ensure proper aspect ratio scaling
+    if (svg.hasAttribute('viewBox')) {
+      const viewBox = svg.getAttribute('viewBox');
+      if (viewBox) {
+        const parts = viewBox.split(/[\s,]+/);
+        if (parts.length >= 4) {
+          const svgWidth = parseFloat(parts[2]);
+          const svgHeight = parseFloat(parts[3]);
+          if (svgWidth > 0 && svgHeight > 0) {
+            const aspectRatio = svgHeight / svgWidth;
+            const scaledHeight = availWidth * aspectRatio;
+            if (scaledHeight <= availHeight) {
+              svg.style.height = `${scaledHeight}px`;
+              svg.style.width = `${availWidth}px`;
+            } else {
+              svg.style.width = `${availHeight / aspectRatio}px`;
+              svg.style.height = `${availHeight}px`;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Attach click listeners to all fullscreen buttons
+  fullscreenBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      // Check for data-target on the button (new approach)
+      const targetId = btn.getAttribute('data-target');
+      if (targetId) {
+        openModal(targetId.replace(/^#/, ''));
+        return;
+      }
+
+      // Fallback: try to find chart box by traversing up
+      const chartBox = btn.closest('.chart-wrapper') ? btn.closest('.chart-wrapper').querySelector('.chart-box') : null;
+      if (chartBox && chartBox.id) {
+        openModal(chartBox.id);
+      } else {
+        // As a last fallback, look for an ID on a child of chart-box
+        const childChart = chartBox ? chartBox.querySelector('[id^="chart-"]') : null;
+        if (childChart) {
+          openModal(childChart.id);
+        }
+      }
+    });
+  });
+
+  // Close button listener
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeModal();
+  });
+
+  // Close modal when clicking outside the content
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-active')) {
+      closeModal();
+    }
+  });
 }
 
 addEventListener('DOMContentLoaded', init);

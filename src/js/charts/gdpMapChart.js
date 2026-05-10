@@ -1,4 +1,4 @@
-async function renderGdpMapChart(selector, initialYear = 2023) {
+async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
 
@@ -110,8 +110,10 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
   });
 
   // Dimensions
-  const width = container.clientWidth || 800;
-  const height = Math.max(container.clientHeight || 0, 600);
+  // If in fullscreen, use window dimensions as fallback if clientWidth is 0
+  const containerRect = container.getBoundingClientRect();
+  const width = containerRect.width || (isFullscreen ? window.innerWidth * 0.9 : 800);
+  const height = containerRect.height || (isFullscreen ? window.innerHeight * 0.9 : 600);
 
   // Tooltip
   let tooltip = d3.select('#gdp-map-tooltip');
@@ -152,20 +154,25 @@ async function renderGdpMapChart(selector, initialYear = 2023) {
     .append('svg')
     .attr('width', width)
     .attr('height', height)
+    // Add viewBox for responsiveness if precise dimensions were missed or change
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .style('width', '100%')
+    .style('height', '100%')
     .style('background', '#f5f5f5')
     .style('cursor', 'grab')
     .style('display', 'block')
     .style('border-radius', '12px');
 
   // Clip path so map doesn't overflow SVG bounds during zoom
+  const clipId = `gdp-map-clip-${isFullscreen ? 'fullscreen' : 'small'}`;
   const defs = svg.append('defs');
-  defs.append('clipPath').attr('id', 'gdp-map-clip')
+  defs.append('clipPath').attr('id', clipId)
     .append('rect').attr('width', width).attr('height', height);
 
   // Map group – target for zoom transform
   const mapGroup = svg.append('g')
     .attr('class', 'map-group')
-    .attr('clip-path', 'url(#gdp-map-clip)');
+    .attr('clip-path', `url(#${clipId})`);
 
   // Projection & path
   const projection = d3
