@@ -21,7 +21,7 @@
     const continents = Object.keys(continentColors);
 
     // ── Load data once ──────────────────────────────────────────────────────
-    const raw = await d3.csv("/datasets/clean/gdp_per_capita.csv", d3.autoType);
+    const raw = await d3.csv("datasets/clean/gdp_per_capita.csv", d3.autoType);
 
     // Continent aggregates (mean by year)
     const grouped = d3.groups(raw, d => d.Continent)

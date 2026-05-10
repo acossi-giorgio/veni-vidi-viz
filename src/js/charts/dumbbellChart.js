@@ -24,7 +24,7 @@ async function renderDumbbellChart(selector = "#chart-2-1", isFullscreen = false
       .style("position", "relative");
   }
 
-  const raw = await d3.csv("/datasets/clean/life_expectancy.csv", d3.autoType);
+  const raw = await d3.csv("datasets/clean/life_expectancy.csv", d3.autoType);
 
   const data2000 = new Map();
   const data2023 = new Map();
@@ -508,5 +508,10 @@ async function renderDumbbellChart(selector = "#chart-2-1", isFullscreen = false
 
   // Start with the overview
   renderOverview();
+
+  // Expose API on DOM element for narrative card triggers
+  const node = container.node();
+  node._dumbbellShowOverview = renderOverview;
+  node._dumbbellDrillDown = renderDrillDown;
 }
 

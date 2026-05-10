@@ -402,6 +402,32 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   overflow: visible !important;
 }
 
+/* ── NARRATIVE CARDS (click to update chart) ─────────────── */
+.narrative-card {
+  cursor: pointer;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.25rem;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  opacity: 0.45;
+  transition: opacity 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.narrative-card:hover {
+  opacity: 0.85;
+  background: rgba(0,0,0,0.025);
+}
+.narrative-card.is-active {
+  opacity: 1;
+  background: rgba(0,0,0,0.025);
+}
+.narrative-card h3 { margin-top: 0; margin-bottom: 0.4rem; }
+.narrative-card p  { margin-bottom: 0; }
+
+section[data-act="1"] .narrative-card.is-active { border-left-color: var(--accent-1); }
+section[data-act="2"] .narrative-card.is-active { border-left-color: var(--accent-2); }
+section[data-act="3"] .narrative-card.is-active { border-left-color: var(--accent-3); }
+section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accent-4); }
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   /* All layouts collapse to single column on mobile */

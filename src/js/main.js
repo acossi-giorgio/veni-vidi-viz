@@ -35,13 +35,58 @@ function formatNumber(n, d = 0) {
 
 /* ── Init ────────────────────────────────────────────────── */
 async function init() {
-  // Render charts
-  if (document.getElementById('chart-1-1')) renderGdpLineChart('#chart-1-1');
+  if (document.getElementById('chart-1-1')) await renderGdpLineChart('#chart-1-1');
   if (document.getElementById('chart-1-2')) await renderGdpMapChart('#chart-1-2');
-  if (document.getElementById('chart-2-1')) renderDumbbellChart('#chart-2-1');
+  if (document.getElementById('chart-2-1')) await renderDumbbellChart('#chart-2-1');
 
   initProgressBar();
   initFullscreenModal();
+  initNarrativeCards();
+}
+
+/* ── Narrative Cards ─────────────────────────────────────── */
+function triggerChartState(chartId, state) {
+  if (chartId === 'chart-1-1') {
+    const el = document.getElementById('chart-1-1');
+    if (!el || !el._gdpHighlightContinents) return;
+    const highlights = [null, ['Europe'], ['Africa']];
+    el._gdpHighlightContinents(highlights[state] ?? null);
+  }
+
+  if (chartId === 'chart-1-2') {
+    const el = document.getElementById('chart-1-2');
+    if (!el) return;
+    if (el._gdpClearAnimation) el._gdpClearAnimation();
+    const years = [2000, 2010, 2024];
+    if (el._gdpUpdate) el._gdpUpdate(years[state] ?? 2024);
+    // Zoom to region of interest
+    if (state === 1 && el._gdpZoomToAsia) el._gdpZoomToAsia();
+    else if (el._gdpZoomToWorld) el._gdpZoomToWorld();
+  }
+
+  if (chartId === 'chart-2-1') {
+    const el = document.getElementById('chart-2-1');
+    if (!el) return;
+    if (state === 1 && el._dumbbellDrillDown) el._dumbbellDrillDown('Africa');
+    else if (el._dumbbellShowOverview) el._dumbbellShowOverview();
+  }
+}
+
+function initNarrativeCards() {
+  const cards = document.querySelectorAll('.narrative-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const chartId = card.dataset.chart;
+      const state = parseInt(card.dataset.state, 10);
+
+      // Deactivate sibling cards, activate this one
+      document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`)
+        .forEach(c => c.classList.remove('is-active'));
+      card.classList.add('is-active');
+
+      triggerChartState(chartId, state);
+    });
+  });
 }
 
 /* ── Progress Bar ────────────────────────────────────────── */

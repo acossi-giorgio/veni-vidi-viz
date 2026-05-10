@@ -5,9 +5,8 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  // Load data
-  const data = await loadData('datasets/clean/gdp_per_capita.csv');
-  console.table(data);
+  // Load data — d3.csv handles quoted fields correctly
+  const data = await d3.csv('datasets/clean/gdp_per_capita.csv', d3.autoType);
   if (!data || data.length === 0) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Errore nel caricamento dei dati</p>';
     return;
@@ -486,10 +485,21 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
 
   container._gdpZoomToWorld = function() {
     if (!svg.node()) return;
-    // Reset zoom to show entire world
     svg.transition()
       .duration(1200)
       .call(zoom.transform, d3.zoomIdentity);
+  };
+
+  container._gdpZoomToAsia = function() {
+    if (!svg.node()) return;
+    const [x0, y0] = projection([55, 55]);  // NW
+    const [x1, y1] = projection([150, -5]); // SE
+    const scale = Math.min(8, 0.85 * Math.min(width / Math.abs(x1 - x0), height / Math.abs(y1 - y0)));
+    const tx = width / 2 - scale * (x0 + x1) / 2;
+    const ty = height / 2 - scale * (y0 + y1) / 2;
+    svg.transition()
+      .duration(1200)
+      .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
   };
 }
 

@@ -8,11 +8,10 @@
 
 **Prima di toccare qualsiasi codice, l'agente deve:**
 
-1. **Ispezionare il codebase esistente.** Il sito è già parzialmente costruito. I grafici 1, 2, 3 sono implementati. Leggi tutta la struttura del progetto (`index.html`, `css/`, `js/`) prima di scrivere una sola riga.
+1. **Ispezionare il codebase esistente.** Il sito è già parzialmente costruito. I grafici 1, 2, 3 sono implementati. Leggi tutta la struttura del progetto (`index.html`, `style.css`, `js/`) prima di scrivere una sola riga.
 2. **Adattarsi allo stile esistente.** Non riscrivere da zero ciò che funziona. Estendi pattern e convenzioni già presenti nel codice.
-3. **Scaricare i dataset** seguendo le istruzioni del §10. I link sono diretti e funzionanti — usa `curl` o `wget` per scaricarli nella cartella `/data/raw/`. Non chiedere all'utente di farlo manualmente.
-4. **Eseguire il preprocessing** prima di toccare i grafici. I dati grezzi vanno in `/data/raw/`, i dati pronti per i grafici in `/data/processed/`.
-5. **Lavorare in ordine di sprint** (§12). Non saltare avanti.
+3. **I dati processati esistono già** in `src/datasets/processed/`. Verificarne l'esistenza prima di rigenerarli.
+4. **Lavorare in ordine di sprint** (§12). Non saltare avanti.
 
 ---
 
@@ -20,19 +19,21 @@
 
 - **Tesi:** Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto: lavoro minorile, matrimoni precoci, vite spezzate. Quando il contesto non offre più niente, l'unica via d'uscita è la migrazione.
 - **Format:** sito web a scroll verticale normale, 10 grafici interattivi suddivisi in 4 atti narrativi.
-- **Pattern visivo (v3 — semplificato):** layout a due colonne per ogni sezione grafico — testo a sinistra (sempre visibile, nel normale flusso del documento), grafico sticky a destra. Niente overlay card, niente slide-mode, niente custom scroll container. Lo scroll è quello nativo del browser.
-- **Stack:** HTML5 + CSS3 + Vanilla JS (ES6+), D3.js v7. Nessun framework. Niente scrollama.
+- **Pattern visivo (v4 — click-narrative):** layout a due colonne per ogni sezione — testo a sinistra con **narrative card cliccabili**, grafico sticky a destra. Niente overlay, niente slide-mode, niente scroll container custom. Lo scroll è quello nativo del browser.
+- **Stack:** HTML5 + CSS3 + Vanilla JS (ES6+), D3.js v7. Nessun framework. **Niente scrollama.**
 - **Mobile:** fuori scope per questa iterazione.
-- **Stato attuale:** grafici 1, 2, 3 già implementati. L'agente deve integrare i grafici 4–10 nel codebase esistente.
-- **Dati:** scaricati dall'agente via link diretti in `/data/raw/`, preprocessati in `/data/processed/` (lista completa al §10).
+- **Stato attuale:** grafici 1, 2, 3 implementati con narrative card. Sprint 2 completato. Grafici 4–10 da implementare.
+- **Dati:** in `src/datasets/processed/` (già preprocessati). Raw in `src/datasets/raw/`.
 
-### ⚠️ DECISIONE DI DESIGN — Luglio 2025
-Il sistema scrollytelling complesso (slide-mode, overlay card fisso, setActiveStage con animazioni) è stato **rimosso** perché instabile e difficile da debuggare. Il nuovo approccio è:
-- Testo sempre visibile nel flusso normale del documento
-- Grafico sticky CSS-only (`position: sticky`) nella colonna destra
-- Niente JS per mostrare/nascondere card o grafici
-- Progress bar aggiornata con `window.scrollY` (non custom scroll container)
+### ⚠️ DECISIONI DI DESIGN — aggiornate a Maggio 2026
 
+Il sistema scrollytelling (scrollama, IntersectionObserver, goToState, slide-mode) è stato **definitivamente rimosso**. Il nuovo pattern è:
+
+- **Narrative card cliccabili** a sinistra: ogni `<div class="narrative-card" data-chart="X" data-state="N">` triggera uno stato del grafico al click.
+- Grafico **sticky CSS-only** (`position: sticky`) nella colonna destra — nessun JS muove o nasconde il grafico.
+- **Nessuna fase "esplorativa" separata** — i grafici sono sempre interattivi (drill-down, tooltip, slider).
+- Progress bar aggiornata con `window.scrollY` (non custom scroll container).
+- Logica click in `main.js` → funzione `triggerChartState(chartId, state)` → API su DOM element (`_gdpHighlightContinents`, `_gdpUpdate`, ecc.).
 
 ---
 
@@ -76,9 +77,8 @@ Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare r
 ### 3.1 Tecnologie scelte
 - **HTML5** — markup semantico (`<section>`, `<article>`, `<figure>`).
 - **CSS3** — vanilla, con CSS custom properties (variabili) per design tokens. **Nessun framework CSS.**
-- **JavaScript ES6+** — vanilla, organizzato in moduli (`type="module"`).
+- **JavaScript ES6+** — vanilla, script globali (non ES6 modules per compatibilità con l'esistente).
 - **D3.js v7** — unica libreria per la visualizzazione. Non si usa Chart.js, Plotly o altre librerie alto-livello.
-- **scrollama** — engine di scrollytelling (intersection observer wrapper, ~3KB).
 - **d3-sankey** — plugin separato di D3, serve per i grafici 8 e 10.
 - **topojson-client** — per parsing del world atlas (grafici 2 e 10).
 
@@ -86,72 +86,55 @@ Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare r
 - ❌ React, Vue, Svelte o qualsiasi framework JS.
 - ❌ Bootstrap, Tailwind, Bulma o qualsiasi framework CSS.
 - ❌ jQuery.
+- ❌ scrollama o qualsiasi libreria di scrollytelling.
+- ❌ IntersectionObserver per triggering narrativo (rimosso).
 - ❌ Build tool complessi (Webpack, Vite con plugin custom).
 
 ### 3.3 Setup di sviluppo
-- **Server di sviluppo:** `npx live-server` o `python3 -m http.server` per servire i file localmente.
+- **Server di sviluppo:** `npx live-server` o `python3 -m http.server` dalla cartella `src/`.
 - **Distribuzione:** cartella statica, deployabile su GitHub Pages o Netlify senza build.
-- **Dipendenze:** caricate da CDN via `<script type="module">` con import map, oppure scaricate localmente in `vendor/`.
+- **Dipendenze:** caricate da CDN via `<script src="...">` classico (non import map).
 
-### 3.4 CDN suggeriti
+### 3.4 CDN usati
 ```html
-<!-- in <head> -->
-<script type="importmap">
-{
-  "imports": {
-    "d3": "https://cdn.jsdelivr.net/npm/d3@7/+esm",
-    "d3-sankey": "https://cdn.jsdelivr.net/npm/d3-sankey@0.12/+esm",
-    "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm",
-    "scrollama": "https://cdn.jsdelivr.net/npm/scrollama@3/+esm"
-  }
-}
-</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson@3"></script>
+<!-- d3-sankey aggiunto quando serve grafico 8/10 -->
 ```
 
 ---
 
 ## 4. Architettura del sito
 
-### 4.1 Struttura cartelle
-
-> L'agente deve ispezionare la struttura esistente prima di qualsiasi modifica. La struttura sotto è quella target — adattarla a ciò che è già presente nel repo.
+### 4.1 Struttura cartelle (stato reale)
 
 ```
-/
-├── index.html                       # ESISTE GIÀ — modificare con cautela
-├── css/
-│   ├── tokens.css                   # design tokens — variabili CSS
-│   ├── base.css                     # reset, base typography
-│   ├── layout.css                   # grid scrollytelling + sezioni
-│   ├── components.css               # card, controlli, indicatore progresso
-│   └── charts.css                   # stili specifici dei chart
+src/
+├── index.html                    # pagina principale
+├── about.html                    # pagina about
+├── datasets.html                 # pagina dataset
+├── style.css                     # tutto il CSS (unico file)
 ├── js/
-│   ├── main.js                      # entry point, orchestra scrollama e i chart
-│   ├── scrollytelling.js            # engine wrapping di scrollama
-│   ├── charts/
-│   │   ├── 01-income-multiline.js   # GIÀ IMPLEMENTATO — non toccare
-│   │   ├── 02-income-choropleth.js  # GIÀ IMPLEMENTATO — non toccare
-│   │   ├── 03-life-dumbbell.js      # GIÀ IMPLEMENTATO — non toccare
-│   │   ├── 04-edu-treemap.js        # da implementare
-│   │   ├── 05-completion-waffle.js  # da implementare
-│   │   ├── 06-literacy-slope.js     # da implementare
-│   │   ├── 07-childlabor-bubble.js  # da implementare
-│   │   ├── 08-marriage-sankey.js    # da implementare
-│   │   ├── 09-trends-multimode.js   # da implementare
-│   │   └── 10-migration-chord.js    # da implementare
-│   └── utils/
-│       ├── dataLoader.js            # caricamento e parsing CSV
-│       ├── colorScales.js           # scale di colore condivise
-│       └── continents.js            # mapping ISO3 → continente
-├── data/
-│   ├── raw/                         # file scaricati dall'agente — non modificare
-│   └── processed/                   # output dello script di preprocessing
-├── scripts/
-│   └── preprocess.py                # script di preprocessing (da creare)
-└── README.md
+│   ├── main.js                   # entry point: init charts + progress bar + narrative cards
+│   └── charts/
+│       ├── gdpLineChart.js       # Grafico 1 — GIÀ IMPLEMENTATO
+│       ├── gdpMapChart.js        # Grafico 2 — GIÀ IMPLEMENTATO
+│       ├── dumbbellChart.js      # Grafico 3 — GIÀ IMPLEMENTATO
+│       ├── eduTreemap.js         # Grafico 4 — da implementare
+│       ├── completionWaffle.js   # Grafico 5 — da implementare
+│       ├── literacySlope.js      # Grafico 6 — da implementare
+│       ├── childLaborBubble.js   # Grafico 7 — da implementare
+│       ├── marriageSankey.js     # Grafico 8 — da implementare
+│       ├── trendsMultimode.js    # Grafico 9 — da implementare
+│       └── migrationChord.js     # Grafico 10 — da implementare
+├── datasets/
+│   ├── raw/                      # file originali scaricati
+│   ├── clean/                    # file puliti per grafici 1-3 (esistenti)
+│   └── processed/                # output preprocessing per grafici 4-10
+└── images/                       # immagini di sfondo
 ```
 
-> **Regola per l'agente:** se un file esiste già con un nome diverso da quello atteso, non crearne un duplicato — adatta i riferimenti nel codice al nome esistente.
+> **Regola:** adattare i riferimenti al nome esistente — non creare duplicati con nomi alternativi.
 
 ### 4.2 Sezioni del sito (top to bottom)
 1. **Hero** — titolo, sottotitolo/tesi, scroll prompt.
@@ -159,323 +142,293 @@ Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare r
 3. **Atto II — La barriera** (3 grafici: 4, 5, 6).
 4. **Atto III — Il costo umano** (3 grafici: 7, 8, 9).
 5. **Atto IV — La fuga** (1 grafico: 10).
-6. **About** — 7 card finali (vedi §10).
+6. **About** — 7 card finali (vedi §9).
 
 ---
 
 ## 5. Sistema di design
 
 ### 5.1 Tipografia
-- **Display (titoli)**: serif (es. *Playfair Display* o *Source Serif*).
-- **Body**: sans-serif neutra (es. *Inter*, *Source Sans Pro*).
-- **Mono** (per dati/numeri): mono geometrica (es. *JetBrains Mono*).
+- **Display (titoli)**: Roboto Slab (serif) — già caricato.
+- **Body**: Roboto Slab — già caricato.
 
 ### 5.2 Palette
-**Base neutra (sempre presente):**
-- `--bg`: #fafafa (sfondo)
-- `--surface`: #ffffff (card)
-- `--ink`: #1a1a1a (testo primario)
-- `--ink-muted`: #6b6b6b (testo secondario)
-- `--border`: #e5e5e5
+**Base neutra:**
+- `--bg`: #f7f7f5
+- `--surface`: #ffffff
+- `--ink`: #1a1a1a
+- `--ink-muted`: #5a5a5a
+- `--border`: #e0e0e0
 
-**Accenti per atto** (variazioni *molto leggere* dello sfondo, non saturi):
-- Atto I — Il contesto: `--accent-1: #4a6fa5` (blu freddo)
-- Atto II — La barriera: `--accent-2: #c97c3e` (arancio terra)
-- Atto III — Il costo umano: `--accent-3: #b04a4a` (rosso desaturato)
-- Atto IV — La fuga: `--accent-4: #5a8a6e` (verde salvia)
-
-**Uso:** lo sfondo della sezione vira di un'inezia verso l'accento dell'atto (es. tinta a 5% di opacity); l'indicatore di progresso usa il colore pieno; nei grafici l'accento è il colore di evidenziazione.
+**Accenti per atto:**
+- Atto I: `--accent-1: #4a6fa5` (blu freddo)
+- Atto II: `--accent-2: #c97c3e` (arancio terra)
+- Atto III: `--accent-3: #b04a4a` (rosso desaturato)
+- Atto IV: `--accent-4: #5a8a6e` (verde salvia)
 
 ### 5.3 Spacing
 Scala su base 8px: `4, 8, 16, 24, 32, 48, 64, 96, 128`.
 
-### 5.4 Layout grid scrollytelling
-- **Container:** max-width 1280px, centrato.
-- **Grid 12 colonne** desktop:
-  - Card di testo: colonne 2–6 (sinistra)
-  - Container grafico: colonne 7–12 (destra), `position: sticky; top: 10vh`
-- **Altezza minima per "step" di scroll:** 80vh per ogni card di testo (assicura tempo di lettura prima della transizione).
+### 5.4 Layout sezioni grafico
+- **Container:** max-width 1360px, centrato.
+- **Grid desktop:** testo a sinistra (2fr), grafico a destra (3fr). Varianti `layout-reversed` (3fr + 2fr) e `layout-stacked` (1 colonna) già definite in CSS.
+- **Grafico sticky:** `position: sticky; top: calc(var(--navbar-h) + var(--bar-h) + 1.5rem)`.
+- **Chart-box:** altezza `clamp(360px, 55vh, 700px)`.
 
 ### 5.5 Indicatore di progresso narrativo
-- Posizione: fixed top, sottile barra orizzontale a tutta larghezza.
-- Visualizza 4 segmenti (uno per atto), ognuno colorato con il proprio accento.
-- Il segmento attivo è opaco, gli altri al 30%.
-- Click su un segmento → scroll smooth all'inizio dell'atto.
+- Fixed top, 4px di altezza, 4 segmenti colorati (uno per atto).
+- Segmento attivo = opaco, inattivi al 25%.
+- Click su segmento → scroll smooth all'inizio dell'atto.
+- Aggiornato con `window.scrollY` nel listener scroll.
 
-### 5.6 Card di testo (sinistra)
-- Sfondo bianco, ombra molto soft (`0 2px 8px rgba(0,0,0,0.04)`).
-- Padding interno 32px.
-- Border-radius 4px.
-- **Card attiva** (in viewport): opacità 100%, leggero scale-up (1.02).
-- **Card inattive**: opacità 30%, no scale.
-- Transizione: 300ms ease.
+### 5.6 Narrative card (sinistra)
+- Classe `.narrative-card`, cliccabile, con `data-chart` e `data-state`.
+- **Inattiva:** opacity 0.45, nessun bordo.
+- **Hover:** opacity 0.85, sfondo leggerissimo.
+- **Attiva (`.is-active`):** opacity 1, bordo sinistro 3px nel colore dell'atto corrente.
+- Click → `triggerChartState(chartId, state)` in `main.js`.
+- Prima card sempre attiva al caricamento (classe `is-active` nell'HTML).
 
 ---
 
 ## 6. Pattern di interazione
 
-### 6.1 Doppia fase per ogni grafico
-Ogni sezione di grafico ha due fasi sequenziali:
+### 6.1 Modello click-narrative
+Ogni sezione grafico ha 3 narrative card cliccabili a sinistra. Cliccando su una card:
+1. La card diventa `.is-active` (le altre la perdono).
+2. `triggerChartState(chartId, state)` aggiorna il grafico destra.
+3. Il grafico rimane sempre visibile e interattivo (drill-down, tooltip, slider interni).
 
-1. **Fase narrativa** (durante lo scroll della sezione)
-   - Grafico sticky a destra.
-   - Stati del grafico legati allo scroll (un trigger per ogni card di testo a sinistra).
-   - Animazioni di transizione tra stati: 600ms ease-in-out.
-   - **Controlli interattivi non visibili**.
+Non esiste una "fase esplorativa" separata — i grafici sono sempre completamente interattivi.
 
-2. **Fase esplorativa** (alla fine della sezione, prima del passaggio all'atto successivo)
-   - Card di testo finale: "Esplora i dati liberamente" (o simile).
-   - I controlli (toggle, filtri, scrubber) appaiono in fade-in sotto/sopra il grafico.
-   - L'utente può modificare la vista. Quando scrolla via, i controlli scompaiono e il grafico passa al successivo.
+### 6.2 API dei grafici (pattern esistente)
+I grafici espongono funzioni direttamente sull'elemento DOM (`container._fn`):
+- `container._gdpHighlightContinents(arr|null)` — Chart 1
+- `container._gdpUpdate(year)`, `container._gdpClearAnimation()`, `container._gdpZoomToWorld/Europe/Africa/Asia()` — Chart 2
+- I nuovi grafici devono seguire lo stesso pattern: esporre funzioni sul DOM element.
 
-### 6.2 I 5 pattern di interazione disponibili
+### 6.3 Interazioni built-in nei grafici
+Ogni grafico ha già interattività propria che NON dipende dalle narrative card:
+- **Chart 1:** click su linea → drill-down paesi del continente, crosshair hover.
+- **Chart 2:** slider anno, play/pause, zoom con scroll, drag.
+- **Chart 3:** click su continente → drill-down paesi.
+- **Chart 4–10:** da definire in implementazione.
+
+### 6.4 Pattern di interazione disponibili
 | Pattern | Quando | Implementazione |
 |---|---|---|
-| **Mode toggle** (Line ↔ Stacked Area ↔ Streamgraph ↔ 100%) | Stesso dato, encoding diverso | Bottoni segmento. D3 transition tra `area.curve()` diverse. |
-| **Dimension filter** (Aggregate / per categoria) | Subset del dato | Radio button. Filtra il dataset, ridisegna. |
-| **Temporal scrubber + play** | Vedere evoluzione nel tempo | Slider HTML range + play button. Su input → ridisegna. |
-| **Drill-down / aggregation** | Continente → Paese → Livello | Click su elemento → zoom (D3 zoom o filter ricorsivo). |
-| **Event annotations** | Layer narrativo su serie temporale | **Non priorità per questa iterazione**, ma struttura il codice per poterle aggiungere dopo. |
-
-### 6.3 Animazioni di scroll
-Le animazioni del grafico devono essere **deterministiche**: dato uno step di scroll, lo stato del grafico è univoco. Non usare animazioni cumulative o stateful tra step. Ogni step di scroll chiama una funzione `chart.goToState(stepIndex)` che imposta lo stato finale corretto.
+| **Highlight/focus** | Stesso dato, enfasi diversa | `_highlightFn(subset)` sul DOM. |
+| **Mode toggle** | Encoding diverso | Bottoni nel chart, re-render D3. |
+| **Temporal scrubber + play** | Evoluzione nel tempo | Slider HTML range + play button. |
+| **Drill-down** | Continente → Paese | Click su elemento → filter + re-render. |
+| **Zoom geografico** | Enfasi su regione | D3 zoom transform. |
 
 ---
 
 ## 7. Schede dei 10 grafici
 
-> **Convenzione:** ogni scheda specifica (a) il dato e la fonte, (b) la vista narrativa di default che parte allo scroll, (c) gli stati narrativi sequenziali, (d) i controlli della fase esplorativa.
+> **Convenzione:** ogni scheda specifica (a) il dato e la fonte, (b) i 3 stati delle narrative card, (c) le interazioni built-in del grafico.
 
 ---
 
-### Grafico 1 — Reddito medio per continente (multi-line) — *GIÀ FATTO*
-**Atto:** I · **Tipo:** multi-line chart · **Dato:** GDP per capita o reddito mediano giornaliero, per continente, 2000–2024 · **File:** `01_income-continent.csv`
+### Grafico 1 — Reddito medio per continente (multi-line) — *IMPLEMENTATO*
+**Atto:** I · **Tipo:** multi-line chart · **File dati:** `datasets/clean/gdp_per_capita.csv`
 
-- **Vista narrativa default:** linee dei 5 continenti, focus su Europa e Africa.
-- **Stati narrativi:** (1) tutti i continenti grigi; (2) Europa evidenziata; (3) Africa evidenziata; (4) entrambe evidenziate, area di gap colorata in mezzo.
-- **Fase esplorativa:** toggle scala lineare/log; toggle "tutti i continenti / solo Europa+Africa".
+**Narrative card → stato grafico:**
+- Card 0 "Un mondo che non parte uguale" → tutti i continenti uguali (nessun highlight).
+- Card 1 "L'Europa sale" → `_gdpHighlightContinents(['Europe'])`.
+- Card 2 "L'Africa resta indietro" → `_gdpHighlightContinents(['Africa'])`.
 
----
-
-### Grafico 2 — Reddito per paese (choropleth animata) — *GIÀ FATTO*
-**Atto:** I · **Tipo:** choropleth con scrubber temporale · **Dato:** GDP per capita per paese, 1990–2024 · **File:** `02_income-country.csv` + `world-atlas-110m.json`
-
-- **Vista narrativa default:** mappa al 2024, scala di colore in classi di reddito.
-- **Stati narrativi:** (1) anno 2000; (2) anno 2010; (3) anno 2024 — il sistema scrolla automaticamente l'anno.
-- **Fase esplorativa:** scrubber temporale + play/pause (già implementato).
+**Interazioni built-in:** click su linea → drill-down paesi del continente (con filtro, zoom Y, crosshair).
 
 ---
 
-### Grafico 3 — Aspettativa di vita (dumbbell plot) — *GIÀ FATTO*
-**Atto:** I · **Tipo:** dumbbell plot · **Dato:** aspettativa di vita per continente/paese, 2000 vs 2023 · **File:** `03_life-expectancy.csv`
+### Grafico 2 — Reddito per paese (choropleth animata) — *IMPLEMENTATO*
+**Atto:** I · **Tipo:** choropleth con scrubber temporale · **File dati:** `datasets/clean/gdp_per_capita.csv` + TopoJSON CDN
 
-- **Vista narrativa default:** dumbbell per continenti, anni 2000 e 2023.
-- **Stati narrativi:** (1) solo punto 2000; (2) appare punto 2023 e si tira la linea di guadagno; (3) etichette di guadagno assoluto.
-- **Fase esplorativa:** toggle continenti/paesi target; picker dei due anni di confronto.
+**Narrative card → stato grafico:**
+- Card 0 "Una mappa del divario" → `_gdpUpdate(2000)` + `_gdpZoomToWorld()`.
+- Card 1 "La crescita asiatica" → `_gdpUpdate(2010)` + `_gdpZoomToAsia()`.
+- Card 2 "Le zone immobili" → `_gdpUpdate(2024)` + `_gdpZoomToWorld()`.
+
+**Interazioni built-in:** slider anno, play/pause, zoom + drag, tooltip per paese.
 
 ---
 
-### Grafico 4 — Spesa pubblica in istruzione (treemap ↔ sunburst)
-**Atto:** II · **Tipo:** treemap con mode toggle a sunburst · **Dato:** spesa pubblica per istruzione per continente → paese, % di GDP · **File:** `04_education-spending.csv`
+### Grafico 3 — Aspettativa di vita (dumbbell plot) — *IMPLEMENTATO*
+**Atto:** I · **Tipo:** dumbbell plot · **File dati:** `datasets/clean/life_expectancy.csv`
 
-- **Vista narrativa default:** treemap globale per continente, area = spesa totale, colore = % di GDP.
-- **Stati narrativi:** (1) treemap solo continenti; (2) zoom su Europa, espansione paesi; (3) zoom su Africa, espansione paesi (contrasto).
-- **Fase esplorativa:**
-  - Toggle Treemap ↔ Sunburst (mode toggle).
-  - Toggle metrica: % GDP / USD assoluti / per studente iscritto.
-  - Click su continente → drill-down ai paesi.
-- **Note tecniche:** D3 `treemap()` + `partition()` (sunburst). Layout calcolato una volta, re-rendering su mode change con transizione.
+**Narrative card:** 3 card presenti nell'HTML, non triggera stati diversi del grafico (il grafico mostra sempre tutto). Le card guidano la lettura testuale.
+
+**Interazioni built-in:** click su continente → drill-down paesi, tooltip.
+
+---
+
+### Grafico 4 — Spesa pubblica in istruzione (treemap)
+**Atto:** II · **Tipo:** treemap · **File dati:** `datasets/processed/04_edu_spending.csv`
+
+**Narrative card → stato grafico:**
+- Card 0 "Quanto si investe?" → treemap globale per continente.
+- Card 1 "L'Europa investe" → highlight continente Europa.
+- Card 2 "L'Africa sub-sahariana" → highlight continente Africa.
+
+**Interazioni built-in:** click su continente → drill-down paesi, tooltip.
 
 ---
 
 ### Grafico 5 — Tasso di completamento scolastico (waffle comparativo)
-**Atto:** II · **Tipo:** waffle chart, 4 paesi affiancati · **Dato:** % completamento secondaria superiore, ultimi dati disponibili · **File:** `05_education-completion.csv`
+**Atto:** II · **Tipo:** waffle chart, 4 paesi · **File dati:** `datasets/processed/05_edu_completion.csv`
 
-- **Vista narrativa default:** 4 waffle 10×10 affiancati: Norvegia, Italia, India, Niger. Ogni quadratino = 1 bambino su 100.
-- **Stati narrativi:** (1) solo Norvegia, popola progressivamente; (2) appaiono Italia e India; (3) appare Niger, gap visivamente shock.
-- **Fase esplorativa:**
-  - Selettore: l'utente sceglie 4 paesi qualunque dalla lista.
-  - Toggle livello: Primaria / Secondaria inferiore / Secondaria superiore.
-  - Toggle: Totale / Femmine / Maschi.
-- **Note tecniche:** SVG con 100 `<rect>` per waffle. No D3 layout speciale, solo loop.
+**Narrative card → stato grafico:**
+- Card 0 "Quanti arrivano al diploma?" → 4 waffle: Norvegia, Italia, India, Niger.
+- Card 1 "Il confronto che colpisce" → highlight gap Niger vs Norvegia.
+- Card 2 "Genere e istruzione" → toggle vista Femmine vs Maschi.
+
+**Interazioni built-in:** toggle Totale/Femmine/Maschi, selettore paese.
 
 ---
 
 ### Grafico 6 — Tasso di alfabetizzazione (slope chart)
-**Atto:** II · **Tipo:** slope chart, due punti nel tempo · **Dato:** alfabetizzazione adulti (15+) per paese, 2 anni a scelta dell'utente · **File:** `06_literacy.csv`
+**Atto:** II · **Tipo:** slope chart · **File dati:** `datasets/processed/06_literacy.csv`
 
-- **Vista narrativa default:** slope 2000 → 2020, focus sui paesi target.
-- **Stati narrativi:** (1) solo punto 2000; (2) si materializzano i punti 2020 e le linee; (3) evidenziati i paesi che hanno fatto progressi vs quelli stagnanti.
-- **Fase esplorativa:**
-  - Due slider: anno A e anno B (range 1990–2024).
-  - Toggle Adulti (15+) / Giovani (15–24).
-  - Toggle Totale / Femmine / Maschi.
-- **Note tecniche:** D3 con 2 colonne di punti + linee tra di loro. Calcolare collisioni delle label.
+**Narrative card → stato grafico:**
+- Card 0 "Saper leggere nel 2020" → slope 2000→2020, tutti i paesi.
+- Card 1 "Chi ha recuperato" → highlight paesi con maggior progresso.
+- Card 2 "Esplora i dati" → reset highlight, slider anni attivo.
+
+**Interazioni built-in:** slider anno A e anno B, toggle adulti/giovani, toggle genere.
 
 ---
 
 ### Grafico 7 — Reddito vs lavoro minorile (bubble animato Gapminder)
-**Atto:** III · **Tipo:** scatter animato con play/pause · **Dato:** GDP per capita (X) vs % lavoro minorile 5–17 anni (Y), bolle = popolazione 5–17, colore = continente · **File:** `07_child-labor.csv` + `02_income-country.csv` + popolazione
+**Atto:** III · **Tipo:** scatter animato · **File dati:** `datasets/processed/07_bubble.csv`
 
-- **Vista narrativa default:** scatter al 2000, gioca automaticamente fino al 2020 durante lo scroll della sezione.
-- **Stati narrativi:** (1) anno 2000 fermo; (2) play partito, anno 2010; (3) anno 2020, alcune scie di paesi visibili.
-- **Fase esplorativa:**
-  - Scrubber temporale + play/pause/reset.
-  - Toggle: % lavoro minorile / numero assoluto.
-  - Click su una bolla → la "scia" temporale del paese rimane visibile.
-  - Filtro continente.
-- **Note tecniche:** **Grafico più complesso del progetto.** D3 scales lineari/log, transition `t.duration(800)` per ogni step temporale. Trail = polilinea SVG con opacità decrescente. Pre-processare i dati in formato `{country, year, x, y, size}`.
+**Narrative card → stato grafico:**
+- Card 0 "I bambini al lavoro" → scatter anno 2000, fermo.
+- Card 1 "Vent'anni di cambiamento" → play automatico fino al 2020.
+- Card 2 "Esplora" → pausa, slider libero.
+
+**Interazioni built-in:** play/pause/reset, slider anno, click bolla → scia temporale, filtro continente.
 
 ---
 
 ### Grafico 8 — Matrimoni precoci (Sankey diagram)
-**Atto:** III · **Tipo:** Sankey/Alluvial · **Dato:** flussi 100 ragazze → sposate prima dei 18 → sposate prima dei 15 → con figli prima dei 18 · **File:** `08_child-marriage.csv`
+**Atto:** III · **Tipo:** Sankey · **File dati:** `datasets/processed/08_child_marriage.csv`
 
-- **Vista narrativa default:** Sankey per Africa Sub-sahariana.
-- **Stati narrativi:** (1) solo "100 ragazze"; (2) appare il primo livello (sposate <18); (3) appare il secondo livello (<15); (4) appare il terzo livello (con figli <18).
-- **Fase esplorativa:**
-  - Selettore regione: Africa Sub-sahariana / Asia Meridionale / Mondo / paese specifico.
-  - Toggle Sankey ↔ Alluvial (visualmente diverso, stesso dato).
-  - Toggle % / numeri assoluti.
-- **Note tecniche:** Plugin `d3-sankey`. Strutturare i dati come `{nodes: [...], links: [{source, target, value}]}`.
+**Narrative card → stato grafico:**
+- Card 0 "Spose a dodici anni" → Sankey Africa Sub-sahariana.
+- Card 1 "Un effetto a cascata" → highlight flusso scuola→matrimonio→gravidanza.
+- Card 2 "Esplora per regione" → selettore regione attivo.
+
+**Interazioni built-in:** selettore regione (Africa / Asia Meridionale / Mondo), tooltip flussi.
 
 ---
 
 ### Grafico 9 — Trend multi-indicatore (multi-mode time series)
-**Atto:** III · **Tipo:** time series con toggle Line/Stacked Area/Streamgraph/100% · **Dato:** lavoro minorile + matrimoni precoci + bambini fuori scuola, per regione SDG, 1990–2024 · **File:** `09a_child-labor-trends.csv`, `09b_child-marriage-trends.csv`, `09c_out-of-school.csv`
+**Atto:** III · **Tipo:** time series con toggle · **File dati:** `datasets/processed/09_trends.csv`
 
-- **Vista narrativa default:** Stacked Area per il dato "bambini fuori scuola" per regione SDG.
-- **Stati narrativi:** (1) solo "fuori scuola" stacked area; (2) si aggiunge "lavoro minorile"; (3) si aggiunge "matrimoni precoci"; (4) le tre serie si confrontano.
-- **Fase esplorativa:**
-  - **Mode toggle (4 modalità):** Line / Stacked Area / Streamgraph / 100% Stacked Area.
-  - Filtro indicatore: Lavoro minorile / Matrimoni / Fuori scuola / Tutti e 3.
-  - Filtro regione SDG.
-- **Note tecniche:** Pattern Luca img 1. D3 `area().curve()` con curve diverse per i 4 mode. `stack()` per i tre stacked. Streamgraph = `stack().offset(stackOffsetWiggle)`.
+**Narrative card → stato grafico:**
+- Card 0 "Tre crisi, una storia" → Stacked Area, tutti e 3 gli indicatori.
+- Card 1 "Il progresso globale" → Line chart, trend decrescente evidenziato.
+- Card 2 "Cambia la vista" → attiva mode toggle visibile.
 
----
-
-### Grafico 10 — Migrazioni internazionali (Chord ↔ Sankey ↔ Mappa)
-**Atto:** IV · **Tipo:** Chord diagram con toggle a Sankey e mappa · **Dato:** stock di migranti per coppia origine-destinazione, aggregato a livello continentale, 1990–2024 · **File:** `10_migration-bilateral.xlsx`
-
-- **Vista narrativa default:** Chord diagram dei flussi continentali al 2024.
-- **Stati narrativi:** (1) chord al 1990; (2) chord al 2010; (3) chord al 2024 — visivamente i flussi crescono.
-- **Fase esplorativa:**
-  - Mode toggle: Chord ↔ Sankey ↔ Mappa con frecce.
-  - Scrubber temporale 1990–2024 (intervalli di 5 anni, è il dato disponibile).
-  - Filtro per continente di origine / destinazione.
-- **Note tecniche:** D3 `chord()` per il diagramma. Per la mappa con frecce: `d3.geoPath` + `d3.line()` con curva. Aggregare il bilaterale 233×233 a 6×6 continenti pre-calcolando.
+**Interazioni built-in:** toggle Line/Stacked Area/Streamgraph/100%, filtro indicatore, filtro regione SDG.
 
 ---
 
-## 8. Mappa narrativa di scrollytelling
+### Grafico 10 — Migrazioni internazionali (Chord diagram)
+**Atto:** IV · **Tipo:** Chord diagram · **File dati:** `datasets/processed/10_migration_continent.csv`
 
-Per ogni grafico, le **card di testo a sinistra** sono i trigger di scroll. Ogni card → uno stato del grafico. Convenzione: 3–4 card per grafico, 50–80 parole per card.
+**Narrative card → stato grafico:**
+- Card 0 "Chi parte, dove va" → Chord al 2024.
+- Card 1 "I flussi crescono" → animazione 1990→2024 o confronto.
+- Card 2 "Il costo per chi resta" → highlight flussi Africa/Asia → Europa/Nord America.
 
-**Struttura tipo per ogni grafico:**
-1. **Card di apertura** — pone la domanda / introduce il fenomeno (50 parole).
-2. **Card di osservazione 1** — dirige lo sguardo verso un primo elemento del grafico (60 parole).
-3. **Card di osservazione 2** — sposta lo sguardo, contrasto o approfondimento (60 parole).
-4. **Card di chiusura/transizione** — sintesi e ponte verso il grafico successivo. *Qui si sblocca la fase esplorativa* (40 parole + invito a esplorare).
+**Interazioni built-in:** scrubber temporale (intervalli 5 anni), filtro continente origine/destinazione.
 
-**Transizioni tra atti:** sezione "intermezzo" a tutta larghezza con un titolo grande (es. "II. La barriera"), sfondo nell'accento dell'atto entrante, no grafico. ~50vh di altezza.
+---
+
+## 8. Struttura HTML delle sezioni grafico
+
+Pattern standard per ogni sezione:
+
+```html
+<section class="chart-section [chart-section-alt]" id="section-N" data-act="X">
+  <div class="chart-section-inner [layout-reversed|layout-stacked]">
+
+    <!-- Colonna sinistra: testo cliccabile -->
+    <div class="chart-text">
+      <div class="narrative-card is-active" data-chart="chart-ID" data-state="0">
+        <h3>Titolo card 0</h3>
+        <p>Testo narrativo...</p>
+      </div>
+      <div class="narrative-card" data-chart="chart-ID" data-state="1">
+        <h3>Titolo card 1</h3>
+        <p>Testo narrativo...</p>
+      </div>
+      <div class="narrative-card" data-chart="chart-ID" data-state="2">
+        <h3>Titolo card 2</h3>
+        <p>Testo narrativo...</p>
+      </div>
+    </div>
+
+    <!-- Colonna destra: grafico sticky -->
+    <div class="chart-viz">
+      <div class="chart-box">
+        <button class="chart-fullscreen-btn" ...></button>
+        <div id="chart-ID" style="width:100%;height:100%"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+```
 
 ---
 
 ## 9. Sezione "About" finale
 
-Dopo il grafico 10, una sezione con 7 card (layout grid 2 o 3 colonne). Ogni card è un blocco a sé, navigabile.
+Dopo il grafico 10, una sezione con 7 card (layout grid 2 o 3 colonne).
 
 1. **Tesi** — 2-3 frasi che sintetizzano l'argomento del progetto.
 2. **Fonti dati** — lista con link a tutte le fonti (World Bank, UNESCO UIS, ILO, UNICEF, UN DESA, Our World in Data).
 3. **Processo metodologico** — come abbiamo selezionato indicatori, paesi, finestra temporale; come abbiamo gestito i dati mancanti.
-4. **Limitazioni note** — onestà metodologica (vedi §12).
+4. **Limitazioni note** — onestà metodologica (vedi §11).
 5. **Stack tecnologico** — librerie usate, scelte di design.
 6. **Team** — nomi, ruoli, contatti.
 7. **Crediti & licenze** — citazione dei dataset, link ai repository, licenza del progetto.
 
 ---
 
-## 10. Dataset — Download e preprocessing
+## 10. Dataset
 
-### 10.1 Istruzioni per l'agente
+### 10.1 Percorsi dati
 
-> **L'agente scarica tutti i file in autonomia.** Non chiedere all'utente di farlo. I link sotto sono diretti e funzionanti.
-
-Procedere in questo ordine:
-1. Creare `data/raw/` e `data/processed/` se non esistono.
-2. Scaricare ogni file con `curl -L -o data/raw/<filename> "<URL>"`.
-3. Per i file ZIP: decomprimere, tenere solo il CSV principale, spostarlo in `data/raw/`.
-4. Per i file XLSX: convertire in CSV con lo script Python (pandas `read_excel`).
-5. Creare ed eseguire `scripts/preprocess.py` per produrre tutti i file in `data/processed/`.
-6. Verificare il numero di righe di ogni output prima di procedere con i grafici.
-
----
-
-### 10.2 File da scaricare — `data/raw/`
-
-#### Già presenti nel progetto (verificare esistenza, non riscaricate se ok)
-
-| Filename raw | Grafico | URL di download | Formato |
-|---|---|---|---|
-| `income_raw.csv` | 1, 2 | `https://ourworldindata.org/grapher/daily-mean-income.csv?v=1&csvType=full&useColumnShortNames=false` | CSV |
-| `life_expectancy_raw.csv` | 3 | `https://ourworldindata.org/grapher/life-expectancy.csv?v=1&csvType=full&useColumnShortNames=false` | CSV |
-
-> **Nota su reddito:** lo stesso file `income_raw.csv` (OWID daily-mean-income) viene usato per **entrambi** i grafici 1 e 2. Il grafico 1 lo aggrega per continente, il grafico 2 lo usa a livello paese. Non usare fonti diverse per i due grafici — la metrica deve essere la stessa.
-
-#### Da scaricare
-
-| Filename raw | Grafico | URL di download | Formato | Note |
-|---|---|---|---|---|
-| `edu_spending_raw.zip` | 4 | `https://api.worldbank.org/v2/en/indicator/SE.XPD.TOTL.GD.ZS?downloadformat=csv` | ZIP→CSV | Estrarre il file `API_SE.XPD*.csv` |
-| `edu_spending_by_level_raw.csv` | 4 | `https://api.uis.unesco.org/api/public/data/indicators/export?indicator=XGOVEXP.IMF&start=2000&end=2025&indicatorMetadata=true&footnotes=true&version=20260507-91260335&format=csv` | CSV | Copertura parziale — OK |
-| `edu_completion_raw.csv` | 5 | `https://ourworldindata.org/grapher/completion-rate-of-upper-secondary-education-sdg.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
-| `literacy_raw.csv` | 6 | `https://ourworldindata.org/grapher/literacy.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
-| `child_labor_raw.csv` | 7, 9 | `https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | Usato anche per grafico 9 |
-| `child_population_raw.xlsx` | 7 | `https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/2_Population/WPP2024_POP_F02_1_POPULATION_5-YEAR_AGE_GROUPS_BOTH_SEXES.xlsx` | XLSX→CSV | Tenere solo colonne: `Location`, `ISO3_code`, `Time`, `5-9`, `10-14`, `15-19` |
-| `child_marriage_raw.xlsx` | 8, 9 | `https://data.unicef.org/wp-content/uploads/2024/10/Child-marriage-dataset-2024.xlsx` | XLSX→CSV | Usato anche per grafico 9 |
-| `out_of_school_raw.csv` | 9 | `https://ourworldindata.org/grapher/out-of-school-children-of-primary-school-age-by-world-region.csv?v=1&csvType=full&useColumnShortNames=true` | CSV | — |
-| `migration_bilateral_raw.xlsx` | 10 | `https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2024_ims_stock_by_sex_and_origin.xlsx` | XLSX→CSV | Matrice 233×233 paesi |
-| `world-atlas-110m.json` | 2, 10 | `https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json` | TopoJSON | — |
-| `iso3_continent.csv` | tutti | `https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv` | CSV | Mapping ISO3 → continente |
-
-**Stima dimensione totale `data/raw/`:** ~20–30 MB.
-
----
-
-### 10.3 Script di preprocessing — `scripts/preprocess.py`
-
-L'agente **crea ed esegue** questo script. Usa Python con `pandas` e `openpyxl`.
-
-```bash
-pip install pandas openpyxl
-python scripts/preprocess.py
-```
-
-**Output atteso in `data/processed/`:**
-
-| Filename processed | Grafico | Operazioni chiave |
+| File | Grafico | Percorso |
 |---|---|---|
-| `01_income_continent.csv` | 1 | Aggrega `income_raw.csv` per continente (media ponderata per popolazione) via `iso3_continent.csv`. Colonne: `continent, year, value` |
-| `02_income_country.csv` | 2 | Filtra `income_raw.csv` per anni 2000–2024, aggiunge `iso3` e `continent`. Colonne: `iso3, country, continent, year, value` |
-| `03_life_expectancy.csv` | 3 | Pivot per continente, anni 2000 e 2023. Colonne: `continent, year_2000, year_2023, delta` |
-| `04_edu_spending.csv` | 4 | Join `edu_spending_raw` + `iso3_continent`. Colonne: `iso3, country, continent, year, pct_gdp` |
-| `04b_edu_spending_level.csv` | 4 | Pivot `edu_spending_by_level_raw`. Colonne: `iso3, country, year, level, pct_gdp`. Paesi mancanti: valore `null` |
-| `05_edu_completion.csv` | 5 | Dato più recente per paese. Colonne: `iso3, country, continent, year, total, female, male` |
-| `06_literacy.csv` | 6 | Reshape. Colonne: `iso3, country, continent, year, adult_total, adult_female, adult_male, youth_total, youth_female, youth_male` |
-| `07_bubble.csv` | 7 | Join `income_raw` + `child_labor_raw` + `child_population_raw`. `pop_5_17 = (5-9) + (10-14) + (15-19 × 0.6)`. Colonne: `iso3, country, continent, year, income, child_labor_pct, pop_5_17` |
-| `08_child_marriage.csv` | 8 | Aggrega per regione SDG. Colonne: `region, country, year, married_before_18, married_before_15, children_before_18` |
-| `09_trends.csv` | 9 | Join dei tre raw, formato long. Colonne: `region, year, indicator, value`. `indicator` ∈ {`child_labor`, `child_marriage`, `out_of_school`} |
-| `10_migration.csv` | 10 | Aggrega matrice 233×233 a 6×6 continenti via `iso3_continent`. Colonne: `origin_continent, dest_continent, year, stock` |
+| `gdp_per_capita.csv` | 1, 2 | `src/datasets/clean/` |
+| `life_expectancy.csv` | 3 | `src/datasets/clean/` |
+| `04_edu_spending.csv` | 4 | `src/datasets/processed/` |
+| `05_edu_completion.csv` | 5 | `src/datasets/processed/` |
+| `06_literacy.csv` | 6 | `src/datasets/processed/` |
+| `07_bubble.csv` | 7 | `src/datasets/processed/` |
+| `08_child_marriage.csv` | 8 | `src/datasets/processed/` |
+| `09_trends.csv` | 9 | `src/datasets/processed/` |
+| `10_migration_continent.csv` | 10 | `src/datasets/processed/` |
 
-Lo script stampa un report al termine:
-```
-✓ 01_income_continent.csv    — 132 righe
-✓ 02_income_country.csv      — 4.800 righe
-...
-✗ 07_bubble.csv — ERRORE: join fallito, controllare colonna iso3 in child_labor_raw
-```
+I file raw sono in `src/datasets/raw/`. Lo script di preprocessing è in `scripts/preprocess.py` (già eseguito).
 
-Se un file non viene prodotto correttamente, l'agente diagnostica e corregge prima di procedere ai grafici.
+### 10.2 Colonne attese nei file processed
+
+| File | Colonne |
+|---|---|
+| `04_edu_spending.csv` | `iso3, country, continent, year, pct_gdp` |
+| `05_edu_completion.csv` | `iso3, country, continent, year, total, female, male` |
+| `06_literacy.csv` | `iso3, country, continent, year, adult_total, adult_female, adult_male, youth_total, youth_female, youth_male` |
+| `07_bubble.csv` | `iso3, country, continent, year, income, child_labor_pct, pop_5_17` |
+| `08_child_marriage.csv` | `region, country, year, married_before_18, married_before_15, children_before_18` |
+| `09_trends.csv` | `region, year, indicator, value` — indicator ∈ {child_labor, child_marriage, out_of_school} |
+| `10_migration_continent.csv` | `origin_continent, dest_continent, year, stock` |
 
 ---
 
@@ -483,89 +436,68 @@ Se un file non viene prodotto correttamente, l'agente diagnostica e corregge pri
 
 Da menzionare nella card "Limitazioni" della sezione About:
 
-1. **Metrica reddito unica per grafici 1 e 2.** Si usa il reddito mediano giornaliero OWID (daily-mean-income) per entrambi. È il reddito del "cittadino tipico", non il PIL medio che include profitti e capitale. Alcuni paesi mancano di copertura — mostrati come "N/D" nella choropleth.
+1. **Metrica reddito unica per grafici 1 e 2.** GDP per capita da World Bank. Alcuni paesi mancano di copertura — mostrati come "N/D" nella choropleth.
 2. **Comparabilità del lavoro minorile.** I dati ILO/UNICEF derivano da survey nazionali con strumenti diversi. I confronti tra paesi vanno presi con cautela; i trend regionali sono più affidabili.
-3. **Buchi nel treemap istruzione.** Non tutti i paesi riportano la spesa per livello scolastico. Per i paesi mancanti si mostra solo l'aggregato.
-4. **Stock vs flussi nelle migrazioni.** UN DESA misura lo stock (persone nate all'estero residenti in un paese), non i flussi annuali. La variazione tra anni è una stima indiretta del movimento.
+3. **Buchi nel treemap istruzione.** Non tutti i paesi riportano la spesa per livello scolastico.
+4. **Stock vs flussi nelle migrazioni.** UN DESA misura lo stock (persone nate all'estero residenti in un paese), non i flussi annuali.
 5. **Matrimoni precoci sotto-rilevati.** I dati riguardano donne 20–24 retrospettivamente. I paesi ad alto reddito spesso non riportano il dato (~0%).
-6. **Alfabetizzazione self-reported.** Definizioni e metodologie variano tra paesi. OWID applica armonizzazioni, ma le comparazioni vanno lette con cautela.
+6. **Alfabetizzazione self-reported.** Definizioni e metodologie variano tra paesi.
 
 ---
 
-## 12. Roadmap implementativa consigliata
+## 12. Roadmap implementativa
 
-### ⚡ Punto di partenza — prima di tutto
-1. Leggi tutta la struttura del progetto esistente.
-2. Scarica i dataset mancanti (§10.2).
-3. Crea ed esegui `scripts/preprocess.py` (§10.3).
-4. Verifica che tutti i file in `data/processed/` siano corretti.
+### Stato sprint
 
-Solo dopo questi 4 passi, procedere agli sprint.
+| Sprint | Contenuto | Stato |
+|---|---|---|
+| Sprint 1 | Layout, design system, progress bar, act headers | ✅ Completato |
+| Sprint 2 | Narrative card cliccabili, triggerChartState, grafici 1-2-3 collegati | ✅ Completato |
+| Sprint 3 | Grafici 4, 5, 6 (Atto II) | ⬜ Da fare |
+| Sprint 4 | Grafici 7, 8, 9 (Atto III) | ⬜ Da fare |
+| Sprint 5 | Grafico 10, sezione About, polishing | ⬜ Da fare |
 
 ---
-
-### Sprint 1 — Allineamento fondazioni (sul codebase esistente)
-- Verifica e allinea `tokens.css` con il design system del §5 (palette, tipografia, spacing).
-- Aggiunge l'indicatore di progresso narrativo (4 segmenti colorati per atto, fixed top, navigabile).
-- Verifica che il layout grid scrollytelling sia coerente con le specifiche del §5.4.
-- Aggiunge le sezioni "intermezzo" tra gli atti (titolo grande, sfondo accento, 50vh).
-- **Non toccare i grafici 1, 2, 3 — solo layout e design system.**
-
-### Sprint 2 — Integrazione Atto I nel pattern scrollytelling
-- Crea/aggiorna `js/scrollytelling.js` con il wrapper scrollama.
-- Definisce l'API standard per tutti i chart: `init()`, `goToState(n)`, `enableExploration()`, `disableExploration()`.
-- Adatta i grafici 1, 2, 3 esistenti all'API standard con stati narrativi definiti in §7.
-- Implementa la fase esplorativa per i grafici 1, 2, 3 (toggle, scrubber).
-- Valida il flusso completo: hero → atto I → intermezzo → atto II (placeholder).
 
 ### Sprint 3 — Atto II
-- Grafico 4: treemap + sunburst con drill-down.
-- Grafico 5: waffle comparativo.
-- Grafico 6: slope chart con picker anni.
-- Fase esplorativa per ognuno.
+- Grafico 4: treemap spesa istruzione (`eduTreemap.js`).
+- Grafico 5: waffle completamento scolastico (`completionWaffle.js`).
+- Grafico 6: slope chart alfabetizzazione (`literacySlope.js`).
+- Ogni grafico deve esporre API su DOM element per `triggerChartState`.
+- Aggiungere le narrative card in `index.html` per sezioni 4, 5, 6.
+- Aggiungere i casi `chart-4`, `chart-5`, `chart-6` in `triggerChartState()` in `main.js`.
 
 ### Sprint 4 — Atto III
-- Grafico 7: bubble animato Gapminder — **il più complesso, dedicare più tempo**.
-- Grafico 8: Sankey matrimoni.
-- Grafico 9: multi-mode time series.
+- Grafico 7: bubble animato Gapminder (`childLaborBubble.js`) — **il più complesso**.
+- Grafico 8: Sankey matrimoni (`marriageSankey.js`) — richiede d3-sankey CDN.
+- Grafico 9: multi-mode time series (`trendsMultimode.js`).
 
 ### Sprint 5 — Atto IV + About + polishing
-- Grafico 10: Chord migrazioni.
+- Grafico 10: Chord migrazioni (`migrationChord.js`) — richiede d3-chord.
 - Sezione About con 7 card.
-- Pass di polishing: transizioni tra atti, micro-interazioni, accessibilità base (focus visibile, contrasti AA, skip link).
+- Pass di polishing: transizioni, accessibilità base (focus visibile, contrasti AA, skip link).
 - Test cross-browser desktop (Chrome, Safari, Firefox, ultime versioni).
-- Performance: lazy-load dei dati per atto — non caricare tutti i CSV all'avvio.
 
 ---
 
 ## 13. Convenzioni di codice
 
-- **Nomenclatura file:** `kebab-case` (es. `02-income-choropleth.js`).
+- **Nomenclatura file JS chart:** camelCase (`eduTreemap.js`, `childLaborBubble.js`).
 - **Nomi variabili JS:** `camelCase`. Costanti `UPPER_SNAKE`.
-- **Classi CSS:** `kebab-case`, BEM dove utile (`chart__axis--muted`).
-- **Commenti:** in italiano nei file di logica narrativa, in inglese nei file utility.
-- **Moduli ES6:** un export di default per ogni chart. Firma standard:
-  ```js
-  export default function initChart04({ container, data, onStateChange }) {
-    return {
-      goToState(stepIndex) { /* ... */ },
-      enableExploration() { /* ... */ },
-      disableExploration() { /* ... */ },
-      destroy() { /* ... */ }
-    };
-  }
-  ```
-- **No global state.** Stato per chart locale al modulo.
-- **Date come stringhe ISO** (`"2024-01-01"`) o anni come numeri (`2024`), mai oggetti `Date` non necessari.
+- **Classi CSS:** `kebab-case`.
+- **Pattern chart:** funzione globale `async function renderChartXX(selector, isFullscreen)`. Espone API su `container._fnName`. Registra anche nel fullscreen modal in `main.js`.
+- **No global state.** Stato per chart locale alla funzione.
+- **Date:** anni come numeri (`2024`), mai oggetti `Date` non necessari.
+- **triggerChartState:** aggiungere un blocco `if (chartId === 'chart-X-X')` per ogni nuovo grafico.
 
 ---
 
 ## 14. Definizione di "fatto"
 
 Il progetto è considerato completo quando:
-- [ ] I 10 grafici sono implementati e accessibili via scrollytelling.
-- [ ] Ogni grafico ha la fase narrativa con almeno 3 stati di scroll.
-- [ ] Ogni grafico ha la fase esplorativa con i controlli specificati.
+- [ ] I 10 grafici sono implementati e collegati alle narrative card.
+- [ ] Ogni grafico ha 3 narrative card che triggherano stati significativi.
+- [ ] I grafici sono interattivi (tooltip, drill-down o equivalente built-in).
 - [ ] L'indicatore di progresso funziona e naviga correttamente.
 - [ ] La sezione About è popolata con tutte le 7 card.
 - [ ] Il sito carica in <3s su connessione standard.
