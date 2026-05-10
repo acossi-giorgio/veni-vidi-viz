@@ -1,0 +1,1865 @@
+un_loc_code,country,continent,year,stock,iso3
+108,Burundi,Africa,1990,342568,BDI
+108,Burundi,Africa,1995,549487,BDI
+108,Burundi,Africa,2000,802113,BDI
+108,Burundi,Africa,2005,651030,BDI
+108,Burundi,Africa,2010,290788,BDI
+108,Burundi,Africa,2015,444013,BDI
+108,Burundi,Africa,2020,552134,BDI
+108,Burundi,Africa,2024,576530,BDI
+174,Comoros,Africa,1990,32522,COM
+174,Comoros,Africa,1995,48072,COM
+174,Comoros,Africa,2000,73404,COM
+174,Comoros,Africa,2005,97008,COM
+174,Comoros,Africa,2010,111510,COM
+174,Comoros,Africa,2015,188715,COM
+174,Comoros,Africa,2020,260848,COM
+174,Comoros,Africa,2024,367574,COM
+262,Djibouti,Africa,1990,1963,DJI
+262,Djibouti,Africa,1995,20005,DJI
+262,Djibouti,Africa,2000,3751,DJI
+262,Djibouti,Africa,2005,2421,DJI
+262,Djibouti,Africa,2010,2577,DJI
+262,Djibouti,Africa,2015,2537,DJI
+262,Djibouti,Africa,2020,2866,DJI
+262,Djibouti,Africa,2024,3576,DJI
+232,Eritrea,Africa,1990,156294,ERI
+232,Eritrea,Africa,1995,370422,ERI
+232,Eritrea,Africa,2000,505394,ERI
+232,Eritrea,Africa,2005,267114,ERI
+232,Eritrea,Africa,2010,283312,ERI
+232,Eritrea,Africa,2015,478597,ERI
+232,Eritrea,Africa,2020,663275,ERI
+232,Eritrea,Africa,2024,912792,ERI
+231,Ethiopia,Africa,1990,1630810,ETH
+231,Ethiopia,Africa,1995,727374,ETH
+231,Ethiopia,Africa,2000,418923,ETH
+231,Ethiopia,Africa,2005,493987,ETH
+231,Ethiopia,Africa,2010,666181,ETH
+231,Ethiopia,Africa,2015,896584,ETH
+231,Ethiopia,Africa,2020,1075343,ETH
+231,Ethiopia,Africa,2024,1240645,ETH
+404,Kenya,Africa,1990,238008,KEN
+404,Kenya,Africa,1995,249228,KEN
+404,Kenya,Africa,2000,296430,KEN
+404,Kenya,Africa,2005,346666,KEN
+404,Kenya,Africa,2010,390142,KEN
+404,Kenya,Africa,2015,452369,KEN
+404,Kenya,Africa,2020,483045,KEN
+404,Kenya,Africa,2024,540466,KEN
+450,Madagascar,Africa,1990,82170,MDG
+450,Madagascar,Africa,1995,98560,MDG
+450,Madagascar,Africa,2000,119159,MDG
+450,Madagascar,Africa,2005,143188,MDG
+450,Madagascar,Africa,2010,156279,MDG
+450,Madagascar,Africa,2015,175803,MDG
+450,Madagascar,Africa,2020,196997,MDG
+450,Madagascar,Africa,2024,212455,MDG
+454,Malawi,Africa,1990,138206,MWI
+454,Malawi,Africa,1995,134253,MWI
+454,Malawi,Africa,2000,167695,MWI
+454,Malawi,Africa,2005,216125,MWI
+454,Malawi,Africa,2010,259343,MWI
+454,Malawi,Africa,2015,307175,MWI
+454,Malawi,Africa,2020,372914,MWI
+454,Malawi,Africa,2024,427573,MWI
+480,Mauritius,Africa,1990,64202,MUS
+480,Mauritius,Africa,1995,72122,MUS
+480,Mauritius,Africa,2000,77904,MUS
+480,Mauritius,Africa,2005,88522,MUS
+480,Mauritius,Africa,2010,102296,MUS
+480,Mauritius,Africa,2015,109779,MUS
+480,Mauritius,Africa,2020,112089,MUS
+480,Mauritius,Africa,2024,114314,MUS
+175,Mayotte,Africa,1990,1835,
+175,Mayotte,Africa,1995,3937,
+175,Mayotte,Africa,2000,6214,
+175,Mayotte,Africa,2005,6468,
+175,Mayotte,Africa,2010,6336,
+175,Mayotte,Africa,2015,6545,
+175,Mayotte,Africa,2020,6767,
+175,Mayotte,Africa,2024,6960,
+508,Mozambique,Africa,1990,1989048,MOZ
+508,Mozambique,Africa,1995,761443,MOZ
+508,Mozambique,Africa,2000,650229,MOZ
+508,Mozambique,Africa,2005,641039,MOZ
+508,Mozambique,Africa,2010,655516,MOZ
+508,Mozambique,Africa,2015,671672,MOZ
+508,Mozambique,Africa,2020,689058,MOZ
+508,Mozambique,Africa,2024,702796,MOZ
+638,Réunion,Africa,1990,3903,
+638,Réunion,Africa,1995,3639,
+638,Réunion,Africa,2000,3078,
+638,Réunion,Africa,2005,2624,
+638,Réunion,Africa,2010,2425,
+638,Réunion,Africa,2015,2364,
+638,Réunion,Africa,2020,2336,
+638,Réunion,Africa,2024,2357,
+646,Rwanda,Africa,1990,584280,RWA
+646,Rwanda,Africa,1995,2109879,RWA
+646,Rwanda,Africa,2000,346850,RWA
+646,Rwanda,Africa,2005,293186,RWA
+646,Rwanda,Africa,2010,334656,RWA
+646,Rwanda,Africa,2015,496392,RWA
+646,Rwanda,Africa,2020,486754,RWA
+646,Rwanda,Africa,2024,539046,RWA
+690,Seychelles,Africa,1990,10497,SYC
+690,Seychelles,Africa,1995,13042,SYC
+690,Seychelles,Africa,2000,14346,SYC
+690,Seychelles,Africa,2005,18364,SYC
+690,Seychelles,Africa,2010,20399,SYC
+690,Seychelles,Africa,2015,21141,SYC
+690,Seychelles,Africa,2020,21722,SYC
+690,Seychelles,Africa,2024,22191,SYC
+706,Somalia,Africa,1990,599233,SOM
+706,Somalia,Africa,1995,791721,SOM
+706,Somalia,Africa,2000,758781,SOM
+706,Somalia,Africa,2005,756046,SOM
+706,Somalia,Africa,2010,1237640,SOM
+706,Somalia,Africa,2015,1719780,SOM
+706,Somalia,Africa,2020,1701493,SOM
+706,Somalia,Africa,2024,1935594,SOM
+728,South Sudan,Africa,1990,479199,SSD
+728,South Sudan,Africa,1995,266027,SSD
+728,South Sudan,Africa,2000,283331,SSD
+728,South Sudan,Africa,2005,211198,SSD
+728,South Sudan,Africa,2010,321713,SSD
+728,South Sudan,Africa,2015,853845,SSD
+728,South Sudan,Africa,2020,2374400,SSD
+728,South Sudan,Africa,2024,3168836,SSD
+800,Uganda,Africa,1990,247275,UGA
+800,Uganda,Africa,1995,294857,UGA
+800,Uganda,Africa,2000,446491,UGA
+800,Uganda,Africa,2005,477529,UGA
+800,Uganda,Africa,2010,582479,UGA
+800,Uganda,Africa,2015,619064,UGA
+800,Uganda,Africa,2020,586241,UGA
+800,Uganda,Africa,2024,578034,UGA
+834,United Republic of Tanzania,Africa,1990,194717,
+834,United Republic of Tanzania,Africa,1995,210718,
+834,United Republic of Tanzania,Africa,2000,192774,
+834,United Republic of Tanzania,Africa,2005,202455,
+834,United Republic of Tanzania,Africa,2010,208185,
+834,United Republic of Tanzania,Africa,2015,221603,
+834,United Republic of Tanzania,Africa,2020,219530,
+834,United Republic of Tanzania,Africa,2024,225017,
+894,Zambia,Africa,1990,73861,ZMB
+894,Zambia,Africa,1995,116003,ZMB
+894,Zambia,Africa,2000,125019,ZMB
+894,Zambia,Africa,2005,133582,ZMB
+894,Zambia,Africa,2010,134473,ZMB
+894,Zambia,Africa,2015,128590,ZMB
+894,Zambia,Africa,2020,122981,ZMB
+894,Zambia,Africa,2024,122793,ZMB
+716,Zimbabwe,Africa,1990,221449,ZWE
+716,Zimbabwe,Africa,1995,272384,ZWE
+716,Zimbabwe,Africa,2000,321579,ZWE
+716,Zimbabwe,Africa,2005,543425,ZWE
+716,Zimbabwe,Africa,2010,931334,ZWE
+716,Zimbabwe,Africa,2015,1237826,ZWE
+716,Zimbabwe,Africa,2020,1390279,ZWE
+716,Zimbabwe,Africa,2024,1519324,ZWE
+24,Angola,Africa,1990,799084,AGO
+24,Angola,Africa,1995,656106,AGO
+24,Angola,Africa,2000,873474,AGO
+24,Angola,Africa,2005,663380,AGO
+24,Angola,Africa,2010,579968,AGO
+24,Angola,Africa,2015,518695,AGO
+24,Angola,Africa,2020,549257,AGO
+24,Angola,Africa,2024,616967,AGO
+120,Cameroon,Africa,1990,92391,CMR
+120,Cameroon,Africa,1995,108473,CMR
+120,Cameroon,Africa,2000,131985,CMR
+120,Cameroon,Africa,2005,167265,CMR
+120,Cameroon,Africa,2010,214405,CMR
+120,Cameroon,Africa,2015,275824,CMR
+120,Cameroon,Africa,2020,357087,CMR
+120,Cameroon,Africa,2024,409677,CMR
+140,Central African Republic,Africa,1990,37143,CAF
+140,Central African Republic,Africa,1995,39510,CAF
+140,Central African Republic,Africa,2000,44980,CAF
+140,Central African Republic,Africa,2005,115287,CAF
+140,Central African Republic,Africa,2010,228473,CAF
+140,Central African Republic,Africa,2015,666056,CAF
+140,Central African Republic,Africa,2020,794362,CAF
+140,Central African Republic,Africa,2024,905808,CAF
+148,Chad,Africa,1990,329970,TCD
+148,Chad,Africa,1995,217609,TCD
+148,Chad,Africa,2000,202762,TCD
+148,Chad,Africa,2005,201982,TCD
+148,Chad,Africa,2010,191459,TCD
+148,Chad,Africa,2015,179293,TCD
+148,Chad,Africa,2020,208110,TCD
+148,Chad,Africa,2024,292298,TCD
+178,Congo,Africa,1990,64367,
+178,Congo,Africa,1995,88142,
+178,Congo,Africa,2000,118262,
+178,Congo,Africa,2005,160242,
+178,Congo,Africa,2010,169150,
+178,Congo,Africa,2015,201319,
+178,Congo,Africa,2020,220301,
+178,Congo,Africa,2024,231080,
+180,Democratic Republic of the Congo,Africa,1990,393133,COD
+180,Democratic Republic of the Congo,Africa,1995,505090,COD
+180,Democratic Republic of the Congo,Africa,2000,794799,COD
+180,Democratic Republic of the Congo,Africa,2005,1097069,COD
+180,Democratic Republic of the Congo,Africa,2010,1242847,COD
+180,Democratic Republic of the Congo,Africa,2015,1512153,COD
+180,Democratic Republic of the Congo,Africa,2020,1916852,COD
+180,Democratic Republic of the Congo,Africa,2024,2097387,COD
+226,Equatorial Guinea,Africa,1990,27829,GNQ
+226,Equatorial Guinea,Africa,1995,40029,GNQ
+226,Equatorial Guinea,Africa,2000,57049,GNQ
+226,Equatorial Guinea,Africa,2005,71228,GNQ
+226,Equatorial Guinea,Africa,2010,83286,GNQ
+226,Equatorial Guinea,Africa,2015,116053,GNQ
+226,Equatorial Guinea,Africa,2020,127021,GNQ
+226,Equatorial Guinea,Africa,2024,136825,GNQ
+266,Gabon,Africa,1990,14265,GAB
+266,Gabon,Africa,1995,16602,GAB
+266,Gabon,Africa,2000,19695,GAB
+266,Gabon,Africa,2005,39376,GAB
+266,Gabon,Africa,2010,36042,GAB
+266,Gabon,Africa,2015,43401,GAB
+266,Gabon,Africa,2020,54053,GAB
+266,Gabon,Africa,2024,61160,GAB
+678,Sao Tome and Principe,Africa,1990,13668,
+678,Sao Tome and Principe,Africa,1995,18868,
+678,Sao Tome and Principe,Africa,2000,24414,
+678,Sao Tome and Principe,Africa,2005,28200,
+678,Sao Tome and Principe,Africa,2010,29623,
+678,Sao Tome and Principe,Africa,2015,33671,
+678,Sao Tome and Principe,Africa,2020,37872,
+678,Sao Tome and Principe,Africa,2024,41433,
+12,Algeria,Africa,1990,1458505,DZA
+12,Algeria,Africa,1995,1424971,DZA
+12,Algeria,Africa,2000,1427791,DZA
+12,Algeria,Africa,2005,1554741,DZA
+12,Algeria,Africa,2010,1604582,DZA
+12,Algeria,Africa,2015,1662433,DZA
+12,Algeria,Africa,2020,1732822,DZA
+12,Algeria,Africa,2024,1780399,DZA
+818,Egypt,Africa,1990,1630728,EGY
+818,Egypt,Africa,1995,1750423,EGY
+818,Egypt,Africa,2000,1921183,EGY
+818,Egypt,Africa,2005,2371080,EGY
+818,Egypt,Africa,2010,3213308,EGY
+818,Egypt,Africa,2015,4193177,EGY
+818,Egypt,Africa,2020,4454277,EGY
+818,Egypt,Africa,2024,4820002,EGY
+434,Libya,Africa,1990,78841,LBY
+434,Libya,Africa,1995,81041,LBY
+434,Libya,Africa,2000,80451,LBY
+434,Libya,Africa,2005,81361,LBY
+434,Libya,Africa,2010,99826,LBY
+434,Libya,Africa,2015,119270,LBY
+434,Libya,Africa,2020,145103,LBY
+434,Libya,Africa,2024,156874,LBY
+504,Morocco,Africa,1990,1297857,MAR
+504,Morocco,Africa,1995,1506124,MAR
+504,Morocco,Africa,2000,1756024,MAR
+504,Morocco,Africa,2005,2291145,MAR
+504,Morocco,Africa,2010,2733747,MAR
+504,Morocco,Africa,2015,2907733,MAR
+504,Morocco,Africa,2020,3293170,MAR
+504,Morocco,Africa,2024,3627829,MAR
+729,Sudan,Africa,1990,465978,SDN
+729,Sudan,Africa,1995,660265,SDN
+729,Sudan,Africa,2000,743460,SDN
+729,Sudan,Africa,2005,1119655,SDN
+729,Sudan,Africa,2010,1194477,SDN
+729,Sudan,Africa,2015,2209101,SDN
+729,Sudan,Africa,2020,2378503,SDN
+729,Sudan,Africa,2024,3786603,SDN
+788,Tunisia,Africa,1990,453179,TUN
+788,Tunisia,Africa,1995,466515,TUN
+788,Tunisia,Africa,2000,482798,TUN
+788,Tunisia,Africa,2005,526777,TUN
+788,Tunisia,Africa,2010,569831,TUN
+788,Tunisia,Africa,2015,619432,TUN
+788,Tunisia,Africa,2020,674089,TUN
+788,Tunisia,Africa,2024,715249,TUN
+732,Western Sahara,Africa,1990,168120,
+732,Western Sahara,Africa,1995,167018,
+732,Western Sahara,Africa,2000,165927,
+732,Western Sahara,Africa,2005,131181,
+732,Western Sahara,Africa,2010,170154,
+732,Western Sahara,Africa,2015,184784,
+732,Western Sahara,Africa,2020,193812,
+732,Western Sahara,Africa,2024,202107,
+72,Botswana,Africa,1990,23982,BWA
+72,Botswana,Africa,1995,17487,BWA
+72,Botswana,Africa,2000,22155,BWA
+72,Botswana,Africa,2005,22158,BWA
+72,Botswana,Africa,2010,19869,BWA
+72,Botswana,Africa,2015,18161,BWA
+72,Botswana,Africa,2020,17397,BWA
+72,Botswana,Africa,2024,16731,BWA
+748,Eswatini,Africa,1990,31331,SWZ
+748,Eswatini,Africa,1995,28204,SWZ
+748,Eswatini,Africa,2000,29821,SWZ
+748,Eswatini,Africa,2005,33323,SWZ
+748,Eswatini,Africa,2010,37292,SWZ
+748,Eswatini,Africa,2015,28381,SWZ
+748,Eswatini,Africa,2020,19033,SWZ
+748,Eswatini,Africa,2024,11561,SWZ
+426,Lesotho,Africa,1990,130251,LSO
+426,Lesotho,Africa,1995,122192,LSO
+426,Lesotho,Africa,2000,121214,LSO
+426,Lesotho,Africa,2005,138931,LSO
+426,Lesotho,Africa,2010,161987,LSO
+426,Lesotho,Africa,2015,191588,LSO
+426,Lesotho,Africa,2020,224803,LSO
+426,Lesotho,Africa,2024,246938,LSO
+516,Namibia,Africa,1990,45857,NAM
+516,Namibia,Africa,1995,36999,NAM
+516,Namibia,Africa,2000,44921,NAM
+516,Namibia,Africa,2005,47680,NAM
+516,Namibia,Africa,2010,45530,NAM
+516,Namibia,Africa,2015,43728,NAM
+516,Namibia,Africa,2020,42223,NAM
+516,Namibia,Africa,2024,40371,NAM
+710,South Africa,Africa,1990,295392,ZAF
+710,South Africa,Africa,1995,357986,ZAF
+710,South Africa,Africa,2000,494645,ZAF
+710,South Africa,Africa,2005,613772,ZAF
+710,South Africa,Africa,2010,704402,ZAF
+710,South Africa,Africa,2015,782819,ZAF
+710,South Africa,Africa,2020,898203,ZAF
+710,South Africa,Africa,2024,1005800,ZAF
+204,Benin,Africa,1990,226170,BEN
+204,Benin,Africa,1995,265968,BEN
+204,Benin,Africa,2000,321244,BEN
+204,Benin,Africa,2005,496572,BEN
+204,Benin,Africa,2010,533981,BEN
+204,Benin,Africa,2015,628871,BEN
+204,Benin,Africa,2020,678375,BEN
+204,Benin,Africa,2024,726530,BEN
+854,Burkina Faso,Africa,1990,1015890,BFA
+854,Burkina Faso,Africa,1995,1152082,BFA
+854,Burkina Faso,Africa,2000,1297567,BFA
+854,Burkina Faso,Africa,2005,1443306,BFA
+854,Burkina Faso,Africa,2010,1601296,BFA
+854,Burkina Faso,Africa,2015,1759971,BFA
+854,Burkina Faso,Africa,2020,1919400,BFA
+854,Burkina Faso,Africa,2024,2050050,BFA
+132,Cabo Verde,Africa,1990,51800,CPV
+132,Cabo Verde,Africa,1995,63673,CPV
+132,Cabo Verde,Africa,2000,76121,CPV
+132,Cabo Verde,Africa,2005,92475,CPV
+132,Cabo Verde,Africa,2010,99281,CPV
+132,Cabo Verde,Africa,2015,116450,CPV
+132,Cabo Verde,Africa,2020,133491,CPV
+132,Cabo Verde,Africa,2024,146396,CPV
+384,Côte d'Ivoire,Africa,1990,353717,
+384,Côte d'Ivoire,Africa,1995,433736,
+384,Côte d'Ivoire,Africa,2000,525165,
+384,Côte d'Ivoire,Africa,2005,698103,
+384,Côte d'Ivoire,Africa,2010,902169,
+384,Côte d'Ivoire,Africa,2015,1025536,
+384,Côte d'Ivoire,Africa,2020,1129849,
+384,Côte d'Ivoire,Africa,2024,1211422,
+270,Gambia,Africa,1990,14218,GMB
+270,Gambia,Africa,1995,16789,GMB
+270,Gambia,Africa,2000,19940,GMB
+270,Gambia,Africa,2005,27073,GMB
+270,Gambia,Africa,2010,34151,GMB
+270,Gambia,Africa,2015,38925,GMB
+270,Gambia,Africa,2020,61390,GMB
+270,Gambia,Africa,2024,72452,GMB
+288,Ghana,Africa,1990,344686,GHA
+288,Ghana,Africa,1995,361700,GHA
+288,Ghana,Africa,2000,445447,GHA
+288,Ghana,Africa,2005,606700,GHA
+288,Ghana,Africa,2010,718300,GHA
+288,Ghana,Africa,2015,846131,GHA
+288,Ghana,Africa,2020,963019,GHA
+288,Ghana,Africa,2024,1055494,GHA
+324,Guinea,Africa,1990,334951,GIN
+324,Guinea,Africa,1995,339388,GIN
+324,Guinea,Africa,2000,339435,GIN
+324,Guinea,Africa,2005,345573,GIN
+324,Guinea,Africa,2010,382773,GIN
+324,Guinea,Africa,2015,416953,GIN
+324,Guinea,Africa,2020,473409,GIN
+324,Guinea,Africa,2024,508203,GIN
+624,Guinea-Bissau,Africa,1990,45577,GNB
+624,Guinea-Bissau,Africa,1995,57547,GNB
+624,Guinea-Bissau,Africa,2000,66613,GNB
+624,Guinea-Bissau,Africa,2005,73544,GNB
+624,Guinea-Bissau,Africa,2010,78973,GNB
+624,Guinea-Bissau,Africa,2015,86283,GNB
+624,Guinea-Bissau,Africa,2020,98064,GNB
+624,Guinea-Bissau,Africa,2024,103999,GNB
+430,Liberia,Africa,1990,539145,LBR
+430,Liberia,Africa,1995,562699,LBR
+430,Liberia,Africa,2000,270603,LBR
+430,Liberia,Africa,2005,349718,LBR
+430,Liberia,Africa,2010,186132,LBR
+430,Liberia,Africa,2015,150490,LBR
+430,Liberia,Africa,2020,147341,LBR
+430,Liberia,Africa,2024,145919,LBR
+466,Mali,Africa,1990,587626,MLI
+466,Mali,Africa,1995,743318,MLI
+466,Mali,Africa,2000,706904,MLI
+466,Mali,Africa,2005,822077,MLI
+466,Mali,Africa,2010,897610,MLI
+466,Mali,Africa,2015,1117148,MLI
+466,Mali,Africa,2020,1200058,MLI
+466,Mali,Africa,2024,1292519,MLI
+478,Mauritania,Africa,1990,111270,MRT
+478,Mauritania,Africa,1995,127054,MRT
+478,Mauritania,Africa,2000,81064,MRT
+478,Mauritania,Africa,2005,69192,MRT
+478,Mauritania,Africa,2010,73350,MRT
+478,Mauritania,Africa,2015,73527,MRT
+478,Mauritania,Africa,2020,86409,MRT
+478,Mauritania,Africa,2024,91705,MRT
+562,Niger,Africa,1990,162733,NER
+562,Niger,Africa,1995,189413,NER
+562,Niger,Africa,2000,219232,NER
+562,Niger,Africa,2005,317174,NER
+562,Niger,Africa,2010,350773,NER
+562,Niger,Africa,2015,390945,NER
+562,Niger,Africa,2020,416964,NER
+562,Niger,Africa,2024,439378,NER
+566,Nigeria,Africa,1990,394107,NGA
+566,Nigeria,Africa,1995,467021,NGA
+566,Nigeria,Africa,2000,542140,NGA
+566,Nigeria,Africa,2005,763991,NGA
+566,Nigeria,Africa,2010,978678,NGA
+566,Nigeria,Africa,2015,1359519,NGA
+566,Nigeria,Africa,2020,1768444,NGA
+566,Nigeria,Africa,2024,2094265,NGA
+654,Saint Helena,Africa,1990,152,
+654,Saint Helena,Africa,1995,157,
+654,Saint Helena,Africa,2000,262,
+654,Saint Helena,Africa,2005,267,
+654,Saint Helena,Africa,2010,396,
+654,Saint Helena,Africa,2015,428,
+654,Saint Helena,Africa,2020,506,
+654,Saint Helena,Africa,2024,591,
+686,Senegal,Africa,1990,325275,SEN
+686,Senegal,Africa,1995,318928,SEN
+686,Senegal,Africa,2000,366397,SEN
+686,Senegal,Africa,2005,425788,SEN
+686,Senegal,Africa,2010,498417,SEN
+686,Senegal,Africa,2015,558252,SEN
+686,Senegal,Africa,2020,665735,SEN
+686,Senegal,Africa,2024,741357,SEN
+694,Sierra Leone,Africa,1990,42497,SLE
+694,Sierra Leone,Africa,1995,423611,SLE
+694,Sierra Leone,Africa,2000,459995,SLE
+694,Sierra Leone,Africa,2005,89467,SLE
+694,Sierra Leone,Africa,2010,57946,SLE
+694,Sierra Leone,Africa,2015,59400,SLE
+694,Sierra Leone,Africa,2020,64980,SLE
+694,Sierra Leone,Africa,2024,63631,SLE
+768,Togo,Africa,1990,184145,TGO
+768,Togo,Africa,1995,294188,TGO
+768,Togo,Africa,2000,253143,TGO
+768,Togo,Africa,2005,391527,TGO
+768,Togo,Africa,2010,407152,TGO
+768,Togo,Africa,2015,489237,TGO
+768,Togo,Africa,2020,539877,TGO
+768,Togo,Africa,2024,584790,TGO
+398,Kazakhstan,Asia,1990,3178221,KAZ
+398,Kazakhstan,Asia,1995,3270367,KAZ
+398,Kazakhstan,Asia,2000,3407178,KAZ
+398,Kazakhstan,Asia,2005,3648310,KAZ
+398,Kazakhstan,Asia,2010,3753542,KAZ
+398,Kazakhstan,Asia,2015,3348874,KAZ
+398,Kazakhstan,Asia,2020,3029566,KAZ
+398,Kazakhstan,Asia,2024,2796572,KAZ
+417,Kyrgyzstan,Asia,1990,606963,KGZ
+417,Kyrgyzstan,Asia,1995,600786,KGZ
+417,Kyrgyzstan,Asia,2000,590619,KGZ
+417,Kyrgyzstan,Asia,2005,663215,KGZ
+417,Kyrgyzstan,Asia,2010,713989,KGZ
+417,Kyrgyzstan,Asia,2015,641517,KGZ
+417,Kyrgyzstan,Asia,2020,584710,KGZ
+417,Kyrgyzstan,Asia,2024,540573,KGZ
+762,Tajikistan,Asia,1990,552860,TJK
+762,Tajikistan,Asia,1995,566001,TJK
+762,Tajikistan,Asia,2000,542408,TJK
+762,Tajikistan,Asia,2005,574337,TJK
+762,Tajikistan,Asia,2010,555214,TJK
+762,Tajikistan,Asia,2015,536498,TJK
+762,Tajikistan,Asia,2020,517979,TJK
+762,Tajikistan,Asia,2024,514478,TJK
+795,Turkmenistan,Asia,1990,293445,TKM
+795,Turkmenistan,Asia,1995,303119,TKM
+795,Turkmenistan,Asia,2000,320900,TKM
+795,Turkmenistan,Asia,2005,335113,TKM
+795,Turkmenistan,Asia,2010,342391,TKM
+795,Turkmenistan,Asia,2015,317031,TKM
+795,Turkmenistan,Asia,2020,384184,TKM
+795,Turkmenistan,Asia,2024,365787,TKM
+860,Uzbekistan,Asia,1990,1449406,UZB
+860,Uzbekistan,Asia,1995,1655021,UZB
+860,Uzbekistan,Asia,2000,1813688,UZB
+860,Uzbekistan,Asia,2005,1946322,UZB
+860,Uzbekistan,Asia,2010,2073283,UZB
+860,Uzbekistan,Asia,2015,2061736,UZB
+860,Uzbekistan,Asia,2020,2092741,UZB
+860,Uzbekistan,Asia,2024,2114480,UZB
+156,China,Asia,1990,3990935,CHN
+156,China,Asia,1995,4676354,CHN
+156,China,Asia,2000,5668480,CHN
+156,China,Asia,2005,6892920,CHN
+156,China,Asia,2010,8773150,CHN
+156,China,Asia,2015,10357962,CHN
+156,China,Asia,2020,11169868,CHN
+156,China,Asia,2024,11701619,CHN
+344,"China, Hong Kong SAR",Asia,1990,569282,
+344,"China, Hong Kong SAR",Asia,1995,682700,
+344,"China, Hong Kong SAR",Asia,2000,818107,
+344,"China, Hong Kong SAR",Asia,2005,849440,
+344,"China, Hong Kong SAR",Asia,2010,903793,
+344,"China, Hong Kong SAR",Asia,2015,1031087,
+344,"China, Hong Kong SAR",Asia,2020,1146271,
+344,"China, Hong Kong SAR",Asia,2024,1240250,
+446,"China, Macao SAR",Asia,1990,73961,
+446,"China, Macao SAR",Asia,1995,79787,
+446,"China, Macao SAR",Asia,2000,86316,
+446,"China, Macao SAR",Asia,2005,93169,
+446,"China, Macao SAR",Asia,2010,101050,
+446,"China, Macao SAR",Asia,2015,116399,
+446,"China, Macao SAR",Asia,2020,139129,
+446,"China, Macao SAR",Asia,2024,149247,
+158,"China, Taiwan Province of China",Asia,1990,388755,
+158,"China, Taiwan Province of China",Asia,1995,429257,
+158,"China, Taiwan Province of China",Asia,2000,593675,
+158,"China, Taiwan Province of China",Asia,2005,645094,
+158,"China, Taiwan Province of China",Asia,2010,723110,
+158,"China, Taiwan Province of China",Asia,2015,801098,
+158,"China, Taiwan Province of China",Asia,2020,810609,
+158,"China, Taiwan Province of China",Asia,2024,832507,
+408,Dem. People's Republic of Korea,Asia,1990,31450,
+408,Dem. People's Republic of Korea,Asia,1995,33120,
+408,Dem. People's Republic of Korea,Asia,2000,34814,
+408,Dem. People's Republic of Korea,Asia,2005,39887,
+408,Dem. People's Republic of Korea,Asia,2010,49563,
+408,Dem. People's Republic of Korea,Asia,2015,56701,
+408,Dem. People's Republic of Korea,Asia,2020,50879,
+408,Dem. People's Republic of Korea,Asia,2024,46379,
+392,Japan,Asia,1990,710783,JPN
+392,Japan,Asia,1995,911486,JPN
+392,Japan,Asia,2000,846780,JPN
+392,Japan,Asia,2005,864518,JPN
+392,Japan,Asia,2010,909212,JPN
+392,Japan,Asia,2015,943736,JPN
+392,Japan,Asia,2020,926826,JPN
+392,Japan,Asia,2024,1008173,JPN
+496,Mongolia,Asia,1990,71033,MNG
+496,Mongolia,Asia,1995,79613,MNG
+496,Mongolia,Asia,2000,88244,MNG
+496,Mongolia,Asia,2005,98174,MNG
+496,Mongolia,Asia,2010,114217,MNG
+496,Mongolia,Asia,2015,124542,MNG
+496,Mongolia,Asia,2020,153554,MNG
+496,Mongolia,Asia,2024,175596,MNG
+410,Republic of Korea,Asia,1990,1744465,
+410,Republic of Korea,Asia,1995,1812749,
+410,Republic of Korea,Asia,2000,1897540,
+410,Republic of Korea,Asia,2005,2001950,
+410,Republic of Korea,Asia,2010,2164782,
+410,Republic of Korea,Asia,2015,2162256,
+410,Republic of Korea,Asia,2020,2038995,
+410,Republic of Korea,Asia,2024,2030473,
+4,Afghanistan,Asia,1990,7477104,AFG
+4,Afghanistan,Asia,1995,4107724,AFG
+4,Afghanistan,Asia,2000,4544516,AFG
+4,Afghanistan,Asia,2005,3902699,AFG
+4,Afghanistan,Asia,2010,5074825,AFG
+4,Afghanistan,Asia,2015,5181002,AFG
+4,Afghanistan,Asia,2020,5729887,AFG
+4,Afghanistan,Asia,2024,7528994,AFG
+50,Bangladesh,Asia,1990,5076540,BGD
+50,Bangladesh,Asia,1995,5266258,BGD
+50,Bangladesh,Asia,2000,5287858,BGD
+50,Bangladesh,Asia,2005,5198991,BGD
+50,Bangladesh,Asia,2010,6221642,BGD
+50,Bangladesh,Asia,2015,7883873,BGD
+50,Bangladesh,Asia,2020,8085347,BGD
+50,Bangladesh,Asia,2024,8706947,BGD
+64,Bhutan,Asia,1990,27169,BTN
+64,Bhutan,Asia,1995,117210,BTN
+64,Bhutan,Asia,2000,119788,BTN
+64,Bhutan,Asia,2005,117140,BTN
+64,Bhutan,Asia,2010,88335,BTN
+64,Bhutan,Asia,2015,47807,BTN
+64,Bhutan,Asia,2020,52339,BTN
+64,Bhutan,Asia,2024,66145,BTN
+356,India,Asia,1990,6575416,IND
+356,India,Asia,1995,6900228,IND
+356,India,Asia,2000,7778792,IND
+356,India,Asia,2005,9500673,IND
+356,India,Asia,2010,12350515,IND
+356,India,Asia,2015,15277263,IND
+356,India,Asia,2020,16532761,IND
+356,India,Asia,2024,18533845,IND
+364,Iran (Islamic Republic of),Asia,1990,604892,
+364,Iran (Islamic Republic of),Asia,1995,701961,
+364,Iran (Islamic Republic of),Asia,2000,835113,
+364,Iran (Islamic Republic of),Asia,2005,875530,
+364,Iran (Islamic Republic of),Asia,2010,1028854,
+364,Iran (Islamic Republic of),Asia,2015,1163612,
+364,Iran (Islamic Republic of),Asia,2020,1442650,
+364,Iran (Islamic Republic of),Asia,2024,1733468,
+462,Maldives,Asia,1990,1685,MDV
+462,Maldives,Asia,1995,1092,MDV
+462,Maldives,Asia,2000,824,MDV
+462,Maldives,Asia,2005,1432,MDV
+462,Maldives,Asia,2010,2624,MDV
+462,Maldives,Asia,2015,2694,MDV
+462,Maldives,Asia,2020,2703,MDV
+462,Maldives,Asia,2024,2773,MDV
+524,Nepal,Asia,1990,523915,NPL
+524,Nepal,Asia,1995,602711,NPL
+524,Nepal,Asia,2000,707896,NPL
+524,Nepal,Asia,2005,1056250,NPL
+524,Nepal,Asia,2010,1402556,NPL
+524,Nepal,Asia,2015,2112726,NPL
+524,Nepal,Asia,2020,2357848,NPL
+524,Nepal,Asia,2024,2637195,NPL
+586,Pakistan,Asia,1990,3131865,PAK
+586,Pakistan,Asia,1995,3116501,PAK
+586,Pakistan,Asia,2000,3272459,PAK
+586,Pakistan,Asia,2005,3715061,PAK
+586,Pakistan,Asia,2010,4684523,PAK
+586,Pakistan,Asia,2015,6190815,PAK
+586,Pakistan,Asia,2020,6372467,PAK
+586,Pakistan,Asia,2024,6915057,PAK
+144,Sri Lanka,Asia,1990,843476,LKA
+144,Sri Lanka,Asia,1995,721651,LKA
+144,Sri Lanka,Asia,2000,786520,LKA
+144,Sri Lanka,Asia,2005,910507,LKA
+144,Sri Lanka,Asia,2010,1108466,LKA
+144,Sri Lanka,Asia,2015,1246445,LKA
+144,Sri Lanka,Asia,2020,1409777,LKA
+144,Sri Lanka,Asia,2024,1492103,LKA
+96,Brunei Darussalam,Asia,1990,31408,
+96,Brunei Darussalam,Asia,1995,44425,
+96,Brunei Darussalam,Asia,2000,45229,
+96,Brunei Darussalam,Asia,2005,45524,
+96,Brunei Darussalam,Asia,2010,45555,
+96,Brunei Darussalam,Asia,2015,45924,
+96,Brunei Darussalam,Asia,2020,46349,
+96,Brunei Darussalam,Asia,2024,46552,
+116,Cambodia,Asia,1990,261096,KHM
+116,Cambodia,Asia,1995,282803,KHM
+116,Cambodia,Asia,2000,316497,KHM
+116,Cambodia,Asia,2005,455076,KHM
+116,Cambodia,Asia,2010,613439,KHM
+116,Cambodia,Asia,2015,674059,KHM
+116,Cambodia,Asia,2020,726096,KHM
+116,Cambodia,Asia,2024,778793,KHM
+360,Indonesia,Asia,1990,1309876,IDN
+360,Indonesia,Asia,1995,1664243,IDN
+360,Indonesia,Asia,2000,2128328,IDN
+360,Indonesia,Asia,2005,2406449,IDN
+360,Indonesia,Asia,2010,3031600,IDN
+360,Indonesia,Asia,2015,3269321,IDN
+360,Indonesia,Asia,2020,3446736,IDN
+360,Indonesia,Asia,2024,3745148,IDN
+418,Lao People's Democratic Republic,Asia,1990,311756,
+418,Lao People's Democratic Republic,Asia,1995,359736,
+418,Lao People's Democratic Republic,Asia,2000,363370,
+418,Lao People's Democratic Republic,Asia,2005,471052,
+418,Lao People's Democratic Republic,Asia,2010,563709,
+418,Lao People's Democratic Republic,Asia,2015,598860,
+418,Lao People's Democratic Republic,Asia,2020,609093,
+418,Lao People's Democratic Republic,Asia,2024,660258,
+458,Malaysia,Asia,1990,663690,MYS
+458,Malaysia,Asia,1995,891900,MYS
+458,Malaysia,Asia,2000,1165408,MYS
+458,Malaysia,Asia,2005,1283218,MYS
+458,Malaysia,Asia,2010,1647051,MYS
+458,Malaysia,Asia,2015,1916776,MYS
+458,Malaysia,Asia,2020,2118942,MYS
+458,Malaysia,Asia,2024,2433875,MYS
+104,Myanmar,Asia,1990,529164,MMR
+104,Myanmar,Asia,1995,530678,MMR
+104,Myanmar,Asia,2000,671239,MMR
+104,Myanmar,Asia,2005,1254165,MMR
+104,Myanmar,Asia,2010,2129897,MMR
+104,Myanmar,Asia,2015,2517411,MMR
+104,Myanmar,Asia,2020,3611603,MMR
+104,Myanmar,Asia,2024,4320462,MMR
+608,Philippines,Asia,1990,2167140,PHL
+608,Philippines,Asia,1995,2736078,PHL
+608,Philippines,Asia,2000,3310102,PHL
+608,Philippines,Asia,2005,3925727,PHL
+608,Philippines,Asia,2010,4941994,PHL
+608,Philippines,Asia,2015,6000348,PHL
+608,Philippines,Asia,2020,6461086,PHL
+608,Philippines,Asia,2024,6988383,PHL
+702,Singapore,Asia,1990,156619,SGP
+702,Singapore,Asia,1995,170806,SGP
+702,Singapore,Asia,2000,186401,SGP
+702,Singapore,Asia,2005,206277,SGP
+702,Singapore,Asia,2010,231411,SGP
+702,Singapore,Asia,2015,254347,SGP
+702,Singapore,Asia,2020,264487,SGP
+702,Singapore,Asia,2024,269613,SGP
+764,Thailand,Asia,1990,298071,THA
+764,Thailand,Asia,1995,479776,THA
+764,Thailand,Asia,2000,607699,THA
+764,Thailand,Asia,2005,648137,THA
+764,Thailand,Asia,2010,724614,THA
+764,Thailand,Asia,2015,907298,THA
+764,Thailand,Asia,2020,1075834,THA
+764,Thailand,Asia,2024,1178757,THA
+626,Timor-Leste,Asia,1990,27505,TLS
+626,Timor-Leste,Asia,1995,35137,TLS
+626,Timor-Leste,Asia,2000,188495,TLS
+626,Timor-Leste,Asia,2005,43229,TLS
+626,Timor-Leste,Asia,2010,45740,TLS
+626,Timor-Leste,Asia,2015,64935,TLS
+626,Timor-Leste,Asia,2020,96759,TLS
+626,Timor-Leste,Asia,2024,109613,TLS
+704,Viet Nam,Asia,1990,1128520,
+704,Viet Nam,Asia,1995,1362168,
+704,Viet Nam,Asia,2000,1805287,
+704,Viet Nam,Asia,2005,2091843,
+704,Viet Nam,Asia,2010,2339779,
+704,Viet Nam,Asia,2015,2719796,
+704,Viet Nam,Asia,2020,3330404,
+704,Viet Nam,Asia,2024,3693537,
+51,Armenia,Asia,1990,813557,ARM
+51,Armenia,Asia,1995,990938,ARM
+51,Armenia,Asia,2000,950779,ARM
+51,Armenia,Asia,2005,787489,ARM
+51,Armenia,Asia,2010,799328,ARM
+51,Armenia,Asia,2015,741708,ARM
+51,Armenia,Asia,2020,685545,ARM
+51,Armenia,Asia,2024,637604,ARM
+31,Azerbaijan,Asia,1990,1334492,AZE
+31,Azerbaijan,Asia,1995,1517896,AZE
+31,Azerbaijan,Asia,2000,1466589,AZE
+31,Azerbaijan,Asia,2005,1350981,AZE
+31,Azerbaijan,Asia,2010,1050055,AZE
+31,Azerbaijan,Asia,2015,860748,AZE
+31,Azerbaijan,Asia,2020,790122,AZE
+31,Azerbaijan,Asia,2024,810116,AZE
+48,Bahrain,Asia,1990,11251,BHR
+48,Bahrain,Asia,1995,21614,BHR
+48,Bahrain,Asia,2000,32137,BHR
+48,Bahrain,Asia,2005,36803,BHR
+48,Bahrain,Asia,2010,42283,BHR
+48,Bahrain,Asia,2015,45263,BHR
+48,Bahrain,Asia,2020,45356,BHR
+48,Bahrain,Asia,2024,57160,BHR
+196,Cyprus,Asia,1990,87065,CYP
+196,Cyprus,Asia,1995,74433,CYP
+196,Cyprus,Asia,2000,63149,CYP
+196,Cyprus,Asia,2005,65886,CYP
+196,Cyprus,Asia,2010,68736,CYP
+196,Cyprus,Asia,2015,70451,CYP
+196,Cyprus,Asia,2020,75728,CYP
+196,Cyprus,Asia,2024,80760,CYP
+268,Georgia,Asia,1990,1057640,GEO
+268,Georgia,Asia,1995,1031233,GEO
+268,Georgia,Asia,2000,979681,GEO
+268,Georgia,Asia,2005,879847,GEO
+268,Georgia,Asia,2010,780487,GEO
+268,Georgia,Asia,2015,637894,GEO
+268,Georgia,Asia,2020,545396,GEO
+268,Georgia,Asia,2024,496486,GEO
+368,Iraq,Asia,1990,598492,IRQ
+368,Iraq,Asia,1995,647345,IRQ
+368,Iraq,Asia,2000,825369,IRQ
+368,Iraq,Asia,2005,1202149,IRQ
+368,Iraq,Asia,2010,2697913,IRQ
+368,Iraq,Asia,2015,1652951,IRQ
+368,Iraq,Asia,2020,2282773,IRQ
+368,Iraq,Asia,2024,2313028,IRQ
+376,Israel,Asia,1990,263368,ISR
+376,Israel,Asia,1995,321435,ISR
+376,Israel,Asia,2000,290092,ISR
+376,Israel,Asia,2005,297140,ISR
+376,Israel,Asia,2010,300419,ISR
+376,Israel,Asia,2015,301155,ISR
+376,Israel,Asia,2020,312533,ISR
+376,Israel,Asia,2024,324804,ISR
+400,Jordan,Asia,1990,265920,JOR
+400,Jordan,Asia,1995,292015,JOR
+400,Jordan,Asia,2000,324675,JOR
+400,Jordan,Asia,2005,384315,JOR
+400,Jordan,Asia,2010,486197,JOR
+400,Jordan,Asia,2015,582220,JOR
+400,Jordan,Asia,2020,609679,JOR
+400,Jordan,Asia,2024,659204,JOR
+414,Kuwait,Asia,1990,64245,KWT
+414,Kuwait,Asia,1995,70228,KWT
+414,Kuwait,Asia,2000,79931,KWT
+414,Kuwait,Asia,2005,87761,KWT
+414,Kuwait,Asia,2010,117370,KWT
+414,Kuwait,Asia,2015,134398,KWT
+414,Kuwait,Asia,2020,149927,KWT
+414,Kuwait,Asia,2024,167850,KWT
+422,Lebanon,Asia,1990,408352,LBN
+422,Lebanon,Asia,1995,415740,LBN
+422,Lebanon,Asia,2000,467495,LBN
+422,Lebanon,Asia,2005,493327,LBN
+422,Lebanon,Asia,2010,550096,LBN
+422,Lebanon,Asia,2015,594974,LBN
+422,Lebanon,Asia,2020,631071,LBN
+422,Lebanon,Asia,2024,681720,LBN
+512,Oman,Asia,1990,10920,OMN
+512,Oman,Asia,1995,10800,OMN
+512,Oman,Asia,2000,10898,OMN
+512,Oman,Asia,2005,13313,OMN
+512,Oman,Asia,2010,14009,OMN
+512,Oman,Asia,2015,15667,OMN
+512,Oman,Asia,2020,16877,OMN
+512,Oman,Asia,2024,17095,OMN
+634,Qatar,Asia,1990,11435,QAT
+634,Qatar,Asia,1995,11463,QAT
+634,Qatar,Asia,2000,11605,QAT
+634,Qatar,Asia,2005,13249,QAT
+634,Qatar,Asia,2010,15397,QAT
+634,Qatar,Asia,2015,16605,QAT
+634,Qatar,Asia,2020,18513,QAT
+634,Qatar,Asia,2024,19821,QAT
+682,Saudi Arabia,Asia,1990,73557,SAU
+682,Saudi Arabia,Asia,1995,91112,SAU
+682,Saudi Arabia,Asia,2000,113266,SAU
+682,Saudi Arabia,Asia,2005,110937,SAU
+682,Saudi Arabia,Asia,2010,143733,SAU
+682,Saudi Arabia,Asia,2015,159958,SAU
+682,Saudi Arabia,Asia,2020,215551,SAU
+682,Saudi Arabia,Asia,2024,236699,SAU
+275,State of Palestine,Asia,1990,1824634,
+275,State of Palestine,Asia,1995,2368382,
+275,State of Palestine,Asia,2000,2851675,
+275,State of Palestine,Asia,2005,3445320,
+275,State of Palestine,Asia,2010,3493678,
+275,State of Palestine,Asia,2015,3797793,
+275,State of Palestine,Asia,2020,4072904,
+275,State of Palestine,Asia,2024,4233248,
+760,Syrian Arab Republic,Asia,1990,296211,
+760,Syrian Arab Republic,Asia,1995,342460,
+760,Syrian Arab Republic,Asia,2000,382108,
+760,Syrian Arab Republic,Asia,2005,547473,
+760,Syrian Arab Republic,Asia,2010,1265925,
+760,Syrian Arab Republic,Asia,2015,5981460,
+760,Syrian Arab Republic,Asia,2020,8652202,
+760,Syrian Arab Republic,Asia,2024,8927523,
+792,Türkiye,Asia,1990,1862302,
+792,Türkiye,Asia,1995,2388133,
+792,Türkiye,Asia,2000,2673854,
+792,Türkiye,Asia,2005,2651430,
+792,Türkiye,Asia,2010,2709646,
+792,Türkiye,Asia,2015,2727575,
+792,Türkiye,Asia,2020,2837815,
+792,Türkiye,Asia,2024,3130337,
+784,United Arab Emirates,Asia,1990,61137,ARE
+784,United Arab Emirates,Asia,1995,74060,ARE
+784,United Arab Emirates,Asia,2000,93827,ARE
+784,United Arab Emirates,Asia,2005,86261,ARE
+784,United Arab Emirates,Asia,2010,108381,ARE
+784,United Arab Emirates,Asia,2015,121499,ARE
+784,United Arab Emirates,Asia,2020,142981,ARE
+784,United Arab Emirates,Asia,2024,166074,ARE
+887,Yemen,Asia,1990,388323,YEM
+887,Yemen,Asia,1995,490575,YEM
+887,Yemen,Asia,2000,533500,YEM
+887,Yemen,Asia,2005,668381,YEM
+887,Yemen,Asia,2010,1199914,YEM
+887,Yemen,Asia,2015,2169838,YEM
+887,Yemen,Asia,2020,2240104,YEM
+887,Yemen,Asia,2024,2480734,YEM
+112,Belarus,Europe,1990,1768067,BLR
+112,Belarus,Europe,1995,1680350,BLR
+112,Belarus,Europe,2000,1599048,BLR
+112,Belarus,Europe,2005,1462091,BLR
+112,Belarus,Europe,2010,1310899,BLR
+112,Belarus,Europe,2015,1079713,BLR
+112,Belarus,Europe,2020,919469,BLR
+112,Belarus,Europe,2024,790232,BLR
+100,Bulgaria,Europe,1990,597707,BGR
+100,Bulgaria,Europe,1995,661065,BGR
+100,Bulgaria,Europe,2000,707846,BGR
+100,Bulgaria,Europe,2005,808373,BGR
+100,Bulgaria,Europe,2010,926056,BGR
+100,Bulgaria,Europe,2015,1030383,BGR
+100,Bulgaria,Europe,2020,1178732,BGR
+100,Bulgaria,Europe,2024,1252234,BGR
+203,Czechia,Europe,1990,532885,
+203,Czechia,Europe,1995,585124,
+203,Czechia,Europe,2000,615436,
+203,Czechia,Europe,2005,650527,
+203,Czechia,Europe,2010,660378,
+203,Czechia,Europe,2015,624517,
+203,Czechia,Europe,2020,584341,
+203,Czechia,Europe,2024,583214,
+348,Hungary,Europe,1990,355019,HUN
+348,Hungary,Europe,1995,363574,HUN
+348,Hungary,Europe,2000,359746,HUN
+348,Hungary,Europe,2005,357651,HUN
+348,Hungary,Europe,2010,378410,HUN
+348,Hungary,Europe,2015,469269,HUN
+348,Hungary,Europe,2020,508918,HUN
+348,Hungary,Europe,2024,538794,HUN
+616,Poland,Europe,1990,2317607,POL
+616,Poland,Europe,1995,2546193,POL
+616,Poland,Europe,2000,2502866,POL
+616,Poland,Europe,2005,2798776,POL
+616,Poland,Europe,2010,3673715,POL
+616,Poland,Europe,2015,4154666,POL
+616,Poland,Europe,2020,4365879,POL
+616,Poland,Europe,2024,4572613,POL
+498,Republic of Moldova*,Europe,1990,634901,
+498,Republic of Moldova*,Europe,1995,606003,
+498,Republic of Moldova*,Europe,2000,563893,
+498,Republic of Moldova*,Europe,2005,628876,
+498,Republic of Moldova*,Europe,2010,717352,
+498,Republic of Moldova*,Europe,2015,745934,
+498,Republic of Moldova*,Europe,2020,812653,
+498,Republic of Moldova*,Europe,2024,864257,
+642,Romania,Europe,1990,957791,ROU
+642,Romania,Europe,1995,1142520,ROU
+642,Romania,Europe,2000,1226172,ROU
+642,Romania,Europe,2005,1960907,ROU
+642,Romania,Europe,2010,2979844,ROU
+642,Romania,Europe,2015,3535273,ROU
+642,Romania,Europe,2020,4191022,ROU
+642,Romania,Europe,2024,4583819,ROU
+643,Russian Federation,Europe,1990,12427364,
+643,Russian Federation,Europe,1995,10281407,
+643,Russian Federation,Europe,2000,8879470,
+643,Russian Federation,Europe,2005,8675250,
+643,Russian Federation,Europe,2010,8545806,
+643,Russian Federation,Europe,2015,8528582,
+643,Russian Federation,Europe,2020,8747396,
+643,Russian Federation,Europe,2024,9134094,
+703,Slovakia,Europe,1990,322859,SVK
+703,Slovakia,Europe,1995,335476,SVK
+703,Slovakia,Europe,2000,352303,SVK
+703,Slovakia,Europe,2005,370695,SVK
+703,Slovakia,Europe,2010,399133,SVK
+703,Slovakia,Europe,2015,400856,SVK
+703,Slovakia,Europe,2020,394449,SVK
+703,Slovakia,Europe,2024,389909,SVK
+804,Ukraine*,Europe,1990,5528990,
+804,Ukraine*,Europe,1995,5507530,
+804,Ukraine*,Europe,2000,5483590,
+804,Ukraine*,Europe,2005,5401295,
+804,Ukraine*,Europe,2010,5179224,
+804,Ukraine*,Europe,2015,4644011,
+804,Ukraine*,Europe,2020,4353031,
+804,Ukraine*,Europe,2024,9769216,
+830,Channel Islands*,Europe,1990,285,
+830,Channel Islands*,Europe,1995,279,
+830,Channel Islands*,Europe,2000,312,
+830,Channel Islands*,Europe,2005,306,
+830,Channel Islands*,Europe,2010,381,
+830,Channel Islands*,Europe,2015,297,
+830,Channel Islands*,Europe,2020,320,
+830,Channel Islands*,Europe,2024,351,
+208,Denmark*,Europe,1990,124563,
+208,Denmark*,Europe,1995,117007,
+208,Denmark*,Europe,2000,113952,
+208,Denmark*,Europe,2005,120534,
+208,Denmark*,Europe,2010,124567,
+208,Denmark*,Europe,2015,123297,
+208,Denmark*,Europe,2020,120852,
+208,Denmark*,Europe,2024,124665,
+233,Estonia,Europe,1990,106726,EST
+233,Estonia,Europe,1995,108115,EST
+233,Estonia,Europe,2000,111603,EST
+233,Estonia,Europe,2005,115845,EST
+233,Estonia,Europe,2010,116903,EST
+233,Estonia,Europe,2015,128194,EST
+233,Estonia,Europe,2020,123628,EST
+233,Estonia,Europe,2024,124216,EST
+234,Faroe Islands*,Europe,1990,7941,
+234,Faroe Islands*,Europe,1995,12021,
+234,Faroe Islands*,Europe,2000,11640,
+234,Faroe Islands*,Europe,2005,11018,
+234,Faroe Islands*,Europe,2010,12146,
+234,Faroe Islands*,Europe,2015,13041,
+234,Faroe Islands*,Europe,2020,12048,
+234,Faroe Islands*,Europe,2024,12282,
+246,Finland*,Europe,1990,266717,
+246,Finland*,Europe,1995,255507,
+246,Finland*,Europe,2000,247766,
+246,Finland*,Europe,2005,236417,
+246,Finland*,Europe,2010,221943,
+246,Finland*,Europe,2015,209216,
+246,Finland*,Europe,2020,195782,
+246,Finland*,Europe,2024,181834,
+352,Iceland,Europe,1990,6586,ISL
+352,Iceland,Europe,1995,8745,ISL
+352,Iceland,Europe,2000,11709,ISL
+352,Iceland,Europe,2005,13497,ISL
+352,Iceland,Europe,2010,16404,ISL
+352,Iceland,Europe,2015,19596,ISL
+352,Iceland,Europe,2020,20887,ISL
+352,Iceland,Europe,2024,23326,ISL
+372,Ireland,Europe,1990,927001,IRL
+372,Ireland,Europe,1995,905239,IRL
+372,Ireland,Europe,2000,809826,IRL
+372,Ireland,Europe,2005,764001,IRL
+372,Ireland,Europe,2010,765462,IRL
+372,Ireland,Europe,2015,762324,IRL
+372,Ireland,Europe,2020,729636,IRL
+372,Ireland,Europe,2024,714405,IRL
+833,Isle of Man*,Europe,1990,699,
+833,Isle of Man*,Europe,1995,724,
+833,Isle of Man*,Europe,2000,720,
+833,Isle of Man*,Europe,2005,769,
+833,Isle of Man*,Europe,2010,889,
+833,Isle of Man*,Europe,2015,838,
+833,Isle of Man*,Europe,2020,920,
+833,Isle of Man*,Europe,2024,908,
+428,Latvia,Europe,1990,181952,LVA
+428,Latvia,Europe,1995,186182,LVA
+428,Latvia,Europe,2000,184708,LVA
+428,Latvia,Europe,2005,183414,LVA
+428,Latvia,Europe,2010,183282,LVA
+428,Latvia,Europe,2015,175523,LVA
+428,Latvia,Europe,2020,166868,LVA
+428,Latvia,Europe,2024,161014,LVA
+440,Lithuania,Europe,1990,343671,LTU
+440,Lithuania,Europe,1995,313225,LTU
+440,Lithuania,Europe,2000,287335,LTU
+440,Lithuania,Europe,2005,278878,LTU
+440,Lithuania,Europe,2010,354264,LTU
+440,Lithuania,Europe,2015,409441,LTU
+440,Lithuania,Europe,2020,437638,LTU
+440,Lithuania,Europe,2024,459268,LTU
+578,Norway*,Europe,1990,88450,
+578,Norway*,Europe,1995,84525,
+578,Norway*,Europe,2000,87049,
+578,Norway*,Europe,2005,94553,
+578,Norway*,Europe,2010,98853,
+578,Norway*,Europe,2015,101769,
+578,Norway*,Europe,2020,110143,
+578,Norway*,Europe,2024,120891,
+752,Sweden,Europe,1990,114669,SWE
+752,Sweden,Europe,1995,121543,SWE
+752,Sweden,Europe,2000,139034,SWE
+752,Sweden,Europe,2005,153310,SWE
+752,Sweden,Europe,2010,177468,SWE
+752,Sweden,Europe,2015,190827,SWE
+752,Sweden,Europe,2020,200769,SWE
+752,Sweden,Europe,2024,223508,SWE
+826,United Kingdom*,Europe,1990,3869251,
+826,United Kingdom*,Europe,1995,3958015,
+826,United Kingdom*,Europe,2000,3965079,
+826,United Kingdom*,Europe,2005,4236414,
+826,United Kingdom*,Europe,2010,4535077,
+826,United Kingdom*,Europe,2015,4583485,
+826,United Kingdom*,Europe,2020,4710579,
+826,United Kingdom*,Europe,2024,4804944,
+8,Albania,Europe,1990,178747,ALB
+8,Albania,Europe,1995,394084,ALB
+8,Albania,Europe,2000,629192,ALB
+8,Albania,Europe,2005,784369,ALB
+8,Albania,Europe,2010,962514,ALB
+8,Albania,Europe,2015,985561,ALB
+8,Albania,Europe,2020,1103849,ALB
+8,Albania,Europe,2024,1216628,ALB
+20,Andorra,Europe,1990,143,AND
+20,Andorra,Europe,1995,283,AND
+20,Andorra,Europe,2000,436,AND
+20,Andorra,Europe,2005,448,AND
+20,Andorra,Europe,2010,1213,AND
+20,Andorra,Europe,2015,1467,AND
+20,Andorra,Europe,2020,1751,AND
+20,Andorra,Europe,2024,1982,AND
+70,Bosnia and Herzegovina,Europe,1990,1108999,BIH
+70,Bosnia and Herzegovina,Europe,1995,1705561,BIH
+70,Bosnia and Herzegovina,Europe,2000,1624537,BIH
+70,Bosnia and Herzegovina,Europe,2005,1494812,BIH
+70,Bosnia and Herzegovina,Europe,2010,1481062,BIH
+70,Bosnia and Herzegovina,Europe,2015,1477261,BIH
+70,Bosnia and Herzegovina,Europe,2020,1542552,BIH
+70,Bosnia and Herzegovina,Europe,2024,1608324,BIH
+191,Croatia,Europe,1990,840829,HRV
+191,Croatia,Europe,1995,1056934,HRV
+191,Croatia,Europe,2000,1196319,HRV
+191,Croatia,Europe,2005,990980,HRV
+191,Croatia,Europe,2010,847561,HRV
+191,Croatia,Europe,2015,802347,HRV
+191,Croatia,Europe,2020,825039,HRV
+191,Croatia,Europe,2024,826166,HRV
+292,Gibraltar*,Europe,1990,477,
+292,Gibraltar*,Europe,1995,486,
+292,Gibraltar*,Europe,2000,502,
+292,Gibraltar*,Europe,2005,510,
+292,Gibraltar*,Europe,2010,511,
+292,Gibraltar*,Europe,2015,517,
+292,Gibraltar*,Europe,2020,494,
+292,Gibraltar*,Europe,2024,474,
+300,Greece,Europe,1990,878261,GRC
+300,Greece,Europe,1995,854601,GRC
+300,Greece,Europe,2000,857066,GRC
+300,Greece,Europe,2005,768388,GRC
+300,Greece,Europe,2010,703538,GRC
+300,Greece,Europe,2015,759916,GRC
+300,Greece,Europe,2020,775995,GRC
+300,Greece,Europe,2024,780112,GRC
+336,Holy See*,Europe,1990,22,
+336,Holy See*,Europe,1995,30,
+336,Holy See*,Europe,2000,41,
+336,Holy See*,Europe,2005,52,
+336,Holy See*,Europe,2010,74,
+336,Holy See*,Europe,2015,128,
+336,Holy See*,Europe,2020,284,
+336,Holy See*,Europe,2024,313,
+380,Italy,Europe,1990,3354372,ITA
+380,Italy,Europe,1995,3154012,ITA
+380,Italy,Europe,2000,2998648,ITA
+380,Italy,Europe,2005,2751018,ITA
+380,Italy,Europe,2010,2666862,ITA
+380,Italy,Europe,2015,2756727,ITA
+380,Italy,Europe,2020,2886481,ITA
+380,Italy,Europe,2024,2941444,ITA
+470,Malta,Europe,1990,66353,MLT
+470,Malta,Europe,1995,67484,MLT
+470,Malta,Europe,2000,64124,MLT
+470,Malta,Europe,2005,61981,MLT
+470,Malta,Europe,2010,58858,MLT
+470,Malta,Europe,2015,54505,MLT
+470,Malta,Europe,2020,49061,MLT
+470,Malta,Europe,2024,43940,MLT
+499,Montenegro,Europe,1990,108639,MNE
+499,Montenegro,Europe,1995,106877,MNE
+499,Montenegro,Europe,2000,102948,MNE
+499,Montenegro,Europe,2005,98615,MNE
+499,Montenegro,Europe,2010,100961,MNE
+499,Montenegro,Europe,2015,102965,MNE
+499,Montenegro,Europe,2020,94731,MNE
+499,Montenegro,Europe,2024,90678,MNE
+807,North Macedonia,Europe,1990,398374,MKD
+807,North Macedonia,Europe,1995,411470,MKD
+807,North Macedonia,Europe,2000,424184,MKD
+807,North Macedonia,Europe,2005,428969,MKD
+807,North Macedonia,Europe,2010,430535,MKD
+807,North Macedonia,Europe,2015,437223,MKD
+807,North Macedonia,Europe,2020,485263,MKD
+807,North Macedonia,Europe,2024,534616,MKD
+620,Portugal,Europe,1990,1589830,PRT
+620,Portugal,Europe,1995,1540545,PRT
+620,Portugal,Europe,2000,1554095,PRT
+620,Portugal,Europe,2005,1622764,PRT
+620,Portugal,Europe,2010,1727839,PRT
+620,Portugal,Europe,2015,1801647,PRT
+620,Portugal,Europe,2020,1729500,PRT
+620,Portugal,Europe,2024,1799179,PRT
+674,San Marino,Europe,1990,2457,SMR
+674,San Marino,Europe,1995,2382,SMR
+674,San Marino,Europe,2000,2237,SMR
+674,San Marino,Europe,2005,2080,SMR
+674,San Marino,Europe,2010,1954,SMR
+674,San Marino,Europe,2015,1866,SMR
+674,San Marino,Europe,2020,2433,SMR
+674,San Marino,Europe,2024,1991,SMR
+688,Serbia*,Europe,1990,366262,
+688,Serbia*,Europe,1995,428537,
+688,Serbia*,Europe,2000,476586,
+688,Serbia*,Europe,2005,510878,
+688,Serbia*,Europe,2010,620292,
+688,Serbia*,Europe,2015,775447,
+688,Serbia*,Europe,2020,859370,
+688,Serbia*,Europe,2024,963307,
+705,Slovenia,Europe,1990,112702,SVN
+705,Slovenia,Europe,1995,124463,SVN
+705,Slovenia,Europe,2000,107988,SVN
+705,Slovenia,Europe,2005,94891,SVN
+705,Slovenia,Europe,2010,91568,SVN
+705,Slovenia,Europe,2015,91655,SVN
+705,Slovenia,Europe,2020,81068,SVN
+705,Slovenia,Europe,2024,78808,SVN
+724,Spain*,Europe,1990,1374696,
+724,Spain*,Europe,1995,1238438,
+724,Spain*,Europe,2000,1177275,
+724,Spain*,Europe,2005,1126330,
+724,Spain*,Europe,2010,1138608,
+724,Spain*,Europe,2015,1307006,
+724,Spain*,Europe,2020,1471585,
+724,Spain*,Europe,2024,1623550,
+40,Austria,Europe,1990,433951,AUT
+40,Austria,Europe,1995,418616,AUT
+40,Austria,Europe,2000,414141,AUT
+40,Austria,Europe,2005,408939,AUT
+40,Austria,Europe,2010,409023,AUT
+40,Austria,Europe,2015,411144,AUT
+40,Austria,Europe,2020,424072,AUT
+40,Austria,Europe,2024,430560,AUT
+56,Belgium,Europe,1990,312709,BEL
+56,Belgium,Europe,1995,305533,BEL
+56,Belgium,Europe,2000,313188,BEL
+56,Belgium,Europe,2005,374297,BEL
+56,Belgium,Europe,2010,405732,BEL
+56,Belgium,Europe,2015,438560,BEL
+56,Belgium,Europe,2020,482561,BEL
+56,Belgium,Europe,2024,521884,BEL
+250,France*,Europe,1990,1413608,
+250,France*,Europe,1995,1629553,
+250,France*,Europe,2000,1721390,
+250,France*,Europe,2005,1855042,
+250,France*,Europe,2010,2042164,
+250,France*,Europe,2015,2249670,
+250,France*,Europe,2020,2400208,
+250,France*,Europe,2024,2547158,
+276,Germany,Europe,1990,3870620,DEU
+276,Germany,Europe,1995,4825017,DEU
+276,Germany,Europe,2000,4107120,DEU
+276,Germany,Europe,2005,4078804,DEU
+276,Germany,Europe,2010,4260810,DEU
+276,Germany,Europe,2015,4207460,DEU
+276,Germany,Europe,2020,4204441,DEU
+276,Germany,Europe,2024,4297233,DEU
+438,Liechtenstein,Europe,1990,22,LIE
+438,Liechtenstein,Europe,1995,28,LIE
+438,Liechtenstein,Europe,2000,52,LIE
+438,Liechtenstein,Europe,2005,154,LIE
+438,Liechtenstein,Europe,2010,264,LIE
+438,Liechtenstein,Europe,2015,293,LIE
+438,Liechtenstein,Europe,2020,314,LIE
+438,Liechtenstein,Europe,2024,346,LIE
+442,Luxembourg,Europe,1990,27725,LUX
+442,Luxembourg,Europe,1995,29087,LUX
+442,Luxembourg,Europe,2000,30943,LUX
+442,Luxembourg,Europe,2005,33941,LUX
+442,Luxembourg,Europe,2010,36675,LUX
+442,Luxembourg,Europe,2015,41099,LUX
+442,Luxembourg,Europe,2020,43235,LUX
+442,Luxembourg,Europe,2024,61859,LUX
+492,Monaco,Europe,1990,15534,MCO
+492,Monaco,Europe,1995,15692,MCO
+492,Monaco,Europe,2000,16367,MCO
+492,Monaco,Europe,2005,19616,MCO
+492,Monaco,Europe,2010,26148,MCO
+492,Monaco,Europe,2015,28636,MCO
+492,Monaco,Europe,2020,33812,MCO
+492,Monaco,Europe,2024,36682,MCO
+528,Netherlands*,Europe,1990,482951,
+528,Netherlands*,Europe,1995,500299,
+528,Netherlands*,Europe,2000,515256,
+528,Netherlands*,Europe,2005,560613,
+528,Netherlands*,Europe,2010,597525,
+528,Netherlands*,Europe,2015,594329,
+528,Netherlands*,Europe,2020,599736,
+528,Netherlands*,Europe,2024,631391,
+756,Switzerland,Europe,1990,396651,CHE
+756,Switzerland,Europe,1995,420665,CHE
+756,Switzerland,Europe,2000,440639,CHE
+756,Switzerland,Europe,2005,467978,CHE
+756,Switzerland,Europe,2010,491884,CHE
+756,Switzerland,Europe,2015,499929,CHE
+756,Switzerland,Europe,2020,507043,CHE
+756,Switzerland,Europe,2024,512547,CHE
+660,Anguilla*,Latin America and the Caribbean,1990,2262,
+660,Anguilla*,Latin America and the Caribbean,1995,2205,
+660,Anguilla*,Latin America and the Caribbean,2000,2158,
+660,Anguilla*,Latin America and the Caribbean,2005,1776,
+660,Anguilla*,Latin America and the Caribbean,2010,1719,
+660,Anguilla*,Latin America and the Caribbean,2015,1572,
+660,Anguilla*,Latin America and the Caribbean,2020,1561,
+660,Anguilla*,Latin America and the Caribbean,2024,1614,
+28,Antigua and Barbuda,Latin America and the Caribbean,1990,7368,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,1995,7792,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2000,8297,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2005,7978,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2010,8143,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2015,12860,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2020,12999,ATG
+28,Antigua and Barbuda,Latin America and the Caribbean,2024,13111,ATG
+533,Aruba*,Latin America and the Caribbean,1990,4564,
+533,Aruba*,Latin America and the Caribbean,1995,4844,
+533,Aruba*,Latin America and the Caribbean,2000,5433,
+533,Aruba*,Latin America and the Caribbean,2005,5447,
+533,Aruba*,Latin America and the Caribbean,2010,7117,
+533,Aruba*,Latin America and the Caribbean,2015,9011,
+533,Aruba*,Latin America and the Caribbean,2020,16628,
+533,Aruba*,Latin America and the Caribbean,2024,29305,
+44,Bahamas,Latin America and the Caribbean,1990,2074,BHS
+44,Bahamas,Latin America and the Caribbean,1995,2064,BHS
+44,Bahamas,Latin America and the Caribbean,2000,2139,BHS
+44,Bahamas,Latin America and the Caribbean,2005,1985,BHS
+44,Bahamas,Latin America and the Caribbean,2010,1867,BHS
+44,Bahamas,Latin America and the Caribbean,2015,1955,BHS
+44,Bahamas,Latin America and the Caribbean,2020,2042,BHS
+44,Bahamas,Latin America and the Caribbean,2024,2174,BHS
+52,Barbados,Latin America and the Caribbean,1990,20659,BRB
+52,Barbados,Latin America and the Caribbean,1995,20592,BRB
+52,Barbados,Latin America and the Caribbean,2000,20249,BRB
+52,Barbados,Latin America and the Caribbean,2005,20961,BRB
+52,Barbados,Latin America and the Caribbean,2010,20844,BRB
+52,Barbados,Latin America and the Caribbean,2015,20504,BRB
+52,Barbados,Latin America and the Caribbean,2020,19564,BRB
+52,Barbados,Latin America and the Caribbean,2024,19558,BRB
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,1990,2852,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,1995,2947,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2000,3052,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2005,3016,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2010,2883,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2015,3100,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2020,3524,
+535,"Bonaire, Sint Eustatius and Saba*",Latin America and the Caribbean,2024,4744,
+92,British Virgin Islands*,Latin America and the Caribbean,1990,3832,
+92,British Virgin Islands*,Latin America and the Caribbean,1995,3930,
+92,British Virgin Islands*,Latin America and the Caribbean,2000,4053,
+92,British Virgin Islands*,Latin America and the Caribbean,2005,3678,
+92,British Virgin Islands*,Latin America and the Caribbean,2010,4534,
+92,British Virgin Islands*,Latin America and the Caribbean,2015,4874,
+92,British Virgin Islands*,Latin America and the Caribbean,2020,5543,
+92,British Virgin Islands*,Latin America and the Caribbean,2024,6185,
+136,Cayman Islands*,Latin America and the Caribbean,1990,125,
+136,Cayman Islands*,Latin America and the Caribbean,1995,130,
+136,Cayman Islands*,Latin America and the Caribbean,2000,146,
+136,Cayman Islands*,Latin America and the Caribbean,2005,179,
+136,Cayman Islands*,Latin America and the Caribbean,2010,248,
+136,Cayman Islands*,Latin America and the Caribbean,2015,381,
+136,Cayman Islands*,Latin America and the Caribbean,2020,549,
+136,Cayman Islands*,Latin America and the Caribbean,2024,609,
+192,Cuba,Latin America and the Caribbean,1990,839585,CUB
+192,Cuba,Latin America and the Caribbean,1995,917722,CUB
+192,Cuba,Latin America and the Caribbean,2000,1032762,CUB
+192,Cuba,Latin America and the Caribbean,2005,1093555,CUB
+192,Cuba,Latin America and the Caribbean,2010,1337631,CUB
+192,Cuba,Latin America and the Caribbean,2015,1519397,CUB
+192,Cuba,Latin America and the Caribbean,2020,1721822,CUB
+192,Cuba,Latin America and the Caribbean,2024,1879613,CUB
+531,Curaçao*,Latin America and the Caribbean,1990,3029,
+531,Curaçao*,Latin America and the Caribbean,1995,3779,
+531,Curaçao*,Latin America and the Caribbean,2000,4701,
+531,Curaçao*,Latin America and the Caribbean,2005,4329,
+531,Curaçao*,Latin America and the Caribbean,2010,5354,
+531,Curaçao*,Latin America and the Caribbean,2015,5861,
+531,Curaçao*,Latin America and the Caribbean,2020,7666,
+531,Curaçao*,Latin America and the Caribbean,2024,10103,
+212,Dominica,Latin America and the Caribbean,1990,18686,DMA
+212,Dominica,Latin America and the Caribbean,1995,20457,DMA
+212,Dominica,Latin America and the Caribbean,2000,22406,DMA
+212,Dominica,Latin America and the Caribbean,2005,21077,DMA
+212,Dominica,Latin America and the Caribbean,2010,20788,DMA
+212,Dominica,Latin America and the Caribbean,2015,21079,DMA
+212,Dominica,Latin America and the Caribbean,2020,20838,DMA
+212,Dominica,Latin America and the Caribbean,2024,21384,DMA
+214,Dominican Republic,Latin America and the Caribbean,1990,462285,DOM
+214,Dominican Republic,Latin America and the Caribbean,1995,657381,DOM
+214,Dominican Republic,Latin America and the Caribbean,2000,845469,DOM
+214,Dominican Republic,Latin America and the Caribbean,2005,962450,DOM
+214,Dominican Republic,Latin America and the Caribbean,2010,1212240,DOM
+214,Dominican Republic,Latin America and the Caribbean,2015,1454378,DOM
+214,Dominican Republic,Latin America and the Caribbean,2020,1691232,DOM
+214,Dominican Republic,Latin America and the Caribbean,2024,1917153,DOM
+308,Grenada,Latin America and the Caribbean,1990,23961,GRD
+308,Grenada,Latin America and the Caribbean,1995,23988,GRD
+308,Grenada,Latin America and the Caribbean,2000,22073,GRD
+308,Grenada,Latin America and the Caribbean,2005,23589,GRD
+308,Grenada,Latin America and the Caribbean,2010,21140,GRD
+308,Grenada,Latin America and the Caribbean,2015,21750,GRD
+308,Grenada,Latin America and the Caribbean,2020,22210,GRD
+308,Grenada,Latin America and the Caribbean,2024,26300,GRD
+312,Guadeloupe*,Latin America and the Caribbean,1990,7510,
+312,Guadeloupe*,Latin America and the Caribbean,1995,8368,
+312,Guadeloupe*,Latin America and the Caribbean,2000,9237,
+312,Guadeloupe*,Latin America and the Caribbean,2005,8488,
+312,Guadeloupe*,Latin America and the Caribbean,2010,10282,
+312,Guadeloupe*,Latin America and the Caribbean,2015,11416,
+312,Guadeloupe*,Latin America and the Caribbean,2020,11909,
+312,Guadeloupe*,Latin America and the Caribbean,2024,12374,
+332,Haiti,Latin America and the Caribbean,1990,521381,HTI
+332,Haiti,Latin America and the Caribbean,1995,686087,HTI
+332,Haiti,Latin America and the Caribbean,2000,821140,HTI
+332,Haiti,Latin America and the Caribbean,2005,958254,HTI
+332,Haiti,Latin America and the Caribbean,2010,1157011,HTI
+332,Haiti,Latin America and the Caribbean,2015,1467970,HTI
+332,Haiti,Latin America and the Caribbean,2020,1764699,HTI
+332,Haiti,Latin America and the Caribbean,2024,2017692,HTI
+388,Jamaica,Latin America and the Caribbean,1990,611422,JAM
+388,Jamaica,Latin America and the Caribbean,1995,811937,JAM
+388,Jamaica,Latin America and the Caribbean,2000,833377,JAM
+388,Jamaica,Latin America and the Caribbean,2005,895828,JAM
+388,Jamaica,Latin America and the Caribbean,2010,1005109,JAM
+388,Jamaica,Latin America and the Caribbean,2015,1084528,JAM
+388,Jamaica,Latin America and the Caribbean,2020,1175941,JAM
+388,Jamaica,Latin America and the Caribbean,2024,1248512,JAM
+474,Martinique*,Latin America and the Caribbean,1990,10837,
+474,Martinique*,Latin America and the Caribbean,1995,12302,
+474,Martinique*,Latin America and the Caribbean,2000,13801,
+474,Martinique*,Latin America and the Caribbean,2005,13941,
+474,Martinique*,Latin America and the Caribbean,2010,14145,
+474,Martinique*,Latin America and the Caribbean,2015,12097,
+474,Martinique*,Latin America and the Caribbean,2020,12498,
+474,Martinique*,Latin America and the Caribbean,2024,12893,
+500,Montserrat*,Latin America and the Caribbean,1990,2006,
+500,Montserrat*,Latin America and the Caribbean,1995,2272,
+500,Montserrat*,Latin America and the Caribbean,2000,2575,
+500,Montserrat*,Latin America and the Caribbean,2005,2791,
+500,Montserrat*,Latin America and the Caribbean,2010,2993,
+500,Montserrat*,Latin America and the Caribbean,2015,3134,
+500,Montserrat*,Latin America and the Caribbean,2020,3239,
+500,Montserrat*,Latin America and the Caribbean,2024,3341,
+630,Puerto Rico*,Latin America and the Caribbean,1990,922587,
+630,Puerto Rico*,Latin America and the Caribbean,1995,1043769,
+630,Puerto Rico*,Latin America and the Caribbean,2000,1181295,
+630,Puerto Rico*,Latin America and the Caribbean,2005,1357565,
+630,Puerto Rico*,Latin America and the Caribbean,2010,1554887,
+630,Puerto Rico*,Latin America and the Caribbean,2015,1708615,
+630,Puerto Rico*,Latin America and the Caribbean,2020,1886872,
+630,Puerto Rico*,Latin America and the Caribbean,2024,1948223,
+659,Saint Kitts and Nevis,Latin America and the Caribbean,1990,9854,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,1995,10825,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2000,11826,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2005,12011,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2010,11543,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2015,12179,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2020,13154,KNA
+659,Saint Kitts and Nevis,Latin America and the Caribbean,2024,13872,KNA
+662,Saint Lucia,Latin America and the Caribbean,1990,14018,LCA
+662,Saint Lucia,Latin America and the Caribbean,1995,15676,LCA
+662,Saint Lucia,Latin America and the Caribbean,2000,17419,LCA
+662,Saint Lucia,Latin America and the Caribbean,2005,17110,LCA
+662,Saint Lucia,Latin America and the Caribbean,2010,17985,LCA
+662,Saint Lucia,Latin America and the Caribbean,2015,19620,LCA
+662,Saint Lucia,Latin America and the Caribbean,2020,20127,LCA
+662,Saint Lucia,Latin America and the Caribbean,2024,21706,LCA
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,1990,23344,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,1995,24675,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2000,25484,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2005,26574,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2010,26840,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2015,29222,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2020,30568,VCT
+670,Saint Vincent and the Grenadines,Latin America and the Caribbean,2024,35264,VCT
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,1990,1108,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,1995,1320,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2000,1594,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2005,1655,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2010,1698,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2015,1793,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2020,1945,
+534,Sint Maarten (Dutch part)*,Latin America and the Caribbean,2024,2464,
+780,Trinidad and Tobago,Latin America and the Caribbean,1990,181630,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,1995,188536,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2000,281792,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2005,291912,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2010,314851,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2015,323450,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2020,310552,TTO
+780,Trinidad and Tobago,Latin America and the Caribbean,2024,323630,TTO
+796,Turks and Caicos Islands*,Latin America and the Caribbean,1990,2246,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,1995,1431,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2000,595,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2005,1039,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2010,2009,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2015,2251,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2020,2470,
+796,Turks and Caicos Islands*,Latin America and the Caribbean,2024,2663,
+850,United States Virgin Islands*,Latin America and the Caribbean,1990,2348,
+850,United States Virgin Islands*,Latin America and the Caribbean,1995,3012,
+850,United States Virgin Islands*,Latin America and the Caribbean,2000,3728,
+850,United States Virgin Islands*,Latin America and the Caribbean,2005,3474,
+850,United States Virgin Islands*,Latin America and the Caribbean,2010,3555,
+850,United States Virgin Islands*,Latin America and the Caribbean,2015,3795,
+850,United States Virgin Islands*,Latin America and the Caribbean,2020,3840,
+850,United States Virgin Islands*,Latin America and the Caribbean,2024,4047,
+84,Belize,Latin America and the Caribbean,1990,3528,BLZ
+84,Belize,Latin America and the Caribbean,1995,3627,BLZ
+84,Belize,Latin America and the Caribbean,2000,3849,BLZ
+84,Belize,Latin America and the Caribbean,2005,4380,BLZ
+84,Belize,Latin America and the Caribbean,2010,5247,BLZ
+84,Belize,Latin America and the Caribbean,2015,5970,BLZ
+84,Belize,Latin America and the Caribbean,2020,6694,BLZ
+84,Belize,Latin America and the Caribbean,2024,7383,BLZ
+188,Costa Rica,Latin America and the Caribbean,1990,22922,CRI
+188,Costa Rica,Latin America and the Caribbean,1995,22763,CRI
+188,Costa Rica,Latin America and the Caribbean,2000,26493,CRI
+188,Costa Rica,Latin America and the Caribbean,2005,30258,CRI
+188,Costa Rica,Latin America and the Caribbean,2010,34241,CRI
+188,Costa Rica,Latin America and the Caribbean,2015,39023,CRI
+188,Costa Rica,Latin America and the Caribbean,2020,43504,CRI
+188,Costa Rica,Latin America and the Caribbean,2024,50982,CRI
+222,El Salvador,Latin America and the Caribbean,1990,955569,SLV
+222,El Salvador,Latin America and the Caribbean,1995,1005420,SLV
+222,El Salvador,Latin America and the Caribbean,2000,906731,SLV
+222,El Salvador,Latin America and the Caribbean,2005,1108043,SLV
+222,El Salvador,Latin America and the Caribbean,2010,1359464,SLV
+222,El Salvador,Latin America and the Caribbean,2015,1541873,SLV
+222,El Salvador,Latin America and the Caribbean,2020,1679667,SLV
+222,El Salvador,Latin America and the Caribbean,2024,1834670,SLV
+320,Guatemala,Latin America and the Caribbean,1990,323376,GTM
+320,Guatemala,Latin America and the Caribbean,1995,429957,GTM
+320,Guatemala,Latin America and the Caribbean,2000,545695,GTM
+320,Guatemala,Latin America and the Caribbean,2005,737245,GTM
+320,Guatemala,Latin America and the Caribbean,2010,919782,GTM
+320,Guatemala,Latin America and the Caribbean,2015,1067787,GTM
+320,Guatemala,Latin America and the Caribbean,2020,1282668,GTM
+320,Guatemala,Latin America and the Caribbean,2024,1460232,GTM
+340,Honduras,Latin America and the Caribbean,1990,157813,HND
+340,Honduras,Latin America and the Caribbean,1995,235452,HND
+340,Honduras,Latin America and the Caribbean,2000,316051,HND
+340,Honduras,Latin America and the Caribbean,2005,456501,HND
+340,Honduras,Latin America and the Caribbean,2010,604765,HND
+340,Honduras,Latin America and the Caribbean,2015,751534,HND
+340,Honduras,Latin America and the Caribbean,2020,1060598,HND
+340,Honduras,Latin America and the Caribbean,2024,1397584,HND
+484,Mexico,Latin America and the Caribbean,1990,4588874,MEX
+484,Mexico,Latin America and the Caribbean,1995,7165639,MEX
+484,Mexico,Latin America and the Caribbean,2000,9367663,MEX
+484,Mexico,Latin America and the Caribbean,2005,11329536,MEX
+484,Mexico,Latin America and the Caribbean,2010,12108928,MEX
+484,Mexico,Latin America and the Caribbean,2015,12184226,MEX
+484,Mexico,Latin America and the Caribbean,2020,11452717,MEX
+484,Mexico,Latin America and the Caribbean,2024,11596529,MEX
+558,Nicaragua,Latin America and the Caribbean,1990,445757,NIC
+558,Nicaragua,Latin America and the Caribbean,1995,487148,NIC
+558,Nicaragua,Latin America and the Caribbean,2000,494067,NIC
+558,Nicaragua,Latin America and the Caribbean,2005,545324,NIC
+558,Nicaragua,Latin America and the Caribbean,2010,609093,NIC
+558,Nicaragua,Latin America and the Caribbean,2015,633892,NIC
+558,Nicaragua,Latin America and the Caribbean,2020,749552,NIC
+558,Nicaragua,Latin America and the Caribbean,2024,905251,NIC
+591,Panama,Latin America and the Caribbean,1990,144087,PAN
+591,Panama,Latin America and the Caribbean,1995,131983,PAN
+591,Panama,Latin America and the Caribbean,2000,166111,PAN
+591,Panama,Latin America and the Caribbean,2005,167840,PAN
+591,Panama,Latin America and the Caribbean,2010,173244,PAN
+591,Panama,Latin America and the Caribbean,2015,177743,PAN
+591,Panama,Latin America and the Caribbean,2020,179794,PAN
+591,Panama,Latin America and the Caribbean,2024,194816,PAN
+32,Argentina,Latin America and the Caribbean,1990,406466,ARG
+32,Argentina,Latin America and the Caribbean,1995,445110,ARG
+32,Argentina,Latin America and the Caribbean,2000,571985,ARG
+32,Argentina,Latin America and the Caribbean,2005,824076,ARG
+32,Argentina,Latin America and the Caribbean,2010,877341,ARG
+32,Argentina,Latin America and the Caribbean,2015,895980,ARG
+32,Argentina,Latin America and the Caribbean,2020,1014400,ARG
+32,Argentina,Latin America and the Caribbean,2024,1183381,ARG
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,1990,199843,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,1995,236253,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2000,281557,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2005,456266,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2010,648912,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2015,646591,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2020,744014,
+68,Bolivia (Plurinational State of),Latin America and the Caribbean,2024,783473,
+76,Brazil,Latin America and the Caribbean,1990,446721,BRA
+76,Brazil,Latin America and the Caribbean,1995,626103,BRA
+76,Brazil,Latin America and the Caribbean,2000,902341,BRA
+76,Brazil,Latin America and the Caribbean,2005,1215342,BRA
+76,Brazil,Latin America and the Caribbean,2010,1365997,BRA
+76,Brazil,Latin America and the Caribbean,2015,1402267,BRA
+76,Brazil,Latin America and the Caribbean,2020,1854912,BRA
+76,Brazil,Latin America and the Caribbean,2024,2194325,BRA
+152,Chile,Latin America and the Caribbean,1990,390979,CHL
+152,Chile,Latin America and the Caribbean,1995,391356,CHL
+152,Chile,Latin America and the Caribbean,2000,393879,CHL
+152,Chile,Latin America and the Caribbean,2005,419855,CHL
+152,Chile,Latin America and the Caribbean,2010,435797,CHL
+152,Chile,Latin America and the Caribbean,2015,419035,CHL
+152,Chile,Latin America and the Caribbean,2020,423400,CHL
+152,Chile,Latin America and the Caribbean,2024,444451,CHL
+170,Colombia,Latin America and the Caribbean,1990,1000769,COL
+170,Colombia,Latin America and the Caribbean,1995,1181011,COL
+170,Colombia,Latin America and the Caribbean,2000,1469973,COL
+170,Colombia,Latin America and the Caribbean,2005,1823207,COL
+170,Colombia,Latin America and the Caribbean,2010,2558298,COL
+170,Colombia,Latin America and the Caribbean,2015,2720321,COL
+170,Colombia,Latin America and the Caribbean,2020,3165293,COL
+170,Colombia,Latin America and the Caribbean,2024,3652238,COL
+218,Ecuador,Latin America and the Caribbean,1990,209258,ECU
+218,Ecuador,Latin America and the Caribbean,1995,316260,ECU
+218,Ecuador,Latin America and the Caribbean,2000,510456,ECU
+218,Ecuador,Latin America and the Caribbean,2005,935700,ECU
+218,Ecuador,Latin America and the Caribbean,2010,1122949,ECU
+218,Ecuador,Latin America and the Caribbean,2015,1066457,ECU
+218,Ecuador,Latin America and the Caribbean,2020,1118570,ECU
+218,Ecuador,Latin America and the Caribbean,2024,1243065,ECU
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,1990,1082,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,1995,1839,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2000,1525,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2005,1100,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2010,414,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2015,193,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2020,106,
+238,Falkland Islands (Malvinas)*,Latin America and the Caribbean,2024,93,
+254,French Guiana*,Latin America and the Caribbean,1990,3047,
+254,French Guiana*,Latin America and the Caribbean,1995,3257,
+254,French Guiana*,Latin America and the Caribbean,2000,3554,
+254,French Guiana*,Latin America and the Caribbean,2005,3694,
+254,French Guiana*,Latin America and the Caribbean,2010,3815,
+254,French Guiana*,Latin America and the Caribbean,2015,4106,
+254,French Guiana*,Latin America and the Caribbean,2020,4128,
+254,French Guiana*,Latin America and the Caribbean,2024,4490,
+328,Guyana,Latin America and the Caribbean,1990,217690,GUY
+328,Guyana,Latin America and the Caribbean,1995,244138,GUY
+328,Guyana,Latin America and the Caribbean,2000,341369,GUY
+328,Guyana,Latin America and the Caribbean,2005,386766,GUY
+328,Guyana,Latin America and the Caribbean,2010,404368,GUY
+328,Guyana,Latin America and the Caribbean,2015,429943,GUY
+328,Guyana,Latin America and the Caribbean,2020,429266,GUY
+328,Guyana,Latin America and the Caribbean,2024,469649,GUY
+600,Paraguay,Latin America and the Caribbean,1990,321268,PRY
+600,Paraguay,Latin America and the Caribbean,1995,341859,PRY
+600,Paraguay,Latin America and the Caribbean,2000,364636,PRY
+600,Paraguay,Latin America and the Caribbean,2005,476193,PRY
+600,Paraguay,Latin America and the Caribbean,2010,681322,PRY
+600,Paraguay,Latin America and the Caribbean,2015,674976,PRY
+600,Paraguay,Latin America and the Caribbean,2020,708390,PRY
+600,Paraguay,Latin America and the Caribbean,2024,746362,PRY
+604,Peru,Latin America and the Caribbean,1990,302008,PER
+604,Peru,Latin America and the Caribbean,1995,478308,PER
+604,Peru,Latin America and the Caribbean,2000,634278,PER
+604,Peru,Latin America and the Caribbean,2005,914622,PER
+604,Peru,Latin America and the Caribbean,2010,1231719,PER
+604,Peru,Latin America and the Caribbean,2015,1314688,PER
+604,Peru,Latin America and the Caribbean,2020,1460493,PER
+604,Peru,Latin America and the Caribbean,2024,1672482,PER
+740,Suriname,Latin America and the Caribbean,1990,201053,SUR
+740,Suriname,Latin America and the Caribbean,1995,214997,SUR
+740,Suriname,Latin America and the Caribbean,2000,224382,SUR
+740,Suriname,Latin America and the Caribbean,2005,240484,SUR
+740,Suriname,Latin America and the Caribbean,2010,243661,SUR
+740,Suriname,Latin America and the Caribbean,2015,238769,SUR
+740,Suriname,Latin America and the Caribbean,2020,250122,SUR
+740,Suriname,Latin America and the Caribbean,2024,258026,SUR
+858,Uruguay,Latin America and the Caribbean,1990,178551,URY
+858,Uruguay,Latin America and the Caribbean,1995,186030,URY
+858,Uruguay,Latin America and the Caribbean,2000,202378,URY
+858,Uruguay,Latin America and the Caribbean,2005,256391,URY
+858,Uruguay,Latin America and the Caribbean,2010,272665,URY
+858,Uruguay,Latin America and the Caribbean,2015,256293,URY
+858,Uruguay,Latin America and the Caribbean,2020,259028,URY
+858,Uruguay,Latin America and the Caribbean,2024,263285,URY
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,1990,216183,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,1995,248789,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2000,338356,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2005,451384,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2010,550930,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2015,760196,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2020,5477198,
+862,Venezuela (Bolivarian Republic of),Latin America and the Caribbean,2024,8328514,
+60,Bermuda*,North America,1990,433,
+60,Bermuda*,North America,1995,473,
+60,Bermuda*,North America,2000,537,
+60,Bermuda*,North America,2005,638,
+60,Bermuda*,North America,2010,748,
+60,Bermuda*,North America,2015,871,
+60,Bermuda*,North America,2020,1051,
+60,Bermuda*,North America,2024,1100,
+124,Canada,North America,1990,1114493,CAN
+124,Canada,North America,1995,1273577,CAN
+124,Canada,North America,2000,1248046,CAN
+124,Canada,North America,2005,1255998,CAN
+124,Canada,North America,2010,1255259,CAN
+124,Canada,North America,2015,1307957,CAN
+124,Canada,North America,2020,1310121,CAN
+124,Canada,North America,2024,1347381,CAN
+304,Greenland*,North America,1990,10313,
+304,Greenland*,North America,1995,11442,
+304,Greenland*,North America,2000,12905,
+304,Greenland*,North America,2005,13706,
+304,Greenland*,North America,2010,15437,
+304,Greenland*,North America,2015,16944,
+304,Greenland*,North America,2020,17726,
+304,Greenland*,North America,2024,18491,
+666,Saint Pierre and Miquelon*,North America,1990,61,
+666,Saint Pierre and Miquelon*,North America,1995,85,
+666,Saint Pierre and Miquelon*,North America,2000,112,
+666,Saint Pierre and Miquelon*,North America,2005,106,
+666,Saint Pierre and Miquelon*,North America,2010,105,
+666,Saint Pierre and Miquelon*,North America,2015,111,
+666,Saint Pierre and Miquelon*,North America,2020,122,
+666,Saint Pierre and Miquelon*,North America,2024,156,
+840,United States of America*,North America,1990,1725058,
+840,United States of America*,North America,1995,1860615,
+840,United States of America*,North America,2000,2017599,
+840,United States of America*,North America,2005,2320398,
+840,United States of America*,North America,2010,2774899,
+840,United States of America*,North America,2015,2968434,
+840,United States of America*,North America,2020,3082359,
+840,United States of America*,North America,2024,3186999,
+36,Australia*,Oceania,1990,250909,
+36,Australia*,Oceania,1995,280785,
+36,Australia*,Oceania,2000,311529,
+36,Australia*,Oceania,2005,337326,
+36,Australia*,Oceania,2010,362178,
+36,Australia*,Oceania,2015,403333,
+36,Australia*,Oceania,2020,420672,
+36,Australia*,Oceania,2024,430718,
+554,New Zealand*,Oceania,1990,329134,
+554,New Zealand*,Oceania,1995,381056,
+554,New Zealand*,Oceania,2000,454340,
+554,New Zealand*,Oceania,2005,518239,
+554,New Zealand*,Oceania,2010,620805,
+554,New Zealand*,Oceania,2015,675441,
+554,New Zealand*,Oceania,2020,679479,
+554,New Zealand*,Oceania,2024,679772,
+242,Fiji,Oceania,1990,65039,FJI
+242,Fiji,Oceania,1995,78323,FJI
+242,Fiji,Oceania,2000,95570,FJI
+242,Fiji,Oceania,2005,117629,FJI
+242,Fiji,Oceania,2010,138607,FJI
+242,Fiji,Oceania,2015,158026,FJI
+242,Fiji,Oceania,2020,169411,FJI
+242,Fiji,Oceania,2024,181025,FJI
+540,New Caledonia*,Oceania,1990,3957,
+540,New Caledonia*,Oceania,1995,4324,
+540,New Caledonia*,Oceania,2000,4675,
+540,New Caledonia*,Oceania,2005,4971,
+540,New Caledonia*,Oceania,2010,5055,
+540,New Caledonia*,Oceania,2015,5112,
+540,New Caledonia*,Oceania,2020,5097,
+540,New Caledonia*,Oceania,2024,5082,
+598,Papua New Guinea,Oceania,1990,26144,PNG
+598,Papua New Guinea,Oceania,1995,27421,PNG
+598,Papua New Guinea,Oceania,2000,26811,PNG
+598,Papua New Guinea,Oceania,2005,27858,PNG
+598,Papua New Guinea,Oceania,2010,30830,PNG
+598,Papua New Guinea,Oceania,2015,34339,PNG
+598,Papua New Guinea,Oceania,2020,34471,PNG
+598,Papua New Guinea,Oceania,2024,35050,PNG
+90,Solomon Islands,Oceania,1990,2171,SLB
+90,Solomon Islands,Oceania,1995,2348,SLB
+90,Solomon Islands,Oceania,2000,2398,SLB
+90,Solomon Islands,Oceania,2005,2671,SLB
+90,Solomon Islands,Oceania,2010,3024,SLB
+90,Solomon Islands,Oceania,2015,3447,SLB
+90,Solomon Islands,Oceania,2020,4047,SLB
+90,Solomon Islands,Oceania,2024,8352,SLB
+548,Vanuatu,Oceania,1990,4927,VUT
+548,Vanuatu,Oceania,1995,5656,VUT
+548,Vanuatu,Oceania,2000,6184,VUT
+548,Vanuatu,Oceania,2005,6597,VUT
+548,Vanuatu,Oceania,2010,6898,VUT
+548,Vanuatu,Oceania,2015,5840,VUT
+548,Vanuatu,Oceania,2020,8465,VUT
+548,Vanuatu,Oceania,2024,15202,VUT
+316,Guam*,Oceania,1990,1539,
+316,Guam*,Oceania,1995,1810,
+316,Guam*,Oceania,2000,2054,
+316,Guam*,Oceania,2005,1751,
+316,Guam*,Oceania,2010,1228,
+316,Guam*,Oceania,2015,1134,
+316,Guam*,Oceania,2020,1155,
+316,Guam*,Oceania,2024,1179,
+296,Kiribati,Oceania,1990,3919,KIR
+296,Kiribati,Oceania,1995,3882,KIR
+296,Kiribati,Oceania,2000,3819,KIR
+296,Kiribati,Oceania,2005,3783,KIR
+296,Kiribati,Oceania,2010,3344,KIR
+296,Kiribati,Oceania,2015,4086,KIR
+296,Kiribati,Oceania,2020,5053,KIR
+296,Kiribati,Oceania,2024,6306,KIR
+584,Marshall Islands,Oceania,1990,314,MHL
+584,Marshall Islands,Oceania,1995,385,MHL
+584,Marshall Islands,Oceania,2000,468,MHL
+584,Marshall Islands,Oceania,2005,435,MHL
+584,Marshall Islands,Oceania,2010,379,MHL
+584,Marshall Islands,Oceania,2015,379,MHL
+584,Marshall Islands,Oceania,2020,387,MHL
+584,Marshall Islands,Oceania,2024,400,MHL
+583,Micronesia (Fed. States of),Oceania,1990,4940,
+583,Micronesia (Fed. States of),Oceania,1995,7116,
+583,Micronesia (Fed. States of),Oceania,2000,9334,
+583,Micronesia (Fed. States of),Oceania,2005,11237,
+583,Micronesia (Fed. States of),Oceania,2010,12464,
+583,Micronesia (Fed. States of),Oceania,2015,12401,
+583,Micronesia (Fed. States of),Oceania,2020,13033,
+583,Micronesia (Fed. States of),Oceania,2024,13568,
+520,Nauru,Oceania,1990,1370,NRU
+520,Nauru,Oceania,1995,1482,NRU
+520,Nauru,Oceania,2000,1565,NRU
+520,Nauru,Oceania,2005,1836,NRU
+520,Nauru,Oceania,2010,2092,NRU
+520,Nauru,Oceania,2015,2196,NRU
+520,Nauru,Oceania,2020,2345,NRU
+520,Nauru,Oceania,2024,2484,NRU
+580,Northern Mariana Islands*,Oceania,1990,2229,
+580,Northern Mariana Islands*,Oceania,1995,2359,
+580,Northern Mariana Islands*,Oceania,2000,2480,
+580,Northern Mariana Islands*,Oceania,2005,2549,
+580,Northern Mariana Islands*,Oceania,2010,2542,
+580,Northern Mariana Islands*,Oceania,2015,2532,
+580,Northern Mariana Islands*,Oceania,2020,2664,
+580,Northern Mariana Islands*,Oceania,2024,2779,
+585,Palau,Oceania,1990,2951,PLW
+585,Palau,Oceania,1995,2835,PLW
+585,Palau,Oceania,2000,2804,PLW
+585,Palau,Oceania,2005,2816,PLW
+585,Palau,Oceania,2010,2554,PLW
+585,Palau,Oceania,2015,2490,PLW
+585,Palau,Oceania,2020,2582,PLW
+585,Palau,Oceania,2024,2674,PLW
+16,American Samoa*,Oceania,1990,1085,
+16,American Samoa*,Oceania,1995,1625,
+16,American Samoa*,Oceania,2000,2183,
+16,American Samoa*,Oceania,2005,2148,
+16,American Samoa*,Oceania,2010,2341,
+16,American Samoa*,Oceania,2015,2452,
+16,American Samoa*,Oceania,2020,2952,
+16,American Samoa*,Oceania,2024,3362,
+184,Cook Islands*,Oceania,1990,17630,
+184,Cook Islands*,Oceania,1995,16916,
+184,Cook Islands*,Oceania,2000,19708,
+184,Cook Islands*,Oceania,2005,20294,
+184,Cook Islands*,Oceania,2010,20294,
+184,Cook Islands*,Oceania,2015,20558,
+184,Cook Islands*,Oceania,2020,20134,
+184,Cook Islands*,Oceania,2024,20288,
+258,French Polynesia*,Oceania,1990,3056,
+258,French Polynesia*,Oceania,1995,3544,
+258,French Polynesia*,Oceania,2000,4080,
+258,French Polynesia*,Oceania,2005,2549,
+258,French Polynesia*,Oceania,2010,1312,
+258,French Polynesia*,Oceania,2015,1674,
+258,French Polynesia*,Oceania,2020,1915,
+258,French Polynesia*,Oceania,2024,2008,
+570,Niue*,Oceania,1990,5640,
+570,Niue*,Oceania,1995,5673,
+570,Niue*,Oceania,2000,5870,
+570,Niue*,Oceania,2005,5554,
+570,Niue*,Oceania,2010,5231,
+570,Niue*,Oceania,2015,5059,
+570,Niue*,Oceania,2020,4968,
+570,Niue*,Oceania,2024,4955,
+882,Samoa,Oceania,1990,64643,WSM
+882,Samoa,Oceania,1995,69079,WSM
+882,Samoa,Oceania,2000,77905,WSM
+882,Samoa,Oceania,2005,84416,WSM
+882,Samoa,Oceania,2010,88359,WSM
+882,Samoa,Oceania,2015,97923,WSM
+882,Samoa,Oceania,2020,109124,WSM
+882,Samoa,Oceania,2024,119313,WSM
+772,Tokelau*,Oceania,1990,295,
+772,Tokelau*,Oceania,1995,352,
+772,Tokelau*,Oceania,2000,441,
+772,Tokelau*,Oceania,2005,576,
+772,Tokelau*,Oceania,2010,703,
+772,Tokelau*,Oceania,2015,779,
+772,Tokelau*,Oceania,2020,714,
+772,Tokelau*,Oceania,2024,688,
+776,Tonga,Oceania,1990,19954,TON
+776,Tonga,Oceania,1995,23967,TON
+776,Tonga,Oceania,2000,28245,TON
+776,Tonga,Oceania,2005,31622,TON
+776,Tonga,Oceania,2010,34619,TON
+776,Tonga,Oceania,2015,40233,TON
+776,Tonga,Oceania,2020,47094,TON
+776,Tonga,Oceania,2024,53237,TON
+798,Tuvalu,Oceania,1990,1265,TUV
+798,Tuvalu,Oceania,1995,1283,TUV
+798,Tuvalu,Oceania,2000,1334,TUV
+798,Tuvalu,Oceania,2005,1300,TUV
+798,Tuvalu,Oceania,2010,1035,TUV
+798,Tuvalu,Oceania,2015,1094,TUV
+798,Tuvalu,Oceania,2020,1164,TUV
+798,Tuvalu,Oceania,2024,1239,TUV
+876,Wallis and Futuna Islands*,Oceania,1990,6650,
+876,Wallis and Futuna Islands*,Oceania,1995,7067,
+876,Wallis and Futuna Islands*,Oceania,2000,7532,
+876,Wallis and Futuna Islands*,Oceania,2005,7617,
+876,Wallis and Futuna Islands*,Oceania,2010,7724,
+876,Wallis and Futuna Islands*,Oceania,2015,11527,
+876,Wallis and Futuna Islands*,Oceania,2020,12231,
+876,Wallis and Futuna Islands*,Oceania,2024,12822,

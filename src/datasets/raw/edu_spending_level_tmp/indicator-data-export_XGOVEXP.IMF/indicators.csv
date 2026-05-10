@@ -1,0 +1,2 @@
+indicatorId,name,theme,lastDataUpdate,lastDataUpdateDescription,dataAvailability.totalRecordCount,dataAvailability.timeLine.min,dataAvailability.timeLine.max,dataAvailability.geoUnits.types,disaggregations,glossaryTerms
+XGOVEXP.IMF,Expenditure on education as a percentage of total government expenditure (%) (UIS calculation),EDUCATION,02/09/2026,February 2026 Data Release,5538,1980,2025,"REGIONAL, NATIONAL",,"3180, 2152"

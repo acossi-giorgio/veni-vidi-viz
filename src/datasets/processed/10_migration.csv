@@ -1,0 +1,49 @@
+origin_continent,year,stock,dest_continent
+Africa,1990,60919572,World
+Africa,1995,65749902,World
+Africa,2000,42325094,World
+Africa,2005,48160714,World
+Africa,2010,55658440,World
+Africa,2015,69319064,World
+Africa,2020,80013466,World
+Africa,2024,91501346,World
+Asia,1990,166376108,World
+Asia,1995,173003238,World
+Asia,2000,125962400,World
+Asia,2005,139766982,World
+Asia,2010,170595984,World
+Asia,2015,202373812,World
+Asia,2020,222287112,World
+Asia,2024,241595830,World
+Europe,1990,142855538,World
+Europe,1995,143200678,World
+Europe,2000,94072754,World
+Europe,2005,95719732,World
+Europe,2010,100965262,World
+Europe,2015,103516820,World
+Europe,2020,106981676,World
+Europe,2024,121962332,World
+North America,1990,14451968,World
+North America,1995,19132929,World
+North America,2000,15105859,World
+North America,2005,17969973,World
+North America,2010,19861212,World
+North America,2015,20696365,World
+North America,2020,20866573,World
+North America,2024,22001574,World
+Oceania,1990,3137600,World
+Oceania,1995,3574591,World
+Oceania,2000,2761229,World
+Oceania,2005,3091037,World
+Oceania,2010,3528601,World
+Oceania,2015,3881585,World
+Oceania,2020,3998169,World
+Oceania,2024,4097584,World
+South America,1990,33271786,World
+South America,1995,42105762,World
+South America,2000,34661600,World
+South America,2005,42670611,World
+South America,2010,50145972,World
+South America,2015,53575262,World
+South America,2020,67801818,World
+South America,2024,79092183,World
