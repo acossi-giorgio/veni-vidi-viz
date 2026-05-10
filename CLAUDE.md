@@ -19,12 +19,20 @@
 ## 0. Sommario esecutivo
 
 - **Tesi:** Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto: lavoro minorile, matrimoni precoci, vite spezzate. Quando il contesto non offre più niente, l'unica via d'uscita è la migrazione.
-- **Format:** sito web a scrollytelling verticale, 10 grafici interattivi suddivisi in 4 atti narrativi.
-- **Pattern visivo:** scrolla testo a sinistra + grafico sticky a destra che si anima con lo scroll. Doppia fase per ogni grafico: **narrativa** (animazioni guidate) + **esplorativa** (controlli sbloccati).
-- **Stack:** HTML5 + CSS3 + Vanilla JS (ES6+), D3.js v7, scrollama. Nessun framework.
+- **Format:** sito web a scroll verticale normale, 10 grafici interattivi suddivisi in 4 atti narrativi.
+- **Pattern visivo (v3 — semplificato):** layout a due colonne per ogni sezione grafico — testo a sinistra (sempre visibile, nel normale flusso del documento), grafico sticky a destra. Niente overlay card, niente slide-mode, niente custom scroll container. Lo scroll è quello nativo del browser.
+- **Stack:** HTML5 + CSS3 + Vanilla JS (ES6+), D3.js v7. Nessun framework. Niente scrollama.
 - **Mobile:** fuori scope per questa iterazione.
 - **Stato attuale:** grafici 1, 2, 3 già implementati. L'agente deve integrare i grafici 4–10 nel codebase esistente.
 - **Dati:** scaricati dall'agente via link diretti in `/data/raw/`, preprocessati in `/data/processed/` (lista completa al §10).
+
+### ⚠️ DECISIONE DI DESIGN — Luglio 2025
+Il sistema scrollytelling complesso (slide-mode, overlay card fisso, setActiveStage con animazioni) è stato **rimosso** perché instabile e difficile da debuggare. Il nuovo approccio è:
+- Testo sempre visibile nel flusso normale del documento
+- Grafico sticky CSS-only (`position: sticky`) nella colonna destra
+- Niente JS per mostrare/nascondere card o grafici
+- Progress bar aggiornata con `window.scrollY` (non custom scroll container)
+
 
 ---
 

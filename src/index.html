@@ -1,180 +1,329 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Veni Vidi Viz</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css?v=4" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
+
+    <!-- ── Navbar ─────────────────────────────────────────── -->
     <nav class="navbar">
-      <div class="navbar-container">
-        <a class="navbar-brand" href="#home">Veni Vidi Viz</a>
-        <div class="section-title-nav" id="sectionTitleNav"></div>
-        <div class="navbar-spacer"></div>
+      <div class="navbar-inner">
+        <a class="navbar-brand" href="#">Veni Vidi Viz</a>
+        <span class="navbar-tagline">Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto.</span>
       </div>
     </nav>
 
+    <!-- ── 4-Act Progress Bar ─────────────────────────────── -->
+    <div id="act-progress" aria-label="Navigazione atti">
+      <button class="act-segment is-active" data-act="1" data-target="#act-1" title="Atto I — Il contesto"></button>
+      <button class="act-segment" data-act="2" data-target="#act-2" title="Atto II — La barriera"></button>
+      <button class="act-segment" data-act="3" data-target="#act-3" title="Atto III — Il costo umano"></button>
+      <button class="act-segment" data-act="4" data-target="#act-4" title="Atto IV — La fuga"></button>
+    </div>
+
     <main>
-      <div class="scrolly-main">
-        <section class="section" id="scrolly-main-container">
-          <!-- Background layers -->
-          <div class="scrolly-bg-layer bg-intro is-active" id="bg-layer-0"></div>
-          <div class="scrolly-bg-layer bg-sec-1" id="bg-layer-1"></div>
-          <div class="scrolly-bg-layer bg-sec-2" id="bg-layer-2"></div>
-          <div class="scrolly-bg-layer bg-sec-3" id="bg-layer-3"></div>
-          <div class="scrolly-bg-layer bg-sec-4" id="bg-layer-4"></div>
 
-          <div class="scrolly-scroll-container" id="scrolly-unified">
-            <!-- ====== INTRO (wide) ====== -->
-            <div class="scrolly-section scrolly-section-wide" data-bg="0">
-              <div class="scrolly-step scrolly-step-wide is-active" data-step="0">
-                <h1 class="step-title text-center">Veni Vidi Viz</h1>
-                <h2 class="subtitle">Lorem ipsum dolor sit amet consectetur</h2>
-                <p class="text-justify text-muted">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <p class="text-justify text-muted">
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-              </div>
+      <!-- ====== HERO ====== -->
+      <section class="hero" id="hero">
+        <div class="hero-inner">
+          <h1 class="hero-title">Veni Vidi Viz</h1>
+          <p class="hero-subtitle">
+            Dove il reddito è basso e l'istruzione fallisce,<br>
+            l'infanzia paga il prezzo più alto.
+          </p>
+          <p class="hero-body">In ogni angolo del mondo, il destino di un bambino dipende in larga misura dal paese in cui nasce. Il reddito, l'accesso all'istruzione, la presenza dello stato: variabili che determinano se un bambino andrà a scuola o al lavoro, se si sposerà a tredici anni, se un giorno dovrà lasciare la propria terra.</p>
+          <p class="hero-body">Questa visualizzazione racconta quella storia in quattro atti, attraverso dati globali dal 2000 al 2024. Non è una storia di colpevoli — è una storia di divari che si misurano, si vedono, e si possono comprendere.</p>
+          <a class="hero-cta" href="#act-1">Inizia ↓</a>
+        </div>
+      </section>
+
+      <!-- ====== ATTO I — Il contesto ====== -->
+      <div class="act-header act-1" id="act-1" data-act="1">
+        <div class="act-header-inner">
+          <span class="act-label">Atto I</span>
+          <h2 class="act-title">Il Contesto</h2>
+          <p class="act-desc">Il mondo non parte uguale: il reddito si concentra in poche regioni, e con esso anche la longevità.</p>
+        </div>
+      </div>
+
+      <!-- Chart 1 — Reddito per continente (multi-line) -->
+      <section class="chart-section" id="section-1" data-act="1">
+        <div class="chart-section-inner">
+          <div class="chart-text">
+            <h3>Un mondo che non parte uguale</h3>
+            <p>Da vent'anni, alcune regioni crescono rapidamente mentre altre restano ferme. Il reddito medio per persona — la misura più diretta del tenore di vita — svela questa divisione in modo brutale.</p>
+            <h3>L'Europa sale</h3>
+            <p>L'Europa ha visto il proprio reddito crescere costantemente, con qualche turbolenza durante la crisi del 2008–2009. Il livello raggiunto oggi sembra irraggiungibile per gran parte del pianeta: oltre 30.000 dollari al giorno in media.</p>
+            <h3>L'Africa resta indietro</h3>
+            <p>L'Africa cresce, ma il punto di partenza era così basso che il divario assoluto con l'Europa si è allargato, non ridotto. In termini relativi si parla di progresso; in termini reali, la distanza è oggi maggiore di vent'anni fa.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-1-1">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              </button>
+              <div id="chart-1-1" style="width:100%;height:100%"></div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <!-- ====== PARTE 1 (split — chart 1) ====== -->
-            <div class="scrolly-section scrolly-section-split" data-bg="1">
-              <div class="scrolly-section-steps">
-                <div class="scrolly-step" data-step="1">
-                  <h2 class="step-label">Sed Do Eiusmod Tempor</h2>
-                  <p class="text-justify text-muted">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Phasellus pellentesque vel quam sed laoreet. Vivamus lacinia odio vitae nibh.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="2">
-                  <h3>Consectetur Adipiscing Elit Sed</h3>
-                  <p class="text-justify">
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="3">
-                  <h3>Consectetur Adipiscing Elit Sed</h3>
-                  <p class="text-justify">
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.
-                  </p>
-                </div>
-              </div>
-              <div class="scrolly-section-stage">
-                <div class="chart-wrapper">
-                  <div class="chart-box">
-                    <button class="chart-fullscreen-btn" aria-label="Fullscreen" title="Fullscreen" data-target="#chart-1-1">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                      </svg>
-                    </button>
-                    <div id="chart-1-1" style="width: 100%; height: 100%;"></div>
-                  </div>
-                </div>
-              </div>
+      <!-- Chart 2 — Reddito per paese (choropleth) -->
+      <section class="chart-section chart-section-alt" id="section-2" data-act="1">
+        <div class="chart-section-inner layout-reversed">
+          <div class="chart-text">
+            <h3>Una mappa del divario</h3>
+            <p>Una mappa vale più di mille statistiche. Nel 2000 la divisione era già netta: Nord America, Europa e Australia tingono il planisfero con i colori più scuri, mentre Africa sub-sahariana e Asia meridionale restano pallidi.</p>
+            <h3>La crescita asiatica</h3>
+            <p>Nel 2010, la Cina e alcuni paesi dell'Asia orientale accelerano visibilmente. Il colore si intensifica verso est. È una delle trasformazioni economiche più rapide della storia moderna.</p>
+            <h3>Le zone immobili</h3>
+            <p>Nel 2024, alcune aree sembrano congelate nel tempo. Il Sahel, l'Africa centrale, alcune zone dell'Asia meridionale: il colore non cambia. Sono i luoghi in cui questa storia comincia davvero.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-1-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              </button>
+              <div id="chart-1-2" style="width:100%;height:100%"></div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <!-- ====== PARTE 2 (split — chart 2) ====== -->
-            <div class="scrolly-section scrolly-section-split" data-bg="2">
-              <div class="scrolly-section-steps">
-                <div class="scrolly-step" data-step="4">
-                  <h2 class="step-label">Incididunt Ut Labore Dolore</h2>
-                  <p class="text-justify text-muted">
-                    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="5">
-                  <h3>Magna Aliqua Ut Enim Ad</h3>
-                  <p class="text-justify">
-                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nulla facilisi. Cras non velit nec insultus sed placerat non tempor.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="6">
-                  <h2 class="step-label">Incididunt Ut Labore Dolore</h2>
-                  <p class="text-justify text-muted">
-                    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
-                  </p>
-                </div>
-              </div>
-              <div class="scrolly-section-stage">
-                <div class="chart-container">
-                  <div class="chart-wrapper">
-                    <div class="chart-box">
-                      <button class="chart-fullscreen-btn" aria-label="Fullscreen" title="Fullscreen" data-target="#chart-1-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                        </svg>
-                      </button>
-                      <div id="chart-1-2" style="width: 100%; height: 100%;"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <!-- Chart 3 — Aspettativa di vita (dumbbell) -->
+      <section class="chart-section" id="section-3" data-act="1">
+        <div class="chart-section-inner layout-stacked">
+          <div class="chart-text">
+            <h3>Vivere di più, non ovunque uguale</h3>
+            <p>Dal 2000 al 2023, l'aspettativa di vita è migliorata in quasi tutti i paesi del mondo. Una vittoria globale — ma con profonde differenze regionali che il reddito, in larga misura, spiega.</p>
+            <h3>Progressi diseguali</h3>
+            <p>I paesi africani hanno compiuto progressi significativi grazie agli interventi sanitari e alla riduzione della mortalità infantile. Eppure il punto di partenza era così basso che il divario con l'Europa rimane enorme.</p>
+            <h3>Come leggere il grafico</h3>
+            <p>Il punto piccolo è il 2000, quello grande il 2023. Quanto più lunga è la linea tra i due, tanto maggiore è il guadagno in anni di vita. Linee corte o assenti indicano crisi, conflitti o stagnazione.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-2-1">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              </button>
+              <div id="chart-2-1" style="width:100%;height:100%"></div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <!-- ====== PARTE 3 (split — Dumbbell: Aspettativa di Vita) ====== -->
-            <div class="scrolly-section scrolly-section-split" data-bg="3">
-              <div class="scrolly-section-steps">
-                <div class="scrolly-step" data-step="7">
-                  <h2 class="step-label">Aspettativa di Vita nel Mondo</h2>
-                  <p class="text-justify text-muted">
-                    Dal 2000 al 2023, l'aspettativa di vita è migliorata in quasi tutti i paesi del mondo. Questo grafico mostra il confronto tra il valore del 2000 (cerchio piccolo) e quello del 2023 (cerchio grande) per ogni paese, raggruppato per continente.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="8">
-                  <h3>Variazioni Regionali</h3>
-                  <p class="text-justify">
-                    Alcune regioni hanno registrato miglioramenti più marcati di altre. I paesi africani hanno compiuto progressi significativi grazie a interventi sanitari e alla riduzione della mortalità infantile. Usa il menu a tendina per esplorare i dati per continente.
-                  </p>
-                </div>
-                <div class="scrolly-step" data-step="9">
-                  <h3>Come Leggere il Grafico</h3>
-                  <p class="text-justify text-muted">
-                    Il cerchio più piccolo rappresenta il 2000, quello più grande il 2023. Quanto più lunga è la linea tra i due punti, tanto maggiore è stato il guadagno in anni di vita. Paesi con linee molto corte o negative indicano situazioni di crisi o conflitti.
-                  </p>
-                </div>
-              </div>
-              <div class="scrolly-section-stage">
-                <div class="chart-wrapper">
-                  <div class="chart-box">
-                    <button class="chart-fullscreen-btn" aria-label="Fullscreen" title="Fullscreen" data-target="#chart-2-1">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                      </svg>
-                    </button>
-                    <div id="chart-2-1" style="width: 100%; height: 100%;"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <!-- ====== ATTO II — La barriera ====== -->
+      <div class="act-header act-2" id="act-2" data-act="2">
+        <div class="act-header-inner">
+          <span class="act-label">Atto II</span>
+          <h2 class="act-title">La Barriera</h2>
+          <p class="act-desc">Dove c'è meno reddito si investe meno in istruzione, e l'istruzione che c'è funziona peggio. Generazioni intere restano indietro — non per scelta, ma per contesto.</p>
+        </div>
+      </div>
 
-          <!-- Footer with slide-up animation -->
-          <div class="scrolly-footer" id="scrolly-footer">
-            <div class="scrolly-footer-content">
-              <p>&copy; 2026 Veni Vidi Viz. Un progetto di visualizzazione dati.</p>
-              <div class="scrolly-footer-links">
-                <a href="index.html" class="scrolly-footer-link">Home</a>
-                <a href="datasets.html" class="scrolly-footer-link">Dataset</a>
-                <a href="about.html" class="scrolly-footer-link">Chi Siamo</a>
+      <!-- Chart 4 — Spesa pubblica in istruzione -->
+      <section class="chart-section chart-section-alt" id="section-4" data-act="2">
+        <div class="chart-section-inner">
+          <div class="chart-text">
+            <h3>Quanto si investe nell'istruzione?</h3>
+            <p>La spesa pubblica in istruzione come percentuale del PIL rivela le priorità di ogni nazione. Alcuni paesi investono oltre il 7%, altri meno dell'1%. Il treemap mostra questa distribuzione globale.</p>
+            <h3>L'Europa investe</h3>
+            <p>I paesi europei e nordamericani dedicano una quota consistente del PIL all'istruzione. Non è solo una questione di ricchezza: è anche una scelta politica e culturale che si riflette nei risultati delle generazioni successive.</p>
+            <h3>L'Africa sub-sahariana</h3>
+            <p>In Africa sub-sahariana, la spesa assoluta per studente è spesso decine di volte inferiore a quella europea. Il problema non è solo la percentuale del PIL, ma il PIL stesso — e un sistema che non riesce a trattenere gli studenti fino al diploma.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">📊</span>
+                <span>Grafico 4 — Treemap spesa istruzione</span>
+                <small>Sprint 3</small>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
+
+      <!-- Chart 5 — Completamento scolastico -->
+      <section class="chart-section" id="section-5" data-act="2">
+        <div class="chart-section-inner layout-reversed">
+          <div class="chart-text">
+            <h3>Quanti arrivano al diploma?</h3>
+            <p>Ogni quadratino rappresenta un bambino su cento. In Norvegia, quasi tutti completano la scuola secondaria. In Niger, meno di uno su dieci. Questa visualizzazione rende concreto quello che le statistiche tendono ad astrarre.</p>
+            <h3>Il confronto che colpisce</h3>
+            <p>Norvegia, Italia, India, Niger: quattro paesi, quattro livelli di completamento scolastico radicalmente diversi. Il sistema scolastico non è uguale per tutti — e le conseguenze si vedono nei dati degli atti successivi.</p>
+            <h3>Genere e istruzione</h3>
+            <p>In molti paesi a basso reddito, le ragazze abbandonano la scuola prima dei ragazzi. Il matrimonio precoce, il lavoro domestico e le aspettative culturali pesano più di qualsiasi distanza geografica da un'aula.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">🧮</span>
+                <span>Grafico 5 — Waffle completamento scolastico</span>
+                <small>Sprint 3</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart 6 — Alfabetizzazione -->
+      <section class="chart-section chart-section-alt" id="section-6" data-act="2">
+        <div class="chart-section-inner layout-stacked">
+          <div class="chart-text">
+            <h3>Saper leggere nel 2020</h3>
+            <p>Il tasso di alfabetizzazione adulta misura quanto di tutto questo si è tradotto in capacità concreta. Tra il 2000 e il 2020, il mondo ha fatto progressi — ma non tutti allo stesso ritmo, e non tutti dalla stessa partenza.</p>
+            <h3>Chi ha recuperato, chi è rimasto fermo</h3>
+            <p>Alcuni paesi hanno fatto balzi enormi in vent'anni. Altri sono rimasti praticamente fermi. Lo slope chart mostra entrambi — e la distanza tra le due pendenze racconta vent'anni di scelte politiche ed economiche.</p>
+            <h3>Esplora i dati</h3>
+            <p>Seleziona gli anni e il gruppo demografico che ti interessa. Il divario di genere nell'alfabetizzazione è ancora marcato in molte regioni — un segnale di quello che raccontiamo nell'atto successivo.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">📈</span>
+                <span>Grafico 6 — Slope chart alfabetizzazione</span>
+                <small>Sprint 3</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== ATTO III — Il costo umano ====== -->
+      <div class="act-header act-3" id="act-3" data-act="3">
+        <div class="act-header-inner">
+          <span class="act-label">Atto III</span>
+          <h2 class="act-title">Il Costo Umano</h2>
+          <p class="act-desc">Il prezzo di questo divario lo pagano i bambini: lavoro precoce, matrimoni infantili, anni di scuola persi. Non sono statistiche — sono vite.</p>
+        </div>
       </div>
+
+      <!-- Chart 7 — Reddito vs lavoro minorile -->
+      <section class="chart-section" id="section-7" data-act="3">
+        <div class="chart-section-inner">
+          <div class="chart-text">
+            <h3>I bambini al lavoro</h3>
+            <p>Nei paesi a basso reddito, una quota significativa di bambini tra i 5 e i 17 anni svolge un'attività economica. La correlazione con il reddito nazionale è brutale: più povero il paese, più alto il tasso di lavoro minorile.</p>
+            <h3>Vent'anni di cambiamento</h3>
+            <p>Dal 2000 al 2020, i numeri globali sono migliorati. Ma il miglioramento non è uniforme — alcuni paesi hanno fatto progressi enormi, altri restano bloccati. Il grafico animato mostra questa evoluzione paese per paese.</p>
+            <h3>Esplora</h3>
+            <p>Premi play per vedere l'animazione. Clicca su una bolla per seguire la traiettoria di un paese nel tempo. Filtra per continente per confrontare le traiettorie regionali.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">🫧</span>
+                <span>Grafico 7 — Bubble Gapminder lavoro minorile</span>
+                <small>Sprint 4</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart 8 — Matrimoni precoci -->
+      <section class="chart-section chart-section-alt" id="section-8" data-act="3">
+        <div class="chart-section-inner layout-stacked">
+          <div class="chart-text">
+            <h3>Spose a dodici anni</h3>
+            <p>In Africa sub-sahariana e Asia meridionale, una quota ancora alta di ragazze si sposa prima dei 18 anni — alcune prima dei 15. Il diagramma mostra cosa succede a 100 ragazze nell'arco di una vita.</p>
+            <h3>Un effetto a cascata</h3>
+            <p>Il matrimonio precoce interrompe quasi sempre l'istruzione. Dalla scuola al matrimonio, dal matrimonio alla gravidanza, dalla gravidanza alla povertà: un ciclo che si ripete di generazione in generazione.</p>
+            <h3>Esplora per regione</h3>
+            <p>Confronta Africa sub-sahariana, Asia meridionale e la media mondiale. I numeri cambiano, ma la struttura del flusso rimane: le ragazze che escono dal sistema scolastico spesso entrano in quello matrimoniale.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">🔀</span>
+                <span>Grafico 8 — Sankey matrimoni precoci</span>
+                <small>Sprint 4</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart 9 — Trend multi-indicatore -->
+      <section class="chart-section" id="section-9" data-act="3">
+        <div class="chart-section-inner layout-reversed">
+          <div class="chart-text">
+            <h3>Tre crisi, una storia</h3>
+            <p>Bambini fuori scuola, lavoro minorile, matrimoni precoci: tre indicatori, tre dimensioni del costo umano della povertà. Visti insieme, raccontano qualcosa che i singoli grafici non catturano.</p>
+            <h3>Il progresso globale — e i limiti</h3>
+            <p>Dal 1990 al 2024, tutti e tre gli indicatori mostrano un trend positivo a livello globale. Ma le regioni più povere migliorano più lentamente, e alcune crisi hanno invertito temporaneamente la traiettoria.</p>
+            <h3>Cambia la vista</h3>
+            <p>Passa da linee a area impilata a streamgraph per vedere gli stessi dati con occhi diversi. Filtra per regione SDG. Ogni modalità rivela una sfumatura diversa della stessa storia.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">📉</span>
+                <span>Grafico 9 — Multi-mode trend</span>
+                <small>Sprint 4</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== ATTO IV — La fuga ====== -->
+      <div class="act-header act-4" id="act-4" data-act="4">
+        <div class="act-header-inner">
+          <span class="act-label">Atto IV</span>
+          <h2 class="act-title">La Fuga</h2>
+          <p class="act-desc">Quando il contesto non offre più niente, l'unica via d'uscita è andarsene. I flussi migratori raccontano l'epilogo di questa storia — e il costo che pagano i paesi di origine.</p>
+        </div>
+      </div>
+
+      <!-- Chart 10 — Migrazioni -->
+      <section class="chart-section chart-section-alt" id="section-10" data-act="4">
+        <div class="chart-section-inner">
+          <div class="chart-text">
+            <h3>Chi parte, dove va</h3>
+            <p>Ogni anno, milioni di persone lasciano il proprio paese di nascita. Le migrazioni non sono caos — seguono rotte precise, dettate dalla geografia, dalla storia coloniale, dalla lingua e dalla distanza economica tra origine e destinazione.</p>
+            <h3>I flussi crescono</h3>
+            <p>Dal 1990 al 2024, lo stock globale di migranti internazionali è quasi raddoppiato. I flussi dall'Africa e dall'Asia verso Europa e Nord America sono aumentati in modo significativo — ma le rotte intra-continentali restano spesso dimenticate.</p>
+            <h3>Il costo per chi resta</h3>
+            <p>I paesi di origine perdono spesso i giovani più istruiti e ambiziosi. Le rimesse economiche aiutano, ma non rimpiazzano il capitale umano che parte. La migrazione è anche questo: una perdita per chi rimane.</p>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <div class="chart-placeholder">
+                <span class="chart-placeholder-icon">🌍</span>
+                <span>Grafico 10 — Chord diagram migrazioni</span>
+                <small>Sprint 5</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
-    <!-- Fullscreen Modal -->
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>&copy; 2026 Veni Vidi Viz — Un progetto di visualizzazione dati.</p>
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="datasets.html">Dataset</a>
+          <a href="about.html">Chi Siamo</a>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- ── Fullscreen Modal ───────────────────────────────── -->
     <div id="fullscreenModal" class="fullscreen-modal">
       <div class="fullscreen-modal-content">
-        <button class="fullscreen-modal-close" aria-label="Close fullscreen">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="fullscreen-modal-close" aria-label="Chiudi">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
