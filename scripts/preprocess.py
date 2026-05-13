@@ -190,26 +190,6 @@ def make_population():
         report("population.csv", pd.DataFrame(), str(e))
 
 
-# ── edu_spending_level.csv ───────────────────────────────────────────────────
-# value = Government expenditure on education as % of GDP (UNESCO UIS / IMF)
-# Fonte: UNESCO UIS API, indicator XGOVEXP.IMF
-# Nota: stessa metrica di edu_spending.csv ma fonte diversa, copertura parzialmente diversa
-def make_edu_spending_level():
-    try:
-        df = pd.read_csv(os.path.join(RAW, "edu_spending_level.csv"))
-        df = df.rename(columns={"geoUnit": "code"})[["code", "year", "value"]]
-        df = df[df["code"].notna() & df["code"].str.len().eq(3)]
-        df["continent"] = df["code"].map(CODE_CONTINENT)
-        df["country"]   = df["code"].map(CODE_NAME)
-        df = df[df["continent"].notna() & df["country"].notna()]
-        df["year"] = df["year"].astype(int)
-        df = df[df["year"].between(MIN_YEAR, MAX_YEAR)]
-        df = df.dropna(subset=["value"])
-        save("edu_spending_level.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("edu_spending_level.csv", pd.DataFrame(), str(e))
-
 
 # ── child_labor.csv ───────────────────────────────────────────────────────────
 # value = Share of children engaged in economic activity, ages 5-17 (%)
@@ -266,52 +246,172 @@ def make_out_of_school():
         report("out_of_school.csv", pd.DataFrame(), str(e))
 
 
+# ── poverty.csv ──────────────────────────────────────────────────────────────
+# value = Share of population living on less than $2.15/day (%)
+# Fonte: Our World in Data / World Bank PIP
+def make_poverty():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "poverty_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("poverty.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("poverty.csv", pd.DataFrame(), str(e))
+
+
+# ── gini.csv ──────────────────────────────────────────────────────────────────
+# value = Gini coefficient (0=perfect equality, 1=perfect inequality)
+# Fonte: Our World in Data / World Bank PIP
+def make_gini():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "gini_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("gini.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("gini.csv", pd.DataFrame(), str(e))
+
+
+# ── gpi_secondary.csv ─────────────────────────────────────────────────────────
+# value = Adjusted gender parity index, lower secondary net enrollment
+#         (1 = parity, <1 = boys favored, >1 = girls favored)
+# Fonte: Our World in Data / UNESCO UIS
+def make_gpi_secondary():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "gpi_secondary_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("gpi_secondary.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("gpi_secondary.csv", pd.DataFrame(), str(e))
+
+
+# ── pupil_teacher.csv ─────────────────────────────────────────────────────────
+# value = Pupils per qualified teacher, primary education
+# Fonte: Our World in Data / UNESCO UIS
+def make_pupil_teacher():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "pupil_teacher_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("pupil_teacher.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("pupil_teacher.csv", pd.DataFrame(), str(e))
+
+
+# ── child_mortality.csv ───────────────────────────────────────────────────────
+# value = Under-5 mortality rate (deaths per 1000 live births)
+# Fonte: Our World in Data / UN IGME + Gapminder
+def make_child_mortality():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "child_mortality_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("child_mortality.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("child_mortality.csv", pd.DataFrame(), str(e))
+
+
+# ── maternal_mortality.csv ────────────────────────────────────────────────────
+# value = Maternal mortality ratio (deaths per 100,000 live births)
+# Fonte: Our World in Data / WHO GHO
+def make_maternal_mortality():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "maternal_mortality_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("maternal_mortality.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("maternal_mortality.csv", pd.DataFrame(), str(e))
+
+
+# ── remittances.csv ───────────────────────────────────────────────────────────
+# value = Personal remittances received (% of GDP)
+# Fonte: Our World in Data / World Bank (IMF + OECD)
+def make_remittances():
+    try:
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "remittances_raw.csv")))
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("remittances.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("remittances.csv", pd.DataFrame(), str(e))
+
+
 # ── migration.csv ─────────────────────────────────────────────────────────────
-# value = Total emigrant stock (people born in country living abroad)
-# Fonte: UN DESA 2024 International Migrant Stock, Table 1
-# Nota: code assegnato via name-matching con country-codes; ~10% paesi senza match
+# Flussi bilaterali: stock di migranti per coppia (origine, destinazione)
+# Schema: origin_code, origin_country, origin_continent,
+#         dest_code, dest_country, dest_continent, year, stock
+# Fonte: UN DESA 2020 International Migrant Stock — Destination and Origin, Table 1
+# Anni disponibili: 1990, 1995, 2000, 2005, 2010, 2015, 2020 (quinquennali)
 def make_migration():
-    CONTINENT_LOC = {903: "Africa", 935: "Asia", 908: "Europe",
-                     904: "South America", 905: "North America", 909: "Oceania"}
-    SKIP = {900,901,902,903,904,905,906,907,908,909,935,910,911,912,913,914,915,
-            1500,1501,1502,1503,1517,1518,1636,1637,1829,1830,1831,1832,1833,
-            1834,1835,1836,2003,5503,5504,941,934,948,1859}
     try:
         import openpyxl
+
+        # Build numeric ISO code -> ISO3 + continent mapping
+        cc = pd.read_csv(os.path.join(RAW, "country-code.csv")).rename(columns={
+            "Three_Letter_Country_Code": "code",
+            "Country_Number": "num",
+        })[["code", "num"]].dropna()
+        cc["num"] = cc["num"].astype(int)
+        num_to_code = cc.set_index("num")["code"].to_dict()
+
         wb = openpyxl.load_workbook(
             os.path.join(RAW, "migration_bilateral_raw.xlsx"), read_only=True)
         ws = wb["Table 1"]
-        rows = list(ws.iter_rows(min_row=11, max_col=13, values_only=True))
+        header = list(ws.iter_rows(min_row=11, max_row=11, values_only=True))[0]
+        # years = first 7 year values after col 7 (both sexes combined)
+        years = [v for v in header[7:14] if isinstance(v, int)]
+
+        rows = []
+        for r in ws.iter_rows(min_row=12, values_only=True):
+            dest_loc = r[3]
+            orig_loc = r[6]
+            # keep only country-level pairs (ISO numeric 1-899)
+            if not (isinstance(dest_loc, int) and 1 <= dest_loc <= 899):
+                continue
+            if not (isinstance(orig_loc, int) and 1 <= orig_loc <= 899):
+                continue
+            dest_code = num_to_code.get(dest_loc)
+            orig_code = num_to_code.get(orig_loc)
+            if not dest_code or not dest_code in CODE_CONTINENT:
+                continue
+            if not orig_code or not orig_code in CODE_CONTINENT:
+                continue
+            dest_name = CODE_NAME.get(dest_code, str(r[1]).strip())
+            orig_name = CODE_NAME.get(orig_code, str(r[5]).strip())
+            for i, yr in enumerate(years):
+                val = r[7 + i]
+                if val is not None and val > 0:
+                    rows.append({
+                        "origin_code":      orig_code,
+                        "origin_country":   orig_name,
+                        "origin_continent": CODE_CONTINENT[orig_code],
+                        "dest_code":        dest_code,
+                        "dest_country":     dest_name,
+                        "dest_continent":   CODE_CONTINENT[dest_code],
+                        "year":             yr,
+                        "stock":            int(val),
+                    })
         wb.close()
 
-        years = [c for c in rows[0][5:13] if isinstance(c, int)]
-        country_rows = []
-        current_continent = None
-
-        for row in rows[1:]:
-            if not isinstance(row[0], int) or row[1] is None:
-                continue
-            loc  = row[4]
-            name = str(row[1]).strip()
-            if loc in CONTINENT_LOC:
-                current_continent = CONTINENT_LOC[loc]
-            elif isinstance(loc, int) and 0 < loc < 900 and loc not in SKIP:
-                # best-effort ISO3 code via normalised name match
-                code = NAME_CODE.get(normalise(name))
-                for i, yr in enumerate(years):
-                    if row[5 + i] is not None:
-                        country_rows.append({
-                            "code":      code if code else "",
-                            "country":   name,
-                            "continent": current_continent,
-                            "year":      yr,
-                            "value":     row[5 + i],
-                        })
-
-        df = pd.DataFrame(country_rows)
+        df = pd.DataFrame(rows)
         df = df[df["year"].between(MIN_YEAR, MAX_YEAR)]
-        save("migration.csv", df[["code", "country", "continent", "year", "value"]]
-             .sort_values(["country", "year"]))
+        save("migration.csv", df.sort_values(["origin_code", "dest_code", "year"]))
     except Exception as e:
         report("migration.csv", pd.DataFrame(), str(e))
 
@@ -329,7 +429,6 @@ if __name__ == "__main__":
 
     print("\nVeni Vidi Viz -- Preprocessing\n" + "=" * 55)
     make_edu_spending()
-    make_edu_spending_level()
     make_edu_completion()
     make_literacy()
     make_income()
@@ -337,6 +436,13 @@ if __name__ == "__main__":
     make_child_labor()
     make_child_marriage()
     make_out_of_school()
+    make_poverty()
+    make_gini()
+    make_gpi_secondary()
+    make_pupil_teacher()
+    make_child_mortality()
+    make_maternal_mortality()
+    make_remittances()
     make_migration()
     print("\nDone -> src/datasets/processed/")
     for f in sorted(os.listdir(OUT)):
