@@ -23,7 +23,7 @@ MIN_YEAR, MAX_YEAR = 2000, 2025
 
 # ── Mappings ──────────────────────────────────────────────────────────────────
 def load_mappings():
-    path = os.path.join(RAW, "country-codes", "country-code.csv")
+    path = os.path.join(RAW, "country-code.csv")
     df = pd.read_csv(path).rename(columns={
         "Three_Letter_Country_Code": "code",
         "Continent_Name":            "continent",
@@ -190,6 +190,27 @@ def make_population():
         report("population.csv", pd.DataFrame(), str(e))
 
 
+# ── edu_spending_level.csv ───────────────────────────────────────────────────
+# value = Government expenditure on education as % of GDP (UNESCO UIS / IMF)
+# Fonte: UNESCO UIS API, indicator XGOVEXP.IMF
+# Nota: stessa metrica di edu_spending.csv ma fonte diversa, copertura parzialmente diversa
+def make_edu_spending_level():
+    try:
+        df = pd.read_csv(os.path.join(RAW, "edu_spending_level.csv"))
+        df = df.rename(columns={"geoUnit": "code"})[["code", "year", "value"]]
+        df = df[df["code"].notna() & df["code"].str.len().eq(3)]
+        df["continent"] = df["code"].map(CODE_CONTINENT)
+        df["country"]   = df["code"].map(CODE_NAME)
+        df = df[df["continent"].notna() & df["country"].notna()]
+        df["year"] = df["year"].astype(int)
+        df = df[df["year"].between(MIN_YEAR, MAX_YEAR)]
+        df = df.dropna(subset=["value"])
+        save("edu_spending_level.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("edu_spending_level.csv", pd.DataFrame(), str(e))
+
+
 # ── child_labor.csv ───────────────────────────────────────────────────────────
 # value = Share of children engaged in economic activity, ages 5-17 (%)
 # Fonte: Our World in Data / ILO-UNICEF
@@ -222,6 +243,27 @@ def make_child_marriage():
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
         report("child_marriage.csv", pd.DataFrame(), str(e))
+
+
+# ── out_of_school.csv ────────────────────────────────────────────────────────
+# value = Children out of primary school, both sexes (absolute number)
+# Fonte: Our World in Data / UNESCO UIS
+def make_out_of_school():
+    try:
+        df = pd.read_csv(os.path.join(RAW, "out_of_school_raw.csv"))
+        df = df.rename(columns={
+            df.columns[0]: "country",
+            df.columns[1]: "code",
+            df.columns[2]: "year",
+            df.columns[3]: "value",
+        })
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("out_of_school.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("out_of_school.csv", pd.DataFrame(), str(e))
 
 
 # ── migration.csv ─────────────────────────────────────────────────────────────
@@ -287,12 +329,14 @@ if __name__ == "__main__":
 
     print("\nVeni Vidi Viz -- Preprocessing\n" + "=" * 55)
     make_edu_spending()
+    make_edu_spending_level()
     make_edu_completion()
     make_literacy()
     make_income()
     make_population()
     make_child_labor()
     make_child_marriage()
+    make_out_of_school()
     make_migration()
     print("\nDone -> src/datasets/processed/")
     for f in sorted(os.listdir(OUT)):
