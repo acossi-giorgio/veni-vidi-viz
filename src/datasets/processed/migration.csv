@@ -1,0 +1,1399 @@
+code,country,continent,year,value
+,Afghanistan,Asia,2000,4544516
+,Afghanistan,Asia,2005,3902699
+,Afghanistan,Asia,2010,5074825
+,Afghanistan,Asia,2015,5181002
+,Afghanistan,Asia,2020,5729887
+,Afghanistan,Asia,2024,7528994
+,Albania,Europe,2000,629192
+,Albania,Europe,2005,784369
+,Albania,Europe,2010,962514
+,Albania,Europe,2015,985561
+,Albania,Europe,2020,1103849
+,Albania,Europe,2024,1216628
+,Algeria,Africa,2000,1427791
+,Algeria,Africa,2005,1554741
+,Algeria,Africa,2010,1604582
+,Algeria,Africa,2015,1662433
+,Algeria,Africa,2020,1732822
+,Algeria,Africa,2024,1780399
+,American Samoa*,Oceania,2000,2183
+,American Samoa*,Oceania,2005,2148
+,American Samoa*,Oceania,2010,2341
+,American Samoa*,Oceania,2015,2452
+,American Samoa*,Oceania,2020,2952
+,American Samoa*,Oceania,2024,3362
+,Andorra,Europe,2000,436
+,Andorra,Europe,2005,448
+,Andorra,Europe,2010,1213
+,Andorra,Europe,2015,1467
+,Andorra,Europe,2020,1751
+,Andorra,Europe,2024,1982
+,Angola,Africa,2000,873474
+,Angola,Africa,2005,663380
+,Angola,Africa,2010,579968
+,Angola,Africa,2015,518695
+,Angola,Africa,2020,549257
+,Angola,Africa,2024,616967
+,Anguilla*,South America,2000,2158
+,Anguilla*,South America,2005,1776
+,Anguilla*,South America,2010,1719
+,Anguilla*,South America,2015,1572
+,Anguilla*,South America,2020,1561
+,Anguilla*,South America,2024,1614
+ATG,Antigua and Barbuda,South America,2000,8297
+ATG,Antigua and Barbuda,South America,2005,7978
+ATG,Antigua and Barbuda,South America,2010,8143
+ATG,Antigua and Barbuda,South America,2015,12860
+ATG,Antigua and Barbuda,South America,2020,12999
+ATG,Antigua and Barbuda,South America,2024,13111
+,Argentina,South America,2000,571985
+,Argentina,South America,2005,824076
+,Argentina,South America,2010,877341
+,Argentina,South America,2015,895980
+,Argentina,South America,2020,1014400
+,Argentina,South America,2024,1183381
+,Armenia,Asia,2000,950779
+,Armenia,Asia,2005,787489
+,Armenia,Asia,2010,799328
+,Armenia,Asia,2015,741708
+,Armenia,Asia,2020,685545
+,Armenia,Asia,2024,637604
+,Aruba*,South America,2000,5433
+,Aruba*,South America,2005,5447
+,Aruba*,South America,2010,7117
+,Aruba*,South America,2015,9011
+,Aruba*,South America,2020,16628
+,Aruba*,South America,2024,29305
+,Australia*,Oceania,2000,311529
+,Australia*,Oceania,2005,337326
+,Australia*,Oceania,2010,362178
+,Australia*,Oceania,2015,403333
+,Australia*,Oceania,2020,420672
+,Australia*,Oceania,2024,430718
+,Austria,Europe,2000,414141
+,Austria,Europe,2005,408939
+,Austria,Europe,2010,409023
+,Austria,Europe,2015,411144
+,Austria,Europe,2020,424072
+,Austria,Europe,2024,430560
+,Azerbaijan,Asia,2000,1466589
+,Azerbaijan,Asia,2005,1350981
+,Azerbaijan,Asia,2010,1050055
+,Azerbaijan,Asia,2015,860748
+,Azerbaijan,Asia,2020,790122
+,Azerbaijan,Asia,2024,810116
+,Bahamas,South America,2000,2139
+,Bahamas,South America,2005,1985
+,Bahamas,South America,2010,1867
+,Bahamas,South America,2015,1955
+,Bahamas,South America,2020,2042
+,Bahamas,South America,2024,2174
+,Bahrain,Asia,2000,32137
+,Bahrain,Asia,2005,36803
+,Bahrain,Asia,2010,42283
+,Bahrain,Asia,2015,45263
+,Bahrain,Asia,2020,45356
+,Bahrain,Asia,2024,57160
+,Bangladesh,Asia,2000,5287858
+,Bangladesh,Asia,2005,5198991
+,Bangladesh,Asia,2010,6221642
+,Bangladesh,Asia,2015,7883873
+,Bangladesh,Asia,2020,8085347
+,Bangladesh,Asia,2024,8706947
+BRB,Barbados,South America,2000,20249
+BRB,Barbados,South America,2005,20961
+BRB,Barbados,South America,2010,20844
+BRB,Barbados,South America,2015,20504
+BRB,Barbados,South America,2020,19564
+BRB,Barbados,South America,2024,19558
+,Belarus,Europe,2000,1599048
+,Belarus,Europe,2005,1462091
+,Belarus,Europe,2010,1310899
+,Belarus,Europe,2015,1079713
+,Belarus,Europe,2020,919469
+,Belarus,Europe,2024,790232
+,Belgium,Europe,2000,313188
+,Belgium,Europe,2005,374297
+,Belgium,Europe,2010,405732
+,Belgium,Europe,2015,438560
+,Belgium,Europe,2020,482561
+,Belgium,Europe,2024,521884
+BLZ,Belize,South America,2000,3849
+BLZ,Belize,South America,2005,4380
+BLZ,Belize,South America,2010,5247
+BLZ,Belize,South America,2015,5970
+BLZ,Belize,South America,2020,6694
+BLZ,Belize,South America,2024,7383
+,Benin,Africa,2000,321244
+,Benin,Africa,2005,496572
+,Benin,Africa,2010,533981
+,Benin,Africa,2015,628871
+,Benin,Africa,2020,678375
+,Benin,Africa,2024,726530
+,Bermuda*,North America,2000,537
+,Bermuda*,North America,2005,638
+,Bermuda*,North America,2010,748
+,Bermuda*,North America,2015,871
+,Bermuda*,North America,2020,1051
+,Bermuda*,North America,2024,1100
+,Bhutan,Asia,2000,119788
+,Bhutan,Asia,2005,117140
+,Bhutan,Asia,2010,88335
+,Bhutan,Asia,2015,47807
+,Bhutan,Asia,2020,52339
+,Bhutan,Asia,2024,66145
+,Bolivia (Plurinational State of),South America,2000,281557
+,Bolivia (Plurinational State of),South America,2005,456266
+,Bolivia (Plurinational State of),South America,2010,648912
+,Bolivia (Plurinational State of),South America,2015,646591
+,Bolivia (Plurinational State of),South America,2020,744014
+,Bolivia (Plurinational State of),South America,2024,783473
+,"Bonaire, Sint Eustatius and Saba*",South America,2000,3052
+,"Bonaire, Sint Eustatius and Saba*",South America,2005,3016
+,"Bonaire, Sint Eustatius and Saba*",South America,2010,2883
+,"Bonaire, Sint Eustatius and Saba*",South America,2015,3100
+,"Bonaire, Sint Eustatius and Saba*",South America,2020,3524
+,"Bonaire, Sint Eustatius and Saba*",South America,2024,4744
+BIH,Bosnia and Herzegovina,Europe,2000,1624537
+BIH,Bosnia and Herzegovina,Europe,2005,1494812
+BIH,Bosnia and Herzegovina,Europe,2010,1481062
+BIH,Bosnia and Herzegovina,Europe,2015,1477261
+BIH,Bosnia and Herzegovina,Europe,2020,1542552
+BIH,Bosnia and Herzegovina,Europe,2024,1608324
+,Botswana,Africa,2000,22155
+,Botswana,Africa,2005,22158
+,Botswana,Africa,2010,19869
+,Botswana,Africa,2015,18161
+,Botswana,Africa,2020,17397
+,Botswana,Africa,2024,16731
+,Brazil,South America,2000,902341
+,Brazil,South America,2005,1215342
+,Brazil,South America,2010,1365997
+,Brazil,South America,2015,1402267
+,Brazil,South America,2020,1854912
+,Brazil,South America,2024,2194325
+,British Virgin Islands*,South America,2000,4053
+,British Virgin Islands*,South America,2005,3678
+,British Virgin Islands*,South America,2010,4534
+,British Virgin Islands*,South America,2015,4874
+,British Virgin Islands*,South America,2020,5543
+,British Virgin Islands*,South America,2024,6185
+BRN,Brunei Darussalam,Asia,2000,45229
+BRN,Brunei Darussalam,Asia,2005,45524
+BRN,Brunei Darussalam,Asia,2010,45555
+BRN,Brunei Darussalam,Asia,2015,45924
+BRN,Brunei Darussalam,Asia,2020,46349
+BRN,Brunei Darussalam,Asia,2024,46552
+,Bulgaria,Europe,2000,707846
+,Bulgaria,Europe,2005,808373
+,Bulgaria,Europe,2010,926056
+,Bulgaria,Europe,2015,1030383
+,Bulgaria,Europe,2020,1178732
+,Bulgaria,Europe,2024,1252234
+BFA,Burkina Faso,Africa,2000,1297567
+BFA,Burkina Faso,Africa,2005,1443306
+BFA,Burkina Faso,Africa,2010,1601296
+BFA,Burkina Faso,Africa,2015,1759971
+BFA,Burkina Faso,Africa,2020,1919400
+BFA,Burkina Faso,Africa,2024,2050050
+,Burundi,Africa,2000,802113
+,Burundi,Africa,2005,651030
+,Burundi,Africa,2010,290788
+,Burundi,Africa,2015,444013
+,Burundi,Africa,2020,552134
+,Burundi,Africa,2024,576530
+,Cabo Verde,Africa,2000,76121
+,Cabo Verde,Africa,2005,92475
+,Cabo Verde,Africa,2010,99281
+,Cabo Verde,Africa,2015,116450
+,Cabo Verde,Africa,2020,133491
+,Cabo Verde,Africa,2024,146396
+,Cambodia,Asia,2000,316497
+,Cambodia,Asia,2005,455076
+,Cambodia,Asia,2010,613439
+,Cambodia,Asia,2015,674059
+,Cambodia,Asia,2020,726096
+,Cambodia,Asia,2024,778793
+,Cameroon,Africa,2000,131985
+,Cameroon,Africa,2005,167265
+,Cameroon,Africa,2010,214405
+,Cameroon,Africa,2015,275824
+,Cameroon,Africa,2020,357087
+,Cameroon,Africa,2024,409677
+CAN,Canada,North America,2000,1248046
+CAN,Canada,North America,2005,1255998
+CAN,Canada,North America,2010,1255259
+CAN,Canada,North America,2015,1307957
+CAN,Canada,North America,2020,1310121
+CAN,Canada,North America,2024,1347381
+,Cayman Islands*,South America,2000,146
+,Cayman Islands*,South America,2005,179
+,Cayman Islands*,South America,2010,248
+,Cayman Islands*,South America,2015,381
+,Cayman Islands*,South America,2020,549
+,Cayman Islands*,South America,2024,609
+CAF,Central African Republic,Africa,2000,44980
+CAF,Central African Republic,Africa,2005,115287
+CAF,Central African Republic,Africa,2010,228473
+CAF,Central African Republic,Africa,2015,666056
+CAF,Central African Republic,Africa,2020,794362
+CAF,Central African Republic,Africa,2024,905808
+,Chad,Africa,2000,202762
+,Chad,Africa,2005,201982
+,Chad,Africa,2010,191459
+,Chad,Africa,2015,179293
+,Chad,Africa,2020,208110
+,Chad,Africa,2024,292298
+,Channel Islands*,Europe,2000,312
+,Channel Islands*,Europe,2005,306
+,Channel Islands*,Europe,2010,381
+,Channel Islands*,Europe,2015,297
+,Channel Islands*,Europe,2020,320
+,Channel Islands*,Europe,2024,351
+,Chile,South America,2000,393879
+,Chile,South America,2005,419855
+,Chile,South America,2010,435797
+,Chile,South America,2015,419035
+,Chile,South America,2020,423400
+,Chile,South America,2024,444451
+,China,Asia,2000,5668480
+,China,Asia,2005,6892920
+,China,Asia,2010,8773150
+,China,Asia,2015,10357962
+,China,Asia,2020,11169868
+,China,Asia,2024,11701619
+,"China, Hong Kong SAR",Asia,2000,818107
+,"China, Hong Kong SAR",Asia,2005,849440
+,"China, Hong Kong SAR",Asia,2010,903793
+,"China, Hong Kong SAR",Asia,2015,1031087
+,"China, Hong Kong SAR",Asia,2020,1146271
+,"China, Hong Kong SAR",Asia,2024,1240250
+,"China, Macao SAR",Asia,2000,86316
+,"China, Macao SAR",Asia,2005,93169
+,"China, Macao SAR",Asia,2010,101050
+,"China, Macao SAR",Asia,2015,116399
+,"China, Macao SAR",Asia,2020,139129
+,"China, Macao SAR",Asia,2024,149247
+,"China, Taiwan Province of China",Asia,2000,593675
+,"China, Taiwan Province of China",Asia,2005,645094
+,"China, Taiwan Province of China",Asia,2010,723110
+,"China, Taiwan Province of China",Asia,2015,801098
+,"China, Taiwan Province of China",Asia,2020,810609
+,"China, Taiwan Province of China",Asia,2024,832507
+,Colombia,South America,2000,1469973
+,Colombia,South America,2005,1823207
+,Colombia,South America,2010,2558298
+,Colombia,South America,2015,2720321
+,Colombia,South America,2020,3165293
+,Colombia,South America,2024,3652238
+,Comoros,Africa,2000,73404
+,Comoros,Africa,2005,97008
+,Comoros,Africa,2010,111510
+,Comoros,Africa,2015,188715
+,Comoros,Africa,2020,260848
+,Comoros,Africa,2024,367574
+,Congo,Africa,2000,118262
+,Congo,Africa,2005,160242
+,Congo,Africa,2010,169150
+,Congo,Africa,2015,201319
+,Congo,Africa,2020,220301
+,Congo,Africa,2024,231080
+,Cook Islands*,Oceania,2000,19708
+,Cook Islands*,Oceania,2005,20294
+,Cook Islands*,Oceania,2010,20294
+,Cook Islands*,Oceania,2015,20558
+,Cook Islands*,Oceania,2020,20134
+,Cook Islands*,Oceania,2024,20288
+,Costa Rica,South America,2000,26493
+,Costa Rica,South America,2005,30258
+,Costa Rica,South America,2010,34241
+,Costa Rica,South America,2015,39023
+,Costa Rica,South America,2020,43504
+,Costa Rica,South America,2024,50982
+,Croatia,Europe,2000,1196319
+,Croatia,Europe,2005,990980
+,Croatia,Europe,2010,847561
+,Croatia,Europe,2015,802347
+,Croatia,Europe,2020,825039
+,Croatia,Europe,2024,826166
+,Cuba,South America,2000,1032762
+,Cuba,South America,2005,1093555
+,Cuba,South America,2010,1337631
+,Cuba,South America,2015,1519397
+,Cuba,South America,2020,1721822
+,Cuba,South America,2024,1879613
+,Curaçao*,South America,2000,4701
+,Curaçao*,South America,2005,4329
+,Curaçao*,South America,2010,5354
+,Curaçao*,South America,2015,5861
+,Curaçao*,South America,2020,7666
+,Curaçao*,South America,2024,10103
+,Cyprus,Asia,2000,63149
+,Cyprus,Asia,2005,65886
+,Cyprus,Asia,2010,68736
+,Cyprus,Asia,2015,70451
+,Cyprus,Asia,2020,75728
+,Cyprus,Asia,2024,80760
+,Czechia,Europe,2000,615436
+,Czechia,Europe,2005,650527
+,Czechia,Europe,2010,660378
+,Czechia,Europe,2015,624517
+,Czechia,Europe,2020,584341
+,Czechia,Europe,2024,583214
+,Côte d'Ivoire,Africa,2000,525165
+,Côte d'Ivoire,Africa,2005,698103
+,Côte d'Ivoire,Africa,2010,902169
+,Côte d'Ivoire,Africa,2015,1025536
+,Côte d'Ivoire,Africa,2020,1129849
+,Côte d'Ivoire,Africa,2024,1211422
+,Dem. People's Republic of Korea,Asia,2000,34814
+,Dem. People's Republic of Korea,Asia,2005,39887
+,Dem. People's Republic of Korea,Asia,2010,49563
+,Dem. People's Republic of Korea,Asia,2015,56701
+,Dem. People's Republic of Korea,Asia,2020,50879
+,Dem. People's Republic of Korea,Asia,2024,46379
+,Democratic Republic of the Congo,Africa,2000,794799
+,Democratic Republic of the Congo,Africa,2005,1097069
+,Democratic Republic of the Congo,Africa,2010,1242847
+,Democratic Republic of the Congo,Africa,2015,1512153
+,Democratic Republic of the Congo,Africa,2020,1916852
+,Democratic Republic of the Congo,Africa,2024,2097387
+,Denmark*,Europe,2000,113952
+,Denmark*,Europe,2005,120534
+,Denmark*,Europe,2010,124567
+,Denmark*,Europe,2015,123297
+,Denmark*,Europe,2020,120852
+,Denmark*,Europe,2024,124665
+,Djibouti,Africa,2000,3751
+,Djibouti,Africa,2005,2421
+,Djibouti,Africa,2010,2577
+,Djibouti,Africa,2015,2537
+,Djibouti,Africa,2020,2866
+,Djibouti,Africa,2024,3576
+,Dominica,South America,2000,22406
+,Dominica,South America,2005,21077
+,Dominica,South America,2010,20788
+,Dominica,South America,2015,21079
+,Dominica,South America,2020,20838
+,Dominica,South America,2024,21384
+DOM,Dominican Republic,South America,2000,845469
+DOM,Dominican Republic,South America,2005,962450
+DOM,Dominican Republic,South America,2010,1212240
+DOM,Dominican Republic,South America,2015,1454378
+DOM,Dominican Republic,South America,2020,1691232
+DOM,Dominican Republic,South America,2024,1917153
+,Ecuador,South America,2000,510456
+,Ecuador,South America,2005,935700
+,Ecuador,South America,2010,1122949
+,Ecuador,South America,2015,1066457
+,Ecuador,South America,2020,1118570
+,Ecuador,South America,2024,1243065
+,Egypt,Africa,2000,1921183
+,Egypt,Africa,2005,2371080
+,Egypt,Africa,2010,3213308
+,Egypt,Africa,2015,4193177
+,Egypt,Africa,2020,4454277
+,Egypt,Africa,2024,4820002
+,El Salvador,South America,2000,906731
+,El Salvador,South America,2005,1108043
+,El Salvador,South America,2010,1359464
+,El Salvador,South America,2015,1541873
+,El Salvador,South America,2020,1679667
+,El Salvador,South America,2024,1834670
+,Equatorial Guinea,Africa,2000,57049
+,Equatorial Guinea,Africa,2005,71228
+,Equatorial Guinea,Africa,2010,83286
+,Equatorial Guinea,Africa,2015,116053
+,Equatorial Guinea,Africa,2020,127021
+,Equatorial Guinea,Africa,2024,136825
+,Eritrea,Africa,2000,505394
+,Eritrea,Africa,2005,267114
+,Eritrea,Africa,2010,283312
+,Eritrea,Africa,2015,478597
+,Eritrea,Africa,2020,663275
+,Eritrea,Africa,2024,912792
+,Estonia,Europe,2000,111603
+,Estonia,Europe,2005,115845
+,Estonia,Europe,2010,116903
+,Estonia,Europe,2015,128194
+,Estonia,Europe,2020,123628
+,Estonia,Europe,2024,124216
+,Eswatini,Africa,2000,29821
+,Eswatini,Africa,2005,33323
+,Eswatini,Africa,2010,37292
+,Eswatini,Africa,2015,28381
+,Eswatini,Africa,2020,19033
+,Eswatini,Africa,2024,11561
+,Ethiopia,Africa,2000,418923
+,Ethiopia,Africa,2005,493987
+,Ethiopia,Africa,2010,666181
+,Ethiopia,Africa,2015,896584
+,Ethiopia,Africa,2020,1075343
+,Ethiopia,Africa,2024,1240645
+,Falkland Islands (Malvinas)*,South America,2000,1525
+,Falkland Islands (Malvinas)*,South America,2005,1100
+,Falkland Islands (Malvinas)*,South America,2010,414
+,Falkland Islands (Malvinas)*,South America,2015,193
+,Falkland Islands (Malvinas)*,South America,2020,106
+,Falkland Islands (Malvinas)*,South America,2024,93
+,Faroe Islands*,Europe,2000,11640
+,Faroe Islands*,Europe,2005,11018
+,Faroe Islands*,Europe,2010,12146
+,Faroe Islands*,Europe,2015,13041
+,Faroe Islands*,Europe,2020,12048
+,Faroe Islands*,Europe,2024,12282
+,Fiji,Oceania,2000,95570
+,Fiji,Oceania,2005,117629
+,Fiji,Oceania,2010,138607
+,Fiji,Oceania,2015,158026
+,Fiji,Oceania,2020,169411
+,Fiji,Oceania,2024,181025
+,Finland*,Europe,2000,247766
+,Finland*,Europe,2005,236417
+,Finland*,Europe,2010,221943
+,Finland*,Europe,2015,209216
+,Finland*,Europe,2020,195782
+,Finland*,Europe,2024,181834
+,France*,Europe,2000,1721390
+,France*,Europe,2005,1855042
+,France*,Europe,2010,2042164
+,France*,Europe,2015,2249670
+,France*,Europe,2020,2400208
+,France*,Europe,2024,2547158
+,French Guiana*,South America,2000,3554
+,French Guiana*,South America,2005,3694
+,French Guiana*,South America,2010,3815
+,French Guiana*,South America,2015,4106
+,French Guiana*,South America,2020,4128
+,French Guiana*,South America,2024,4490
+,French Polynesia*,Oceania,2000,4080
+,French Polynesia*,Oceania,2005,2549
+,French Polynesia*,Oceania,2010,1312
+,French Polynesia*,Oceania,2015,1674
+,French Polynesia*,Oceania,2020,1915
+,French Polynesia*,Oceania,2024,2008
+,Gabon,Africa,2000,19695
+,Gabon,Africa,2005,39376
+,Gabon,Africa,2010,36042
+,Gabon,Africa,2015,43401
+,Gabon,Africa,2020,54053
+,Gabon,Africa,2024,61160
+,Gambia,Africa,2000,19940
+,Gambia,Africa,2005,27073
+,Gambia,Africa,2010,34151
+,Gambia,Africa,2015,38925
+,Gambia,Africa,2020,61390
+,Gambia,Africa,2024,72452
+GEO,Georgia,Asia,2000,979681
+GEO,Georgia,Asia,2005,879847
+GEO,Georgia,Asia,2010,780487
+GEO,Georgia,Asia,2015,637894
+GEO,Georgia,Asia,2020,545396
+GEO,Georgia,Asia,2024,496486
+,Germany,Europe,2000,4107120
+,Germany,Europe,2005,4078804
+,Germany,Europe,2010,4260810
+,Germany,Europe,2015,4207460
+,Germany,Europe,2020,4204441
+,Germany,Europe,2024,4297233
+,Ghana,Africa,2000,445447
+,Ghana,Africa,2005,606700
+,Ghana,Africa,2010,718300
+,Ghana,Africa,2015,846131
+,Ghana,Africa,2020,963019
+,Ghana,Africa,2024,1055494
+,Gibraltar*,Europe,2000,502
+,Gibraltar*,Europe,2005,510
+,Gibraltar*,Europe,2010,511
+,Gibraltar*,Europe,2015,517
+,Gibraltar*,Europe,2020,494
+,Gibraltar*,Europe,2024,474
+,Greece,Europe,2000,857066
+,Greece,Europe,2005,768388
+,Greece,Europe,2010,703538
+,Greece,Europe,2015,759916
+,Greece,Europe,2020,775995
+,Greece,Europe,2024,780112
+,Greenland*,North America,2000,12905
+,Greenland*,North America,2005,13706
+,Greenland*,North America,2010,15437
+,Greenland*,North America,2015,16944
+,Greenland*,North America,2020,17726
+,Greenland*,North America,2024,18491
+GRD,Grenada,South America,2000,22073
+GRD,Grenada,South America,2005,23589
+GRD,Grenada,South America,2010,21140
+GRD,Grenada,South America,2015,21750
+GRD,Grenada,South America,2020,22210
+GRD,Grenada,South America,2024,26300
+,Guadeloupe*,South America,2000,9237
+,Guadeloupe*,South America,2005,8488
+,Guadeloupe*,South America,2010,10282
+,Guadeloupe*,South America,2015,11416
+,Guadeloupe*,South America,2020,11909
+,Guadeloupe*,South America,2024,12374
+,Guam*,Oceania,2000,2054
+,Guam*,Oceania,2005,1751
+,Guam*,Oceania,2010,1228
+,Guam*,Oceania,2015,1134
+,Guam*,Oceania,2020,1155
+,Guam*,Oceania,2024,1179
+,Guatemala,South America,2000,545695
+,Guatemala,South America,2005,737245
+,Guatemala,South America,2010,919782
+,Guatemala,South America,2015,1067787
+,Guatemala,South America,2020,1282668
+,Guatemala,South America,2024,1460232
+,Guinea,Africa,2000,339435
+,Guinea,Africa,2005,345573
+,Guinea,Africa,2010,382773
+,Guinea,Africa,2015,416953
+,Guinea,Africa,2020,473409
+,Guinea,Africa,2024,508203
+,Guinea-Bissau,Africa,2000,66613
+,Guinea-Bissau,Africa,2005,73544
+,Guinea-Bissau,Africa,2010,78973
+,Guinea-Bissau,Africa,2015,86283
+,Guinea-Bissau,Africa,2020,98064
+,Guinea-Bissau,Africa,2024,103999
+,Guyana,South America,2000,341369
+,Guyana,South America,2005,386766
+,Guyana,South America,2010,404368
+,Guyana,South America,2015,429943
+,Guyana,South America,2020,429266
+,Guyana,South America,2024,469649
+,Haiti,South America,2000,821140
+,Haiti,South America,2005,958254
+,Haiti,South America,2010,1157011
+,Haiti,South America,2015,1467970
+,Haiti,South America,2020,1764699
+,Haiti,South America,2024,2017692
+,Holy See*,Europe,2000,41
+,Holy See*,Europe,2005,52
+,Holy See*,Europe,2010,74
+,Holy See*,Europe,2015,128
+,Holy See*,Europe,2020,284
+,Holy See*,Europe,2024,313
+,Honduras,South America,2000,316051
+,Honduras,South America,2005,456501
+,Honduras,South America,2010,604765
+,Honduras,South America,2015,751534
+,Honduras,South America,2020,1060598
+,Honduras,South America,2024,1397584
+,Hungary,Europe,2000,359746
+,Hungary,Europe,2005,357651
+,Hungary,Europe,2010,378410
+,Hungary,Europe,2015,469269
+,Hungary,Europe,2020,508918
+,Hungary,Europe,2024,538794
+,Iceland,Europe,2000,11709
+,Iceland,Europe,2005,13497
+,Iceland,Europe,2010,16404
+,Iceland,Europe,2015,19596
+,Iceland,Europe,2020,20887
+,Iceland,Europe,2024,23326
+,India,Asia,2000,7778792
+,India,Asia,2005,9500673
+,India,Asia,2010,12350515
+,India,Asia,2015,15277263
+,India,Asia,2020,16532761
+,India,Asia,2024,18533845
+,Indonesia,Asia,2000,2128328
+,Indonesia,Asia,2005,2406449
+,Indonesia,Asia,2010,3031600
+,Indonesia,Asia,2015,3269321
+,Indonesia,Asia,2020,3446736
+,Indonesia,Asia,2024,3745148
+,Iran (Islamic Republic of),Asia,2000,835113
+,Iran (Islamic Republic of),Asia,2005,875530
+,Iran (Islamic Republic of),Asia,2010,1028854
+,Iran (Islamic Republic of),Asia,2015,1163612
+,Iran (Islamic Republic of),Asia,2020,1442650
+,Iran (Islamic Republic of),Asia,2024,1733468
+,Iraq,Asia,2000,825369
+,Iraq,Asia,2005,1202149
+,Iraq,Asia,2010,2697913
+,Iraq,Asia,2015,1652951
+,Iraq,Asia,2020,2282773
+,Iraq,Asia,2024,2313028
+IRL,Ireland,Europe,2000,809826
+IRL,Ireland,Europe,2005,764001
+IRL,Ireland,Europe,2010,765462
+IRL,Ireland,Europe,2015,762324
+IRL,Ireland,Europe,2020,729636
+IRL,Ireland,Europe,2024,714405
+,Isle of Man*,Europe,2000,720
+,Isle of Man*,Europe,2005,769
+,Isle of Man*,Europe,2010,889
+,Isle of Man*,Europe,2015,838
+,Isle of Man*,Europe,2020,920
+,Isle of Man*,Europe,2024,908
+,Israel,Asia,2000,290092
+,Israel,Asia,2005,297140
+,Israel,Asia,2010,300419
+,Israel,Asia,2015,301155
+,Israel,Asia,2020,312533
+,Israel,Asia,2024,324804
+,Italy,Europe,2000,2998648
+,Italy,Europe,2005,2751018
+,Italy,Europe,2010,2666862
+,Italy,Europe,2015,2756727
+,Italy,Europe,2020,2886481
+,Italy,Europe,2024,2941444
+JAM,Jamaica,South America,2000,833377
+JAM,Jamaica,South America,2005,895828
+JAM,Jamaica,South America,2010,1005109
+JAM,Jamaica,South America,2015,1084528
+JAM,Jamaica,South America,2020,1175941
+JAM,Jamaica,South America,2024,1248512
+JPN,Japan,Asia,2000,846780
+JPN,Japan,Asia,2005,864518
+JPN,Japan,Asia,2010,909212
+JPN,Japan,Asia,2015,943736
+JPN,Japan,Asia,2020,926826
+JPN,Japan,Asia,2024,1008173
+,Jordan,Asia,2000,324675
+,Jordan,Asia,2005,384315
+,Jordan,Asia,2010,486197
+,Jordan,Asia,2015,582220
+,Jordan,Asia,2020,609679
+,Jordan,Asia,2024,659204
+,Kazakhstan,Asia,2000,3407178
+,Kazakhstan,Asia,2005,3648310
+,Kazakhstan,Asia,2010,3753542
+,Kazakhstan,Asia,2015,3348874
+,Kazakhstan,Asia,2020,3029566
+,Kazakhstan,Asia,2024,2796572
+,Kenya,Africa,2000,296430
+,Kenya,Africa,2005,346666
+,Kenya,Africa,2010,390142
+,Kenya,Africa,2015,452369
+,Kenya,Africa,2020,483045
+,Kenya,Africa,2024,540466
+,Kiribati,Oceania,2000,3819
+,Kiribati,Oceania,2005,3783
+,Kiribati,Oceania,2010,3344
+,Kiribati,Oceania,2015,4086
+,Kiribati,Oceania,2020,5053
+,Kiribati,Oceania,2024,6306
+,Kuwait,Asia,2000,79931
+,Kuwait,Asia,2005,87761
+,Kuwait,Asia,2010,117370
+,Kuwait,Asia,2015,134398
+,Kuwait,Asia,2020,149927
+,Kuwait,Asia,2024,167850
+,Kyrgyzstan,Asia,2000,590619
+,Kyrgyzstan,Asia,2005,663215
+,Kyrgyzstan,Asia,2010,713989
+,Kyrgyzstan,Asia,2015,641517
+,Kyrgyzstan,Asia,2020,584710
+,Kyrgyzstan,Asia,2024,540573
+LAO,Lao People's Democratic Republic,Asia,2000,363370
+LAO,Lao People's Democratic Republic,Asia,2005,471052
+LAO,Lao People's Democratic Republic,Asia,2010,563709
+LAO,Lao People's Democratic Republic,Asia,2015,598860
+LAO,Lao People's Democratic Republic,Asia,2020,609093
+LAO,Lao People's Democratic Republic,Asia,2024,660258
+,Latvia,Europe,2000,184708
+,Latvia,Europe,2005,183414
+,Latvia,Europe,2010,183282
+,Latvia,Europe,2015,175523
+,Latvia,Europe,2020,166868
+,Latvia,Europe,2024,161014
+,Lebanon,Asia,2000,467495
+,Lebanon,Asia,2005,493327
+,Lebanon,Asia,2010,550096
+,Lebanon,Asia,2015,594974
+,Lebanon,Asia,2020,631071
+,Lebanon,Asia,2024,681720
+,Lesotho,Africa,2000,121214
+,Lesotho,Africa,2005,138931
+,Lesotho,Africa,2010,161987
+,Lesotho,Africa,2015,191588
+,Lesotho,Africa,2020,224803
+,Lesotho,Africa,2024,246938
+,Liberia,Africa,2000,270603
+,Liberia,Africa,2005,349718
+,Liberia,Africa,2010,186132
+,Liberia,Africa,2015,150490
+,Liberia,Africa,2020,147341
+,Liberia,Africa,2024,145919
+,Libya,Africa,2000,80451
+,Libya,Africa,2005,81361
+,Libya,Africa,2010,99826
+,Libya,Africa,2015,119270
+,Libya,Africa,2020,145103
+,Libya,Africa,2024,156874
+,Liechtenstein,Europe,2000,52
+,Liechtenstein,Europe,2005,154
+,Liechtenstein,Europe,2010,264
+,Liechtenstein,Europe,2015,293
+,Liechtenstein,Europe,2020,314
+,Liechtenstein,Europe,2024,346
+,Lithuania,Europe,2000,287335
+,Lithuania,Europe,2005,278878
+,Lithuania,Europe,2010,354264
+,Lithuania,Europe,2015,409441
+,Lithuania,Europe,2020,437638
+,Lithuania,Europe,2024,459268
+,Luxembourg,Europe,2000,30943
+,Luxembourg,Europe,2005,33941
+,Luxembourg,Europe,2010,36675
+,Luxembourg,Europe,2015,41099
+,Luxembourg,Europe,2020,43235
+,Luxembourg,Europe,2024,61859
+,Madagascar,Africa,2000,119159
+,Madagascar,Africa,2005,143188
+,Madagascar,Africa,2010,156279
+,Madagascar,Africa,2015,175803
+,Madagascar,Africa,2020,196997
+,Madagascar,Africa,2024,212455
+,Malawi,Africa,2000,167695
+,Malawi,Africa,2005,216125
+,Malawi,Africa,2010,259343
+,Malawi,Africa,2015,307175
+,Malawi,Africa,2020,372914
+,Malawi,Africa,2024,427573
+MYS,Malaysia,Asia,2000,1165408
+MYS,Malaysia,Asia,2005,1283218
+MYS,Malaysia,Asia,2010,1647051
+MYS,Malaysia,Asia,2015,1916776
+MYS,Malaysia,Asia,2020,2118942
+MYS,Malaysia,Asia,2024,2433875
+,Maldives,Asia,2000,824
+,Maldives,Asia,2005,1432
+,Maldives,Asia,2010,2624
+,Maldives,Asia,2015,2694
+,Maldives,Asia,2020,2703
+,Maldives,Asia,2024,2773
+,Mali,Africa,2000,706904
+,Mali,Africa,2005,822077
+,Mali,Africa,2010,897610
+,Mali,Africa,2015,1117148
+,Mali,Africa,2020,1200058
+,Mali,Africa,2024,1292519
+,Malta,Europe,2000,64124
+,Malta,Europe,2005,61981
+,Malta,Europe,2010,58858
+,Malta,Europe,2015,54505
+,Malta,Europe,2020,49061
+,Malta,Europe,2024,43940
+,Marshall Islands,Oceania,2000,468
+,Marshall Islands,Oceania,2005,435
+,Marshall Islands,Oceania,2010,379
+,Marshall Islands,Oceania,2015,379
+,Marshall Islands,Oceania,2020,387
+,Marshall Islands,Oceania,2024,400
+,Martinique*,South America,2000,13801
+,Martinique*,South America,2005,13941
+,Martinique*,South America,2010,14145
+,Martinique*,South America,2015,12097
+,Martinique*,South America,2020,12498
+,Martinique*,South America,2024,12893
+,Mauritania,Africa,2000,81064
+,Mauritania,Africa,2005,69192
+,Mauritania,Africa,2010,73350
+,Mauritania,Africa,2015,73527
+,Mauritania,Africa,2020,86409
+,Mauritania,Africa,2024,91705
+,Mauritius,Africa,2000,77904
+,Mauritius,Africa,2005,88522
+,Mauritius,Africa,2010,102296
+,Mauritius,Africa,2015,109779
+,Mauritius,Africa,2020,112089
+,Mauritius,Africa,2024,114314
+MYT,Mayotte,Africa,2000,6214
+MYT,Mayotte,Africa,2005,6468
+MYT,Mayotte,Africa,2010,6336
+MYT,Mayotte,Africa,2015,6545
+MYT,Mayotte,Africa,2020,6767
+MYT,Mayotte,Africa,2024,6960
+,Mexico,South America,2000,9367663
+,Mexico,South America,2005,11329536
+,Mexico,South America,2010,12108928
+,Mexico,South America,2015,12184226
+,Mexico,South America,2020,11452717
+,Mexico,South America,2024,11596529
+,Micronesia (Fed. States of),Oceania,2000,9334
+,Micronesia (Fed. States of),Oceania,2005,11237
+,Micronesia (Fed. States of),Oceania,2010,12464
+,Micronesia (Fed. States of),Oceania,2015,12401
+,Micronesia (Fed. States of),Oceania,2020,13033
+,Micronesia (Fed. States of),Oceania,2024,13568
+,Monaco,Europe,2000,16367
+,Monaco,Europe,2005,19616
+,Monaco,Europe,2010,26148
+,Monaco,Europe,2015,28636
+,Monaco,Europe,2020,33812
+,Monaco,Europe,2024,36682
+MNG,Mongolia,Asia,2000,88244
+MNG,Mongolia,Asia,2005,98174
+MNG,Mongolia,Asia,2010,114217
+MNG,Mongolia,Asia,2015,124542
+MNG,Mongolia,Asia,2020,153554
+MNG,Mongolia,Asia,2024,175596
+,Montenegro,Europe,2000,102948
+,Montenegro,Europe,2005,98615
+,Montenegro,Europe,2010,100961
+,Montenegro,Europe,2015,102965
+,Montenegro,Europe,2020,94731
+,Montenegro,Europe,2024,90678
+,Montserrat*,South America,2000,2575
+,Montserrat*,South America,2005,2791
+,Montserrat*,South America,2010,2993
+,Montserrat*,South America,2015,3134
+,Montserrat*,South America,2020,3239
+,Montserrat*,South America,2024,3341
+,Morocco,Africa,2000,1756024
+,Morocco,Africa,2005,2291145
+,Morocco,Africa,2010,2733747
+,Morocco,Africa,2015,2907733
+,Morocco,Africa,2020,3293170
+,Morocco,Africa,2024,3627829
+,Mozambique,Africa,2000,650229
+,Mozambique,Africa,2005,641039
+,Mozambique,Africa,2010,655516
+,Mozambique,Africa,2015,671672
+,Mozambique,Africa,2020,689058
+,Mozambique,Africa,2024,702796
+,Myanmar,Asia,2000,671239
+,Myanmar,Asia,2005,1254165
+,Myanmar,Asia,2010,2129897
+,Myanmar,Asia,2015,2517411
+,Myanmar,Asia,2020,3611603
+,Myanmar,Asia,2024,4320462
+,Namibia,Africa,2000,44921
+,Namibia,Africa,2005,47680
+,Namibia,Africa,2010,45530
+,Namibia,Africa,2015,43728
+,Namibia,Africa,2020,42223
+,Namibia,Africa,2024,40371
+,Nauru,Oceania,2000,1565
+,Nauru,Oceania,2005,1836
+,Nauru,Oceania,2010,2092
+,Nauru,Oceania,2015,2196
+,Nauru,Oceania,2020,2345
+,Nauru,Oceania,2024,2484
+,Nepal,Asia,2000,707896
+,Nepal,Asia,2005,1056250
+,Nepal,Asia,2010,1402556
+,Nepal,Asia,2015,2112726
+,Nepal,Asia,2020,2357848
+,Nepal,Asia,2024,2637195
+,Netherlands*,Europe,2000,515256
+,Netherlands*,Europe,2005,560613
+,Netherlands*,Europe,2010,597525
+,Netherlands*,Europe,2015,594329
+,Netherlands*,Europe,2020,599736
+,Netherlands*,Europe,2024,631391
+,New Caledonia*,Oceania,2000,4675
+,New Caledonia*,Oceania,2005,4971
+,New Caledonia*,Oceania,2010,5055
+,New Caledonia*,Oceania,2015,5112
+,New Caledonia*,Oceania,2020,5097
+,New Caledonia*,Oceania,2024,5082
+,New Zealand*,Oceania,2000,454340
+,New Zealand*,Oceania,2005,518239
+,New Zealand*,Oceania,2010,620805
+,New Zealand*,Oceania,2015,675441
+,New Zealand*,Oceania,2020,679479
+,New Zealand*,Oceania,2024,679772
+,Nicaragua,South America,2000,494067
+,Nicaragua,South America,2005,545324
+,Nicaragua,South America,2010,609093
+,Nicaragua,South America,2015,633892
+,Nicaragua,South America,2020,749552
+,Nicaragua,South America,2024,905251
+,Niger,Africa,2000,219232
+,Niger,Africa,2005,317174
+,Niger,Africa,2010,350773
+,Niger,Africa,2015,390945
+,Niger,Africa,2020,416964
+,Niger,Africa,2024,439378
+,Nigeria,Africa,2000,542140
+,Nigeria,Africa,2005,763991
+,Nigeria,Africa,2010,978678
+,Nigeria,Africa,2015,1359519
+,Nigeria,Africa,2020,1768444
+,Nigeria,Africa,2024,2094265
+,Niue*,Oceania,2000,5870
+,Niue*,Oceania,2005,5554
+,Niue*,Oceania,2010,5231
+,Niue*,Oceania,2015,5059
+,Niue*,Oceania,2020,4968
+,Niue*,Oceania,2024,4955
+,North Macedonia,Europe,2000,424184
+,North Macedonia,Europe,2005,428969
+,North Macedonia,Europe,2010,430535
+,North Macedonia,Europe,2015,437223
+,North Macedonia,Europe,2020,485263
+,North Macedonia,Europe,2024,534616
+,Northern Mariana Islands*,Oceania,2000,2480
+,Northern Mariana Islands*,Oceania,2005,2549
+,Northern Mariana Islands*,Oceania,2010,2542
+,Northern Mariana Islands*,Oceania,2015,2532
+,Northern Mariana Islands*,Oceania,2020,2664
+,Northern Mariana Islands*,Oceania,2024,2779
+,Norway*,Europe,2000,87049
+,Norway*,Europe,2005,94553
+,Norway*,Europe,2010,98853
+,Norway*,Europe,2015,101769
+,Norway*,Europe,2020,110143
+,Norway*,Europe,2024,120891
+,Oman,Asia,2000,10898
+,Oman,Asia,2005,13313
+,Oman,Asia,2010,14009
+,Oman,Asia,2015,15667
+,Oman,Asia,2020,16877
+,Oman,Asia,2024,17095
+,Pakistan,Asia,2000,3272459
+,Pakistan,Asia,2005,3715061
+,Pakistan,Asia,2010,4684523
+,Pakistan,Asia,2015,6190815
+,Pakistan,Asia,2020,6372467
+,Pakistan,Asia,2024,6915057
+,Palau,Oceania,2000,2804
+,Palau,Oceania,2005,2816
+,Palau,Oceania,2010,2554
+,Palau,Oceania,2015,2490
+,Palau,Oceania,2020,2582
+,Palau,Oceania,2024,2674
+,Panama,South America,2000,166111
+,Panama,South America,2005,167840
+,Panama,South America,2010,173244
+,Panama,South America,2015,177743
+,Panama,South America,2020,179794
+,Panama,South America,2024,194816
+,Papua New Guinea,Oceania,2000,26811
+,Papua New Guinea,Oceania,2005,27858
+,Papua New Guinea,Oceania,2010,30830
+,Papua New Guinea,Oceania,2015,34339
+,Papua New Guinea,Oceania,2020,34471
+,Papua New Guinea,Oceania,2024,35050
+,Paraguay,South America,2000,364636
+,Paraguay,South America,2005,476193
+,Paraguay,South America,2010,681322
+,Paraguay,South America,2015,674976
+,Paraguay,South America,2020,708390
+,Paraguay,South America,2024,746362
+,Peru,South America,2000,634278
+,Peru,South America,2005,914622
+,Peru,South America,2010,1231719
+,Peru,South America,2015,1314688
+,Peru,South America,2020,1460493
+,Peru,South America,2024,1672482
+,Philippines,Asia,2000,3310102
+,Philippines,Asia,2005,3925727
+,Philippines,Asia,2010,4941994
+,Philippines,Asia,2015,6000348
+,Philippines,Asia,2020,6461086
+,Philippines,Asia,2024,6988383
+,Poland,Europe,2000,2502866
+,Poland,Europe,2005,2798776
+,Poland,Europe,2010,3673715
+,Poland,Europe,2015,4154666
+,Poland,Europe,2020,4365879
+,Poland,Europe,2024,4572613
+,Portugal,Europe,2000,1554095
+,Portugal,Europe,2005,1622764
+,Portugal,Europe,2010,1727839
+,Portugal,Europe,2015,1801647
+,Portugal,Europe,2020,1729500
+,Portugal,Europe,2024,1799179
+,Puerto Rico*,South America,2000,1181295
+,Puerto Rico*,South America,2005,1357565
+,Puerto Rico*,South America,2010,1554887
+,Puerto Rico*,South America,2015,1708615
+,Puerto Rico*,South America,2020,1886872
+,Puerto Rico*,South America,2024,1948223
+,Qatar,Asia,2000,11605
+,Qatar,Asia,2005,13249
+,Qatar,Asia,2010,15397
+,Qatar,Asia,2015,16605
+,Qatar,Asia,2020,18513
+,Qatar,Asia,2024,19821
+,Republic of Korea,Asia,2000,1897540
+,Republic of Korea,Asia,2005,2001950
+,Republic of Korea,Asia,2010,2164782
+,Republic of Korea,Asia,2015,2162256
+,Republic of Korea,Asia,2020,2038995
+,Republic of Korea,Asia,2024,2030473
+,Republic of Moldova*,Europe,2000,563893
+,Republic of Moldova*,Europe,2005,628876
+,Republic of Moldova*,Europe,2010,717352
+,Republic of Moldova*,Europe,2015,745934
+,Republic of Moldova*,Europe,2020,812653
+,Republic of Moldova*,Europe,2024,864257
+ROU,Romania,Europe,2000,1226172
+ROU,Romania,Europe,2005,1960907
+ROU,Romania,Europe,2010,2979844
+ROU,Romania,Europe,2015,3535273
+ROU,Romania,Europe,2020,4191022
+ROU,Romania,Europe,2024,4583819
+RUS,Russian Federation,Europe,2000,8879470
+RUS,Russian Federation,Europe,2005,8675250
+RUS,Russian Federation,Europe,2010,8545806
+RUS,Russian Federation,Europe,2015,8528582
+RUS,Russian Federation,Europe,2020,8747396
+RUS,Russian Federation,Europe,2024,9134094
+,Rwanda,Africa,2000,346850
+,Rwanda,Africa,2005,293186
+,Rwanda,Africa,2010,334656
+,Rwanda,Africa,2015,496392
+,Rwanda,Africa,2020,486754
+,Rwanda,Africa,2024,539046
+,Réunion,Africa,2000,3078
+,Réunion,Africa,2005,2624
+,Réunion,Africa,2010,2425
+,Réunion,Africa,2015,2364
+,Réunion,Africa,2020,2336
+,Réunion,Africa,2024,2357
+SHN,Saint Helena,Africa,2000,262
+SHN,Saint Helena,Africa,2005,267
+SHN,Saint Helena,Africa,2010,396
+SHN,Saint Helena,Africa,2015,428
+SHN,Saint Helena,Africa,2020,506
+SHN,Saint Helena,Africa,2024,591
+,Saint Kitts and Nevis,South America,2000,11826
+,Saint Kitts and Nevis,South America,2005,12011
+,Saint Kitts and Nevis,South America,2010,11543
+,Saint Kitts and Nevis,South America,2015,12179
+,Saint Kitts and Nevis,South America,2020,13154
+,Saint Kitts and Nevis,South America,2024,13872
+LCA,Saint Lucia,South America,2000,17419
+LCA,Saint Lucia,South America,2005,17110
+LCA,Saint Lucia,South America,2010,17985
+LCA,Saint Lucia,South America,2015,19620
+LCA,Saint Lucia,South America,2020,20127
+LCA,Saint Lucia,South America,2024,21706
+,Saint Pierre and Miquelon*,North America,2000,112
+,Saint Pierre and Miquelon*,North America,2005,106
+,Saint Pierre and Miquelon*,North America,2010,105
+,Saint Pierre and Miquelon*,North America,2015,111
+,Saint Pierre and Miquelon*,North America,2020,122
+,Saint Pierre and Miquelon*,North America,2024,156
+VCT,Saint Vincent and the Grenadines,South America,2000,25484
+VCT,Saint Vincent and the Grenadines,South America,2005,26574
+VCT,Saint Vincent and the Grenadines,South America,2010,26840
+VCT,Saint Vincent and the Grenadines,South America,2015,29222
+VCT,Saint Vincent and the Grenadines,South America,2020,30568
+VCT,Saint Vincent and the Grenadines,South America,2024,35264
+,Samoa,Oceania,2000,77905
+,Samoa,Oceania,2005,84416
+,Samoa,Oceania,2010,88359
+,Samoa,Oceania,2015,97923
+,Samoa,Oceania,2020,109124
+,Samoa,Oceania,2024,119313
+,San Marino,Europe,2000,2237
+,San Marino,Europe,2005,2080
+,San Marino,Europe,2010,1954
+,San Marino,Europe,2015,1866
+,San Marino,Europe,2020,2433
+,San Marino,Europe,2024,1991
+,Sao Tome and Principe,Africa,2000,24414
+,Sao Tome and Principe,Africa,2005,28200
+,Sao Tome and Principe,Africa,2010,29623
+,Sao Tome and Principe,Africa,2015,33671
+,Sao Tome and Principe,Africa,2020,37872
+,Sao Tome and Principe,Africa,2024,41433
+,Saudi Arabia,Asia,2000,113266
+,Saudi Arabia,Asia,2005,110937
+,Saudi Arabia,Asia,2010,143733
+,Saudi Arabia,Asia,2015,159958
+,Saudi Arabia,Asia,2020,215551
+,Saudi Arabia,Asia,2024,236699
+,Senegal,Africa,2000,366397
+,Senegal,Africa,2005,425788
+,Senegal,Africa,2010,498417
+,Senegal,Africa,2015,558252
+,Senegal,Africa,2020,665735
+,Senegal,Africa,2024,741357
+,Serbia*,Europe,2000,476586
+,Serbia*,Europe,2005,510878
+,Serbia*,Europe,2010,620292
+,Serbia*,Europe,2015,775447
+,Serbia*,Europe,2020,859370
+,Serbia*,Europe,2024,963307
+,Seychelles,Africa,2000,14346
+,Seychelles,Africa,2005,18364
+,Seychelles,Africa,2010,20399
+,Seychelles,Africa,2015,21141
+,Seychelles,Africa,2020,21722
+,Seychelles,Africa,2024,22191
+,Sierra Leone,Africa,2000,459995
+,Sierra Leone,Africa,2005,89467
+,Sierra Leone,Africa,2010,57946
+,Sierra Leone,Africa,2015,59400
+,Sierra Leone,Africa,2020,64980
+,Sierra Leone,Africa,2024,63631
+,Singapore,Asia,2000,186401
+,Singapore,Asia,2005,206277
+,Singapore,Asia,2010,231411
+,Singapore,Asia,2015,254347
+,Singapore,Asia,2020,264487
+,Singapore,Asia,2024,269613
+,Sint Maarten (Dutch part)*,South America,2000,1594
+,Sint Maarten (Dutch part)*,South America,2005,1655
+,Sint Maarten (Dutch part)*,South America,2010,1698
+,Sint Maarten (Dutch part)*,South America,2015,1793
+,Sint Maarten (Dutch part)*,South America,2020,1945
+,Sint Maarten (Dutch part)*,South America,2024,2464
+,Slovakia,Europe,2000,352303
+,Slovakia,Europe,2005,370695
+,Slovakia,Europe,2010,399133
+,Slovakia,Europe,2015,400856
+,Slovakia,Europe,2020,394449
+,Slovakia,Europe,2024,389909
+,Slovenia,Europe,2000,107988
+,Slovenia,Europe,2005,94891
+,Slovenia,Europe,2010,91568
+,Slovenia,Europe,2015,91655
+,Slovenia,Europe,2020,81068
+,Slovenia,Europe,2024,78808
+SLB,Solomon Islands,Oceania,2000,2398
+SLB,Solomon Islands,Oceania,2005,2671
+SLB,Solomon Islands,Oceania,2010,3024
+SLB,Solomon Islands,Oceania,2015,3447
+SLB,Solomon Islands,Oceania,2020,4047
+SLB,Solomon Islands,Oceania,2024,8352
+,Somalia,Africa,2000,758781
+,Somalia,Africa,2005,756046
+,Somalia,Africa,2010,1237640
+,Somalia,Africa,2015,1719780
+,Somalia,Africa,2020,1701493
+,Somalia,Africa,2024,1935594
+,South Africa,Africa,2000,494645
+,South Africa,Africa,2005,613772
+,South Africa,Africa,2010,704402
+,South Africa,Africa,2015,782819
+,South Africa,Africa,2020,898203
+,South Africa,Africa,2024,1005800
+SSD,South Sudan,Africa,2000,283331
+SSD,South Sudan,Africa,2005,211198
+SSD,South Sudan,Africa,2010,321713
+SSD,South Sudan,Africa,2015,853845
+SSD,South Sudan,Africa,2020,2374400
+SSD,South Sudan,Africa,2024,3168836
+,Spain*,Europe,2000,1177275
+,Spain*,Europe,2005,1126330
+,Spain*,Europe,2010,1138608
+,Spain*,Europe,2015,1307006
+,Spain*,Europe,2020,1471585
+,Spain*,Europe,2024,1623550
+,Sri Lanka,Asia,2000,786520
+,Sri Lanka,Asia,2005,910507
+,Sri Lanka,Asia,2010,1108466
+,Sri Lanka,Asia,2015,1246445
+,Sri Lanka,Asia,2020,1409777
+,Sri Lanka,Asia,2024,1492103
+,State of Palestine,Asia,2000,2851675
+,State of Palestine,Asia,2005,3445320
+,State of Palestine,Asia,2010,3493678
+,State of Palestine,Asia,2015,3797793
+,State of Palestine,Asia,2020,4072904
+,State of Palestine,Asia,2024,4233248
+,Sudan,Africa,2000,743460
+,Sudan,Africa,2005,1119655
+,Sudan,Africa,2010,1194477
+,Sudan,Africa,2015,2209101
+,Sudan,Africa,2020,2378503
+,Sudan,Africa,2024,3786603
+,Suriname,South America,2000,224382
+,Suriname,South America,2005,240484
+,Suriname,South America,2010,243661
+,Suriname,South America,2015,238769
+,Suriname,South America,2020,250122
+,Suriname,South America,2024,258026
+,Sweden,Europe,2000,139034
+,Sweden,Europe,2005,153310
+,Sweden,Europe,2010,177468
+,Sweden,Europe,2015,190827
+,Sweden,Europe,2020,200769
+,Sweden,Europe,2024,223508
+,Switzerland,Europe,2000,440639
+,Switzerland,Europe,2005,467978
+,Switzerland,Europe,2010,491884
+,Switzerland,Europe,2015,499929
+,Switzerland,Europe,2020,507043
+,Switzerland,Europe,2024,512547
+SYR,Syrian Arab Republic,Asia,2000,382108
+SYR,Syrian Arab Republic,Asia,2005,547473
+SYR,Syrian Arab Republic,Asia,2010,1265925
+SYR,Syrian Arab Republic,Asia,2015,5981460
+SYR,Syrian Arab Republic,Asia,2020,8652202
+SYR,Syrian Arab Republic,Asia,2024,8927523
+,Tajikistan,Asia,2000,542408
+,Tajikistan,Asia,2005,574337
+,Tajikistan,Asia,2010,555214
+,Tajikistan,Asia,2015,536498
+,Tajikistan,Asia,2020,517979
+,Tajikistan,Asia,2024,514478
+,Thailand,Asia,2000,607699
+,Thailand,Asia,2005,648137
+,Thailand,Asia,2010,724614
+,Thailand,Asia,2015,907298
+,Thailand,Asia,2020,1075834
+,Thailand,Asia,2024,1178757
+,Timor-Leste,Asia,2000,188495
+,Timor-Leste,Asia,2005,43229
+,Timor-Leste,Asia,2010,45740
+,Timor-Leste,Asia,2015,64935
+,Timor-Leste,Asia,2020,96759
+,Timor-Leste,Asia,2024,109613
+,Togo,Africa,2000,253143
+,Togo,Africa,2005,391527
+,Togo,Africa,2010,407152
+,Togo,Africa,2015,489237
+,Togo,Africa,2020,539877
+,Togo,Africa,2024,584790
+,Tokelau*,Oceania,2000,441
+,Tokelau*,Oceania,2005,576
+,Tokelau*,Oceania,2010,703
+,Tokelau*,Oceania,2015,779
+,Tokelau*,Oceania,2020,714
+,Tokelau*,Oceania,2024,688
+,Tonga,Oceania,2000,28245
+,Tonga,Oceania,2005,31622
+,Tonga,Oceania,2010,34619
+,Tonga,Oceania,2015,40233
+,Tonga,Oceania,2020,47094
+,Tonga,Oceania,2024,53237
+,Trinidad and Tobago,South America,2000,281792
+,Trinidad and Tobago,South America,2005,291912
+,Trinidad and Tobago,South America,2010,314851
+,Trinidad and Tobago,South America,2015,323450
+,Trinidad and Tobago,South America,2020,310552
+,Trinidad and Tobago,South America,2024,323630
+,Tunisia,Africa,2000,482798
+,Tunisia,Africa,2005,526777
+,Tunisia,Africa,2010,569831
+,Tunisia,Africa,2015,619432
+,Tunisia,Africa,2020,674089
+,Tunisia,Africa,2024,715249
+TKM,Turkmenistan,Asia,2000,320900
+TKM,Turkmenistan,Asia,2005,335113
+TKM,Turkmenistan,Asia,2010,342391
+TKM,Turkmenistan,Asia,2015,317031
+TKM,Turkmenistan,Asia,2020,384184
+TKM,Turkmenistan,Asia,2024,365787
+,Turks and Caicos Islands*,South America,2000,595
+,Turks and Caicos Islands*,South America,2005,1039
+,Turks and Caicos Islands*,South America,2010,2009
+,Turks and Caicos Islands*,South America,2015,2251
+,Turks and Caicos Islands*,South America,2020,2470
+,Turks and Caicos Islands*,South America,2024,2663
+TUV,Tuvalu,Oceania,2000,1334
+TUV,Tuvalu,Oceania,2005,1300
+TUV,Tuvalu,Oceania,2010,1035
+TUV,Tuvalu,Oceania,2015,1094
+TUV,Tuvalu,Oceania,2020,1164
+TUV,Tuvalu,Oceania,2024,1239
+,Türkiye,Asia,2000,2673854
+,Türkiye,Asia,2005,2651430
+,Türkiye,Asia,2010,2709646
+,Türkiye,Asia,2015,2727575
+,Türkiye,Asia,2020,2837815
+,Türkiye,Asia,2024,3130337
+,Uganda,Africa,2000,446491
+,Uganda,Africa,2005,477529
+,Uganda,Africa,2010,582479
+,Uganda,Africa,2015,619064
+,Uganda,Africa,2020,586241
+,Uganda,Africa,2024,578034
+,Ukraine*,Europe,2000,5483590
+,Ukraine*,Europe,2005,5401295
+,Ukraine*,Europe,2010,5179224
+,Ukraine*,Europe,2015,4644011
+,Ukraine*,Europe,2020,4353031
+,Ukraine*,Europe,2024,9769216
+ARE,United Arab Emirates,Asia,2000,93827
+ARE,United Arab Emirates,Asia,2005,86261
+ARE,United Arab Emirates,Asia,2010,108381
+ARE,United Arab Emirates,Asia,2015,121499
+ARE,United Arab Emirates,Asia,2020,142981
+ARE,United Arab Emirates,Asia,2024,166074
+,United Kingdom*,Europe,2000,3965079
+,United Kingdom*,Europe,2005,4236414
+,United Kingdom*,Europe,2010,4535077
+,United Kingdom*,Europe,2015,4583485
+,United Kingdom*,Europe,2020,4710579
+,United Kingdom*,Europe,2024,4804944
+,United Republic of Tanzania,Africa,2000,192774
+,United Republic of Tanzania,Africa,2005,202455
+,United Republic of Tanzania,Africa,2010,208185
+,United Republic of Tanzania,Africa,2015,221603
+,United Republic of Tanzania,Africa,2020,219530
+,United Republic of Tanzania,Africa,2024,225017
+,United States Virgin Islands*,South America,2000,3728
+,United States Virgin Islands*,South America,2005,3474
+,United States Virgin Islands*,South America,2010,3555
+,United States Virgin Islands*,South America,2015,3795
+,United States Virgin Islands*,South America,2020,3840
+,United States Virgin Islands*,South America,2024,4047
+,United States of America*,North America,2000,2017599
+,United States of America*,North America,2005,2320398
+,United States of America*,North America,2010,2774899
+,United States of America*,North America,2015,2968434
+,United States of America*,North America,2020,3082359
+,United States of America*,North America,2024,3186999
+,Uruguay,South America,2000,202378
+,Uruguay,South America,2005,256391
+,Uruguay,South America,2010,272665
+,Uruguay,South America,2015,256293
+,Uruguay,South America,2020,259028
+,Uruguay,South America,2024,263285
+,Uzbekistan,Asia,2000,1813688
+,Uzbekistan,Asia,2005,1946322
+,Uzbekistan,Asia,2010,2073283
+,Uzbekistan,Asia,2015,2061736
+,Uzbekistan,Asia,2020,2092741
+,Uzbekistan,Asia,2024,2114480
+,Vanuatu,Oceania,2000,6184
+,Vanuatu,Oceania,2005,6597
+,Vanuatu,Oceania,2010,6898
+,Vanuatu,Oceania,2015,5840
+,Vanuatu,Oceania,2020,8465
+,Vanuatu,Oceania,2024,15202
+,Venezuela (Bolivarian Republic of),South America,2000,338356
+,Venezuela (Bolivarian Republic of),South America,2005,451384
+,Venezuela (Bolivarian Republic of),South America,2010,550930
+,Venezuela (Bolivarian Republic of),South America,2015,760196
+,Venezuela (Bolivarian Republic of),South America,2020,5477198
+,Venezuela (Bolivarian Republic of),South America,2024,8328514
+,Viet Nam,Asia,2000,1805287
+,Viet Nam,Asia,2005,2091843
+,Viet Nam,Asia,2010,2339779
+,Viet Nam,Asia,2015,2719796
+,Viet Nam,Asia,2020,3330404
+,Viet Nam,Asia,2024,3693537
+,Wallis and Futuna Islands*,Oceania,2000,7532
+,Wallis and Futuna Islands*,Oceania,2005,7617
+,Wallis and Futuna Islands*,Oceania,2010,7724
+,Wallis and Futuna Islands*,Oceania,2015,11527
+,Wallis and Futuna Islands*,Oceania,2020,12231
+,Wallis and Futuna Islands*,Oceania,2024,12822
+ESH,Western Sahara,Africa,2000,165927
+ESH,Western Sahara,Africa,2005,131181
+ESH,Western Sahara,Africa,2010,170154
+ESH,Western Sahara,Africa,2015,184784
+ESH,Western Sahara,Africa,2020,193812
+ESH,Western Sahara,Africa,2024,202107
+YEM,Yemen,Asia,2000,533500
+YEM,Yemen,Asia,2005,668381
+YEM,Yemen,Asia,2010,1199914
+YEM,Yemen,Asia,2015,2169838
+YEM,Yemen,Asia,2020,2240104
+YEM,Yemen,Asia,2024,2480734
+,Zambia,Africa,2000,125019
+,Zambia,Africa,2005,133582
+,Zambia,Africa,2010,134473
+,Zambia,Africa,2015,128590
+,Zambia,Africa,2020,122981
+,Zambia,Africa,2024,122793
+,Zimbabwe,Africa,2000,321579
+,Zimbabwe,Africa,2005,543425
+,Zimbabwe,Africa,2010,931334
+,Zimbabwe,Africa,2015,1237826
+,Zimbabwe,Africa,2020,1390279
+,Zimbabwe,Africa,2024,1519324

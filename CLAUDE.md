@@ -508,3 +508,19 @@ Il progetto è considerato completo quando:
 ---
 
 *Fine del documento. Aggiornare questo file se cambiano scope, fonti o decisioni di design.*
+
+#### Datasets
+
+| Filename raw | Grafico | URL di download | Formato | Note |
+|---|---|---|---|---|
+| `edu_spending_raw.zip` | 4 | `https://api.worldbank.org/v2/en/indicator/SE.XPD.TOTL.GD.ZS?downloadformat=csv` | ZIP→CSV | Estrarre il file `API_SE.XPD*.csv` |
+| `edu_spending_by_level_raw.csv` | 4 | `https://api.uis.unesco.org/api/public/data/indicators/export?indicator=XGOVEXP.IMF&start=2000&end=2025&indicatorMetadata=true&footnotes=true&version=20260507-91260335&format=csv` | CSV | Copertura parziale — OK |
+| `edu_completion_raw.csv` | 5 | `https://ourworldindata.org/grapher/completion-rate-of-upper-secondary-education-sdg.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
+| `literacy_raw.csv` | 6 | `https://ourworldindata.org/grapher/literacy.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
+| `child_labor_raw.csv` | 7, 9 | `https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | Usato anche per grafico 9 |
+| `child_population_raw.xlsx` | 7 | `https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/2_Population/WPP2024_POP_F02_1_POPULATION_5-YEAR_AGE_GROUPS_BOTH_SEXES.xlsx` | XLSX→CSV | Tenere solo colonne: `Location`, `ISO3_code`, `Time`, `5-9`, `10-14`, `15-19` |
+| `child_marriage_raw.xlsx` | 8, 9 | `https://data.unicef.org/wp-content/uploads/2024/10/Child-marriage-dataset-2024.xlsx` | XLSX→CSV | Usato anche per grafico 9 |
+| `out_of_school_raw.csv` | 9 | `https://ourworldindata.org/grapher/out-of-school-children-of-primary-school-age-by-world-region.csv?v=1&csvType=full&useColumnShortNames=true` | CSV | — |
+| `migration_bilateral_raw.xlsx` | 10 | `https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2024_ims_stock_by_sex_and_origin.xlsx` | XLSX→CSV | Matrice 233×233 paesi |
+| `world-atlas-110m.json` | 2, 10 | `https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json` | TopoJSON | — |
+| `iso3_continent.csv` | tutti | `https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv` | CSV | Mapping ISO3 → continente |

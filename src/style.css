@@ -428,6 +428,109 @@ section[data-act="2"] .narrative-card.is-active { border-left-color: var(--accen
 section[data-act="3"] .narrative-card.is-active { border-left-color: var(--accent-3); }
 section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accent-4); }
 
+/* ── SECONDARY PAGES (about, datasets) ──────────────────── */
+.page-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 5rem var(--page-pad) 3.5rem;
+}
+.page-hero-inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+}
+.page-eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  margin-bottom: 0.6rem;
+  opacity: 0.85;
+}
+.page-hero h1 { margin-bottom: 0.75rem; }
+.page-hero p  { max-width: 640px; font-size: clamp(0.95rem, 1.1vw, 1.1rem); }
+
+.page-body {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 4rem var(--page-pad);
+}
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.info-card h3 { margin-bottom: 0.75rem; color: var(--ink); }
+.info-card p  { margin-bottom: 0.75rem; }
+.info-card p:last-child { margin-bottom: 0; }
+
+/* Team card */
+.team-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid var(--border);
+}
+.team-role {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  margin-bottom: 0.75rem !important;
+}
+
+/* Dataset table */
+.dataset-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin-top: 2rem;
+}
+.dataset-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border-bottom: 2px solid var(--border);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.dataset-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-muted);
+  vertical-align: top;
+}
+.dataset-table tr:last-child td { border-bottom: none; }
+.dataset-table tr:hover td { background: rgba(0,0,0,0.015); }
+.dataset-table td:first-child { color: var(--ink); font-weight: 600; }
+.dataset-table a { color: var(--accent-1); word-break: break-all; }
+
+.page-section-title {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   /* All layouts collapse to single column on mobile */

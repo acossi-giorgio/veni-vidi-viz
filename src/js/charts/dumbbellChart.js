@@ -24,46 +24,27 @@ async function renderDumbbellChart(selector = "#chart-2-1", isFullscreen = false
       .style("position", "relative");
   }
 
-  const raw = await d3.csv("datasets/clean/life_expectancy.csv", d3.autoType);
+  const raw = await d3.csv("datasets/processed/03_life_expectancy.csv", d3.autoType);
 
-  const data2000 = new Map();
-  const data2023 = new Map();
-  raw.forEach(d => {
-    if (d.Year === 2000) data2000.set(d.Entity, d);
-    if (d.Year === 2023) data2023.set(d.Entity, d);
-  });
+  // Processed file is already wide: iso3, country, continent, year_2000, year_2023, delta
+  const countryRows = raw
+    .filter(d => d.continent && d.year_2000 != null && d.year_2023 != null)
+    .map(d => ({
+      country:   d.country,
+      continent: d.continent,
+      start:     +d.year_2000,
+      end:       +d.year_2023,
+      diff:      +d.delta,
+    }));
 
-  // Per-country rows
-  const countryRows = [];
-  data2023.forEach((d23, country) => {
-    const d00 = data2000.get(country);
-    if (!d00 || !d23.Continent) return;
-    countryRows.push({
-      country,
-      continent: d23.Continent,
-      start: +d00["Life expectancy"],
-      end: +d23["Life expectancy"],
-      diff: +d23["Life expectancy"] - +d00["Life expectancy"],
-    });
-  });
-
-  // Continent aggregate rows (mean of all countries)
-  const contData2000 = d3.rollup(
-    Array.from(data2000.values()).filter(d => d.Continent),
-    v => d3.mean(v, d => +d["Life expectancy"]),
-    d => d.Continent
-  );
-  const contData2023 = d3.rollup(
-    Array.from(data2023.values()).filter(d => d.Continent),
-    v => d3.mean(v, d => +d["Life expectancy"]),
-    d => d.Continent
-  );
-  const continentRows = [];
-  contData2023.forEach((val2023, continent) => {
-    const val2000 = contData2000.get(continent);
-    if (val2000) continentRows.push({ continent, start: val2000, end: val2023, diff: val2023 - val2000 });
-  });
-  continentRows.sort((a, b) => d3.ascending(a.end, b.end));
+  // Continent aggregate rows (mean of countries)
+  const contGroups = d3.group(countryRows, d => d.continent);
+  const continentRows = Array.from(contGroups, ([continent, rows]) => ({
+    continent,
+    start: d3.mean(rows, r => r.start),
+    end:   d3.mean(rows, r => r.end),
+    diff:  d3.mean(rows, r => r.diff),
+  })).sort((a, b) => d3.ascending(a.end, b.end));
 
   const continents = [...new Set(countryRows.map(d => d.continent))].sort();
   const continentColor = {

@@ -21,29 +21,29 @@
     const continents = Object.keys(continentColors);
 
     // ── Load data once ──────────────────────────────────────────────────────
-    const raw = await d3.csv("datasets/clean/gdp_per_capita.csv", d3.autoType);
+    const raw = await d3.csv("datasets/processed/02_income_country.csv", d3.autoType);
 
     // Continent aggregates (mean by year)
-    const grouped = d3.groups(raw, d => d.Continent)
+    const grouped = d3.groups(raw, d => d.continent)
         .filter(([c]) => continents.includes(c))
         .map(([continent, rows]) => {
-            const byYear = d3.rollup(rows, v => d3.mean(v, d => d["GDP_Per_Capita (USD)"]), d => d.Year);
+            const byYear = d3.rollup(rows, v => d3.mean(v, d => d.value), d => d.year);
             const values = Array.from(byYear, ([year, gdp]) => ({ year, gdp }))
                 .sort((a, b) => a.year - b.year);
             return { continent, values };
         });
 
-    const allYears = [...new Set(raw.map(d => d.Year))].sort(d3.ascending);
+    const allYears = [...new Set(raw.map(d => d.year))].sort(d3.ascending);
 
     // Per-country data keyed by continent (for drill-down)
     const countriesByContinent = new Map();
     continents.forEach(cont => {
         const cRows = d3.groups(
-            raw.filter(d => d.Continent === cont && d["Country Name"]),
-            d => d["Country Name"]
+            raw.filter(d => d.continent === cont && d.country),
+            d => d.country
         ).map(([country, rows]) => {
             const values = rows
-                .map(r => ({ year: r.Year, gdp: r["GDP_Per_Capita (USD)"] }))
+                .map(r => ({ year: r.year, gdp: r.value }))
                 .filter(v => v.gdp != null)
                 .sort((a, b) => a.year - b.year);
             return { country, values };

@@ -38,6 +38,13 @@ async function init() {
   if (document.getElementById('chart-1-1')) await renderGdpLineChart('#chart-1-1');
   if (document.getElementById('chart-1-2')) await renderGdpMapChart('#chart-1-2');
   if (document.getElementById('chart-2-1')) await renderDumbbellChart('#chart-2-1');
+  if (document.getElementById('chart-3-1')) await renderEduTreemap('#chart-3-1');
+  if (document.getElementById('chart-3-2')) await renderCompletionWaffle('#chart-3-2');
+  if (document.getElementById('chart-3-3')) await renderLiteracySlope('#chart-3-3');
+  if (document.getElementById('chart-4-1')) await renderChildLaborBubble('#chart-4-1');
+  if (document.getElementById('chart-4-2')) await renderMarriageSankey('#chart-4-2');
+  if (document.getElementById('chart-4-3')) await renderTrendsMultimode('#chart-4-3');
+  if (document.getElementById('chart-5-1')) await renderMigrationChord('#chart-5-1');
 
   initProgressBar();
   initFullscreenModal();
@@ -69,6 +76,62 @@ function triggerChartState(chartId, state) {
     if (!el) return;
     if (state === 1 && el._dumbbellDrillDown) el._dumbbellDrillDown('Africa');
     else if (el._dumbbellShowOverview) el._dumbbellShowOverview();
+  }
+
+  if (chartId === 'chart-3-1') {
+    const el = document.getElementById('chart-3-1');
+    if (!el) return;
+    if (state === 0 && el._treemapReset) el._treemapReset();
+    else if (state === 1 && el._treemapHighlight) el._treemapHighlight('Europe');
+    else if (state === 2 && el._treemapHighlight) el._treemapHighlight('Africa');
+  }
+
+  if (chartId === 'chart-3-2') {
+    const el = document.getElementById('chart-3-2');
+    if (!el) return;
+    if (state === 0 && el._waffleShowAll) el._waffleShowAll();
+    else if (state === 1 && el._waffleHighlightPair) el._waffleHighlightPair('Africa', 'Europe');
+    else if (state === 2 && el._waffleShowAll) el._waffleShowAll();
+  }
+
+  if (chartId === 'chart-3-3') {
+    const el = document.getElementById('chart-3-3');
+    if (!el) return;
+    if (state === 0 && el._slopeShowAll) el._slopeShowAll();
+    else if (state === 1 && el._slopeHighlightProgress) el._slopeHighlightProgress();
+    else if (state === 2 && el._slopeEnableControls) el._slopeEnableControls();
+  }
+
+  if (chartId === 'chart-4-1') {
+    const el = document.getElementById('chart-4-1');
+    if (!el) return;
+    if (state === 0 && el._bubbleReset) el._bubbleReset();
+    else if (state === 1 && el._bubbleHighlightContinent) el._bubbleHighlightContinent('Africa');
+    else if (state === 2 && el._bubbleReset) el._bubbleReset();
+  }
+
+  if (chartId === 'chart-4-2') {
+    const el = document.getElementById('chart-4-2');
+    if (!el) return;
+    if (state === 0 && el._sankeyReset) el._sankeyReset();
+    else if (state === 1 && el._sankeyHighlight) el._sankeyHighlight(['Sub-Saharan Africa', 'Central and Southern Asia']);
+    else if (state === 2 && el._sankeyReset) el._sankeyReset();
+  }
+
+  if (chartId === 'chart-4-3') {
+    const el = document.getElementById('chart-4-3');
+    if (!el) return;
+    if (state === 0 && el._trendsShowAll) el._trendsShowAll();
+    else if (state === 1 && el._trendsHighlightIndicator) el._trendsHighlightIndicator('child_marriage');
+    else if (state === 2 && el._trendsActivateToggle) el._trendsActivateToggle();
+  }
+
+  if (chartId === 'chart-5-1') {
+    const el = document.getElementById('chart-5-1');
+    if (!el) return;
+    if (state === 0 && el._migrationShowYear) el._migrationShowYear(2024);
+    else if (state === 1 && el._migrationAnimate) el._migrationAnimate();
+    else if (state === 2 && el._migrationHighlight) el._migrationHighlight(['Africa', 'Asia']);
   }
 }
 
@@ -145,6 +208,13 @@ function initFullscreenModal() {
       if (chartId === 'chart-1-1') await renderGdpLineChart(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-1-2') await renderGdpMapChart(`#fullscreen-${chartId}`, 2023, true);
       else if (chartId === 'chart-2-1') await renderDumbbellChart(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-3-1') await renderEduTreemap(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-3-2') await renderCompletionWaffle(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-3-3') await renderLiteracySlope(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-4-1') await renderChildLaborBubble(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-4-2') await renderMarriageSankey(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-4-3') await renderTrendsMultimode(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }

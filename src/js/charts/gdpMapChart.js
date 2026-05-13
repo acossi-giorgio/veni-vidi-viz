@@ -6,7 +6,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   container.style.position = 'relative';
 
   // Load data — d3.csv handles quoted fields correctly
-  const data = await d3.csv('datasets/clean/gdp_per_capita.csv', d3.autoType);
+  const data = await d3.csv('datasets/processed/02_income_country.csv', d3.autoType);
   if (!data || data.length === 0) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Errore nel caricamento dei dati</p>';
     return;
@@ -29,7 +29,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
 
   // Build country name lookup from CSV data (for tooltip display)
   const codeToName = {};
-  data.forEach(d => { if (d.Code && d['Country Name']) codeToName[d.Code] = d['Country Name']; });
+  data.forEach(d => { if (d.iso3 && d.country) codeToName[d.iso3] = d.country; });
 
   // ISO numeric → ISO alpha-3 lookup (complete ISO 3166-1)
   const numericToAlpha3 = {
@@ -66,17 +66,17 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   // Pre-compute GDP maps for all years at once (keyed by ISO alpha-3 code)
   const gdpByYear = {};
   data.forEach((d) => {
-    const year = +d.Year;
+    const year = +d.year;
     if (!gdpByYear[year]) gdpByYear[year] = {};
-    const val = parseFloat(d['GDP_Per_Capita (USD)']);
-    if (d.Code && val > 0 && isFinite(val)) gdpByYear[year][d.Code] = val;
+    const val = parseFloat(d.value);
+    if (d.iso3 && val > 0 && isFinite(val)) gdpByYear[year][d.iso3] = val;
   });
 
   // Sorted list of available years
   const years = Object.keys(gdpByYear).map(y => +y).sort((a, b) => a - b);
 
   // Global min/max for consistent color scale across all years
-  const allValues = data.map((d) => parseFloat(d['GDP_Per_Capita (USD)'])).filter((v) => v > 0 && isFinite(v));
+  const allValues = data.map((d) => parseFloat(d.value)).filter((v) => v > 0 && isFinite(v));
   let minGdp = d3.min(allValues) || 1;
   let maxGdp = d3.max(allValues) || 1000;
   
