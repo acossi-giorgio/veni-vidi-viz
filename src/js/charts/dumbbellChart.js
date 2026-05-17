@@ -24,18 +24,26 @@ async function renderDumbbellChart(selector = "#chart-2-1", isFullscreen = false
       .style("position", "relative");
   }
 
-  const raw = await d3.csv("datasets/processed/03_life_expectancy.csv", d3.autoType);
+  const raw = await d3.csv("datasets/processed/life_expectancy.csv", d3.autoType);
 
-  // Processed file is already wide: iso3, country, continent, year_2000, year_2023, delta
-  const countryRows = raw
-    .filter(d => d.continent && d.year_2000 != null && d.year_2023 != null)
-    .map(d => ({
-      country:   d.country,
-      continent: d.continent,
-      start:     +d.year_2000,
-      end:       +d.year_2023,
-      diff:      +d.delta,
-    }));
+  // Pivot long → wide: for each country find year~2000 and most-recent value
+  const byCode = d3.group(raw, d => d.code);
+  const countryRows = [];
+  byCode.forEach((rows, code) => {
+    const sorted = rows.filter(d => d.value != null).sort((a, b) => a.year - b.year);
+    if (sorted.length < 2) return;
+    const early = sorted.find(d => d.year >= 2000 && d.year <= 2003) || sorted[0];
+    const late = sorted[sorted.length - 1];
+    if (!early || !late || early.year === late.year) return;
+    const r = sorted[0];
+    countryRows.push({
+      country:   r.country,
+      continent: r.continent,
+      start:     early.value,
+      end:       late.value,
+      diff:      late.value - early.value,
+    });
+  });
 
   // Continent aggregate rows (mean of countries)
   const contGroups = d3.group(countryRows, d => d.continent);

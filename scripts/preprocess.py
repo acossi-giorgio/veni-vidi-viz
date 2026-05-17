@@ -292,21 +292,6 @@ def make_gpi_secondary():
         report("gpi_secondary.csv", pd.DataFrame(), str(e))
 
 
-# ── pupil_teacher.csv ─────────────────────────────────────────────────────────
-# value = Pupils per qualified teacher, primary education
-# Fonte: Our World in Data / UNESCO UIS
-def make_pupil_teacher():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "pupil_teacher_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("pupil_teacher.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("pupil_teacher.csv", pd.DataFrame(), str(e))
-
-
 # ── child_mortality.csv ───────────────────────────────────────────────────────
 # value = Under-5 mortality rate (deaths per 1000 live births)
 # Fonte: Our World in Data / UN IGME + Gapminder
@@ -335,6 +320,27 @@ def make_maternal_mortality():
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
         report("maternal_mortality.csv", pd.DataFrame(), str(e))
+
+
+# ── life_expectancy.csv ───────────────────────────────────────────────────────
+# value = Life expectancy at birth (years)
+# Fonte: Our World in Data / UN WPP
+def make_life_expectancy():
+    try:
+        df = pd.read_csv(os.path.join(RAW, "life_expectancy.csv"))
+        # Columns: Entity, Code, Year, Life expectancy, Continent
+        df = df.rename(columns={
+            "Entity": "country", "Code": "code",
+            "Year": "year", "Life expectancy": "value",
+        })
+        df = df[["code", "country", "year", "value"]].copy()
+        df = filter_countries(df)
+        df = year_range(df)
+        df = df[df["value"].notna()]
+        save("life_expectancy.csv",
+             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+    except Exception as e:
+        report("life_expectancy.csv", pd.DataFrame(), str(e))
 
 
 # ── remittances.csv ───────────────────────────────────────────────────────────
@@ -416,6 +422,28 @@ def make_migration():
         report("migration.csv", pd.DataFrame(), str(e))
 
 
+# ── mpi.csv ───────────────────────────────────────────────────────────────────
+# value = MPI score (0–1), national level only
+# Fonte: OPHI Global MPI via HDX
+def make_mpi():
+    try:
+        df = pd.read_csv(os.path.join(RAW, "multidimensional-poverty-index-mpi.csv"))
+        df = df.rename(columns={
+            "Code":                                    "code",
+            "Entity":                                  "country",
+            "Year":                                    "year",
+            "Multidimensional Poverty Index (MPI)":    "value",
+            "World region according to OWID":          "continent",
+        })
+        df = df[df["code"].notna() & (df["code"].str.strip() != "")]
+        df = df[df["value"].notna() & (df["value"] > 0)]
+        out = df[["code", "country", "continent", "year", "value"]].copy()
+        out = out.sort_values(["code", "year"])
+        save("mpi.csv", out)
+    except Exception as e:
+        report("mpi.csv", pd.DataFrame(), str(e))
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     # Remove stale aggregated files
@@ -428,6 +456,7 @@ if __name__ == "__main__":
             print(f"  [DEL] {stale}")
 
     print("\nVeni Vidi Viz -- Preprocessing\n" + "=" * 55)
+    make_life_expectancy()
     make_edu_spending()
     make_edu_completion()
     make_literacy()
@@ -439,11 +468,12 @@ if __name__ == "__main__":
     make_poverty()
     make_gini()
     make_gpi_secondary()
-    make_pupil_teacher()
+
     make_child_mortality()
     make_maternal_mortality()
     make_remittances()
     make_migration()
+    make_mpi()
     print("\nDone -> src/datasets/processed/")
     for f in sorted(os.listdir(OUT)):
         size = os.path.getsize(os.path.join(OUT, f))

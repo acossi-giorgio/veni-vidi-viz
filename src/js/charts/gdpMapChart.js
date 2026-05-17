@@ -6,7 +6,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   container.style.position = 'relative';
 
   // Load data — d3.csv handles quoted fields correctly
-  const data = await d3.csv('datasets/processed/02_income_country.csv', d3.autoType);
+  const data = await d3.csv('datasets/processed/income.csv', d3.autoType);
   if (!data || data.length === 0) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Errore nel caricamento dei dati</p>';
     return;
@@ -29,7 +29,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
 
   // Build country name lookup from CSV data (for tooltip display)
   const codeToName = {};
-  data.forEach(d => { if (d.iso3 && d.country) codeToName[d.iso3] = d.country; });
+  data.forEach(d => { if (d.code && d.country) codeToName[d.code] = d.country; });
 
   // ISO numeric → ISO alpha-3 lookup (complete ISO 3166-1)
   const numericToAlpha3 = {
@@ -69,7 +69,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
     const year = +d.year;
     if (!gdpByYear[year]) gdpByYear[year] = {};
     const val = parseFloat(d.value);
-    if (d.iso3 && val > 0 && isFinite(val)) gdpByYear[year][d.iso3] = val;
+    if (d.code && val > 0 && isFinite(val)) gdpByYear[year][d.code] = val;
   });
 
   // Sorted list of available years

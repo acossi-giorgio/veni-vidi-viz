@@ -21,7 +21,7 @@
     const continents = Object.keys(continentColors);
 
     // ── Load data once ──────────────────────────────────────────────────────
-    const raw = await d3.csv("datasets/processed/02_income_country.csv", d3.autoType);
+    const raw = await d3.csv("datasets/processed/income.csv", d3.autoType);
 
     // Continent aggregates (mean by year)
     const grouped = d3.groups(raw, d => d.continent)

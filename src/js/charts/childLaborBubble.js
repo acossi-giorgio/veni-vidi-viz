@@ -1,291 +1,192 @@
 /* ============================================================
-   Grafico 7 — Reddito vs Lavoro Minorile (Bubble Chart)
-   scatter plot: GDP per capita (x) vs child_labor_pct (y),
-   bolla dimensionata per pop_5_17, colorata per continente.
-   API: container._bubbleHighlightContinent(name|null)
-        container._bubbleReset()
-        container._bubbleShowContinent(name|null)
+   Grafico 4-1 (Atto III) — Quadrant plot Africa
+   X = reddito pro capite (log), Y = lavoro minorile %
+   Mediane come separatori dei 4 quadranti
    ============================================================ */
-
 async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = false) {
   const container = d3.select(selector);
   if (container.empty()) return;
   container.html('');
+  container.style('width', '100%').style('height', '100%').style('position', 'relative').style('font-family', 'inherit');
 
-  const node = container.node();
-  const bbox = node.getBoundingClientRect();
-  const width  = bbox.width  || (isFullscreen ? window.innerWidth  * 0.88 : 680);
-  const height = bbox.height || (isFullscreen ? window.innerHeight * 0.78 : 480);
-
-  const margin = { top: 28, right: 160, bottom: 56, left: 68 };
-  const W = width  - margin.left - margin.right;
-  const H = height - margin.top  - margin.bottom;
-
-  const CONTINENT_COLORS = {
-    'Africa':        '#e07b39',
-    'Asia':          '#4e9af1',
-    'Europe':        '#6dbf67',
-    'North America': '#c96dd8',
-    'South America': '#f1c94e',
-    'Oceania':       '#e05c5c',
-  };
-
-  // ── Load data ────────────────────────────────────────────
-  const raw = await d3.csv('datasets/processed/07_bubble.csv', d3.autoType);
-  if (!raw.length) { container.append('p').text('Dati non disponibili.'); return; }
-
-  const continents = [...new Set(raw.map(d => d.continent))].sort();
-
-  // ── Scales ──────────────────────────────────────────────
-  const xExtent = d3.extent(raw, d => d.income);
-  const xScale = d3.scaleLog()
-    .domain([Math.max(200, xExtent[0] * 0.85), xExtent[1] * 1.15])
-    .range([0, W])
-    .nice();
-
-  const yScale = d3.scaleLinear()
-    .domain([0, d3.max(raw, d => d.child_labor_pct) * 1.12])
-    .range([H, 0])
-    .nice();
-
-  const rScale = d3.scaleSqrt()
-    .domain([0, d3.max(raw, d => d.pop_5_17)])
-    .range([4, isFullscreen ? 40 : 28]);
-
-  // ── SVG ─────────────────────────────────────────────────
-  const svg = container.append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .style('font-family', 'Roboto Slab, serif');
-
-  const g = svg.append('g')
-    .attr('transform', `translate(${margin.left},${margin.top})`);
-
-  // Grid lines
-  g.append('g').attr('class', 'grid grid-y')
-    .call(
-      d3.axisLeft(yScale).tickSize(-W).tickFormat('')
-    )
-    .call(gg => {
-      gg.select('.domain').remove();
-      gg.selectAll('.tick line')
-        .attr('stroke', '#e8e8e4')
-        .attr('stroke-dasharray', '3,3');
-    });
-
-  // ── Axes ─────────────────────────────────────────────────
-  const xAxis = g.append('g')
-    .attr('transform', `translate(0,${H})`)
-    .call(
-      d3.axisBottom(xScale)
-        .ticks(6)
-        .tickFormat(d => d >= 1000 ? `$${d3.format(',.0f')(d)}` : `$${d}`)
-    );
-  xAxis.select('.domain').attr('stroke', '#ccc');
-  xAxis.selectAll('.tick line').attr('stroke', '#ccc');
-  xAxis.selectAll('.tick text').attr('fill', '#5a5a5a').style('font-size', '11px');
-
-  g.append('text')
-    .attr('x', W / 2)
-    .attr('y', H + 44)
-    .attr('text-anchor', 'middle')
-    .attr('fill', '#5a5a5a')
-    .style('font-size', '12px')
-    .text('PIL pro capite (USD, prezzi costanti 2021)');
-
-  const yAxis = g.append('g')
-    .call(d3.axisLeft(yScale).ticks(6).tickFormat(d => d + '%'));
-  yAxis.select('.domain').attr('stroke', '#ccc');
-  yAxis.selectAll('.tick line').attr('stroke', '#ccc');
-  yAxis.selectAll('.tick text').attr('fill', '#5a5a5a').style('font-size', '11px');
-
-  g.append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('x', -H / 2)
-    .attr('y', -52)
-    .attr('text-anchor', 'middle')
-    .attr('fill', '#5a5a5a')
-    .style('font-size', '12px')
-    .text('Bambini 5–17 anni in attività lavorative (%)');
-
-  // ── Bubbles ──────────────────────────────────────────────
-  const bubbles = g.selectAll('.bubble')
-    .data(raw)
-    .join('circle')
-      .attr('class', 'bubble')
-      .attr('cx', d => xScale(d.income))
-      .attr('cy', d => yScale(d.child_labor_pct))
-      .attr('r',  d => rScale(d.pop_5_17))
-      .attr('fill', d => CONTINENT_COLORS[d.continent] || '#aaa')
-      .attr('fill-opacity', 0.72)
-      .attr('stroke', d => d3.color(CONTINENT_COLORS[d.continent] || '#aaa').darker(0.4))
-      .attr('stroke-width', 1)
-      .style('cursor', 'pointer');
-
-  // ── Labels for notable countries ─────────────────────────
-  const LABEL_COUNTRIES = new Set([
-    'Niger', 'Chad', 'Burundi', 'Mali', 'Cameroon',
-    'India', 'Bangladesh', 'Nigeria',
-    'Norway', 'Germany', 'Italy',
-    'Brazil', 'Afghanistan',
+  const [incRaw, clRaw] = await Promise.all([
+    d3.csv('datasets/processed/income.csv', d3.autoType),
+    d3.csv('datasets/processed/child_labor.csv', d3.autoType),
   ]);
 
-  const labels = g.selectAll('.bubble-label')
-    .data(raw.filter(d => LABEL_COUNTRIES.has(d.country)))
-    .join('text')
-      .attr('class', 'bubble-label')
-      .attr('x', d => xScale(d.income) + rScale(d.pop_5_17) + 3)
-      .attr('y', d => yScale(d.child_labor_pct) + 4)
-      .attr('fill', '#3a3a3a')
-      .style('font-size', '10px')
-      .style('pointer-events', 'none')
-      .text(d => d.country);
+  const clMap = new Map();
+  clRaw.forEach(d => {
+    if (!d.code || d.value == null || d.continent !== 'Africa') return;
+    const prev = clMap.get(d.code);
+    if (!prev || d.year > prev.year) clMap.set(d.code, d);
+  });
 
-  // ── Tooltip ──────────────────────────────────────────────
-  const tooltip = d3.select('body').selectAll('.bubble-tooltip').data([0]).join('div')
-    .attr('class', 'bubble-tooltip')
-    .style('position', 'fixed')
-    .style('background', 'rgba(26,26,26,0.92)')
-    .style('color', '#fff')
-    .style('padding', '8px 12px')
-    .style('border-radius', '6px')
-    .style('font-size', '12px')
-    .style('pointer-events', 'none')
-    .style('opacity', 0)
-    .style('line-height', '1.6')
-    .style('z-index', 9999)
-    .style('max-width', '200px');
+  const incLatest = new Map();
+  incRaw.forEach(d => {
+    if (!d.code || d.value == null) return;
+    const prev = incLatest.get(d.code);
+    if (!prev || d.year > prev.year) incLatest.set(d.code, d.value);
+  });
+  const incByYear = new Map();
+  incRaw.forEach(d => { if (d.code && d.value != null) incByYear.set(`${d.code}|${d.year}`, d.value); });
 
-  bubbles
-    .on('mouseover', function (event, d) {
-      d3.select(this).attr('fill-opacity', 1).attr('stroke-width', 2);
-      tooltip
-        .style('opacity', 1)
-        .html(`
-          <strong>${d.country}</strong><br>
-          PIL: <strong>$${d3.format(',.0f')(d.income)}</strong><br>
-          Lavoro minorile: <strong>${d.child_labor_pct}%</strong><br>
-          Pop. 5–17: <strong>${d3.format(',.0f')(d.pop_5_17)}</strong><br>
-          <span style="opacity:0.7;font-size:10px">Anno survey: ${d.year}</span>
-        `);
-    })
-    .on('mousemove', function (event) {
-      tooltip
-        .style('left', (event.clientX + 14) + 'px')
-        .style('top',  (event.clientY - 32) + 'px');
-    })
-    .on('mouseout', function () {
-      d3.select(this)
-        .attr('fill-opacity', d => node._activeContinent && node._activeContinent !== d.continent ? 0.12 : 0.72)
-        .attr('stroke-width', 1);
-      tooltip.style('opacity', 0);
+  const data = [];
+  clMap.forEach((cl, code) => {
+    const inc = incByYear.get(`${code}|${cl.year}`) ?? incLatest.get(code);
+    if (!inc) return;
+    data.push({ code, country: cl.country, labor: cl.value, income: inc, year: cl.year });
+  });
+
+  const medIncome = d3.median(data, d => d.income);
+  const medLabor  = d3.median(data, d => d.labor);
+
+  const LABEL_SET = new Set(['NER', 'TCD', 'BDI', 'MLI', 'CMR', 'NGA', 'BGD', 'AFG', 'MOZ', 'MDG', 'ZWE', 'UGA', 'TZA', 'KEN', 'GHA', 'SEN', 'DZA', 'TUN', 'EGY', 'ZAF']);
+
+  const QUADRANT = [
+    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: '#b04a4a', anchor: 'start'  },
+    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco · alto lavoro minorile',  color: '#c97c3e', anchor: 'end'    },
+    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: '#4a6fa5', anchor: 'start'  },
+    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: '#5aab6e', anchor: 'end'    },
+  ];
+
+  function getQuadrant(d) {
+    const xSide = d.income < medIncome ? 'left' : 'right';
+    const ySide = d.labor  > medLabor  ? 'top'  : 'bottom';
+    return QUADRANT.find(q => q.xSide === xSide && q.ySide === ySide);
+  }
+
+  d3.select('body').selectAll('.tooltip-bubble').remove();
+  const tooltip = d3.select('body').append('div').attr('class', 'tooltip-bubble')
+    .style('position', 'absolute').style('background', 'rgba(20,20,40,0.92)')
+    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 12px')
+    .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.6')
+    .style('z-index', '10000').style('display', 'none');
+
+  function showTip(e, d) {
+    const q = getQuadrant(d);
+    tooltip.style('display', 'block').html(
+      `<strong style="color:${q.color}">${d.country}</strong><br>` +
+      `Lavoro minorile: ${d.labor.toFixed(1)}% (${d.year})<br>` +
+      `Reddito: $${d3.format(',.0f')(d.income)}`
+    );
+    const r = tooltip.node().getBoundingClientRect();
+    let tx = e.pageX + 12, ty = e.pageY + 8;
+    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 12;
+    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 8;
+    tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+  }
+  function hideTip() { tooltip.style('display', 'none'); }
+
+  const containerNode = container.node();
+
+  function draw() {
+    d3.select(containerNode).selectAll('svg').remove();
+    const W = containerNode.getBoundingClientRect().width  || 560;
+    const H = containerNode.getBoundingClientRect().height || 480;
+
+    const MARGIN = { top: 24, right: 24, bottom: 48, left: 64 };
+    const iw = W - MARGIN.left - MARGIN.right;
+    const ih = H - MARGIN.top  - MARGIN.bottom;
+
+    const xS = d3.scaleLog()
+      .domain([d3.min(data, d => d.income) * 0.85, d3.max(data, d => d.income) * 1.15])
+      .range([0, iw]).nice();
+    const yS = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.labor) * 1.1])
+      .range([ih, 0]).nice();
+
+    const mx = xS(medIncome);
+    const my = yS(medLabor);
+
+    const svg = d3.select(containerNode).append('svg')
+      .attr('width', W).attr('height', H).style('display', 'block').style('font-family', 'inherit');
+    const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
+
+    // Quadrant backgrounds
+    const qBg = [
+      { x: 0,  y: 0,  w: mx,    h: my,    q: QUADRANT[0] },
+      { x: mx, y: 0,  w: iw-mx, h: my,    q: QUADRANT[1] },
+      { x: 0,  y: my, w: mx,    h: ih-my, q: QUADRANT[2] },
+      { x: mx, y: my, w: iw-mx, h: ih-my, q: QUADRANT[3] },
+    ];
+    qBg.forEach(({ x, y, w, h, q }) => {
+      g.append('rect').attr('x', x).attr('y', y).attr('width', w).attr('height', h)
+        .attr('fill', q.color).attr('opacity', 0.05);
     });
 
-  // ── Legend ───────────────────────────────────────────────
-  const legendG = svg.append('g')
-    .attr('transform', `translate(${margin.left + W + 12}, ${margin.top + 4})`);
+    // Median lines
+    g.append('line').attr('x1', mx).attr('x2', mx).attr('y1', 0).attr('y2', ih)
+      .attr('stroke', '#999').attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', my).attr('y2', my)
+      .attr('stroke', '#999').attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
 
-  continents.forEach((c, i) => {
-    const row = legendG.append('g').attr('transform', `translate(0, ${i * 20})`);
-    row.append('circle')
-      .attr('r', 6)
-      .attr('cx', 6)
-      .attr('cy', 0)
-      .attr('fill', CONTINENT_COLORS[c] || '#aaa')
-      .attr('fill-opacity', 0.8)
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        if (node._activeContinent === c) {
-          _bubbleReset();
-        } else {
-          _bubbleShowContinent(c);
-        }
-      });
-    row.append('text')
-      .attr('x', 16)
-      .attr('y', 4)
-      .attr('fill', '#3a3a3a')
-      .style('font-size', '11px')
-      .style('cursor', 'pointer')
-      .text(c)
-      .on('click', () => {
-        if (node._activeContinent === c) {
-          _bubbleReset();
-        } else {
-          _bubbleShowContinent(c);
-        }
-      });
-  });
+    // Median labels
+    g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 8).attr('fill', '#999')
+      .text(`mediana $${d3.format(',.0f')(medIncome)}`);
+    g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 8).attr('fill', '#999')
+      .text(`mediana ${medLabor.toFixed(1)}%`);
 
-  // Size legend
-  const sizeLegendG = svg.append('g')
-    .attr('transform', `translate(${margin.left + W + 12}, ${margin.top + continents.length * 20 + 20})`);
-  sizeLegendG.append('text')
-    .attr('y', 0)
-    .attr('fill', '#5a5a5a')
-    .style('font-size', '10px')
-    .text('Dimensione = pop. 5–17');
+    // Quadrant labels (corner)
+    qBg.forEach(({ x, y, w, h, q }) => {
+      const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
+      const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
+      g.append('text').attr('x', lx).attr('y', ly)
+        .attr('text-anchor', q.anchor).attr('font-size', 8.5).attr('font-weight', '600')
+        .attr('fill', q.color).attr('opacity', 0.6).text(q.label);
+    });
 
-  [10_000_000, 50_000_000].forEach((v, i) => {
-    const r = rScale(v);
-    sizeLegendG.append('circle')
-      .attr('cx', 10 + i * 50)
-      .attr('cy', 20 + r)
-      .attr('r', r)
-      .attr('fill', 'none')
-      .attr('stroke', '#aaa')
-      .attr('stroke-width', 1);
-    sizeLegendG.append('text')
-      .attr('x', 10 + i * 50)
-      .attr('y', 20 + r * 2 + 12)
-      .attr('text-anchor', 'middle')
-      .attr('fill', '#777')
-      .style('font-size', '9px')
-      .text(d3.format('.0s')(v));
-  });
+    // Gridlines (light, behind dots)
+    g.append('g').call(d3.axisLeft(yS).tickSize(-iw).tickFormat(''))
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke', '#f0f0f0'); });
 
-  // ── Year watermark ────────────────────────────────────────
-  g.append('text')
-    .attr('class', 'year-label')
-    .attr('x', W - 8)
-    .attr('y', H - 8)
-    .attr('text-anchor', 'end')
-    .attr('fill', '#d8d8d4')
-    .style('font-size', '36px')
-    .style('font-weight', 'bold')
-    .style('pointer-events', 'none')
-    .text('~2020');
+    // Dots
+    g.selectAll('circle.dot').data(data, d => d.code).join('circle').attr('class', 'dot')
+      .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
+      .attr('r', 5)
+      .attr('fill', d => getQuadrant(d).color)
+      .attr('fill-opacity', 0.75)
+      .attr('stroke', '#fff').attr('stroke-width', 1)
+      .style('cursor', 'default')
+      .on('mousemove', showTip).on('mouseleave', hideTip);
 
-  // ── API exposed on DOM node ───────────────────────────────
-  node._activeContinent = null;
+    // Labels for notable countries
+    data.filter(d => LABEL_SET.has(d.code)).forEach(d => {
+      const q = getQuadrant(d);
+      g.append('text')
+        .attr('x', xS(d.income) + 7).attr('y', yS(d.labor) + 3)
+        .attr('font-size', 8).attr('fill', q.color).attr('font-weight', '500')
+        .style('pointer-events', 'none')
+        .text(d.country.length > 12 ? d.country.slice(0, 11) + '…' : d.country);
+    });
 
-  function _bubbleHighlightContinent(name) {
-    node._activeContinent = name;
-    bubbles
-      .transition().duration(350)
-      .attr('fill-opacity', d => !name || d.continent === name ? 0.8 : 0.1)
-      .attr('stroke-width',  d => !name || d.continent === name ? 1.5 : 0.5);
-    labels
-      .transition().duration(350)
-      .attr('opacity', d => !name || d.continent === name ? 1 : 0);
+    // Axes
+    g.append('g').attr('transform', `translate(0,${ih})`).call(
+      d3.axisBottom(xS).ticks(5).tickFormat(d => `$${d3.format(',.0f')(d)}`)
+    ).call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', 9); });
+
+    g.append('g').call(d3.axisLeft(yS).ticks(5).tickFormat(d => `${d}%`))
+      .call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', 9); });
+
+    g.append('text').attr('x', iw / 2).attr('y', ih + 40)
+      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
+      .text('Reddito pro capite (USD, scala logaritmica)');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
+      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
+      .text('Lavoro minorile 5-17 anni (%)');
+
+    // Count per quadrant
+    qBg.forEach(({ x, y, w, h, q }) => {
+      const n = data.filter(d => getQuadrant(d).id === q.id).length;
+      const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
+      const ly = q.ySide === 'top'  ? y + 25 : y + h - 18;
+      g.append('text').attr('x', lx).attr('y', ly)
+        .attr('text-anchor', q.anchor).attr('font-size', 9).attr('fill', q.color).attr('opacity', 0.5)
+        .text(`${n} paesi`);
+    });
   }
 
-  function _bubbleReset() {
-    node._activeContinent = null;
-    bubbles
-      .transition().duration(350)
-      .attr('fill-opacity', 0.72)
-      .attr('stroke-width', 1);
-    labels
-      .transition().duration(350)
-      .attr('opacity', 1);
-  }
+  draw();
 
-  function _bubbleShowContinent(name) {
-    _bubbleHighlightContinent(name);
-  }
-
-  node._bubbleHighlightContinent = _bubbleHighlightContinent;
-  node._bubbleReset              = _bubbleReset;
-  node._bubbleShowContinent      = _bubbleShowContinent;
+  containerNode._bubbleReset             = () => draw();
+  containerNode._bubbleHighlightContinent = () => draw();
 }

@@ -20,10 +20,10 @@
 
     <!-- ── 4-Act Progress Bar ─────────────────────────────── -->
     <div id="act-progress" aria-label="Navigazione atti">
-      <button class="act-segment is-active" data-act="1" data-target="#act-1" title="Atto I — Il contesto"></button>
-      <button class="act-segment" data-act="2" data-target="#act-2" title="Atto II — La barriera"></button>
-      <button class="act-segment" data-act="3" data-target="#act-3" title="Atto III — Il costo umano"></button>
-      <button class="act-segment" data-act="4" data-target="#act-4" title="Atto IV — La fuga"></button>
+      <button class="act-segment is-active" data-act="1" data-target="#act-1" title="Atto I — La mappa della diseguaglianza"></button>
+      <button class="act-segment" data-act="2" data-target="#act-2" title="Atto II — La scuola che non funziona"></button>
+      <button class="act-segment" data-act="3" data-target="#act-3" title="Atto III — L'infanzia rubata"></button>
+      <button class="act-segment" data-act="4" data-target="#act-4" title="Atto IV — La fuga e il paradosso"></button>
     </div>
 
     <main>
@@ -46,26 +46,26 @@
       <div class="act-header act-1" id="act-1" data-act="1">
         <div class="act-header-inner">
           <span class="act-label">Atto I</span>
-          <h2 class="act-title">Il Contesto</h2>
-          <p class="act-desc">Il mondo non parte uguale: il reddito si concentra in poche regioni, e con esso anche la longevità.</p>
+          <h2 class="act-title">La mappa della diseguaglianza</h2>
+          <p class="act-desc">Non è solo quanto guadagna un paese, ma quanto è disuguale. Un PIL medio può nascondere metà della popolazione sotto la soglia di sopravvivenza. La ricchezza si concentra — e con essa la longevità.</p>
         </div>
       </div>
 
-      <!-- Chart 1 — Reddito per continente (multi-line) -->
+      <!-- Chart 1-1 — Choropleth multi-metrica -->
       <section class="chart-section" id="section-1" data-act="1">
         <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-1-1" data-state="0">
-              <h3>Un mondo che non parte uguale</h3>
-              <p>Da vent'anni, alcune regioni crescono rapidamente mentre altre restano ferme. Il reddito medio per persona — la misura più diretta del tenore di vita — svela questa divisione in modo brutale.</p>
+              <h3>La geografia della ricchezza</h3>
+              <p>Seleziona la metrica in alto: reddito, aspettativa di vita, povertà estrema o disuguaglianza Gini. Usa lo slider per navigare nel tempo. <strong>Clicca su un paese</strong> per vedere il suo andamento storico nel pannello laterale.</p>
             </div>
             <div class="narrative-card" data-chart="chart-1-1" data-state="1">
-              <h3>L'Europa sale</h3>
-              <p>L'Europa ha visto il proprio reddito crescere costantemente, con qualche turbolenza durante la crisi del 2008–2009. Il livello raggiunto oggi sembra irraggiungibile per gran parte del pianeta: oltre 30.000 dollari al giorno in media.</p>
+              <h3>Dove la vita è più breve</h3>
+              <p>Passa alla metrica "Aspettativa di vita". La correlazione con il reddito è forte ma non assoluta: Cuba supera gli USA in longevità pur avendo un reddito pro capite dieci volte inferiore. L'accesso all'assistenza sanitaria fa la differenza.</p>
             </div>
             <div class="narrative-card" data-chart="chart-1-1" data-state="2">
-              <h3>L'Africa resta indietro</h3>
-              <p>L'Africa cresce, ma il punto di partenza era così basso che il divario assoluto con l'Europa si è allargato, non ridotto. In termini relativi si parla di progresso; in termini reali, la distanza è oggi maggiore di vent'anni fa.</p>
+              <h3>Dove la povertà non scende</h3>
+              <p>Passa alla metrica "Povertà estrema": in molti paesi africani e asiatici la quota di popolazione sotto $2,15 al giorno rimane alta nonostante anni di crescita del PIL. Clicca su un paese per vedere il suo andamento storico — e confronta la curva della povertà con quella del reddito.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -79,21 +79,21 @@
         </div>
       </section>
 
-      <!-- Chart 2 — Reddito per paese (choropleth) -->
+      <!-- Chart 1-2 — Gapminder bubble -->
       <section class="chart-section chart-section-alt" id="section-2" data-act="1">
         <div class="chart-section-inner layout-reversed">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-1-2" data-state="0">
-              <h3>Una mappa del divario</h3>
-              <p>Una mappa vale più di mille statistiche. Nel 2000 la divisione era già netta: Nord America, Europa e Australia tingono il planisfero con i colori più scuri, mentre Africa sub-sahariana e Asia meridionale restano pallidi.</p>
+              <h3>Reddito e benessere: il quadro d'insieme</h3>
+              <p>Ogni bolla è un paese: la posizione orizzontale indica il reddito pro capite (scala logaritmica), quella verticale l'aspettativa di vita. La dimensione è proporzionale alla popolazione. La correlazione è chiara — ma le eccezioni sono rivelatrici quanto la regola.</p>
             </div>
             <div class="narrative-card" data-chart="chart-1-2" data-state="1">
-              <h3>La crescita asiatica</h3>
-              <p>Nel 2010, la Cina e alcuni paesi dell'Asia orientale accelerano visibilmente. Il colore si intensifica verso est. È una delle trasformazioni economiche più rapide della storia moderna.</p>
+              <h3>Vent'anni in dieci secondi</h3>
+              <p>Premi Play per vedere come si è spostata la nuvola di punti dal 2000 ad oggi. L'Asia si muove rapidamente verso destra — reddito in crescita. L'Africa avanza, ma più lentamente. Alcune bolle non si spostano quasi per nulla.</p>
             </div>
             <div class="narrative-card" data-chart="chart-1-2" data-state="2">
-              <h3>Le zone immobili</h3>
-              <p>Nel 2024, alcune aree sembrano congelate nel tempo. Il Sahel, l'Africa centrale, alcune zone dell'Asia meridionale: il colore non cambia. Sono i luoghi in cui questa storia comincia davvero.</p>
+              <h3>La povertà multidimensionale</h3>
+              <p>Passa all'asse "MPI" (Indice di Povertà Multidimensionale) per vedere chi è povero non solo di reddito, ma di istruzione e accesso ai servizi. Il Niger e il Chad emergono in cima — un promemoria che il PIL non racconta tutta la storia.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -107,21 +107,21 @@
         </div>
       </section>
 
-      <!-- Chart 3 — Aspettativa di vita (dumbbell) -->
+      <!-- Chart 2-1 — MPI Breakdown -->
       <section class="chart-section" id="section-3" data-act="1">
-        <div class="chart-section-inner layout-stacked">
+        <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-2-1" data-state="0">
-              <h3>Vivere di più, non ovunque uguale</h3>
-              <p>Dal 2000 al 2023, l'aspettativa di vita è migliorata in quasi tutti i paesi del mondo. Una vittoria globale — ma con profonde differenze regionali che il reddito, in larga misura, spiega.</p>
+              <h3>La distribuzione della povertà multidimensionale</h3>
+              <p>La curva mostra come si distribuisce l'MPI nei paesi africani — dove si concentra la quasi totalità dei dati disponibili. Ogni punto nella striscia in basso è un paese. Niger, Ciad, Sudan del Sud si trovano all'estrema destra: povertà multidimensionale sopra 0,45.</p>
             </div>
             <div class="narrative-card" data-chart="chart-2-1" data-state="1">
-              <h3>Progressi diseguali</h3>
-              <p>I paesi africani hanno compiuto progressi significativi grazie agli interventi sanitari e alla riduzione della mortalità infantile. Eppure il punto di partenza era così basso che il divario con l'Europa rimane enorme.</p>
+              <h3>I casi più gravi: oltre la soglia 0,30</h3>
+              <p>La linea verticale tratteggiata segna la soglia di povertà "grave" secondo l'UNDP. Sopra questa soglia si concentra la maggior parte dei paesi dell'Africa sub-sahariana. I punti evidenziati mostrano dove la privazione riguarda la maggioranza assoluta della popolazione.</p>
             </div>
             <div class="narrative-card" data-chart="chart-2-1" data-state="2">
-              <h3>Come leggere il grafico</h3>
-              <p>Il punto piccolo è il 2000, quello grande il 2023. Quanto più lunga è la linea tra i due, tanto maggiore è il guadagno in anni di vita. Linee corte o assenti indicano crisi, conflitti o stagnazione.</p>
+              <h3>Africa vs Asia: due distribuzioni a confronto</h3>
+              <p>Sovrapposta all'Africa, la distribuzione asiatica (in blu) è spostata a sinistra — valori MPI più bassi in media. Ma la coda destra dell'Asia include India, Pakistan, Afghanistan: paesi con PIL in crescita ma ancora ad alta privazione multidimensionale.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -139,26 +139,26 @@
       <div class="act-header act-2" id="act-2" data-act="2">
         <div class="act-header-inner">
           <span class="act-label">Atto II</span>
-          <h2 class="act-title">La Barriera</h2>
-          <p class="act-desc">Dove c'è meno reddito si investe meno in istruzione, e l'istruzione che c'è funziona peggio. Generazioni intere restano indietro — non per scelta, ma per contesto.</p>
+          <h2 class="act-title">La scuola che non funziona</h2>
+          <p class="act-desc">L'istruzione dovrebbe compensare. Non lo fa. Dove i soldi mancano, la scuola esclude — classi sovraffollate, insegnanti assenti, bambine che non entrano mai. Chi non impara non esce dalla povertà.</p>
         </div>
       </div>
 
-      <!-- Chart 4 — Spesa pubblica in istruzione -->
+      <!-- Chart 4 — Trajectory scatter: spesa vs completamento -->
       <section class="chart-section chart-section-alt" id="section-4" data-act="2">
         <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-3-1" data-state="0">
-              <h3>Quanto si investe nell'istruzione?</h3>
-              <p>La spesa pubblica in istruzione come percentuale del PIL rivela le priorità di ogni nazione. Alcuni paesi investono oltre il 7%, altri meno dell'1%. Il treemap mostra questa distribuzione globale. Clicca su un continente per esplorare i paesi.</p>
+              <h3>Chi ottiene di più da ogni euro speso?</h3>
+              <p>Ogni punto è un paese. L'asse orizzontale mostra quanto spende in istruzione (% PIL, anno recente). L'asse verticale mostra di quanti punti percentuali è migliorato il completamento scolastico secondario rispetto agli anni 2000. In alto a sinistra: i paesi più efficienti — poco budget, grandi progressi.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-1" data-state="1">
-              <h3>L'Europa investe</h3>
-              <p>I paesi europei e nordamericani dedicano una quota consistente del PIL all'istruzione — tra il 4% e il 7% in media. Non è solo una questione di ricchezza: è anche una scelta politica e culturale che si riflette nei risultati delle generazioni successive.</p>
+              <h3>L'Europa: già al massimo</h3>
+              <p>I paesi europei si concentrano a destra ma vicino allo zero sull'asse verticale — spesa alta, ma miglioramento limitato perché erano già avanti. Quando si è già al 90–95% di completamento, crescere è difficile. La spesa mantiene il sistema, non lo trasforma.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-1" data-state="2">
-              <h3>L'Africa sub-sahariana</h3>
-              <p>In Africa, la spesa assoluta per studente è spesso decine di volte inferiore a quella europea. Il problema non è solo la percentuale del PIL, ma il PIL stesso — e un sistema che non riesce a trattenere gli studenti fino al diploma.</p>
+              <h3>L'Africa: chi migliora nonostante la spesa bassa</h3>
+              <p>In Africa emergono due gruppi: paesi con spesa bassa e poco progresso (in basso a sinistra), e paesi con spesa bassa ma miglioramento significativo — Rwanda, Mozambico, Marocco. Questi ultimi mostrano che la riforma istituzionale conta quanto il budget.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -172,21 +172,21 @@
         </div>
       </section>
 
-      <!-- Chart 5 — Completamento scolastico -->
+      <!-- Chart 5 — Diverging bar: gender parity gap -->
       <section class="chart-section" id="section-5" data-act="2">
         <div class="chart-section-inner layout-reversed">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-3-2" data-state="0">
-              <h3>Quanti arrivano al diploma?</h3>
-              <p>Ogni quadratino rappresenta un bambino su cento. In Norvegia, quasi tutti completano la scuola secondaria. In Niger, meno di cinque su cento. Questa visualizzazione rende concreto quello che le statistiche tendono ad astrarre.</p>
+              <h3>Il gap di genere: panoramica globale</h3>
+              <p>Ogni barra è un continente. Le barre scendono sotto la linea di parità quando le bambine sono sistematicamente escluse dalla scuola secondaria (GPI &lt; 1). La fascia colorata mostra la dispersione interna. <strong>Clicca su una barra</strong> per vedere i singoli paesi.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-2" data-state="1">
-              <h3>Il confronto che colpisce</h3>
-              <p>Norvegia, Italia, India, Niger: quattro paesi, quattro livelli di completamento radicalmente diversi. Il grafico mette a fuoco il divario Niger–Norvegia: due realtà che sembrano appartenere a pianeti diversi, legate dallo stesso indicatore.</p>
+              <h3>L'Africa: esclusione sistematica</h3>
+              <p>In Africa quasi tutti i paesi si trovano sotto la linea di parità — e il gap è ampio. In Niger e Chad, per ogni 100 bambini a scuola ci sono 60–70 bambine. La dispersione interna è alta: qualche paese africano ha già raggiunto la parità, ma sono eccezioni.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-2" data-state="2">
-              <h3>Genere e istruzione</h3>
-              <p>In molti paesi a basso reddito, le ragazze abbandonano la scuola prima dei ragazzi. Il matrimonio precoce, il lavoro domestico e le aspettative culturali pesano più di qualsiasi distanza geografica da un'aula.</p>
+              <h3>L'Asia: più eterogenea del previsto</h3>
+              <p>L'Asia è il continente con la maggiore variabilità interna: Afghanistan, Pakistan e Yemen affondano sotto la linea di parità, mentre Bangladesh, Mongolia e Filippine sono sopra — le bambine superano i bambini. La media continentale nasconde storie opposte.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -200,21 +200,21 @@
         </div>
       </section>
 
-      <!-- Chart 6 — Alfabetizzazione -->
+      <!-- Chart 6 — Line chart alfabetizzazione con drill-down -->
       <section class="chart-section chart-section-alt" id="section-6" data-act="2">
-        <div class="chart-section-inner layout-stacked">
+        <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-3-3" data-state="0">
-              <h3>Saper leggere nel 2020</h3>
-              <p>Il tasso di alfabetizzazione adulta misura quanto di tutto questo si è tradotto in capacità concreta. Tra il 2000 e il 2020, il mondo ha fatto progressi — ma non tutti allo stesso ritmo, e non tutti dalla stessa partenza.</p>
+              <h3>Sei continenti, sei storie diverse</h3>
+              <p>Ogni pannello mostra le traiettorie di alfabetizzazione dei singoli paesi di un continente dal 2000 ad oggi. L'asse Y è adattato al range interno: il pannello Africa va da 30% a 90%, quello europeo da 95% a 100%. <strong>Clicca su una linea</strong> per isolare un paese.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-3" data-state="1">
-              <h3>Chi ha recuperato di più</h3>
-              <p>Alcuni paesi hanno fatto balzi enormi in vent'anni. Lo slope chart evidenzia i dieci paesi con il progresso maggiore — spesso nazioni che partivano da tassi bassissimi e hanno investito massiccamente nell'istruzione di base.</p>
+              <h3>L'Africa: massima variabilità</h3>
+              <p>Il pannello Africa ha la dispersione più ampia: alcune linee salgono ripidamente, altre rimangono quasi piatte. La variabilità interna è maggiore che in qualsiasi altro continente — la media africana nasconde storie di progresso accanto a storie di stagnazione.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-3" data-state="2">
-              <h3>Esplora i dati</h3>
-              <p>Usa gli slider per scegliere gli anni di confronto, e i pulsanti per passare tra adulti e giovani. Il divario di alfabetizzazione è ancora marcato in molte regioni — un segnale di quello che raccontiamo nell'atto successivo.</p>
+              <h3>L'Asia: crescita disomogenea</h3>
+              <p>Il pannello Asia mostra un gruppo di paesi già ad alta alfabetizzazione e un secondo gruppo in forte risalita. Afghanistan, Pakistan e Yemen partono da sotto il 50% e crescono lentamente; Cina, Vietnam e Filippine sono già sopra l'85% e continuano a salire.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -232,8 +232,8 @@
       <div class="act-header act-3" id="act-3" data-act="3">
         <div class="act-header-inner">
           <span class="act-label">Atto III</span>
-          <h2 class="act-title">Il Costo Umano</h2>
-          <p class="act-desc">Il prezzo di questo divario lo pagano i bambini: lavoro precoce, matrimoni infantili, anni di scuola persi. Non sono statistiche — sono vite.</p>
+          <h2 class="act-title">L'infanzia rubata</h2>
+          <p class="act-desc">Il prezzo lo pagano i bambini. Lavorano invece di studiare. Le bambine vengono sposate prima dei 18 anni. Le madri adolescenti muoiono di parto. I bambini nati da loro muoiono nel primo anno di vita.</p>
         </div>
       </div>
 
@@ -242,21 +242,21 @@
         <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-4-1" data-state="0">
-              <h3>I bambini al lavoro</h3>
-              <p>Nei paesi a basso reddito, una quota significativa di bambini tra i 5 e i 17 anni svolge un'attività economica. La correlazione con il PIL è brutale: Niger, Ciad e Burundi si trovano in alto a sinistra — poveri e con il tasso di lavoro minorile più alto al mondo.</p>
+              <h3>Più sei povero, più i tuoi figli lavorano</h3>
+              <p>La correlazione è brutale: più basso è il reddito di un paese, più alta è la quota di bambini tra i 5 e i 17 anni che svolgono un'attività economica. Niger, Ciad, Mozambico, Madagascar: poveri e con tassi di lavoro minorile tra i più alti del mondo.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-1" data-state="1">
-              <h3>L'Africa è la regione più colpita</h3>
-              <p>Il continente africano concentra la maggior parte dei casi critici. Con PIL pro capite sotto i 2.000 dollari, paesi come Camerun (33%), Ciad (31%) e Mali mostrano tassi che l'Europa ha abbandonato oltre un secolo fa.</p>
+              <h3>L'Africa: la crisi più concentrata</h3>
+              <p>Il continente africano concentra la maggior parte dei casi critici. Con PIL pro capite sotto i 2.000 dollari, tassi come Camerun (33%) e Ciad (31%) testimoniano un sistema economico che non riesce ancora a proteggere l'infanzia. La dimensione delle bolle mostra la popolazione coinvolta.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-1" data-state="2">
               <h3>Esplora per continente</h3>
-              <p>Clicca sulla legenda per filtrare per continente. Ogni bolla è un paese: il diametro rappresenta la popolazione 5–17 anni. L'Asia mostra grande variabilità interna — dall'India al Giappone.</p>
+              <p>Usa i pulsanti in alto per filtrare per continente. L'Asia mostra grande variabilità interna — dall'India, con milioni di bambini al lavoro, al Giappone, dove il fenomeno è pressoché azzerato. Il reddito spiega molto, ma non tutto.</p>
             </div>
           </div>
           <div class="chart-viz">
             <div class="chart-box">
-              <button class="chart-fullscreen-btn" aria-label="Schermo intero" data-chart-id="chart-4-1" data-render-fn="renderChildLaborBubble">
+              <button class="chart-fullscreen-btn" aria-label="Schermo intero" data-target="#chart-4-1">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
               </button>
               <div id="chart-4-1" style="width:100%;height:100%"></div>
@@ -267,19 +267,19 @@
 
       <!-- Chart 8 — Matrimoni precoci -->
       <section class="chart-section chart-section-alt" id="section-8" data-act="3">
-        <div class="chart-section-inner layout-stacked">
+        <div class="chart-section-inner layout-reversed">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-4-2" data-state="0">
-              <h3>Spose a dodici anni</h3>
-              <p>In Africa sub-sahariana e Asia meridionale, una quota ancora alta di ragazze si sposa prima dei 18 anni. Il diagramma mostra come si distribuisce questo fenomeno tra le regioni del mondo: ogni flusso rappresenta la percentuale media di ragazze coinvolte.</p>
+              <h3>Una su tre: spose prima dei 18 anni</h3>
+              <p>Nel Niger, più di 76 ragazze su 100 si sposano prima di compiere 18 anni. In Bangladesh, più di 50. Il grafico mostra i paesi ordinati per tasso di matrimonio precoce — un indicatore che concentra in un solo numero povertà, disuguaglianza di genere e abbandono scolastico.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-2" data-state="1">
-              <h3>Un effetto a cascata</h3>
-              <p>Africa sub-sahariana e Asia meridionale concentrano i tassi più alti. In Niger, più di 7 ragazze su 10 si sposano prima dei 18 anni. In Bangladesh oltre il 50%. Il matrimonio precoce interrompe quasi sempre l'istruzione e avvia un ciclo che si ripete di generazione in generazione.</p>
+              <h3>Niger, 76%: il caso estremo</h3>
+              <p>L'Africa sub-sahariana domina la classifica. Ma il fenomeno non è solo africano: Bangladesh, Afghanistan, Nepal, Yemen. Dove la povertà è strutturale e le opportunità per le ragazze sono quasi nulle, il matrimonio precoce diventa una "soluzione" economica per le famiglie.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-2" data-state="2">
-              <h3>Esplora per regione</h3>
-              <p>Usa i pulsanti in cima al grafico per confrontare le singole regioni. I numeri cambiano radicalmente: dall'Europa, dove il fenomeno è marginale, all'Africa sub-sahariana, dove rimane strutturale.</p>
+              <h3>Il trend scende, ma troppo lento</h3>
+              <p>Passando alla vista "Tendenza regionale", emerge un quadro ambivalente: il fenomeno è in calo lento in quasi tutte le regioni, ma a questo ritmo non raggiungeremo gli obiettivi SDG entro il 2030. Per alcune regioni, la traiettoria si è praticamente bloccata.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -293,21 +293,21 @@
         </div>
       </section>
 
-      <!-- Chart 9 — Trend multi-indicatore -->
+      <!-- Chart 9 — Mortalità materna e infantile -->
       <section class="chart-section" id="section-9" data-act="3">
-        <div class="chart-section-inner layout-reversed">
+        <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-4-3" data-state="0">
-              <h3>Tre crisi, una storia</h3>
-              <p>Bambini fuori scuola, lavoro minorile, matrimoni precoci: tre indicatori, tre dimensioni del costo umano della povertà. Visti insieme come area impilata, rivelano quanto questi fenomeni si sovrappongano — e quanto lentamente stiano diminuendo.</p>
+              <h3>Vent'anni di progresso — ma non ovunque</h3>
+              <p>Ogni linea è un paese. A sinistra il valore intorno al 2000, a destra il dato più recente. Le linee che scendono indicano miglioramento — e la maggior parte scende. Ma alcune restano dove erano, o scendono appena. La scala è logaritmica: la distanza tra Sierra Leone e Norvegia è abissale.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-3" data-state="1">
-              <h3>Il progresso globale — e i limiti</h3>
-              <p>In modalità linee, il trend positivo globale diventa visibile: tutti e tre gli indicatori mostrano una traiettoria in discesa dal 1990 ad oggi. Ma il ritmo del miglioramento rallenta nelle regioni più povere, e alcune crisi — pandemie, conflitti — hanno invertito temporaneamente la rotta.</p>
+              <h3>La catena: matrimonio precoce → morte materna</h3>
+              <p>Evidenziando i paesi con tassi di matrimonio precoce superiori al 30%, emerge una sovrapposizione quasi perfetta con l'alta mortalità materna. Le ragazze-spose diventano madri adolescenti, con gravidanze ad alto rischio e accesso ridotto alle cure. Non è una coincidenza — è una catena.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-3" data-state="2">
-              <h3>Esplora i dati</h3>
-              <p>Clicca su un indicatore nella legenda per isolarlo. Filtra per regione SDG. Ogni combinazione racconta una storia diversa della stessa disuguaglianza globale.</p>
+              <h3>Mortalità infantile: stesso pattern</h3>
+              <p>Passando alla mortalità sotto i 5 anni, il quadro si ripete. I paesi che non riescono a proteggere le madri non riescono a proteggere nemmeno i neonati. Nigeria, Ciad, Somalia, Repubblica Centrafricana: nomi che tornano in ogni grafico di questo atto. Non è una coincidenza geografica — è sistemica.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -325,26 +325,26 @@
       <div class="act-header act-4" id="act-4" data-act="4">
         <div class="act-header-inner">
           <span class="act-label">Atto IV</span>
-          <h2 class="act-title">La Fuga</h2>
-          <p class="act-desc">Quando il contesto non offre più niente, l'unica via d'uscita è andarsene. I flussi migratori raccontano l'epilogo di questa storia — e il costo che pagano i paesi di origine.</p>
+          <h2 class="act-title">La fuga e il paradosso</h2>
+          <p class="act-desc">Chi può, parte. Le rimesse tornano — spesso più degli aiuti internazionali. Ma il paese resta povero, svuotato di chi aveva la forza di andarsene. Il cerchio non si chiude.</p>
         </div>
       </div>
 
-      <!-- Chart 10 — Migrazioni -->
+      <!-- Chart 10 — Migrazioni africane (rete + mappa) -->
       <section class="chart-section chart-section-alt" id="section-10" data-act="4">
         <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-5-1" data-state="0">
-              <h3>Chi parte, dove va</h3>
-              <p>Nel 2024, oltre 280 milioni di persone vivono fuori dal loro paese di nascita. Le migrazioni seguono rotte precise, dettate dalla geografia, dalla storia coloniale e dalla distanza economica tra origine e destinazione. Asia e Africa sono le grandi sorgenti.</p>
+              <h3>Chi parte e dove va</h3>
+              <p>La rete mostra i flussi migratori dall'Africa verso il resto del mondo nel 2020. Ogni nodo è un continente di destinazione — <strong>clicca</strong> per espandere e vedere i singoli paesi. La dimensione del nodo indica il volume totale di migranti africani ricevuti. Europa e Asia sono le destinazioni principali.</p>
             </div>
             <div class="narrative-card" data-chart="chart-5-1" data-state="1">
-              <h3>I flussi crescono</h3>
-              <p>Dal 1990 al 2024, lo stock globale di migranti internazionali è quasi triplicato. Premi Play per vedere come si è evoluta la composizione nel tempo: la crescita asiatica e africana è visibile in modo immediato.</p>
+              <h3>Vent'anni di flussi</h3>
+              <p>Dal 2000 al 2020, i flussi migratori africani sono cresciuti in volume e diversificati nelle destinazioni. Premi Play per vedere l'animazione: l'Europa rimane il polo principale, ma la quota verso l'Asia e le Americhe è aumentata. Usa lo slider per esplorare ogni quinquennio.</p>
             </div>
             <div class="narrative-card" data-chart="chart-5-1" data-state="2">
-              <h3>Il costo per chi resta</h3>
-              <p>Africa e Asia concentrano la crescita maggiore dei flussi migratori. I paesi di origine perdono spesso i giovani più istruiti e ambiziosi: le rimesse economiche aiutano, ma non rimpiazzano il capitale umano che parte.</p>
+              <h3>La mappa delle connessioni</h3>
+              <p>Passa alla vista "Mappa" per vedere le rotte geografiche: ogni arco parte dall'Africa verso il paese di destinazione, con spessore proporzionale al volume di migranti. L'intensità del colore nei paesi di destinazione indica quanti migranti africani li raggiungono.</p>
             </div>
           </div>
           <div class="chart-viz">
@@ -353,6 +353,34 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
               <div id="chart-5-1" style="width:100%;height:100%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart 5-2 — Rimesse come % PIL -->
+      <section class="chart-section" id="section-11" data-act="4">
+        <div class="chart-section-inner layout-reversed">
+          <div class="chart-text">
+            <div class="narrative-card is-active" data-chart="chart-5-2" data-state="0">
+              <h3>Le rimesse: soldi che tornano, ma non bastano</h3>
+              <p>Per molti paesi in via di sviluppo, le rimesse degli emigrati superano gli aiuti internazionali e rappresentano una quota enorme dell'economia. Lesotho, Tonga, Tagikistan: oltre il 30% del PIL. Un'ancora di sopravvivenza — ma anche la prova che l'economia locale non riesce a trattenere chi parte.</p>
+            </div>
+            <div class="narrative-card" data-chart="chart-5-2" data-state="0">
+              <h3>Il paradosso della dipendenza</h3>
+              <p>Più un paese dipende dalle rimesse, più ha bisogno che i suoi cittadini emigrino. Il cerchio non si chiude: le rimesse finanziano i consumi ma raramente gli investimenti produttivi che potrebbero ridurre l'emigrazione stessa. Passa con il mouse sulle barre per vedere i dettagli paese per paese.</p>
+            </div>
+            <div class="narrative-card" data-chart="chart-5-2" data-state="0">
+              <h3>Africa e Asia dominano</h3>
+              <p>La maggior parte dei paesi in cima alla classifica è africana o asiatica. Le barre sono colorate per continente: arancione per l'Africa, blu per l'Asia. Il Nepal, con oltre il 27% del PIL in rimesse, dipende più dall'estero che da qualsiasi settore dell'economia domestica.</p>
+            </div>
+          </div>
+          <div class="chart-viz">
+            <div class="chart-box">
+              <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-5-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              </button>
+              <div id="chart-5-2" style="width:100%;height:100%"></div>
             </div>
           </div>
         </div>
@@ -388,15 +416,16 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/topojson@3"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-    <script src="js/charts/gdpLineChart.js"></script>
-    <script src="js/charts/gdpMapChart.js"></script>
-    <script src="js/charts/dumbbellChart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2.2/build/d3-hexbin.min.js"></script>
+    <script src="js/charts/choroplethMulti.js"></script>
+    <script src="js/charts/gapminderBubble.js"></script>
+    <script src="js/charts/mpiBreakdown.js"></script>
     <script src="js/charts/eduTreemap.js"></script>
-    <script src="js/charts/completionWaffle.js"></script>
-    <script src="js/charts/literacySlope.js"></script>
+    <script src="js/charts/qualityScatter.js"></script>
+    <script src="js/charts/exclusionChart.js"></script>
     <script src="js/charts/childLaborBubble.js"></script>
-    <script src="js/charts/marriageSankey.js"></script>
-    <script src="js/charts/trendsMultimode.js"></script>
+    <script src="js/charts/marriageChart.js"></script>
+    <script src="js/charts/mortalityChart.js"></script>
     <script src="js/charts/migrationChord.js"></script>
     <script src="js/main.js"></script>
   </body>

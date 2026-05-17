@@ -35,16 +35,17 @@ function formatNumber(n, d = 0) {
 
 /* ── Init ────────────────────────────────────────────────── */
 async function init() {
-  if (document.getElementById('chart-1-1')) await renderGdpLineChart('#chart-1-1');
-  if (document.getElementById('chart-1-2')) await renderGdpMapChart('#chart-1-2');
-  if (document.getElementById('chart-2-1')) await renderDumbbellChart('#chart-2-1');
+  if (document.getElementById('chart-1-1')) await renderChoroplethMulti('#chart-1-1');
+  if (document.getElementById('chart-1-2')) await renderGapminderBubble('#chart-1-2');
+  if (document.getElementById('chart-2-1')) await renderMpiBreakdown('#chart-2-1');
   if (document.getElementById('chart-3-1')) await renderEduTreemap('#chart-3-1');
-  if (document.getElementById('chart-3-2')) await renderCompletionWaffle('#chart-3-2');
-  if (document.getElementById('chart-3-3')) await renderLiteracySlope('#chart-3-3');
+  if (document.getElementById('chart-3-2')) await renderQualityScatter('#chart-3-2');
+  if (document.getElementById('chart-3-3')) await renderExclusionChart('#chart-3-3');
   if (document.getElementById('chart-4-1')) await renderChildLaborBubble('#chart-4-1');
-  if (document.getElementById('chart-4-2')) await renderMarriageSankey('#chart-4-2');
-  if (document.getElementById('chart-4-3')) await renderTrendsMultimode('#chart-4-3');
+  if (document.getElementById('chart-4-2')) await renderMarriageChart('#chart-4-2');
+  if (document.getElementById('chart-4-3')) await renderMortalityChart('#chart-4-3');
   if (document.getElementById('chart-5-1')) await renderMigrationChord('#chart-5-1');
+  if (document.getElementById('chart-5-2')) await renderRemittancesChart('#chart-5-2');
 
   initProgressBar();
   initFullscreenModal();
@@ -55,27 +56,26 @@ async function init() {
 function triggerChartState(chartId, state) {
   if (chartId === 'chart-1-1') {
     const el = document.getElementById('chart-1-1');
-    if (!el || !el._gdpHighlightContinents) return;
-    const highlights = [null, ['Europe'], ['Africa']];
-    el._gdpHighlightContinents(highlights[state] ?? null);
+    if (!el) return;
+    if (state === 0 && el._choroplethReset) el._choroplethReset();
+    else if (state === 1 && el._choroplethSetMetric) el._choroplethSetMetric('life_expectancy');
+    else if (state === 2 && el._choroplethSetMetric) el._choroplethSetMetric('poverty');
   }
 
   if (chartId === 'chart-1-2') {
     const el = document.getElementById('chart-1-2');
     if (!el) return;
-    if (el._gdpClearAnimation) el._gdpClearAnimation();
-    const years = [2000, 2010, 2024];
-    if (el._gdpUpdate) el._gdpUpdate(years[state] ?? 2024);
-    // Zoom to region of interest
-    if (state === 1 && el._gdpZoomToAsia) el._gdpZoomToAsia();
-    else if (el._gdpZoomToWorld) el._gdpZoomToWorld();
+    if (state === 0 && el._gapminderReset) el._gapminderReset();
+    else if (state === 1 && el._gapminderAnimate) el._gapminderAnimate();
+    else if (state === 2 && el._gapminderSwitchY) el._gapminderSwitchY('mpi');
   }
 
   if (chartId === 'chart-2-1') {
     const el = document.getElementById('chart-2-1');
     if (!el) return;
-    if (state === 1 && el._dumbbellDrillDown) el._dumbbellDrillDown('Africa');
-    else if (el._dumbbellShowOverview) el._dumbbellShowOverview();
+    if (state === 0 && el._mpiReset) el._mpiReset();
+    else if (state === 1 && el._mpiFilterContinent) el._mpiFilterContinent('Africa');
+    else if (state === 2 && el._mpiFilterContinent) el._mpiFilterContinent('Asia');
   }
 
   if (chartId === 'chart-3-1') {
@@ -89,18 +89,19 @@ function triggerChartState(chartId, state) {
   if (chartId === 'chart-3-2') {
     const el = document.getElementById('chart-3-2');
     if (!el) return;
-    if (state === 0 && el._waffleShowAll) el._waffleShowAll();
-    else if (state === 1 && el._waffleHighlightPair) el._waffleHighlightPair('Africa', 'Europe');
-    else if (state === 2 && el._waffleShowAll) el._waffleShowAll();
+    if (state === 0 && el._bumpReset) el._bumpReset();
+    else if (state === 1 && el._bumpHighlightAfrica) el._bumpHighlightAfrica();
+    else if (state === 2 && el._bumpHighlightAsia) el._bumpHighlightAsia();
   }
 
   if (chartId === 'chart-3-3') {
     const el = document.getElementById('chart-3-3');
     if (!el) return;
-    if (state === 0 && el._slopeShowAll) el._slopeShowAll();
-    else if (state === 1 && el._slopeHighlightProgress) el._slopeHighlightProgress();
-    else if (state === 2 && el._slopeEnableControls) el._slopeEnableControls();
+    if (state === 0 && el._exclusionShowBase) el._exclusionShowBase();
+    else if (state === 1 && el._exclusionOverlayGPI) el._exclusionOverlayGPI();
+    else if (state === 2 && el._exclusionShowTrend) el._exclusionShowTrend();
   }
+
 
   if (chartId === 'chart-4-1') {
     const el = document.getElementById('chart-4-1');
@@ -113,25 +114,31 @@ function triggerChartState(chartId, state) {
   if (chartId === 'chart-4-2') {
     const el = document.getElementById('chart-4-2');
     if (!el) return;
-    if (state === 0 && el._sankeyReset) el._sankeyReset();
-    else if (state === 1 && el._sankeyHighlight) el._sankeyHighlight(['Sub-Saharan Africa', 'Central and Southern Asia']);
-    else if (state === 2 && el._sankeyReset) el._sankeyReset();
+    if (state === 0 && el._marriageReset) el._marriageReset();
+    else if (state === 1 && el._marriageHighlight) el._marriageHighlight('Africa');
+    else if (state === 2 && el._marriageShowTrend) el._marriageShowTrend();
   }
 
   if (chartId === 'chart-4-3') {
     const el = document.getElementById('chart-4-3');
     if (!el) return;
-    if (state === 0 && el._trendsShowAll) el._trendsShowAll();
-    else if (state === 1 && el._trendsHighlightIndicator) el._trendsHighlightIndicator('child_marriage');
-    else if (state === 2 && el._trendsActivateToggle) el._trendsActivateToggle();
+    if (state === 0 && el._mortalityScatter) el._mortalityScatter();
+    else if (state === 1 && el._mortalityHighlightMarriage) el._mortalityHighlightMarriage();
+    else if (state === 2 && el._mortalitySlope) el._mortalitySlope();
   }
 
   if (chartId === 'chart-5-1') {
     const el = document.getElementById('chart-5-1');
     if (!el) return;
-    if (state === 0 && el._migrationShowYear) el._migrationShowYear(2024);
+    if (state === 0 && el._migrationShowYear) el._migrationShowYear(2020);
     else if (state === 1 && el._migrationAnimate) el._migrationAnimate();
-    else if (state === 2 && el._migrationHighlight) el._migrationHighlight(['Africa', 'Asia']);
+    else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
+  }
+
+  if (chartId === 'chart-5-2') {
+    const el = document.getElementById('chart-5-2');
+    if (!el) return;
+    if (state === 0 && el._remittancesReset) el._remittancesReset();
   }
 }
 
@@ -205,16 +212,17 @@ function initFullscreenModal() {
     container.appendChild(wrap);
 
     try {
-      if (chartId === 'chart-1-1') await renderGdpLineChart(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-1-2') await renderGdpMapChart(`#fullscreen-${chartId}`, 2023, true);
-      else if (chartId === 'chart-2-1') await renderDumbbellChart(`#fullscreen-${chartId}`, true);
+      if (chartId === 'chart-1-1') await renderChoroplethMulti(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-1-2') await renderGapminderBubble(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-2-1') await renderMpiBreakdown(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-3-1') await renderEduTreemap(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-3-2') await renderCompletionWaffle(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-3-3') await renderLiteracySlope(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-3-2') await renderQualityScatter(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-3-3') await renderExclusionChart(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-4-1') await renderChildLaborBubble(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-4-2') await renderMarriageSankey(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-4-3') await renderTrendsMultimode(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-4-2') await renderMarriageChart(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-4-3') await renderMortalityChart(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
+      else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }

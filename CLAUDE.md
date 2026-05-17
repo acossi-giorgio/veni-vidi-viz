@@ -17,7 +17,7 @@
 
 ## 0. Sommario esecutivo
 
-- **Tesi:** Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto: lavoro minorile, matrimoni precoci, vite spezzate. Quando il contesto non offre più niente, l'unica via d'uscita è la migrazione.
+- **Tesi:** Il mondo non è diviso tra Nord e Sud — è diviso tra chi nasce con una rete di protezione e chi no. Dove quella rete manca, i bambini cadono per primi. E chi sopravvive, parte.
 - **Format:** sito web a scroll verticale normale, 10 grafici interattivi suddivisi in 4 atti narrativi.
 - **Pattern visivo (v4 — click-narrative):** layout a due colonne per ogni sezione — testo a sinistra con **narrative card cliccabili**, grafico sticky a destra. Niente overlay, niente slide-mode, niente scroll container custom. Lo scroll è quello nativo del browser.
 - **Stack:** HTML5 + CSS3 + Vanilla JS (ES6+), D3.js v7. Nessun framework. **Niente scrollama.**
@@ -40,13 +40,17 @@ Il sistema scrollytelling (scrollama, IntersectionObserver, goToState, slide-mod
 ## 1. Tesi narrativa
 
 ### 1.1 Frase tesi
-> *Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto: lavoro minorile, matrimoni precoci, vite spezzate. Quando il contesto non offre più niente, l'unica via d'uscita è andarsene.*
+> *Il mondo non è diviso tra Nord e Sud — è diviso tra chi nasce con una rete di protezione e chi no. Dove quella rete manca, i bambini cadono per primi: lavorano, vengono sposati, muoiono di malattie evitabili. E chi sopravvive, parte.*
 
 ### 1.2 Argomentazione in 4 atti
-1. **Atto I — Il contesto.** Il mondo non parte uguale: il reddito si concentra in poche regioni, e con esso anche la longevità.
-2. **Atto II — La barriera.** Dove c'è meno reddito si investe meno in istruzione, e l'istruzione che c'è funziona peggio. Generazioni intere restano indietro.
-3. **Atto III — Il costo umano.** Il prezzo di questo divario lo pagano i bambini: lavoro precoce, matrimoni infantili, perdita di scuola.
-4. **Atto IV — La fuga.** Chi può, parte. I paesi di origine restano più poveri di prima.
+
+1. **Atto I — La mappa della diseguaglianza.** Non è solo quanto guadagna un paese, ma quanto è disuguale. Un PIL medio può nascondere metà della popolazione sotto la soglia di sopravvivenza. La ricchezza si concentra — e con essa la longevità.
+
+2. **Atto II — La scuola che non funziona.** L'istruzione dovrebbe compensare. Non lo fa. Dove i soldi mancano, la scuola esclude — classi sovraffollate, insegnanti assenti, bambine che non entrano mai. Chi non impara non esce dalla povertà.
+
+3. **Atto III — L'infanzia rubata.** Il prezzo lo pagano i bambini. Lavorano invece di studiare. Le bambine vengono sposate prima dei 18 anni. Le madri adolescenti muoiono di parto. I bambini nati da loro muoiono nel primo anno di vita.
+
+4. **Atto IV — La fuga e il paradosso.** Chi può, parte. Le rimesse tornano — spesso più degli aiuti internazionali. Ma il paese resta povero, svuotato di chi aveva la forza di andarsene. Il cerchio non si chiude.
 
 ### 1.3 Cosa NON è il progetto (scope guard)
 - Non è uno studio causale (correlazioni, non causalità).
@@ -63,9 +67,9 @@ Il sistema scrollytelling (scrollama, IntersectionObserver, goToState, slide-mod
 ### 2.2 Paesi di riferimento (per le citazioni nei testi)
 - **Benchmark alti:** Norvegia, Germania.
 - **Benchmark medi:** Italia, Brasile.
-- **Casi critici:** Niger, Ciad, Bangladesh, Afghanistan.
+- **Casi critici:** Niger, Ciad, Bangladesh, Afghanistan, Nepal, Lesotho.
 
-Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare riconoscibilità. Nei grafici interattivi, l'utente può comunque selezionare qualsiasi altro paese.
+Questi paesi vanno menzionati ricorrentemente nelle card di testo per creare riconoscibilità. Nei grafici interattivi, l'utente può comunque selezionare qualsiasi altro paese.
 
 ### 2.3 Finestra temporale
 **2000–2024** come default per le serie temporali. Dove il dato non arriva al 2024, si usa l'anno più recente disponibile e si esplicita nel grafico.
@@ -79,7 +83,7 @@ Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare r
 - **CSS3** — vanilla, con CSS custom properties (variabili) per design tokens. **Nessun framework CSS.**
 - **JavaScript ES6+** — vanilla, script globali (non ES6 modules per compatibilità con l'esistente).
 - **D3.js v7** — unica libreria per la visualizzazione. Non si usa Chart.js, Plotly o altre librerie alto-livello.
-- **d3-sankey** — plugin separato di D3, serve per i grafici 8 e 10.
+- **d3-sankey** — plugin separato di D3, serve per grafico 8.
 - **topojson-client** — per parsing del world atlas (grafici 2 e 10).
 
 ### 3.2 Tecnologie escluse esplicitamente
@@ -99,7 +103,7 @@ Questi 8 paesi vanno menzionati ricorrentemente nelle card di testo per creare r
 ```html
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson@3"></script>
-<!-- d3-sankey aggiunto quando serve grafico 8/10 -->
+<!-- d3-sankey aggiunto quando serve grafico 8 -->
 ```
 
 ---
@@ -121,27 +125,25 @@ src/
 │       ├── gdpMapChart.js        # Grafico 2 — GIÀ IMPLEMENTATO
 │       ├── dumbbellChart.js      # Grafico 3 — GIÀ IMPLEMENTATO
 │       ├── eduTreemap.js         # Grafico 4 — da implementare
-│       ├── completionWaffle.js   # Grafico 5 — da implementare
-│       ├── literacySlope.js      # Grafico 6 — da implementare
+│       ├── qualityScatter.js     # Grafico 5 — da implementare
+│       ├── exclusionChart.js     # Grafico 6 — da implementare
 │       ├── childLaborBubble.js   # Grafico 7 — da implementare
-│       ├── marriageSankey.js     # Grafico 8 — da implementare
-│       ├── trendsMultimode.js    # Grafico 9 — da implementare
+│       ├── marriageChart.js      # Grafico 8 — da implementare
+│       ├── mortalityChart.js     # Grafico 9 — da implementare
 │       └── migrationChord.js     # Grafico 10 — da implementare
 ├── datasets/
-│   ├── raw/                      # file originali scaricati
-│   ├── clean/                    # file puliti per grafici 1-3 (esistenti)
-│   └── processed/                # output preprocessing per grafici 4-10
+│   ├── raw/                      # file originali scaricati (vedere SOURCES.md)
+│   ├── clean/                    # file per grafici 1-3
+│   └── processed/                # output preprocessing (tutti schema code,country,continent,year,value)
 └── images/                       # immagini di sfondo
 ```
 
-> **Regola:** adattare i riferimenti al nome esistente — non creare duplicati con nomi alternativi.
-
 ### 4.2 Sezioni del sito (top to bottom)
 1. **Hero** — titolo, sottotitolo/tesi, scroll prompt.
-2. **Atto I — Il contesto** (3 grafici: 1, 2, 3).
-3. **Atto II — La barriera** (3 grafici: 4, 5, 6).
-4. **Atto III — Il costo umano** (3 grafici: 7, 8, 9).
-5. **Atto IV — La fuga** (1 grafico: 10).
+2. **Atto I — La mappa della diseguaglianza** (grafici 1, 2, 3).
+3. **Atto II — La scuola che non funziona** (grafici 4, 5, 6).
+4. **Atto III — L'infanzia rubata** (grafici 7, 8, 9).
+5. **Atto IV — La fuga e il paradosso** (grafico 10).
 6. **About** — 7 card finali (vedi §9).
 
 ---
@@ -207,14 +209,7 @@ I grafici espongono funzioni direttamente sull'elemento DOM (`container._fn`):
 - `container._gdpUpdate(year)`, `container._gdpClearAnimation()`, `container._gdpZoomToWorld/Europe/Africa/Asia()` — Chart 2
 - I nuovi grafici devono seguire lo stesso pattern: esporre funzioni sul DOM element.
 
-### 6.3 Interazioni built-in nei grafici
-Ogni grafico ha già interattività propria che NON dipende dalle narrative card:
-- **Chart 1:** click su linea → drill-down paesi del continente, crosshair hover.
-- **Chart 2:** slider anno, play/pause, zoom con scroll, drag.
-- **Chart 3:** click su continente → drill-down paesi.
-- **Chart 4–10:** da definire in implementazione.
-
-### 6.4 Pattern di interazione disponibili
+### 6.3 Pattern di interazione disponibili
 | Pattern | Quando | Implementazione |
 |---|---|---|
 | **Highlight/focus** | Stesso dato, enfasi diversa | `_highlightFn(subset)` sul DOM. |
@@ -236,8 +231,8 @@ Ogni grafico ha già interattività propria che NON dipende dalle narrative card
 
 **Narrative card → stato grafico:**
 - Card 0 "Un mondo che non parte uguale" → tutti i continenti uguali (nessun highlight).
-- Card 1 "L'Europa sale" → `_gdpHighlightContinents(['Europe'])`.
-- Card 2 "L'Africa resta indietro" → `_gdpHighlightContinents(['Africa'])`.
+- Card 1 "L'Europa si allontana" → `_gdpHighlightContinents(['Europe'])`.
+- Card 2 "L'Africa resta ferma" → `_gdpHighlightContinents(['Africa'])`.
 
 **Interazioni built-in:** click su linea → drill-down paesi del continente (con filtro, zoom Y, crosshair).
 
@@ -247,104 +242,115 @@ Ogni grafico ha già interattività propria che NON dipende dalle narrative card
 **Atto:** I · **Tipo:** choropleth con scrubber temporale · **File dati:** `datasets/clean/gdp_per_capita.csv` + TopoJSON CDN
 
 **Narrative card → stato grafico:**
-- Card 0 "Una mappa del divario" → `_gdpUpdate(2000)` + `_gdpZoomToWorld()`.
-- Card 1 "La crescita asiatica" → `_gdpUpdate(2010)` + `_gdpZoomToAsia()`.
+- Card 0 "La geografia della ricchezza" → `_gdpUpdate(2000)` + `_gdpZoomToWorld()`.
+- Card 1 "Vent'anni di crescita asiatica" → `_gdpUpdate(2015)` + `_gdpZoomToAsia()`.
 - Card 2 "Le zone immobili" → `_gdpUpdate(2024)` + `_gdpZoomToWorld()`.
 
 **Interazioni built-in:** slider anno, play/pause, zoom + drag, tooltip per paese.
 
 ---
 
-### Grafico 3 — Aspettativa di vita (dumbbell plot) — *IMPLEMENTATO*
+### Grafico 3 — Povertà e disuguaglianza (scatter) — *IMPLEMENTATO come dumbbell*
 **Atto:** I · **Tipo:** dumbbell plot · **File dati:** `datasets/clean/life_expectancy.csv`
 
-**Narrative card:** 3 card presenti nell'HTML, non triggera stati diversi del grafico (il grafico mostra sempre tutto). Le card guidano la lettura testuale.
+**Nota:** il grafico mostra aspettativa di vita come proxy del benessere. Le card guidano la lettura testuale senza cambiare lo stato del grafico.
+
+**Narrative card:**
+- Card 0 "Non basta guardare la media" — introduce il concetto di disuguaglianza interna.
+- Card 1 "Il gap che non si vede nel PIL" — paesi con reddito simile, aspettativa di vita opposta.
+- Card 2 "Niger vs Norvegia: 30 anni di differenza" — caso estremo come ancoraggio narrativo.
 
 **Interazioni built-in:** click su continente → drill-down paesi, tooltip.
 
 ---
 
-### Grafico 4 — Spesa pubblica in istruzione (treemap)
-**Atto:** II · **Tipo:** treemap · **File dati:** `datasets/processed/04_edu_spending.csv`
+### Grafico 4 — Spesa pubblica in istruzione (bar chart aggregato)
+**Atto:** II · **Tipo:** bar chart orizzontale con drill-down · **File dati:** `datasets/processed/edu_spending.csv`
 
 **Narrative card → stato grafico:**
-- Card 0 "Quanto si investe?" → treemap globale per continente.
-- Card 1 "L'Europa investe" → highlight continente Europa.
-- Card 2 "L'Africa sub-sahariana" → highlight continente Africa.
+- Card 0 "Quanto vale un'aula?" → vista continenti, nessun highlight.
+- Card 1 "L'Europa investe il doppio" → `_treemapHighlight('Europe')`.
+- Card 2 "L'Africa sub-sahariana" → `_treemapHighlight('Africa')`.
 
-**Interazioni built-in:** click su continente → drill-down paesi, tooltip.
+**Interazioni built-in:** click su continente → drill-down paesi, back button, tooltip.
 
 ---
 
-### Grafico 5 — Tasso di completamento scolastico (waffle comparativo)
-**Atto:** II · **Tipo:** waffle chart, 4 paesi · **File dati:** `datasets/processed/05_edu_completion.csv`
+### Grafico 5 — Qualità dell'istruzione (scatter pupil-teacher × completamento)
+**Atto:** II · **Tipo:** scatter plot · **File dati:** `datasets/processed/pupil_teacher.csv` + `datasets/processed/edu_completion.csv`
+
+Merge a livello di grafico su `code` + `year` (anno più recente disponibile per paese).
 
 **Narrative card → stato grafico:**
-- Card 0 "Quanti arrivano al diploma?" → 4 waffle: Norvegia, Italia, India, Niger.
-- Card 1 "Il confronto che colpisce" → highlight gap Niger vs Norvegia.
-- Card 2 "Genere e istruzione" → toggle vista Femmine vs Maschi.
+- Card 0 "Spendere non basta" → scatter tutti i paesi, nessun highlight.
+- Card 1 "Più alunni per insegnante, meno diplomati" → highlight paesi con ratio >50, annotazione Niger/Chad.
+- Card 2 "Le eccezioni che confermano la regola" → highlight paesi con alto ratio ma buon completamento (es. Vietnam, Cuba).
 
-**Interazioni built-in:** toggle Totale/Femmine/Maschi, selettore paese.
+**Interazioni built-in:** hover tooltip (paese, anno, valori), filtro continente, click paese → highlight scia temporale.
 
 ---
 
-### Grafico 6 — Tasso di alfabetizzazione (slope chart)
-**Atto:** II · **Tipo:** slope chart · **File dati:** `datasets/processed/06_literacy.csv`
+### Grafico 6 — Esclusione scolastica e gap di genere (small multiples + strip)
+**Atto:** II · **Tipo:** small multiples / dot strip · **File dati:** `datasets/processed/out_of_school.csv` + `datasets/processed/gpi_secondary.csv`
 
 **Narrative card → stato grafico:**
-- Card 0 "Saper leggere nel 2020" → slope 2000→2020, tutti i paesi.
-- Card 1 "Chi ha recuperato" → highlight paesi con maggior progresso.
-- Card 2 "Esplora i dati" → reset highlight, slider anni attivo.
+- Card 0 "Milioni di bambini fuori dalla scuola" → strip plot `out_of_school` per continente, anno più recente.
+- Card 1 "Le bambine escluse per prime" → sovrappone GPI: paesi con GPI <0.9 evidenziati.
+- Card 2 "Il progresso c'è, ma è lento" → mostra trend 2000→recente, highlight paesi con maggior miglioramento GPI.
 
-**Interazioni built-in:** slider anno A e anno B, toggle adulti/giovani, toggle genere.
+**Interazioni built-in:** slider anno, toggle out_of_school / GPI / entrambi, tooltip, drill-down continente.
 
 ---
 
 ### Grafico 7 — Reddito vs lavoro minorile (bubble animato Gapminder)
-**Atto:** III · **Tipo:** scatter animato · **File dati:** `datasets/processed/07_bubble.csv`
+**Atto:** III · **Tipo:** scatter animato · **File dati:** `datasets/processed/income.csv` + `datasets/processed/child_labor.csv` + `datasets/processed/population.csv`
+
+Merge a livello di grafico su `code` + `year`.
 
 **Narrative card → stato grafico:**
-- Card 0 "I bambini al lavoro" → scatter anno 2000, fermo.
-- Card 1 "Vent'anni di cambiamento" → play automatico fino al 2020.
-- Card 2 "Esplora" → pausa, slider libero.
+- Card 0 "Più sei povero, più i tuoi figli lavorano" → scatter anno più recente, fermo.
+- Card 1 "Vent'anni di cambiamento" → play automatico 2000→ultimo anno disponibile.
+- Card 2 "Esplora" → pausa, slider libero, filtro continente attivo.
 
-**Interazioni built-in:** play/pause/reset, slider anno, click bolla → scia temporale, filtro continente.
+**Interazioni built-in:** play/pause/reset, slider anno, click bolla → scia temporale, filtro continente, tooltip.
 
 ---
 
-### Grafico 8 — Matrimoni precoci (Sankey diagram)
-**Atto:** III · **Tipo:** Sankey · **File dati:** `datasets/processed/08_child_marriage.csv`
+### Grafico 8 — Matrimoni precoci (mappa + bar chart)
+**Atto:** III · **Tipo:** choropleth + bar · **File dati:** `datasets/processed/child_marriage.csv`
 
 **Narrative card → stato grafico:**
-- Card 0 "Spose a dodici anni" → Sankey Africa Sub-sahariana.
-- Card 1 "Un effetto a cascata" → highlight flusso scuola→matrimonio→gravidanza.
-- Card 2 "Esplora per regione" → selettore regione attivo.
+- Card 0 "Una su tre: spose prima dei 18 anni" → mappa mondiale, anno più recente.
+- Card 1 "Niger, 76%: il caso estremo" → highlight Africa, annotazione paesi critici.
+- Card 2 "Il trend scende, ma troppo lento" → switch a bar chart trend temporale per regione.
 
-**Interazioni built-in:** selettore regione (Africa / Asia Meridionale / Mondo), tooltip flussi.
+**Interazioni built-in:** toggle mappa/bar, slider anno (mappa), filtro continente (bar), tooltip paese.
 
 ---
 
-### Grafico 9 — Trend multi-indicatore (multi-mode time series)
-**Atto:** III · **Tipo:** time series con toggle · **File dati:** `datasets/processed/09_trends.csv`
+### Grafico 9 — Il prezzo biologico (scatter mortalità materna × infantile)
+**Atto:** III · **Tipo:** scatter connesso / slope · **File dati:** `datasets/processed/maternal_mortality.csv` + `datasets/processed/child_mortality.csv`
+
+Merge a livello di grafico su `code` + `year`.
 
 **Narrative card → stato grafico:**
-- Card 0 "Tre crisi, una storia" → Stacked Area, tutti e 3 gli indicatori.
-- Card 1 "Il progresso globale" → Line chart, trend decrescente evidenziato.
-- Card 2 "Cambia la vista" → attiva mode toggle visibile.
+- Card 0 "Dove le madri muoiono, i bambini muoiono" → scatter maternal × child mortality, tutti i paesi.
+- Card 1 "La catena: matrimonio precoce → gravidanza → morte" → highlight paesi con alto child_marriage, annotazione correlazione.
+- Card 2 "Il progresso dal 2000 ad oggi" → slope chart paese-per-paese, 2000 → anno recente.
 
-**Interazioni built-in:** toggle Line/Stacked Area/Streamgraph/100%, filtro indicatore, filtro regione SDG.
+**Interazioni built-in:** toggle scatter/slope, hover tooltip, filtro continente, click paese → evidenzia.
 
 ---
 
-### Grafico 10 — Migrazioni internazionali (Chord diagram)
-**Atto:** IV · **Tipo:** Chord diagram · **File dati:** `datasets/processed/10_migration_continent.csv`
+### Grafico 10 — La fuga e il paradosso (chord + pannello rimesse)
+**Atto:** IV · **Tipo:** Chord diagram + bar panel · **File dati:** `datasets/processed/migration.csv` + `datasets/processed/remittances.csv`
 
 **Narrative card → stato grafico:**
-- Card 0 "Chi parte, dove va" → Chord al 2024.
-- Card 1 "I flussi crescono" → animazione 1990→2024 o confronto.
-- Card 2 "Il costo per chi resta" → highlight flussi Africa/Asia → Europa/Nord America.
+- Card 0 "Chi parte e dove va" → chord diagram flussi bilaterali aggregati per continente, 2020.
+- Card 1 "I flussi crescono" → animazione 2000→2020 o slider quinquennale.
+- Card 2 "Le rimesse: soldi che tornano, ma non bastano" → pannello laterale rimesse % PIL top-20 paesi, highlight paesi con rimesse >15% PIL e poverty rate ancora alta.
 
-**Interazioni built-in:** scrubber temporale (intervalli 5 anni), filtro continente origine/destinazione.
+**Interazioni built-in:** scrubber temporale (intervalli 5 anni), filtro continente origine/destinazione, toggle chord/rimesse.
 
 ---
 
@@ -391,44 +397,41 @@ Pattern standard per ogni sezione:
 Dopo il grafico 10, una sezione con 7 card (layout grid 2 o 3 colonne).
 
 1. **Tesi** — 2-3 frasi che sintetizzano l'argomento del progetto.
-2. **Fonti dati** — lista con link a tutte le fonti (World Bank, UNESCO UIS, ILO, UNICEF, UN DESA, Our World in Data).
-3. **Processo metodologico** — come abbiamo selezionato indicatori, paesi, finestra temporale; come abbiamo gestito i dati mancanti.
+2. **Fonti dati** — lista con link a tutte le fonti (World Bank, UNESCO UIS, ILO, UNICEF, UN DESA, Our World in Data, WHO).
+3. **Processo metodologico** — selezione indicatori, finestra temporale, gestione dati mancanti.
 4. **Limitazioni note** — onestà metodologica (vedi §11).
 5. **Stack tecnologico** — librerie usate, scelte di design.
 6. **Team** — nomi, ruoli, contatti.
-7. **Crediti & licenze** — citazione dei dataset, link ai repository, licenza del progetto.
+7. **Crediti & licenze** — citazione dataset, link repository, licenza progetto.
 
 ---
 
 ## 10. Dataset
 
-### 10.1 Percorsi dati
+### 10.1 Schema standard
+Tutti i file processed seguono lo schema: `code, country, continent, year, value`
+Eccezione: `migration.csv` → `origin_code, origin_country, origin_continent, dest_code, dest_country, dest_continent, year, stock`
 
-| File | Grafico | Percorso |
+### 10.2 Percorsi dati per grafico
+
+| Grafico | File processed | Metrica |
 |---|---|---|
-| `gdp_per_capita.csv` | 1, 2 | `src/datasets/clean/` |
-| `life_expectancy.csv` | 3 | `src/datasets/clean/` |
-| `04_edu_spending.csv` | 4 | `src/datasets/processed/` |
-| `05_edu_completion.csv` | 5 | `src/datasets/processed/` |
-| `06_literacy.csv` | 6 | `src/datasets/processed/` |
-| `07_bubble.csv` | 7 | `src/datasets/processed/` |
-| `08_child_marriage.csv` | 8 | `src/datasets/processed/` |
-| `09_trends.csv` | 9 | `src/datasets/processed/` |
-| `10_migration_continent.csv` | 10 | `src/datasets/processed/` |
+| 1 | `datasets/clean/gdp_per_capita.csv` | PIL pro capite USD |
+| 2 | `datasets/clean/gdp_per_capita.csv` + TopoJSON | PIL pro capite USD |
+| 3 | `datasets/clean/life_expectancy.csv` | Aspettativa di vita (anni) |
+| 4 | `datasets/processed/edu_spending.csv` | Spesa istruzione % PIL |
+| 5 | `datasets/processed/pupil_teacher.csv` + `edu_completion.csv` | Alunni/insegnante × completamento % |
+| 6 | `datasets/processed/out_of_school.csv` + `gpi_secondary.csv` | N. fuori scuola + GPI |
+| 7 | `datasets/processed/income.csv` + `child_labor.csv` + `population.csv` | PIL × % lavoro minorile × pop 5-17 |
+| 8 | `datasets/processed/child_marriage.csv` | % donne sposate <18 anni |
+| 9 | `datasets/processed/maternal_mortality.csv` + `child_mortality.csv` | Mortalità materna × infantile |
+| 10 | `datasets/processed/migration.csv` + `remittances.csv` | Stock migranti bilaterale + rimesse % PIL |
 
-I file raw sono in `src/datasets/raw/`. Lo script di preprocessing è in `scripts/preprocess.py` (già eseguito).
-
-### 10.2 Colonne attese nei file processed
-
-| File | Colonne |
-|---|---|
-| `04_edu_spending.csv` | `iso3, country, continent, year, pct_gdp` |
-| `05_edu_completion.csv` | `iso3, country, continent, year, total, female, male` |
-| `06_literacy.csv` | `iso3, country, continent, year, adult_total, adult_female, adult_male, youth_total, youth_female, youth_male` |
-| `07_bubble.csv` | `iso3, country, continent, year, income, child_labor_pct, pop_5_17` |
-| `08_child_marriage.csv` | `region, country, year, married_before_18, married_before_15, children_before_18` |
-| `09_trends.csv` | `region, year, indicator, value` — indicator ∈ {child_labor, child_marriage, out_of_school} |
-| `10_migration_continent.csv` | `origin_continent, dest_continent, year, stock` |
+### 10.3 Dataset disponibili ma non usati nei grafici principali
+Disponibili per annotazioni, tooltip arricchiti o futura espansione:
+- `poverty.csv` — % pop sotto $2.15/giorno
+- `gini.csv` — indice Gini
+- `literacy.csv` — tasso alfabetizzazione adulti
 
 ---
 
@@ -436,12 +439,12 @@ I file raw sono in `src/datasets/raw/`. Lo script di preprocessing è in `script
 
 Da menzionare nella card "Limitazioni" della sezione About:
 
-1. **Metrica reddito unica per grafici 1 e 2.** GDP per capita da World Bank. Alcuni paesi mancano di copertura — mostrati come "N/D" nella choropleth.
-2. **Comparabilità del lavoro minorile.** I dati ILO/UNICEF derivano da survey nazionali con strumenti diversi. I confronti tra paesi vanno presi con cautela; i trend regionali sono più affidabili.
-3. **Buchi nel treemap istruzione.** Non tutti i paesi riportano la spesa per livello scolastico.
-4. **Stock vs flussi nelle migrazioni.** UN DESA misura lo stock (persone nate all'estero residenti in un paese), non i flussi annuali.
-5. **Matrimoni precoci sotto-rilevati.** I dati riguardano donne 20–24 retrospettivamente. I paesi ad alto reddito spesso non riportano il dato (~0%).
-6. **Alfabetizzazione self-reported.** Definizioni e metodologie variano tra paesi.
+1. **PIL pro capite come proxy.** Misura media — nasconde disuguaglianza interna. Usare insieme a Gini per lettura completa.
+2. **Lavoro minorile da survey.** Dati ILO/UNICEF da survey nazionali con strumenti diversi. Confronti tra paesi con cautela; trend regionali più affidabili. Solo 93 paesi con dato disponibile.
+3. **Matrimoni precoci sotto-rilevati.** Dati retrospettivi su donne 20-24. Paesi ad alto reddito spesso non riportano (~0%). Probabile sotto-stima.
+4. **Stock vs flussi nelle migrazioni.** UN DESA misura stock (persone nate all'estero residenti in un paese), non flussi annuali. Dati bilaterali disponibili solo fino al 2020.
+5. **Mortalità materna — stime modellate.** In paesi con sistemi sanitari deboli, la mortalità materna è stimata da modelli WHO, non da registri civili.
+6. **GPI e completamento scolastico — copertura parziale.** Non tutti i paesi riportano dati annuali. Gap frequenti negli anni 2000-2010.
 
 ---
 
@@ -460,20 +463,20 @@ Da menzionare nella card "Limitazioni" della sezione About:
 ---
 
 ### Sprint 3 — Atto II
-- Grafico 4: treemap spesa istruzione (`eduTreemap.js`).
-- Grafico 5: waffle completamento scolastico (`completionWaffle.js`).
-- Grafico 6: slope chart alfabetizzazione (`literacySlope.js`).
-- Ogni grafico deve esporre API su DOM element per `triggerChartState`.
-- Aggiungere le narrative card in `index.html` per sezioni 4, 5, 6.
+- Grafico 4: bar chart spesa istruzione (`eduTreemap.js` — già parzialmente implementato, adattare).
+- Grafico 5: scatter pupil_teacher × edu_completion (`qualityScatter.js`).
+- Grafico 6: strip plot out_of_school + GPI (`exclusionChart.js`).
+- Ogni grafico espone API su DOM element per `triggerChartState`.
+- Aggiungere/aggiornare narrative card in `index.html` per sezioni 4, 5, 6.
 - Aggiungere i casi `chart-4`, `chart-5`, `chart-6` in `triggerChartState()` in `main.js`.
 
 ### Sprint 4 — Atto III
-- Grafico 7: bubble animato Gapminder (`childLaborBubble.js`) — **il più complesso**.
-- Grafico 8: Sankey matrimoni (`marriageSankey.js`) — richiede d3-sankey CDN.
-- Grafico 9: multi-mode time series (`trendsMultimode.js`).
+- Grafico 7: bubble animato Gapminder (`childLaborBubble.js`) — merge income + child_labor + population nel JS.
+- Grafico 8: mappa + bar matrimoni (`marriageChart.js`).
+- Grafico 9: scatter mortalità materna × infantile (`mortalityChart.js`).
 
 ### Sprint 5 — Atto IV + About + polishing
-- Grafico 10: Chord migrazioni (`migrationChord.js`) — richiede d3-chord.
+- Grafico 10: chord migrazioni + pannello rimesse (`migrationChord.js`).
 - Sezione About con 7 card.
 - Pass di polishing: transizioni, accessibilità base (focus visibile, contrasti AA, skip link).
 - Test cross-browser desktop (Chrome, Safari, Firefox, ultime versioni).
@@ -489,6 +492,7 @@ Da menzionare nella card "Limitazioni" della sezione About:
 - **No global state.** Stato per chart locale alla funzione.
 - **Date:** anni come numeri (`2024`), mai oggetti `Date` non necessari.
 - **triggerChartState:** aggiungere un blocco `if (chartId === 'chart-X-X')` per ogni nuovo grafico.
+- **Merge dataset:** avviene sempre nel JS del grafico, mai nel preprocessing.
 
 ---
 
@@ -508,19 +512,3 @@ Il progetto è considerato completo quando:
 ---
 
 *Fine del documento. Aggiornare questo file se cambiano scope, fonti o decisioni di design.*
-
-#### Datasets
-
-| Filename raw | Grafico | URL di download | Formato | Note |
-|---|---|---|---|---|
-| `edu_spending_raw.zip` | 4 | `https://api.worldbank.org/v2/en/indicator/SE.XPD.TOTL.GD.ZS?downloadformat=csv` | ZIP→CSV | Estrarre il file `API_SE.XPD*.csv` |
-| `edu_spending_by_level_raw.csv` | 4 | `https://api.uis.unesco.org/api/public/data/indicators/export?indicator=XGOVEXP.IMF&start=2000&end=2025&indicatorMetadata=true&footnotes=true&version=20260507-91260335&format=csv` | CSV | Copertura parziale — OK |
-| `edu_completion_raw.csv` | 5 | `https://ourworldindata.org/grapher/completion-rate-of-upper-secondary-education-sdg.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
-| `literacy_raw.csv` | 6 | `https://ourworldindata.org/grapher/literacy.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | — |
-| `child_labor_raw.csv` | 7, 9 | `https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor.csv?v=1&csvType=full&useColumnShortNames=false` | CSV | Usato anche per grafico 9 |
-| `child_population_raw.xlsx` | 7 | `https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/2_Population/WPP2024_POP_F02_1_POPULATION_5-YEAR_AGE_GROUPS_BOTH_SEXES.xlsx` | XLSX→CSV | Tenere solo colonne: `Location`, `ISO3_code`, `Time`, `5-9`, `10-14`, `15-19` |
-| `child_marriage_raw.xlsx` | 8, 9 | `https://data.unicef.org/wp-content/uploads/2024/10/Child-marriage-dataset-2024.xlsx` | XLSX→CSV | Usato anche per grafico 9 |
-| `out_of_school_raw.csv` | 9 | `https://ourworldindata.org/grapher/out-of-school-children-of-primary-school-age-by-world-region.csv?v=1&csvType=full&useColumnShortNames=true` | CSV | — |
-| `migration_bilateral_raw.xlsx` | 10 | `https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2024_ims_stock_by_sex_and_origin.xlsx` | XLSX→CSV | Matrice 233×233 paesi |
-| `world-atlas-110m.json` | 2, 10 | `https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json` | TopoJSON | — |
-| `iso3_continent.csv` | tutti | `https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv` | CSV | Mapping ISO3 → continente |

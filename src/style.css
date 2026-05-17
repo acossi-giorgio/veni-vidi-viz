@@ -554,3 +554,64 @@ section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accen
 
 @media (min-width: 1920px) { :root { --page-max: 1800px; } }
 @media (min-width: 2560px) { :root { --page-max: 2200px; } }
+
+/* ── About Section ───────────────────────────────────────── */
+.about-section {
+  background: var(--surface);
+  border-top: 2px solid var(--border);
+  padding: 64px 0 80px;
+}
+.about-inner {
+  max-width: var(--page-max, 1360px);
+  margin: 0 auto;
+  padding: 0 var(--section-px, 3rem);
+}
+.about-title {
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--ink);
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 1rem;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+.about-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.about-card--wide {
+  grid-column: 1 / -1;
+}
+.about-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+}
+.about-card p,
+.about-card li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+.about-card ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+.about-card li { margin-bottom: 0.35rem; }
+.about-card a { color: var(--accent-1); }
+.about-card code {
+  background: #eee;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.82em;
+}

@@ -1,300 +1,184 @@
-async function renderEduTreemap(selector = '#chart-3-1', isFullscreen = false) {
-  const container = d3.select(selector);
-  if (container.empty()) return;
-  container.html('');
-  container.style('width', '100%').style('height', '100%').style('position', 'relative').style('font-family', 'inherit');
+/* ============================================================
+   Grafico 3-1 (Atto II) — Bubble: spesa istruzione × miglioramento completamento
+   X = edu_spending (% PIL, anno recente)
+   Y = delta edu_completion (anno recente - anno iniziale)
+   R = popolazione (scala sqrt)
+   Color = continente
+   ============================================================ */
+async function renderEduTreemap(selector, isFullscreen = false) {
+  const container = document.querySelector(selector);
+  if (!container) return;
+  container.innerHTML = '';
+  container.style.position = 'relative';
 
-  const raw = await d3.csv('datasets/processed/04_edu_spending.csv', d3.autoType);
+  const CONT_COLOR = {
+    'Africa': '#e07b39', 'Asia': '#4a90d9', 'Europe': '#5aab6e',
+    'North America': '#a45dc0', 'Oceania': '#888888', 'South America': '#d4b84a',
+  };
 
-  const latestByCountry = new Map();
-  raw.forEach(d => {
-    if (!d.continent || !d.value || isNaN(d.value)) return;
-    const prev = latestByCountry.get(d.iso3);
-    if (!prev || d.year > prev.year) latestByCountry.set(d.iso3, d);
+  const NOTABLE = new Set(['NER', 'TCD', 'ETH', 'NOR', 'FIN', 'KOR', 'CUB', 'VNM', 'BRA', 'IND', 'ZAF', 'BGD', 'COD', 'MLI', 'AFG', 'DEU', 'GBR', 'MAR', 'MOZ', 'RWA', 'CHN', 'USA', 'PAK', 'IDN', 'NGA']);
+
+  const [spendRaw, compRaw, popRaw] = await Promise.all([
+    d3.csv('datasets/processed/edu_spending.csv', d3.autoType),
+    d3.csv('datasets/processed/edu_completion.csv', d3.autoType),
+    d3.csv('datasets/processed/population.csv', d3.autoType),
+  ]);
+
+  function nearest(rows, targetYear) {
+    const valid = rows.filter(d => d.value != null && d.value > 0);
+    if (!valid.length) return null;
+    return valid.sort((a, b) => Math.abs(a.year - targetYear) - Math.abs(b.year - targetYear))[0];
+  }
+
+  const spendByCode = new Map();
+  d3.group(spendRaw, d => d.code).forEach((rows, code) => spendByCode.set(code, rows));
+  const compByCode = new Map();
+  d3.group(compRaw, d => d.code).forEach((rows, code) => compByCode.set(code, rows));
+  const popByCode = new Map();
+  d3.group(popRaw, d => d.code).forEach((rows, code) => {
+    const r = rows.filter(d => d.value != null).sort((a, b) => b.year - a.year)[0];
+    if (r) popByCode.set(code, r.value);
   });
-  const countries = Array.from(latestByCountry.values());
 
-  const CONTINENT_COLOR = {
-    'Africa':        '#c0392b',
-    'Asia':          '#2980b9',
-    'Europe':        '#27ae60',
-    'North America': '#8e44ad',
-    'South America': '#d35400',
-    'Oceania':       '#16a085',
-  };
+  const data = [];
+  spendByCode.forEach((spRows, code) => {
+    const cpRows = compByCode.get(code);
+    if (!cpRows) return;
+    const r = spRows[0];
 
-  const CONTINENT_DESCRIPTIONS = {
-    'Africa': 'I paesi africani spendono in media il 3.9% del PIL in istruzione — ma questa percentuale si applica a PIL molto bassi. La spesa assoluta per studente è spesso 20–50 volte inferiore a quella europea, rendendo strutturalmente difficile costruire un sistema di qualità.',
-    'Asia': "L'Asia nasconde enormi disparità: da Singapore e Giappone con sistemi d'eccellenza, a Pakistan e Myanmar con spesa e completamento scolastico molto bassi. La media regionale maschera realtà radicalmente diverse.",
-    'Europe': 'I paesi europei investono tra il 4% e il 7% del PIL in istruzione, con i paesi nordici in testa. I tassi di completamento vicini al 100% e una maggiore mobilità sociale riflettono decenni di investimento costante.',
-    'North America': 'Il Nord America presenta un quadro duale: Stati Uniti e Canada investono il 5–6% del PIL, ma con grandi differenze di qualità tra stati e fasce sociali. Messico e paesi centroamericani restano significativamente indietro.',
-    'South America': "Il Sud America mostra segnali di progresso: Brasile, Argentina e Bolivia hanno aumentato la spesa pubblica in istruzione nell'ultimo decennio. La media regionale è tra le più alte dei paesi in via di sviluppo.",
-    'Oceania': "L'Oceania guida la classifica mondiale: Nuova Zelanda e Australia investono costantemente nel sistema educativo. Alcune piccole isole del Pacifico destinano percentuali di PIL tra le più alte al mondo, per necessità di sviluppare capitale umano interno.",
-  };
+    const spendRecent = nearest(spRows, 2019);
+    const compEarly   = nearest(cpRows, 2003);
+    const compRecent  = nearest(cpRows, 2020);
 
-  // Continent-level aggregation
-  const continentData = Array.from(
-    d3.group(countries, d => d.continent),
-    ([cont, rows]) => ({
-      continent: cont,
-      country: cont,
-      value: d3.mean(rows, r => r.value),
-      year: d3.max(rows, r => r.year),
-      _isContinent: true,
-      _count: rows.length,
-    })
-  ).sort((a, b) => b.value - a.value);
+    if (!spendRecent || !compEarly || !compRecent) return;
+    if (Math.abs(compRecent.year - compEarly.year) < 4) return;
 
-  // Tooltip
-  d3.select('body').selectAll('.tooltip-treemap').remove();
-  const tooltip = d3.select('body').append('div').attr('class', 'tooltip-treemap')
-    .style('position', 'absolute').style('background', 'rgba(0,0,0,0.88)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '10px 14px')
-    .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.6')
-    .style('z-index', '10000').style('display', 'none').style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)');
+    const delta = compRecent.value - compEarly.value;
+    const pop   = popByCode.get(code) || 1e6;
 
-  function showTip(e, html) {
-    tooltip.style('display', 'block').html(html);
-    const r = tooltip.node().getBoundingClientRect();
-    let tx = e.pageX + 12, ty = e.pageY + 8;
-    if (tx + r.width > window.innerWidth - 8) tx = e.pageX - r.width - 12;
-    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 8;
-    tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
-  }
-  function hideTip() { tooltip.style('display', 'none'); }
+    data.push({
+      code, country: r.country, continent: r.continent,
+      spending: spendRecent.value,
+      compEarly: compEarly.value,
+      compRecent: compRecent.value,
+      delta, pop,
+      yrSpend: spendRecent.year,
+      yrEarly: compEarly.year,
+      yrRecent: compRecent.year,
+    });
+  });
 
-  // ── State ──────────────────────────────────────────────────────────────────
-  let highlightContinent = null; // null = all, string = highlight one (for narrative cards)
-  let drillContinent = null;     // null = continent view, string = country view
+  // Sort so small bubbles render on top
+  data.sort((a, b) => b.pop - a.pop);
 
-  // ── Text panel (main chart only) ───────────────────────────────────────────
-  const containerNode = container.node();
-  const sectionInner = containerNode.closest('.chart-section-inner');
-  const chartTextEl = sectionInner ? sectionInner.querySelector('.chart-text') : null;
+  let highlightContinent = null;
 
-  let drillPanel = null;
-  if (chartTextEl) {
-    drillPanel = document.createElement('div');
-    drillPanel.className = 'treemap-drill-text';
-    drillPanel.style.display = 'none';
-    chartTextEl.appendChild(drillPanel);
-  }
+  const MARGIN = { top: 28, right: 24, bottom: 48, left: 58 };
+  const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);
+  const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
+  const iw = W - MARGIN.left - MARGIN.right;
+  const ih = H - MARGIN.top - MARGIN.bottom;
 
-  function updateTextPanel(cont) {
-    if (!chartTextEl || !drillPanel) return;
-    const cards = chartTextEl.querySelectorAll('.narrative-card');
-    if (!cont) {
-      cards.forEach(c => { c.style.display = ''; });
-      drillPanel.style.display = 'none';
-      drillPanel.innerHTML = '';
-    } else {
-      cards.forEach(c => { c.style.display = 'none'; });
-      const color = CONTINENT_COLOR[cont] || '#333';
-      const avg = d3.mean(countries.filter(d => d.continent === cont && d.value > 0), d => d.value);
-      drillPanel.innerHTML = `
-        <div class="narrative-card is-active" style="opacity:1">
-          <h3 style="color:${color};margin-bottom:0.5rem">${cont}</h3>
-          <p>${CONTINENT_DESCRIPTIONS[cont] || ''}</p>
-          <p style="margin-top:0.75rem;font-size:0.85em;color:var(--ink-muted)">
-            Media continentale: <strong>${avg ? avg.toFixed(1) + '% PIL' : '—'}</strong>
-          </p>
-        </div>
-      `;
-      drillPanel.style.display = '';
-    }
+  const svg = d3.select(container).append('svg')
+    .attr('width', W).attr('height', H)
+    .style('width', '100%').style('height', '100%').style('display', 'block');
+
+  const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
+
+  const xExt = d3.extent(data, d => d.spending);
+  const yExt = d3.extent(data, d => d.delta);
+  const popExt = d3.extent(data, d => d.pop);
+
+  const xS = d3.scaleLinear().domain([0, xExt[1] * 1.06]).range([0, iw]).nice();
+  const yS = d3.scaleLinear().domain([yExt[0] * 1.1, yExt[1] * 1.1]).range([ih, 0]).nice();
+  const rS = d3.scaleSqrt().domain([0, popExt[1]]).range([3, isFullscreen ? 32 : 24]);
+
+  // Gridlines
+  xS.ticks(6).forEach(t => g.append('line').attr('x1', xS(t)).attr('x2', xS(t)).attr('y1', 0).attr('y2', ih).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+  yS.ticks(6).forEach(t => g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+
+  // Zero line (delta = 0)
+  if (yExt[0] < 0) {
+    g.append('line').attr('x1', 0).attr('x2', iw)
+      .attr('y1', yS(0)).attr('y2', yS(0))
+      .attr('stroke', '#aaa').attr('stroke-width', 1).attr('stroke-dasharray', '4,3');
+    g.append('text').attr('x', iw + 2).attr('y', yS(0) + 3)
+      .attr('font-size', 8).attr('fill', '#aaa').text('nessun cambiamento');
   }
 
-  // ── Render wrapper ─────────────────────────────────────────────────────────
-  const svgWrap = container.append('div')
-    .style('width', '100%').style('height', '100%').style('position', 'relative')
-    .style('transition', 'opacity 0.25s ease-out');
+  // Axes
+  g.append('g').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(xS).ticks(6).tickFormat(d => `${d}%`)).attr('font-size', 9).call(ax => ax.select('.domain').remove());
+  g.append('g').call(d3.axisLeft(yS).ticks(6).tickFormat(d => `+${d}%`.replace('+-', '-'))).attr('font-size', 9).call(ax => ax.select('.domain').remove());
 
-  function transitionTo(newContinent) {
-    drillContinent = newContinent;
-    updateTextPanel(newContinent);
-    svgWrap.style('opacity', '0');
-    setTimeout(() => { draw(); svgWrap.style('opacity', '1'); }, 250);
+  g.append('text').attr('x', iw / 2).attr('y', ih + 38).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666').text('Spesa pubblica istruzione (% PIL, anno recente)');
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666').text('Variazione completamento secondaria (punti %)');
+
+  // Quadrant labels
+  g.append('text').attr('x', iw * 0.75).attr('y', yS(yExt[1]) + 14).attr('text-anchor', 'middle').attr('font-size', 8.5).attr('fill', '#5aab6e').attr('opacity', 0.7).text('Alta spesa · molto migliorato');
+  g.append('text').attr('x', iw * 0.1).attr('y', yS(yExt[1]) + 14).attr('text-anchor', 'middle').attr('font-size', 8.5).attr('fill', '#4a90d9').attr('opacity', 0.7).text('Bassa spesa · molto migliorato');
+  if (yExt[0] < 0) {
+    g.append('text').attr('x', iw * 0.75).attr('y', yS(yExt[0]) - 4).attr('text-anchor', 'middle').attr('font-size', 8.5).attr('fill', '#e07b39').attr('opacity', 0.7).text('Alta spesa · peggiorato');
   }
 
-  // ── Bar chart ──────────────────────────────────────────────────────────────
+  let tipEl = document.getElementById('eduscatter-tip');
+  if (!tipEl) {
+    tipEl = document.createElement('div'); tipEl.id = 'eduscatter-tip';
+    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: 'rgba(20,20,40,0.88)', color: '#fff', padding: '7px 11px', borderRadius: '5px', fontSize: '12px', lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap' });
+    document.body.appendChild(tipEl);
+  }
+
+  function colFn(d) { return !highlightContinent || d.continent === highlightContinent ? (CONT_COLOR[d.continent] || '#888') : '#ddd'; }
+  function opaFn(d) { return !highlightContinent || d.continent === highlightContinent ? 0.65 : 0.08; }
+
   function draw() {
-    svgWrap.html('');
-    const W = containerNode.getBoundingClientRect().width || 600;
-    const H = containerNode.getBoundingClientRect().height || 400;
-    if (W < 10 || H < 10) return;
+    g.selectAll('.bubble').remove();
+    g.selectAll('.label').remove();
 
-    const isDrill = !!drillContinent;
-    const data = isDrill
-      ? countries.filter(d => d.continent === drillContinent && d.value > 0).sort((a, b) => b.value - a.value)
-      : continentData;
-
-    const color = isDrill ? (CONTINENT_COLOR[drillContinent] || '#888') : null;
-
-    // Below-average color for drill view
-    let colorBelow = '#bbb';
-    if (isDrill && color) {
-      const hsl = d3.hsl(color);
-      hsl.s *= 0.38;
-      hsl.l = Math.min(hsl.l * 1.65, 0.80);
-      colorBelow = hsl.formatHex();
-    }
-
-    const avg = d3.mean(data, d => d.value);
-
-    // ── Header bar ────────────────────────────────────────────────────────────
-    const headerBar = svgWrap.append('div')
-      .style('display', 'flex').style('align-items', 'center').style('gap', '8px')
-      .style('padding', '5px 8px').style('background', '#f5f5f5')
-      .style('border-bottom', '1px solid #e0e0e0').style('box-sizing', 'border-box')
-      .style('min-height', '34px');
-
-    if (isDrill) {
-      headerBar.append('button')
-        .attr('aria-label', 'Torna alla vista per continente')
-        .style('padding', '3px 10px').style('background', '#fff')
-        .style('border', '1px solid #ccc').style('border-radius', '4px')
-        .style('cursor', 'pointer').style('font-size', '12px').style('font-family', 'inherit')
-        .text('← Continenti')
-        .on('click', () => transitionTo(null));
-
-      headerBar.append('span')
-        .style('font-size', '13px').style('font-weight', '700').style('color', color)
-        .text(drillContinent);
-    } else {
-      headerBar.append('span')
-        .style('font-size', '12px').style('color', '#666')
-        .text('Spesa pubblica in istruzione (% PIL) — clicca un continente per esplorare i paesi');
-    }
-
-    const headerH = 34;
-    const chartH = H - headerH;
-
-    const margin = { top: 14, right: 56, bottom: 8, left: 0 };
-    const labelW = Math.min(isDrill ? 140 : 120, W * 0.28);
-    const innerW = W - labelW - margin.right;
-    const rowH = Math.max(13, Math.min(isDrill ? 24 : 36, (chartH - margin.top - margin.bottom) / data.length - 3));
-    const totalH = data.length * (rowH + 3) + margin.top + margin.bottom;
-    const scrollable = totalH > chartH;
-
-    const chartDiv = svgWrap.append('div')
-      .style('width', '100%')
-      .style('height', `${chartH}px`)
-      .style('overflow-y', scrollable ? 'auto' : 'hidden')
-      .style('overflow-x', 'hidden')
-      .style('box-sizing', 'border-box');
-
-    const svgH = scrollable ? totalH : chartH;
-    const svg = chartDiv.append('svg')
-      .attr('width', W).attr('height', svgH)
-      .attr('role', 'img')
-      .attr('aria-label', isDrill ? `Paesi di ${drillContinent} per spesa istruzione` : 'Spesa istruzione per continente')
-      .style('display', 'block').style('font-family', 'inherit');
-
-    const g = svg.append('g').attr('transform', `translate(${labelW},${margin.top})`);
-
-    const xMax = (d3.max(data, d => d.value) || 10) * 1.12;
-    const xScale = d3.scaleLinear().domain([0, xMax]).range([0, innerW]);
-
-    // Average dashed line
-    const avgX = xScale(avg);
-    const lineH = data.length * (rowH + 3);
-    g.append('line')
-      .attr('x1', avgX).attr('x2', avgX).attr('y1', 0).attr('y2', lineH)
-      .attr('stroke', '#aaa').attr('stroke-width', 1.2).attr('stroke-dasharray', '5,4');
-
-    g.append('text')
-      .attr('x', avgX + 3).attr('y', 9)
-      .attr('font-size', 9).attr('fill', '#999')
-      .text(`media ${avg.toFixed(1)}%`);
-
-    // Bar rows
-    const barGroups = g.selectAll('.bar-row')
-      .data(data).join('g')
-      .attr('class', 'bar-row')
-      .attr('transform', (d, i) => `translate(0,${i * (rowH + 3)})`);
-
-    // Label
-    barGroups.append('text')
-      .attr('x', -labelW + 4).attr('y', rowH / 2)
-      .attr('dominant-baseline', 'middle')
-      .attr('font-size', Math.min(11, rowH - 1))
-      .attr('fill', '#333')
-      .text(d => {
-        const maxChars = Math.max(8, Math.floor((labelW - 8) / 6.5));
-        const name = isDrill ? d.country : d.continent;
-        return name.length > maxChars ? name.slice(0, maxChars - 1) + '…' : name;
+    g.selectAll('.bubble').data(data, d => d.code).join('circle').attr('class', 'bubble')
+      .attr('cx', d => xS(d.spending)).attr('cy', d => yS(d.delta))
+      .attr('r', d => rS(d.pop))
+      .attr('fill', colFn).attr('opacity', opaFn)
+      .attr('stroke', d => colFn(d) === '#ddd' ? 'none' : '#fff')
+      .attr('stroke-width', 0.8)
+      .style('cursor', 'pointer')
+      .on('mouseover', function (event, d) {
+        d3.select(this).attr('opacity', 1).attr('stroke-width', 1.5);
+        tipEl.innerHTML = `<strong>${d.country}</strong> (${d.continent})<br>Spesa: ${d.spending.toFixed(1)}% PIL (${d.yrSpend})<br>Completamento: ${d.compEarly.toFixed(0)}% → ${d.compRecent.toFixed(0)}% (${d.yrEarly}–${d.yrRecent})<br>Variazione: ${d.delta >= 0 ? '+' : ''}${d.delta.toFixed(1)} pp<br>Popolazione: ${d3.format(',.0f')(d.pop)}`;
+        tipEl.style.display = 'block';
+      })
+      .on('mousemove', event => { tipEl.style.left = (event.clientX + 14) + 'px'; tipEl.style.top = (event.clientY - 28) + 'px'; })
+      .on('mouseleave', function (event, d) {
+        d3.select(this).attr('opacity', opaFn(d)).attr('stroke-width', 0.8);
+        tipEl.style.display = 'none';
       });
 
-    // Color per bar
-    function barColor(d) {
-      if (!isDrill) {
-        const base = CONTINENT_COLOR[d.continent] || '#888';
-        if (!highlightContinent) return base;
-        return d.continent === highlightContinent ? base : '#ccc';
-      }
-      return d.value >= avg ? color : colorBelow;
-    }
-    function barOpacity(d) {
-      if (!isDrill) {
-        if (!highlightContinent) return 0.85;
-        return d.continent === highlightContinent ? 0.92 : 0.25;
-      }
-      return d.value >= avg ? 0.88 : 0.70;
-    }
-
-    // Bar (animated width)
-    barGroups.append('rect')
-      .attr('x', 0).attr('y', 1)
-      .attr('height', rowH - 2).attr('rx', 2)
-      .attr('fill', barColor)
-      .attr('opacity', barOpacity)
-      .attr('role', 'graphics-symbol')
-      .attr('aria-label', d => `${isDrill ? d.country : d.continent}: ${d.value.toFixed(1)}% PIL`)
-      .attr('width', 0)
-      .style('cursor', isDrill ? 'default' : 'pointer')
-      .on('mousemove', (e, d) => {
-        const label = isDrill ? d.country : d.continent;
-        const c = isDrill ? barColor(d) : (CONTINENT_COLOR[d.continent] || '#fff');
-        const extra = isDrill
-          ? `<br/><span style="color:#aaa">Anno dato:</span> ${d.year}<br/><span style="color:#aaa">vs media:</span> ${d.value >= avg ? '+' : ''}${(d.value - avg).toFixed(2)}pp`
-          : `<br/><span style="color:#bbb;font-size:11px">Clicca per vedere i paesi</span>`;
-        showTip(e,
-          `<div style="font-weight:700;color:${c};margin-bottom:4px">${label}</div>` +
-          `<span style="color:#aaa">Spesa istruzione:</span> ${d.value.toFixed(2)}% PIL${extra}`
-        );
-      })
-      .on('mouseleave', hideTip)
-      .on('click', (e, d) => {
-        if (!isDrill) { hideTip(); transitionTo(d.continent); }
-      })
-      .transition().duration(420).ease(d3.easeCubicOut)
-      .delay((d, i) => i * 28)
-      .attr('width', d => Math.max(0, xScale(d.value)));
-
-    // Value label
-    barGroups.append('text')
-      .attr('x', d => xScale(d.value) + 3)
-      .attr('y', rowH / 2)
-      .attr('dominant-baseline', 'middle')
-      .attr('font-size', Math.min(10, rowH - 3))
-      .attr('fill', '#666').attr('opacity', 0)
-      .text(d => `${d.value.toFixed(1)}%`)
-      .transition().duration(200)
-      .delay((d, i) => i * 28 + 380)
-      .attr('opacity', 1);
+    data.filter(d => NOTABLE.has(d.code) && opaFn(d) > 0.5).forEach(d => {
+      g.append('text').attr('class', 'label')
+        .attr('x', xS(d.spending) + rS(d.pop) + 2).attr('y', yS(d.delta) + 3)
+        .attr('font-size', 8).attr('fill', CONT_COLOR[d.continent] || '#555')
+        .style('pointer-events', 'none')
+        .text(d.code);
+    });
   }
+
+  // Legend (continent colors)
+  const legG = svg.append('g').attr('transform', `translate(${MARGIN.left + 4},${MARGIN.top + 2})`);
+  Object.entries(CONT_COLOR).forEach(([c, color], i) => {
+    legG.append('circle').attr('cx', 5).attr('cy', i * 13 + 5).attr('r', 4.5).attr('fill', color).attr('opacity', 0.8);
+    legG.append('text').attr('x', 13).attr('y', i * 13 + 9).attr('font-size', 9).attr('fill', '#555').text(c);
+  });
+
+  // Bubble size legend
+  const sizeLeg = svg.append('g').attr('transform', `translate(${W - MARGIN.right - 60},${MARGIN.top + ih - 40})`);
+  sizeLeg.append('text').attr('x', 0).attr('y', -4).attr('font-size', 8).attr('fill', '#aaa').text('dimensione = pop.');
+  [1e7, 1e8, 5e8].forEach((p, i) => {
+    const r = rS(p);
+    sizeLeg.append('circle').attr('cx', 10 + i * 26).attr('cy', 10).attr('r', r).attr('fill', 'none').attr('stroke', '#ccc').attr('stroke-width', 1);
+    sizeLeg.append('text').attr('x', 10 + i * 26).attr('y', 10 + r + 8).attr('text-anchor', 'middle').attr('font-size', 7).attr('fill', '#bbb').text(p >= 1e9 ? `${p/1e9}G` : p >= 1e6 ? `${p/1e6}M` : p);
+  });
 
   draw();
 
-  // ── DOM API ────────────────────────────────────────────────────────────────
-  containerNode._treemapHighlight = function(cont) {
-    if (drillContinent) { drillContinent = null; updateTextPanel(null); }
-    highlightContinent = cont;
-    draw();
-  };
-  containerNode._treemapReset = function() {
-    if (drillContinent) { drillContinent = null; updateTextPanel(null); }
-    highlightContinent = null;
-    draw();
-  };
+  container._treemapReset     = () => { highlightContinent = null; draw(); };
+  container._treemapHighlight = (c) => { highlightContinent = c; draw(); };
 }
