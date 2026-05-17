@@ -367,7 +367,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const origStockMap = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.origin_code);
 
     const geoCountries = topojson.feature(_migWorldData, _migWorldData.objects.countries).features;
-    const projection   = d3.geoNaturalEarth1().fitSize([W, H - 16], { type: 'Sphere' });
+    const projection   = d3.geoNaturalEarth1()
+      .fitExtent([[4, 4], [W - 4, H - 36]], { type: 'FeatureCollection', features: geoCountries });
     const pathGen      = d3.geoPath().projection(projection);
 
     // Projected centroids — for MultiPolygon use largest polygon to avoid overseas-territory skew
@@ -413,16 +414,15 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     // ── SVG + zoom ───────────────────────────────────────────────
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
-      .style('display', 'block').style('font-family', 'inherit').style('background', '#dde8f0')
-      .style('cursor', 'grab');
+      .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
+      .style('border-radius', '10px').style('cursor', 'grab');
 
-    const g    = svg.append('g'); // zoomable layer
+    const g    = svg.append('g');
     const zoom = d3.zoom().scaleExtent([0.5, 12])
       .on('zoom', e => { g.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
       .on('end',  () => svg.style('cursor', 'grab'));
     svg.call(zoom).on('dblclick.zoom', null);
 
-    // Zoom controls
     const ctrl = svgArea.append('div')
       .style('position', 'absolute').style('top', '8px').style('right', '8px')
       .style('display', 'flex').style('flex-direction', 'column').style('gap', '3px').style('z-index', '5');
@@ -433,14 +433,6 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .style('width', '26px').style('height', '26px').style('font-size', '14px').style('line-height', '1')
       .style('border', '1px solid #ddd').style('border-radius', '5px').style('background', '#fff')
       .style('cursor', 'pointer').style('color', '#555').on('click', fn));
-
-    // Graticule + sphere (inside g so they zoom too)
-    g.append('path').datum(d3.geoGraticule()())
-      .attr('d', pathGen).attr('fill', 'none')
-      .attr('stroke', '#c4d4e0').attr('stroke-width', 0.3);
-    g.append('path').datum({ type: 'Sphere' })
-      .attr('d', pathGen).attr('fill', 'none')
-      .attr('stroke', '#aabfcc').attr('stroke-width', 0.8);
 
     // Countries
     g.selectAll('.cty').data(geoCountries).join('path')
@@ -561,7 +553,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 }
 
 /* ============================================================
-   Grafico 5-2 — Rimesse come % PIL (top 25 paesi)
+   Grafico 5-2 — Rimesse come % PIL — Bubble Map + toggle Bolle
    ============================================================ */
 async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = false) {
   const containerEl = document.querySelector(selector);
@@ -570,7 +562,12 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   containerEl.style.position = 'relative';
   containerEl.style.fontFamily = 'inherit';
 
-  const remRaw = await d3.csv('datasets/processed/remittances.csv', d3.autoType);
+  const [remRaw, worldData] = await Promise.all([
+    d3.csv('datasets/processed/remittances.csv', d3.autoType),
+    _migWorldData
+      ? Promise.resolve(_migWorldData)
+      : d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(d => { _migWorldData = d; return d; }),
+  ]);
 
   const CONT_COLOR = {
     'Africa': '#e07b39', 'Asia': '#4a90d9', 'Europe': '#5aab6e',
@@ -583,6 +580,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const prev = remLatest.get(d.code);
     if (!prev || d.year > prev.year) remLatest.set(d.code, d);
   });
+  const allData = Array.from(remLatest.values()).filter(d => d.value > 0);
+
+  const geoCountries = topojson.feature(worldData, worldData.objects.countries).features;
 
   d3.select('body').selectAll('.tooltip-rem').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-rem')
@@ -591,8 +591,13 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.6')
     .style('z-index', '10000').style('display', 'none');
 
-  function showTip(e, html) {
-    tooltip.style('display', 'block').html(html);
+  function showTip(e, d) {
+    const col = CONT_COLOR[d.continent] || '#fff';
+    tooltip.style('display', 'block').html(
+      `<div style="font-weight:700;color:${col};margin-bottom:3px">${d.country}</div>` +
+      `Rimesse: <strong>${d.value.toFixed(1)}% del PIL</strong><br>` +
+      `Anno: ${d.year}`
+    );
     const r = tooltip.node().getBoundingClientRect();
     let tx = e.pageX + 12, ty = e.pageY + 8;
     if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 12;
@@ -601,89 +606,140 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   }
   function hideTip() { tooltip.style('display', 'none'); }
 
-  let topN = 25;
+  let mode = 'map'; // 'map' | 'bubble'
+
+  // Toggle button
+  const btnWrap = d3.select(containerEl).append('div')
+    .style('position', 'absolute').style('top', '6px').style('right', '8px')
+    .style('z-index', '10').style('display', 'flex').style('gap', '4px');
+
+  const btnMap = btnWrap.append('button')
+    .style('font-size', '10px').style('padding', '2px 8px').style('border-radius', '5px')
+    .style('cursor', 'pointer').style('border', '1px solid #c8d4e8').style('font-family', 'inherit')
+    .text('Mappa').on('click', () => { mode = 'map'; updateBtns(); draw(); });
+
+  const btnBub = btnWrap.append('button')
+    .style('font-size', '10px').style('padding', '2px 8px').style('border-radius', '5px')
+    .style('cursor', 'pointer').style('border', '1px solid #c8d4e8').style('font-family', 'inherit')
+    .text('Bolle').on('click', () => { mode = 'bubble'; updateBtns(); draw(); });
+
+  function updateBtns() {
+    btnMap.style('background', mode === 'map'    ? '#e8eef7' : 'rgba(255,255,255,0.92)').style('font-weight', mode === 'map'    ? '700' : '400');
+    btnBub.style('background', mode === 'bubble' ? '#e8eef7' : 'rgba(255,255,255,0.92)').style('font-weight', mode === 'bubble' ? '700' : '400');
+  }
+  updateBtns();
+
+  const svgWrap = d3.select(containerEl).append('div').style('width', '100%').style('height', '100%');
+  let _bubbleSim = null;
+
+  const maxVal = d3.max(allData, d => d.value) || 1;
+  const rScale = d3.scaleSqrt().domain([0, maxVal]).range([2, 28]);
 
   function draw() {
-    containerEl.innerHTML = '';
-
-    const allSorted = Array.from(remLatest.values()).sort((a, b) => b.value - a.value);
-    const shown     = allSorted.slice(0, topN);
-
+    if (_bubbleSim) { _bubbleSim.stop(); _bubbleSim = null; }
+    svgWrap.html('');
     const W = containerEl.clientWidth  || 560;
     const H = containerEl.clientHeight || 460;
+    if (mode === 'map') drawBubbleMap(W, H);
+    else                drawBubbles(W, H);
+  }
 
-    const margin  = { top: 14, right: 70, bottom: 20, left: 0 };
-    const labelW  = Math.min(150, W * 0.3);
-    const innerW  = W - labelW - margin.right;
-    const rowH    = Math.max(14, Math.min(26, (H - margin.top - margin.bottom) / shown.length - 2));
-    const totalH  = shown.length * (rowH + 2) + margin.top + margin.bottom;
-    const scrollable = totalH > H;
+  function drawBubbleMap(W, H) {
+    const projection = d3.geoNaturalEarth1()
+      .fitExtent([[4, 4], [W - 4, H - 4]], { type: 'FeatureCollection', features: geoCountries });
+    const pathGen = d3.geoPath().projection(projection);
 
-    const wrap = document.createElement('div');
-    wrap.style.cssText = `width:100%;height:${H}px;overflow-y:${scrollable ? 'auto' : 'hidden'};`;
-    containerEl.appendChild(wrap);
+    // Centroid of largest polygon
+    function bestCentroid(f) {
+      if (f.geometry && f.geometry.type === 'MultiPolygon') {
+        let best = null, bestA = -1;
+        f.geometry.coordinates.forEach(rings => {
+          const ff = { type: 'Feature', geometry: { type: 'Polygon', coordinates: rings } };
+          const a = d3.geoArea(ff);
+          if (a > bestA) { bestA = a; best = ff; }
+        });
+        if (best) return pathGen.centroid(best);
+      }
+      return pathGen.centroid(f);
+    }
 
-    const svgH = scrollable ? totalH : H;
-    const svg  = d3.select(wrap).append('svg')
-      .attr('width', W).attr('height', svgH).style('display', 'block').style('font-family', 'inherit');
-    const g    = svg.append('g').attr('transform', `translate(${labelW},${margin.top})`);
+    const centByA3 = new Map();
+    geoCountries.forEach(f => {
+      const a3 = _MIG_NUM_TO_A3[+f.id];
+      if (!a3) return;
+      const c = bestCentroid(f);
+      if (!isNaN(c[0]) && !isNaN(c[1])) centByA3.set(a3, c);
+    });
 
-    const xMax   = shown[0].value * 1.08;
-    const xScale = d3.scaleLinear().domain([0, xMax]).range([0, innerW]);
-    const avg    = d3.mean(shown, d => d.value);
+    const svg = svgWrap.append('svg').attr('width', W).attr('height', H)
+      .style('display', 'block').style('background', '#eef2f7').style('border-radius', '10px');
 
-    // Average line
-    const lineX = xScale(avg);
-    g.append('line').attr('x1', lineX).attr('x2', lineX).attr('y1', 0).attr('y2', shown.length * (rowH + 2))
-      .attr('stroke', '#bbb').attr('stroke-width', 1).attr('stroke-dasharray', '4,3');
-    g.append('text').attr('x', lineX + 2).attr('y', 9)
-      .attr('font-size', 8).attr('fill', '#aaa').text(`media ${avg.toFixed(1)}%`);
+    const mapG = svg.append('g');
 
-    // Rows
-    const rows = g.selectAll('.rem-row').data(shown).join('g').attr('class', 'rem-row')
-      .attr('transform', (d, i) => `translate(0,${i * (rowH + 2)})`);
+    // Zoom
+    const zoom = d3.zoom().scaleExtent([0.5, 10])
+      .on('zoom', e => mapG.attr('transform', e.transform));
+    svg.call(zoom).on('dblclick.zoom', null);
 
-    rows.append('text')
-      .attr('x', -5).attr('y', rowH / 2).attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
-      .attr('font-size', Math.min(10, rowH - 2)).attr('fill', '#444')
-      .text(d => {
-        const max = Math.max(8, Math.floor((labelW - 8) / 6.2));
-        return d.country.length > max ? d.country.slice(0, max - 1) + '…' : d.country;
-      });
+    // Countries base
+    mapG.selectAll('.rem-cty').data(geoCountries).join('path')
+      .attr('class', 'rem-cty').attr('d', pathGen)
+      .attr('fill', '#d8e4ed').attr('stroke', '#fff').attr('stroke-width', 0.35);
 
-    rows.append('rect')
-      .attr('y', 1).attr('height', rowH - 2).attr('rx', 2)
-      .attr('fill', d => CONT_COLOR[d.continent] || '#888').attr('opacity', 0.82)
-      .attr('width', 0).style('cursor', 'default')
-      .on('mousemove', (e, d) => {
-        const col = CONT_COLOR[d.continent] || '#fff';
-        showTip(e,
-          `<div style="font-weight:700;color:${col};margin-bottom:3px">${d.country}</div>` +
-          `Rimesse: <strong>${d.value.toFixed(2)}% del PIL</strong><br>` +
-          `Anno: ${d.year} · Continente: ${d.continent}`
-        );
-      })
-      .on('mouseleave', hideTip)
-      .transition().duration(360).ease(d3.easeCubicOut).delay((d, i) => i * 16)
-      .attr('width', d => Math.max(0, xScale(d.value)));
+    // Bubbles — only countries with data and centroid
+    const bubData = allData.filter(d => centByA3.has(d.code)).sort((a, b) => b.value - a.value);
 
-    rows.append('text')
-      .attr('x', d => xScale(d.value) + 3).attr('y', rowH / 2).attr('dominant-baseline', 'middle')
-      .attr('font-size', Math.min(9, rowH - 3)).attr('fill', '#888').attr('opacity', 0)
-      .text(d => `${d.value.toFixed(1)}%`)
-      .transition().duration(200).delay((d, i) => i * 16 + 310).attr('opacity', 1);
+    mapG.selectAll('.rem-bub').data(bubData).join('circle')
+      .attr('class', 'rem-bub')
+      .attr('cx', d => centByA3.get(d.code)[0])
+      .attr('cy', d => centByA3.get(d.code)[1])
+      .attr('r', d => rScale(d.value))
+      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
+      .attr('fill-opacity', 0.72)
+      .attr('stroke', '#fff').attr('stroke-width', 0.8)
+      .style('cursor', 'pointer')
+      .on('mousemove', showTip).on('mouseleave', hideTip);
+  }
 
-    // Continent color legend
-    const legendG = svg.append('g').attr('transform', `translate(${labelW + innerW + 6},${margin.top})`);
-    const conts = [...new Set(shown.map(d => d.continent))];
+  function drawBubbles(W, H) {
+    const nodes = allData.map(d => ({ ...d, r: rScale(d.value) }));
+
+    const svg = svgWrap.append('svg').attr('width', W).attr('height', H)
+      .style('display', 'block').style('background', '#eef2f7').style('border-radius', '10px');
+
+    const nodeEls = svg.selectAll('.bub-g').data(nodes).join('g').attr('class', 'bub-g')
+      .style('cursor', 'pointer')
+      .on('mousemove', (e, d) => showTip(e, d)).on('mouseleave', hideTip);
+
+    nodeEls.append('circle')
+      .attr('r', d => d.r)
+      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
+      .attr('fill-opacity', 0.75)
+      .attr('stroke', '#fff').attr('stroke-width', 0.8);
+
+    nodeEls.append('text')
+      .style('pointer-events', 'none')
+      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+      .attr('font-size', d => Math.min(9, d.r * 0.7))
+      .attr('fill', '#fff').attr('font-weight', '600')
+      .text(d => d.r >= 10 ? (d.country.length > 10 ? d.code : d.country) : '');
+
+    _bubbleSim = d3.forceSimulation(nodes)
+      .force('center', d3.forceCenter(W / 2, H / 2))
+      .force('collide', d3.forceCollide(d => d.r + 1.5).strength(0.85))
+      .force('x', d3.forceX(W / 2).strength(0.04))
+      .force('y', d3.forceY(H / 2).strength(0.06))
+      .on('tick', () => nodeEls.attr('transform', d => `translate(${d.x},${d.y})`));
+
+    // Legend
+    const conts = [...new Set(nodes.map(d => d.continent))].sort();
+    const lgG = svg.append('g').attr('transform', `translate(8,${H - conts.length * 13 - 8})`);
     conts.forEach((c, i) => {
-      legendG.append('rect').attr('x', 0).attr('y', i * 14).attr('width', 8).attr('height', 8)
-        .attr('rx', 2).attr('fill', CONT_COLOR[c] || '#888');
-      legendG.append('text').attr('x', 11).attr('y', i * 14 + 8)
-        .attr('font-size', 8).attr('fill', '#555').text(c);
+      lgG.append('circle').attr('cx', 5).attr('cy', i * 13 + 5).attr('r', 5).attr('fill', CONT_COLOR[c] || '#888').attr('opacity', 0.8);
+      lgG.append('text').attr('x', 13).attr('y', i * 13 + 9).attr('font-size', 8).attr('fill', '#555').text(c);
     });
   }
 
   draw();
-  containerEl._remittancesReset = draw;
+  containerEl._remittancesReset = () => { mode = 'map'; updateBtns(); draw(); };
 }
