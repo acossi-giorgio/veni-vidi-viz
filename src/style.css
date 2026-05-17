@@ -35,10 +35,10 @@ body {
 }
 
 /* ── TYPOGRAPHY ──────────────────────────────────────────── */
-h1 { font-size: clamp(2.4rem, 5vw, 4.2rem);  line-height: 1.1; font-weight: 700; }
-h2 { font-size: clamp(1.7rem, 3vw, 2.8rem);  line-height: 1.2; font-weight: 700; }
-h3 { font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1.3; font-weight: 600; }
-p  { font-size: clamp(0.95rem, 1.05vw, 1.05rem); line-height: 1.85; color: var(--ink-muted); }
+h1 { font-size: clamp(2rem, 3.5vw, 3.2rem);   line-height: 1.1; font-weight: 700; }
+h2 { font-size: clamp(1.4rem, 2.2vw, 2.2rem); line-height: 1.2; font-weight: 700; }
+h3 { font-size: clamp(1rem, 1.2vw, 1.2rem);   line-height: 1.3; font-weight: 600; }
+p  { font-size: clamp(0.88rem, 0.95vw, 1rem);  line-height: 1.8;  color: var(--ink-muted); }
 a  { color: var(--accent-1); text-decoration: none; }
 a:hover { text-decoration: underline; }
 svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
@@ -116,14 +116,14 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   max-width: var(--page-max);
   width: 100%;
   margin: 0 auto;
-  padding: 6rem var(--page-pad);
+  padding: clamp(3rem, 5vh, 5rem) var(--page-pad);
 }
 .hero-title {
   color: var(--ink);
   margin-bottom: 1.25rem;
 }
 .hero-subtitle {
-  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
   color: var(--ink-muted);
   font-weight: 400;
   margin-bottom: 2rem;
@@ -161,7 +161,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 
 .act-header {
-  padding: 5rem var(--page-pad);
+  padding: clamp(5rem, 7vh, 7rem) var(--page-pad);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -209,7 +209,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .chart-section {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 5rem 0;
+  padding: clamp(5rem, 9vh, 8rem) 0;
 }
 .chart-section-alt { background: var(--bg); }
 
@@ -220,8 +220,8 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   padding: 0 var(--page-pad);
   display: grid;
   grid-template-columns: 2fr 3fr;
-  gap: 4rem;
-  align-items: start;
+  gap: clamp(2rem, 3vw, 3rem);
+  align-items: center;
 }
 
 /* Variant: chart left (3fr) — text right (2fr) */
@@ -270,16 +270,17 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 
 .chart-box {
   width: 100%;
-  height: clamp(360px, 55vh, 700px);
+  height: clamp(400px, 62vh, 720px);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 2px 18px rgba(0,0,0,.07);
   overflow: hidden;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+.chart-box > div {
+  width: 100%;
+  height: 100%;
 }
 
 /* Fullscreen button */
@@ -403,29 +404,58 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 
 /* ── NARRATIVE CARDS (click to update chart) ─────────────── */
+.chart-text {
+  position: relative; /* stacking context for absolute panels */
+}
+
 .narrative-card {
   cursor: pointer;
-  padding: 1rem 1.25rem;
-  margin-bottom: 0.25rem;
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
   border-radius: 6px;
   border-left: 3px solid transparent;
-  opacity: 0.45;
-  transition: opacity 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  opacity: 0.5;
+  transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  z-index: 1;
 }
-.narrative-card:hover {
-  opacity: 0.85;
-  background: rgba(0,0,0,0.025);
-}
+.narrative-card:hover,
 .narrative-card.is-active {
   opacity: 1;
-  background: rgba(0,0,0,0.025);
+  background: rgba(0,0,0,0.03);
+  z-index: 30;
 }
-.narrative-card h3 { margin-top: 0; margin-bottom: 0.4rem; }
-.narrative-card p  { margin-bottom: 0; }
+.narrative-card h3 { margin-top: 0; margin-bottom: 0; }
 
+/* Paragraph: floating panel below the card title, no layout shift */
+.narrative-card p {
+  position: absolute;
+  top: 100%;
+  left: -3px;
+  right: 0;
+  margin: 0;
+  padding: 0.65rem 1.25rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  opacity: 0;
+  pointer-events: none; /* never blocks cards below */
+  transition: opacity 0.18s ease;
+  z-index: 30;
+}
+.narrative-card:hover p {
+  opacity: 1;
+  /* pointer-events stays none — text visible but mouse passes through */
+}
+
+section[data-act="1"] .narrative-card:hover,
 section[data-act="1"] .narrative-card.is-active { border-left-color: var(--accent-1); }
+section[data-act="2"] .narrative-card:hover,
 section[data-act="2"] .narrative-card.is-active { border-left-color: var(--accent-2); }
+section[data-act="3"] .narrative-card:hover,
 section[data-act="3"] .narrative-card.is-active { border-left-color: var(--accent-3); }
+section[data-act="4"] .narrative-card:hover,
 section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accent-4); }
 
 /* ── SECONDARY PAGES (about, datasets) ──────────────────── */

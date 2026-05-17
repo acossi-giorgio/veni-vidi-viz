@@ -145,11 +145,10 @@ function triggerChartState(chartId, state) {
 function initNarrativeCards() {
   const cards = document.querySelectorAll('.narrative-card');
   cards.forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('mouseenter', () => {
       const chartId = card.dataset.chart;
       const state = parseInt(card.dataset.state, 10);
 
-      // Deactivate sibling cards, activate this one
       document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`)
         .forEach(c => c.classList.remove('is-active'));
       card.classList.add('is-active');
