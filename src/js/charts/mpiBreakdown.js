@@ -8,7 +8,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const CONT_COLOR = { 'Africa': '#e07b39', 'Asia': '#4a90d9' };
+  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
 
   const raw = await d3.csv('datasets/processed/mpi.csv', d3.autoType);
 
@@ -19,7 +19,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   });
   const allData = Array.from(latestMap.values());
   const africa  = allData.filter(d => d.continent === 'Africa').sort((a, b) => b.value - a.value);
-  const asia    = allData.filter(d => d.continent === 'Asia').sort((a, b) => b.value - a.value);
+  const europe  = allData.filter(d => d.continent === 'Europe').sort((a, b) => b.value - a.value);
 
   let mode     = 'africa'; // 'africa' | 'severe' | 'compare'
   let viewType = 'dist';   // 'dist' | 'rank'
@@ -87,17 +87,17 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const ih = H - M.top  - M.bottom;
     g.attr('transform', `translate(${M.left},${M.top})`);
 
-    const showAsia  = mode === 'compare';
-    const severeCut = mode === 'severe' ? 0.30 : null;
+    const showEurope = mode === 'compare';
+    const severeCut  = mode === 'severe' ? 0.30 : null;
 
     const xMax = d3.max(allData, d => d.value);
     const xS   = d3.scaleLinear().domain([0, Math.ceil(xMax * 20) / 20]).range([0, iw]).nice();
 
     const binGen = d3.bin().value(d => d.value).domain(xS.domain()).thresholds(xS.ticks(16));
     const africaBins = binGen(africa);
-    const asiaBins   = showAsia ? binGen(asia) : [];
+    const europeBins = showEurope ? binGen(europe) : [];
 
-    const yMax = d3.max([...africaBins.map(b => b.length), ...(showAsia ? asiaBins.map(b => b.length) : [])]);
+    const yMax = d3.max([...africaBins.map(b => b.length), ...(showEurope ? europeBins.map(b => b.length) : [])]);
     const yS   = d3.scaleLinear().domain([0, yMax + 1]).range([ih, 0]).nice();
 
     yS.ticks(5).forEach(t => {
@@ -122,7 +122,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       g.append('text').attr('x', xS(severeCut) + 4).attr('y', 14).attr('font-size', 9).attr('fill', '#b04a4a').text('soglia grave →');
     }
 
-    function drawBars(bins, col, offset, barsTotal) {
+    function drawBars(bins, col, label, offset, barsTotal) {
       const barW = bins[0] ? xS(bins[0].x1) - xS(bins[0].x0) : 20;
       const halfW = barW / barsTotal;
       bins.forEach(bin => {
@@ -137,7 +137,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           .attr('fill', fill).attr('opacity', opa).attr('rx', 2).style('cursor', 'pointer')
           .on('mouseover', function () {
             d3.select(this).attr('opacity', 1);
-            const label  = col === CONT_COLOR['Africa'] ? 'Africa' : 'Asia';
             const sorted = [...bin].sort((a, b) => b.value - a.value);
             const listed = sorted.map(d => `${d.country} <span style="opacity:.6">${d.value.toFixed(3)}</span>`).join('<br>');
             tipEl.innerHTML = `<strong style="color:${col}">MPI ${bin.x0.toFixed(2)}–${bin.x1.toFixed(2)} · ${label}</strong><br><span style="opacity:.6">${bin.length} ${bin.length === 1 ? 'paese' : 'paesi'}</span><br>${listed}`;
@@ -155,15 +154,15 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       });
     }
 
-    if (showAsia) {
-      drawBars(africaBins, CONT_COLOR['Africa'], 0, 2);
-      drawBars(asiaBins,   CONT_COLOR['Asia'],   1, 2);
-      [['Africa', '#e07b39'], ['Asia', '#4a90d9']].forEach(([lbl, col], i) => {
+    if (showEurope) {
+      drawBars(africaBins, CONT_COLOR['Africa'], 'Africa', 0, 2);
+      drawBars(europeBins, CONT_COLOR['Europe'], 'Europa', 1, 2);
+      [['Africa', CONT_COLOR['Africa']], ['Europa', CONT_COLOR['Europe']]].forEach(([lbl, col], i) => {
         g.append('rect').attr('x', iw - 80).attr('y', i * 16).attr('width', 12).attr('height', 10).attr('rx', 2).attr('fill', col).attr('opacity', 0.8);
         g.append('text').attr('x', iw - 64).attr('y', i * 16 + 9).attr('font-size', 9).attr('fill', '#555').text(lbl);
       });
     } else {
-      drawBars(africaBins, CONT_COLOR['Africa'], 0, 1);
+      drawBars(africaBins, CONT_COLOR['Africa'], 'Africa', 0, 1);
     }
 
     const mean = d3.mean(africa, d => d.value);
@@ -183,11 +182,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const ih = H - M.top  - M.bottom;
     g.attr('transform', `translate(${M.left},${M.top})`);
 
-    const showAsia  = mode === 'compare';
-    const severeCut = mode === 'severe' ? 0.30 : null;
+    const showEurope = mode === 'compare';
+    const severeCut  = mode === 'severe' ? 0.30 : null;
 
-    const countries = showAsia
-      ? [...africa, ...asia].sort((a, b) => b.value - a.value)
+    const countries = showEurope
+      ? [...africa, ...europe].sort((a, b) => b.value - a.value)
       : africa;
 
     const xMax = d3.max(countries, d => d.value);
@@ -247,8 +246,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     });
 
     // Legend (compare mode)
-    if (showAsia) {
-      [['Africa', '#e07b39'], ['Asia', '#4a90d9']].forEach(([lbl, col], i) => {
+    if (showEurope) {
+      [['Africa', CONT_COLOR['Africa']], ['Europa', CONT_COLOR['Europe']]].forEach(([lbl, col], i) => {
         g.append('rect').attr('x', iw - 60).attr('y', i * 14).attr('width', 10).attr('height', 8).attr('rx', 2).attr('fill', col).attr('opacity', 0.8);
         g.append('text').attr('x', iw - 46).attr('y', i * 14 + 7).attr('font-size', 8).attr('fill', '#555').text(lbl);
       });
@@ -263,7 +262,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   container._mpiReset = () => { mode = 'africa'; draw(); };
   container._mpiFilterContinent = (c) => {
     if (c === 'Africa') { mode = 'severe';  draw(); }
-    else if (c === 'Asia') { mode = 'compare'; draw(); }
+    else if (c === 'Europe') { mode = 'compare'; draw(); }
     else { mode = 'africa'; draw(); }
   };
   container._mpiHighlightSevere = () => { mode = 'severe'; draw(); };

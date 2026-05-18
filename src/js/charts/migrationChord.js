@@ -580,7 +580,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const prev = remLatest.get(d.code);
     if (!prev || d.year > prev.year) remLatest.set(d.code, d);
   });
-  const allData = Array.from(remLatest.values()).filter(d => d.value > 0);
+  const allData = Array.from(remLatest.values()).filter(d => d.value > 0 && (d.continent === 'Africa' || d.continent === 'Europe'));
 
   const geoCountries = topojson.feature(worldData, worldData.objects.countries).features;
 

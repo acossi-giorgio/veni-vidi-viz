@@ -33,9 +33,12 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     if (r) oosMap.set(code, r.value);
   });
 
+  // Filter to Africa + Europe only
+  const filteredCountries = allCountries.filter(d => d.continent === 'Africa' || d.continent === 'Europe');
+
   // Continent groups sorted by mean deviation
   const contGroups = [];
-  d3.group(allCountries, d => d.continent).forEach((rows, cont) => {
+  d3.group(filteredCountries, d => d.continent).forEach((rows, cont) => {
     const devs = rows.map(d => d.dev);
     contGroups.push({ continent: cont, rows, devs, mean: d3.mean(devs), n: rows.length });
   });
@@ -80,7 +83,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   /* ── Strip chart aggregato ── */
   function drawStrip() {
-    const allDevs = allCountries.map(d => d.dev);
+    const allDevs = filteredCountries.map(d => d.dev);
     const xExt = d3.extent(allDevs);
     const xPad = 0.05;
     const xS = d3.scaleLinear()
@@ -226,7 +229,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   draw();
 
-  container._bumpReset           = () => { drillContinent = null;     draw(); };
-  container._bumpHighlightAfrica = () => { drillContinent = 'Africa'; draw(); };
-  container._bumpHighlightAsia   = () => { drillContinent = 'Asia';   draw(); };
+  container._bumpReset            = () => { drillContinent = null;     draw(); };
+  container._bumpHighlightAfrica  = () => { drillContinent = 'Africa'; draw(); };
+  container._bumpHighlightEurope  = () => { drillContinent = 'Europe'; draw(); };
 }

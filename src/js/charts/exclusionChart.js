@@ -12,7 +12,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     'Africa': '#e07b39', 'Asia': '#4a90d9', 'Europe': '#5aab6e',
     'North America': '#a45dc0', 'Oceania': '#888888', 'South America': '#d4b84a',
   };
-  const CONT_ORDER = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
+  const CONT_ORDER = ['Africa', 'Europe'];
 
   // ── Load both datasets ────────────────────────────────────
   const [litRaw, oosRaw] = await Promise.all([
@@ -75,7 +75,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   updateToggle();
 
   // ── Layout ────────────────────────────────────────────────
-  const COLS = 3, ROWS = 2;
+  const COLS = 1, ROWS = 2;
   const OUTER = { top: 10, right: 10, bottom: 10, left: 10 };
   const P_PAD = { top: 22, right: 14, bottom: 28, left: 40 };
 
@@ -229,5 +229,5 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
   container._exclusionShowBase   = () => { highlightContinent = null;     draw(); };
   container._exclusionOverlayGPI = () => { highlightContinent = 'Africa'; draw(); };
-  container._exclusionShowTrend  = () => { highlightContinent = 'Asia';   draw(); };
+  container._exclusionShowTrend  = () => { highlightContinent = 'Europe'; draw(); };
 }

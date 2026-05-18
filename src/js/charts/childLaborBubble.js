@@ -16,7 +16,8 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
   const clMap = new Map();
   clRaw.forEach(d => {
-    if (!d.code || d.value == null || d.continent !== 'Africa') return;
+    if (!d.code || d.value == null) return;
+    if (d.continent !== 'Africa' && d.continent !== 'Europe') return;
     const prev = clMap.get(d.code);
     if (!prev || d.year > prev.year) clMap.set(d.code, d);
   });
@@ -40,7 +41,7 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
   const medIncome = d3.median(data, d => d.income);
   const medLabor  = d3.median(data, d => d.labor);
 
-  const LABEL_SET = new Set(['NER', 'TCD', 'BDI', 'MLI', 'CMR', 'NGA', 'BGD', 'AFG', 'MOZ', 'MDG', 'ZWE', 'UGA', 'TZA', 'KEN', 'GHA', 'SEN', 'DZA', 'TUN', 'EGY', 'ZAF']);
+  const LABEL_SET = new Set(['NER', 'TCD', 'BDI', 'MLI', 'CMR', 'NGA', 'MOZ', 'MDG', 'ZWE', 'UGA', 'TZA', 'KEN', 'GHA', 'SEN', 'DZA', 'EGY', 'ZAF', 'DEU', 'FRA', 'GBR', 'ITA', 'ESP', 'POL', 'ROU', 'PRT']);
 
   const QUADRANT = [
     { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: '#b04a4a', anchor: 'start'  },
@@ -169,7 +170,7 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
-      .text('Reddito pro capite (USD, scala logaritmica)');
+      .text('Reddito pro capite (USD, scala logaritmica) — Africa & Europa');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
       .text('Lavoro minorile 5-17 anni (%)');

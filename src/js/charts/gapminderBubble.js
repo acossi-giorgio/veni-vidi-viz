@@ -142,6 +142,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
       if (!income || income <= 0) return;
       const continent = codeContinent[code];
       if (!continent) return;
+      if (continent !== 'Africa' && continent !== 'Europe') return;
 
       let yVal;
       if (yMetric === 'life') {
@@ -311,7 +312,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   // Legend
   const legG = svg.append('g').attr('transform', `translate(${MARGIN.left + 4}, ${MARGIN.top + 4})`);
-  Object.entries(CONT_COLOR).forEach(([c, col], i) => {
+  [['Africa', CONT_COLOR['Africa']], ['Europe', CONT_COLOR['Europe']]].forEach(([c, col], i) => {
     legG.append('circle').attr('cx', 6).attr('cy', i * 14 + 6).attr('r', 5).attr('fill', col).attr('opacity', 0.75);
     legG.append('text').attr('x', 15).attr('y', i * 14 + 10).attr('font-size', 9).attr('fill', '#555').text(c);
   });

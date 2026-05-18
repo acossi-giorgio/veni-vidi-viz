@@ -75,7 +75,7 @@ function triggerChartState(chartId, state) {
     if (!el) return;
     if (state === 0 && el._mpiReset) el._mpiReset();
     else if (state === 1 && el._mpiFilterContinent) el._mpiFilterContinent('Africa');
-    else if (state === 2 && el._mpiFilterContinent) el._mpiFilterContinent('Asia');
+    else if (state === 2 && el._mpiFilterContinent) el._mpiFilterContinent('Europe');
   }
 
   if (chartId === 'chart-3-1') {
@@ -91,7 +91,7 @@ function triggerChartState(chartId, state) {
     if (!el) return;
     if (state === 0 && el._bumpReset) el._bumpReset();
     else if (state === 1 && el._bumpHighlightAfrica) el._bumpHighlightAfrica();
-    else if (state === 2 && el._bumpHighlightAsia) el._bumpHighlightAsia();
+    else if (state === 2 && el._bumpHighlightEurope) el._bumpHighlightEurope();
   }
 
   if (chartId === 'chart-3-3') {
