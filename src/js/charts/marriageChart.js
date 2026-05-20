@@ -22,14 +22,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     .filter(d => d.continent === 'Africa')
     .sort((a, b) => b.value - a.value);
 
-  const europeCountries = Array.from(latestMap.values())
-    .filter(d => d.continent === 'Europe')
-    .sort((a, b) => b.value - a.value);
-
   const africaMean = d3.mean(africaCountries, d => d.value);
-  const europeMean = europeCountries.length ? d3.mean(europeCountries, d => d.value) : 0;
   const COLOR_AF = '#c0392b';
-  const COLOR_EU = '#5aab6e';
 
   d3.select('body').selectAll('.tooltip-marriage').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-marriage')
@@ -49,7 +43,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   function hideTip() { tooltip.style('display', 'none'); }
 
   const containerNode = container.node();
-  let drillDown = null; // null | 'Africa' | 'Europe'
+  let drillDown = null; // null | 'Africa'
 
   // Back button
   const backBtn = d3.select(containerNode).append('div')
@@ -79,6 +73,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     d3.select(containerNode).selectAll('svg').remove();
     backBtn.style('display', drillDown ? 'block' : 'none');
     backBtn.text('← Panoramica');
+    containerNode.style.overflowY = drillDown ? 'auto' : 'hidden';
 
     const W = containerNode.getBoundingClientRect().width  || 560;
     const H = containerNode.getBoundingClientRect().height || 420;
@@ -87,32 +82,31 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     else           drawOverview(W, H);
   }
 
-  /* ── Overview: Africa vs Europa waffles side by side ─────── */
+  /* ── Overview: Africa waffle centrata ───────────────────── */
   function drawOverview(W, H) {
     const COLS = 10, ROWS = 10;
-    const margin = { top: 48, bottom: 52, left: 16, right: 16 };
-    const halfW  = (W - margin.left - margin.right) / 2 - 12;
-    const avail  = Math.min(halfW, H - margin.top - margin.bottom);
-    const cellSize = Math.max(5, Math.floor(avail / COLS) - 2);
-    const gap  = 2;
+    const margin = { top: 56, bottom: 72, left: 16, right: 16 };
+    const avail  = Math.min(W - margin.left - margin.right, H - margin.top - margin.bottom);
+    const cellSize = Math.max(6, Math.floor(avail / COLS) - 2);
+    const gap  = 3;
     const gridW = COLS * (cellSize + gap) - gap;
     const gridH = ROWS * (cellSize + gap) - gap;
-    const gy   = margin.top + (H - margin.top - margin.bottom - gridH) / 2;
+    const gx   = (W - gridW) / 2;
+    const gy   = margin.top + Math.max(0, (H - margin.top - margin.bottom - gridH) / 2);
 
     const svg = d3.select(containerNode).append('svg')
       .attr('width', W).attr('height', H).style('display', 'block').style('font-family', 'inherit');
 
-    // Africa waffle (left)
-    const gxA = margin.left + (halfW - gridW) / 2;
-    svg.append('text').attr('x', gxA + gridW / 2).attr('y', 18)
-      .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', '700').attr('fill', COLOR_AF)
+    svg.append('text').attr('x', W / 2).attr('y', 24)
+      .attr('text-anchor', 'middle').attr('font-size', 13).attr('font-weight', '700').attr('fill', COLOR_AF)
       .text('Africa');
-    svg.append('text').attr('x', gxA + gridW / 2).attr('y', 34)
+    svg.append('text').attr('x', W / 2).attr('y', 42)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#555')
-      .text(`media ${africaMean.toFixed(1)}%`);
-    drawWaffle(svg, gxA, gy, africaMean, cellSize, gap, COLOR_AF);
+      .text(`media ${africaMean.toFixed(1)}% sposate prima dei 18 anni`);
 
-    svg.append('rect').attr('x', gxA).attr('y', gy).attr('width', gridW).attr('height', gridH)
+    drawWaffle(svg, gx, gy, africaMean, cellSize, gap, COLOR_AF);
+
+    svg.append('rect').attr('x', gx).attr('y', gy).attr('width', gridW).attr('height', gridH)
       .attr('fill', 'transparent').style('cursor', 'pointer')
       .on('mousemove', e => showTip(e,
         `<strong style="color:${COLOR_AF}">Africa — media</strong><br>` +
@@ -123,43 +117,24 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .on('mouseleave', hideTip)
       .on('click', () => { drillDown = 'Africa'; draw(); });
 
-    // Europa waffle (right)
-    const gxE = margin.left + halfW + 24 + (halfW - gridW) / 2;
-    svg.append('text').attr('x', gxE + gridW / 2).attr('y', 18)
-      .attr('text-anchor', 'middle').attr('font-size', 12).attr('font-weight', '700').attr('fill', COLOR_EU)
-      .text('Europa');
-    svg.append('text').attr('x', gxE + gridW / 2).attr('y', 34)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#555')
-      .text(europeCountries.length ? `media ${europeMean.toFixed(1)}%` : 'dati limitati');
-    drawWaffle(svg, gxE, gy, europeMean, cellSize, gap, COLOR_EU);
+    // Legend — positioned above the hint text with fixed spacing from bottom
+    const hintY = H - 12;
+    const lgY   = H - 38;
+    const lgX   = (W - 240) / 2;
+    svg.append('rect').attr('x', lgX).attr('y', lgY).attr('width', 14).attr('height', 14).attr('rx', 2).attr('fill', COLOR_AF).attr('opacity', 0.85);
+    svg.append('text').attr('x', lgX + 19).attr('y', lgY + 11).attr('font-size', 9).attr('fill', '#555').text('= 1% sposate');
+    svg.append('rect').attr('x', lgX + 120).attr('y', lgY).attr('width', 14).attr('height', 14).attr('rx', 2).attr('fill', '#e8e8e8').attr('opacity', 0.7);
+    svg.append('text').attr('x', lgX + 139).attr('y', lgY + 11).attr('font-size', 9).attr('fill', '#555').text('= non sposate');
 
-    svg.append('rect').attr('x', gxE).attr('y', gy).attr('width', gridW).attr('height', gridH)
-      .attr('fill', 'transparent').style('cursor', europeCountries.length ? 'pointer' : 'default')
-      .on('mousemove', e => showTip(e,
-        `<strong style="color:${COLOR_EU}">Europa — media</strong><br>` +
-        `${europeMean.toFixed(1)}% sposate prima dei 18<br>` +
-        `Dati da ${europeCountries.length} paesi` +
-        (europeCountries.length ? `<br><em style="opacity:.6;font-size:10px">Clicca per i singoli paesi</em>` : '')
-      ))
-      .on('mouseleave', hideTip)
-      .on('click', () => { if (europeCountries.length) { drillDown = 'Europe'; draw(); } });
-
-    // Legend
-    const lgY = gy + gridH + 12;
-    svg.append('rect').attr('x', gxA).attr('y', lgY).attr('width', cellSize).attr('height', cellSize).attr('rx', 2).attr('fill', COLOR_AF).attr('opacity', 0.85);
-    svg.append('text').attr('x', gxA + cellSize + 4).attr('y', lgY + cellSize - 1).attr('font-size', 8.5).attr('fill', '#555').text('= 1% sposate');
-    svg.append('rect').attr('x', gxA + 110).attr('y', lgY).attr('width', cellSize).attr('height', cellSize).attr('rx', 2).attr('fill', '#e8e8e8').attr('opacity', 0.7);
-    svg.append('text').attr('x', gxA + 110 + cellSize + 4).attr('y', lgY + cellSize - 1).attr('font-size', 8.5).attr('fill', '#555').text('= non sposate');
-
-    svg.append('text').attr('x', W / 2).attr('y', H - 8)
+    svg.append('text').attr('x', W / 2).attr('y', hintY)
       .attr('text-anchor', 'middle').attr('font-size', 9).attr('fill', '#bbb')
-      .text('Clicca su un continente per esplorare i singoli paesi →');
+      .text('Clicca per esplorare i singoli paesi →');
   }
 
   /* ── Drill-down: griglia waffle per paese ─────────────────── */
   function drawGrid(W, H, continent) {
-    const ctrs  = continent === 'Africa' ? africaCountries : europeCountries;
-    const color = continent === 'Africa' ? COLOR_AF : COLOR_EU;
+    const ctrs  = africaCountries;
+    const color = COLOR_AF;
     const COLS = Math.max(2, Math.min(6, Math.floor(W / 110)));
     const ROWS = Math.ceil(ctrs.length / COLS);
 
@@ -181,7 +156,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     svg.append('text').attr('x', W / 2).attr('y', 20)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888')
-      .text(`${continent === 'Africa' ? 'Africa' : 'Europa'} · ${ctrs.length} paesi · ordinati per % decrescente`);
+      .text(`Africa · ${ctrs.length} paesi · ordinati per % decrescente`);
 
     ctrs.forEach((d, idx) => {
       const col = idx % COLS;

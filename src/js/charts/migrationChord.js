@@ -44,7 +44,24 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const migRaw = await d3.csv('datasets/processed/migration.csv', d3.autoType);
 
-  const MIGRATION_YEARS = [2000, 2005, 2010, 2015, 2020];
+  const DATA_YEARS = [2000, 2005, 2010, 2015, 2020];
+
+  // Linear interpolation between 5-year data points → annual granularity
+  function getYearData(year) {
+    const clamped = Math.max(2000, Math.min(2020, year));
+    if (DATA_YEARS.includes(clamped)) return migRaw.filter(d => d.year === clamped);
+    let i = 0;
+    while (i < DATA_YEARS.length - 1 && DATA_YEARS[i + 1] < clamped) i++;
+    const y0 = DATA_YEARS[i], y1 = DATA_YEARS[i + 1];
+    const t = (clamped - y0) / (y1 - y0);
+    const rows0 = migRaw.filter(d => d.year === y0);
+    const map1 = new Map();
+    migRaw.filter(d => d.year === y1).forEach(d => map1.set(`${d.origin_code}|${d.dest_code}`, d.stock));
+    return rows0.map(d => {
+      const s1 = map1.get(`${d.origin_code}|${d.dest_code}`) ?? d.stock;
+      return { ...d, year: clamped, stock: Math.round(d.stock + t * (s1 - d.stock)) };
+    });
+  }
 
   const CONT_COLOR = {
     'Africa':        '#c0392b',
@@ -76,76 +93,156 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   let currentYear = 2020;
   let mode = 'network';
   let animTimer = null;
+  let sankeyDrillContinent = null; // null = overview, string = dest continent
 
   const wrap = container.append('div')
     .style('width', '100%').style('height', '100%')
     .style('display', 'flex').style('flex-direction', 'column');
 
+  // ── Top header: mode buttons only ────────────────────────────
   const header = wrap.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '8px').style('flex-wrap', 'wrap')
-    .style('padding', '5px 8px').style('background', '#f5f5f5')
-    .style('border-bottom', '1px solid #e0e0e0').style('flex-shrink', '0');
+    .style('display', 'flex').style('align-items', 'center').style('gap', '6px')
+    .style('padding', '6px 10px').style('background', '#fff')
+    .style('border-bottom', '1px solid #e4e8f0').style('flex-shrink', '0');
 
-  [['network', 'Rete'], ['map', 'Mappa']].forEach(([m, label]) => {
+  [['network', 'Rete'], ['map', 'Mappa'], ['sankey', 'Sankey']].forEach(([m, label]) => {
     header.append('button')
       .datum(m)
       .attr('class', 'chord-mode-btn')
-      .style('padding', '2px 9px').style('border-radius', '12px').style('font-size', '11px')
-      .style('cursor', 'pointer').style('border', '1px solid #ccc').style('font-family', 'inherit')
-      .style('background', m === 'network' ? '#333' : '#fff')
-      .style('color', m === 'network' ? '#fff' : '#333')
+      .style('padding', '4px 12px').style('border-radius', '14px').style('font-size', '11px')
+      .style('cursor', 'pointer').style('border', '1px solid #d0d9e8').style('font-family', 'inherit')
+      .style('font-weight', '600')
+      .style('background', m === 'network' ? '#1a3a5c' : '#fff')
+      .style('color', m === 'network' ? '#fff' : '#6b7e95')
       .text(label)
       .on('click', function(e, d) {
-        mode = d; stopAnim();
+        mode = d; stopAnim(); sankeyDrillContinent = null;
         header.selectAll('.chord-mode-btn')
-          .style('background', btn => btn === d ? '#333' : '#fff')
-          .style('color', btn => btn === d ? '#fff' : '#333');
+          .style('background', btn => btn === d ? '#1a3a5c' : '#fff')
+          .style('color', btn => btn === d ? '#fff' : '#6b7e95');
         draw();
       });
   });
 
-  const sliderWrap = header.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '4px');
-  const yearLabel = sliderWrap.append('span').style('font-size', '11px').style('color', '#555').style('min-width', '32px').text('2020');
-  const slider = sliderWrap.append('input').attr('type', 'range')
-    .attr('min', 0).attr('max', MIGRATION_YEARS.length - 1).attr('value', MIGRATION_YEARS.length - 1)
-    .attr('step', 1).style('width', '100px').style('cursor', 'pointer')
-    .on('input', function() {
-      currentYear = MIGRATION_YEARS[+this.value];
+  const svgArea = wrap.append('div').style('flex', '1').style('position', 'relative').style('min-height', '0');
+
+  // ── Bottom player bar — styled like GDP map ───────────────────
+  const footer = wrap.append('div')
+    .style('display', 'flex').style('align-items', 'center').style('gap', '8px')
+    .style('padding', '8px 16px').style('background', '#fff')
+    .style('border-top', '1px solid #e4e8f0').style('flex-shrink', '0');
+
+  const btnStyle = btn => btn
+    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+    .style('border', '1px solid #d0d9e8').style('background', '#fff')
+    .style('cursor', 'pointer').style('font-size', '13px').style('display', 'flex')
+    .style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#8096b0').style('flex-shrink', '0').style('line-height', '1');
+
+  btnStyle(footer.append('button').text('↺'))
+    .on('click', () => {
+      stopAnim();
+      currentYear = 2000;
+      slider.property('value', 0);
       yearLabel.text(currentYear);
       draw();
     });
 
-  const playBtn = header.append('button')
-    .style('padding', '2px 8px').style('border-radius', '12px').style('font-size', '11px')
-    .style('cursor', 'pointer').style('border', '1px solid #ccc').style('font-family', 'inherit')
-    .style('background', '#fff').style('color', '#333')
-    .text('▶ Play')
+  btnStyle(footer.append('button').text('‹'))
+    .on('click', () => {
+      stopAnim();
+      currentYear = Math.max(2000, currentYear - 1);
+      slider.property('value', currentYear - 2000);
+      yearLabel.text(currentYear);
+      draw();
+    });
+
+  const playBtn = footer.append('button')
+    .style('width', '42px').style('height', '42px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#1a3a5c')
+    .style('cursor', 'pointer').style('font-size', '16px').style('display', 'flex')
+    .style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#fff').style('flex-shrink', '0')
+    .text('▶')
     .on('click', () => {
       if (animTimer) { stopAnim(); return; }
-      mode = 'network';
-      header.selectAll('.chord-mode-btn')
-        .style('background', d => d === 'network' ? '#333' : '#fff')
-        .style('color', d => d === 'network' ? '#fff' : '#333');
-      let i = 0;
-      playBtn.text('⏸ Pausa');
+      let y = currentYear >= 2020 ? 2000 : currentYear;
+      playBtn.text('⏸');
       function step() {
-        currentYear = MIGRATION_YEARS[i];
-        yearLabel.text(currentYear);
-        slider.property('value', i);
+        currentYear = y;
+        slider.property('value', y - 2000);
+        yearLabel.text(y);
         draw();
-        i++;
-        if (i < MIGRATION_YEARS.length) animTimer = setTimeout(step, 900);
+        y++;
+        if (y <= 2020) animTimer = setTimeout(step, 250);
         else stopAnim();
       }
       step();
     });
 
-  function stopAnim() {
-    if (animTimer) { clearTimeout(animTimer); animTimer = null; }
-    playBtn.text('▶ Play');
+  btnStyle(footer.append('button').text('›'))
+    .on('click', () => {
+      stopAnim();
+      currentYear = Math.min(2020, currentYear + 1);
+      slider.property('value', currentYear - 2000);
+      yearLabel.text(currentYear);
+      draw();
+    });
+
+  // Timeline slider + tick labels
+  const timelineWrap = footer.append('div')
+    .style('flex', '1').style('display', 'flex').style('flex-direction', 'column')
+    .style('padding', '0 8px').style('min-width', '0');
+
+  const slider = timelineWrap.append('input')
+    .attr('id', 'mig-chord-slider')
+    .attr('type', 'range')
+    .attr('min', 0).attr('max', 20).attr('value', 20).attr('step', 1)
+    .style('width', '100%').style('cursor', 'pointer')
+    .style('-webkit-appearance', 'none').style('appearance', 'none')
+    .style('height', '5px').style('background', 'rgba(0,0,0,0.25)')
+    .style('border-radius', '2px').style('outline', 'none')
+    .on('input', function() {
+      stopAnim();
+      currentYear = 2000 + +this.value;
+      yearLabel.text(currentYear);
+      draw();
+    });
+
+  if (!document.getElementById('mig-chord-slider-style')) {
+    const st = document.createElement('style');
+    st.id = 'mig-chord-slider-style';
+    st.textContent = `
+      #mig-chord-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer;
+      }
+      #mig-chord-slider::-moz-range-thumb {
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer; border: none;
+      }
+    `;
+    document.head.appendChild(st);
   }
 
-  const svgArea = wrap.append('div').style('flex', '1').style('position', 'relative').style('min-height', '0');
+  const tickRow = timelineWrap.append('div')
+    .style('display', 'flex').style('justify-content', 'space-between')
+    .style('padding', '2px 2px 0');
+  DATA_YEARS.forEach(y => {
+    tickRow.append('span').style('font-size', '9px').style('color', '#aaa').text(y);
+  });
+
+  const yearLabel = footer.append('div')
+    .style('font-size', '28px').style('font-weight', '700').style('color', '#1a3a5c')
+    .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('font-family', 'inherit').style('letter-spacing', '-0.5px')
+    .text('2020');
+
+  function stopAnim() {
+    if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+    playBtn.text('▶');
+  }
 
   function draw() {
     svgArea.html('');
@@ -153,6 +250,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const H = svgArea.node().getBoundingClientRect().height || 380;
     if (W < 10 || H < 10) return;
     if (mode === 'map') drawMap(W, H);
+    else if (mode === 'sankey') drawSankey(W, H);
     else drawNetwork(W, H);
   }
 
@@ -165,8 +263,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   function drawNetwork(W, H) {
     if (_sim) { _sim.stop(); _sim = null; }
 
-    const yearData = migRaw.filter(d =>
-      d.year === currentYear && d.origin_continent === 'Africa' &&
+    const yearData = getYearData(currentYear).filter(d =>
+      d.origin_continent === 'Africa' &&
       d.dest_continent !== 'Africa' && d.stock > 0
     );
 
@@ -347,14 +445,156 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       });
   }
 
+  /* ── Sankey: Africa → Dest Continents → Top Countries ─────── */
+  function drawSankey(W, H) {
+    const yearData = getYearData(currentYear).filter(d =>
+      d.origin_continent === 'Africa' &&
+      d.dest_continent !== 'Africa' && d.stock > 0
+    );
+
+    const margin = { top: 20, right: 180, bottom: 20, left: 120 };
+    const iw = W - margin.left - margin.right;
+    const ih = H - margin.top  - margin.bottom;
+
+    const svg = svgArea.append('svg').attr('width', W).attr('height', H)
+      .style('display', 'block').style('background', '#fff').style('font-family', 'inherit');
+    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // ── Build nodes & links ─────────────────────────────────────
+    const destContStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_continent);
+    const destConts = [...destContStock.keys()].sort((a, b) => destContStock.get(b) - destContStock.get(a));
+
+    // Show top-8 dest countries per continent if drilled, else cont-level
+    const TOP_N_COUNTRIES = 8;
+    let nodes = [], links = [];
+
+    if (!sankeyDrillContinent) {
+      // Overview: Africa → dest continents
+      const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
+      nodes = [srcNode];
+      destConts.forEach(cont => {
+        nodes.push({ id: cont, name: cont, layer: 1, col: CONT_COLOR[cont] || '#888' });
+        links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
+      });
+    } else {
+      // Drilled: Africa → selected cont → top countries
+      const contData = yearData.filter(d => d.dest_continent === sankeyDrillContinent);
+      const countryStock = d3.rollup(contData, v => d3.sum(v, d => d.stock), d => d.dest_code);
+      const topCountries = [...countryStock.entries()]
+        .sort((a, b) => b[1] - a[1]).slice(0, TOP_N_COUNTRIES);
+
+      const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
+      const contNode = { id: sankeyDrillContinent, name: sankeyDrillContinent, layer: 1, col: CONT_COLOR[sankeyDrillContinent] || '#888' };
+      nodes = [srcNode, contNode];
+      links.push({ source: 'AFRICA', target: sankeyDrillContinent, value: destContStock.get(sankeyDrillContinent) });
+      topCountries.forEach(([code, val]) => {
+        const name = contData.find(d => d.dest_code === code)?.dest_country || code;
+        nodes.push({ id: code, name, layer: 2, col: CONT_COLOR[sankeyDrillContinent] || '#888' });
+        links.push({ source: sankeyDrillContinent, target: code, value: val });
+      });
+    }
+
+    // Build sankey-compatible index
+    const nodeById = new Map(nodes.map((n, i) => [n.id, i]));
+    const sankeyNodes = nodes.map(n => ({ ...n }));
+    const sankeyLinks = links.map(l => ({
+      source: nodeById.get(l.source),
+      target: nodeById.get(l.target),
+      value: l.value,
+    })).filter(l => l.source != null && l.target != null && l.value > 0);
+
+    const sankeyGen = d3.sankey()
+      .nodeId(d => d.index)
+      .nodeWidth(16)
+      .nodePadding(12)
+      .extent([[0, 0], [iw, ih]]);
+
+    const { nodes: sNodes, links: sLinks } = sankeyGen({
+      nodes: sankeyNodes.map((d, i) => ({ ...d, index: i })),
+      links: sankeyLinks,
+    });
+
+    // ── Links ──────────────────────────────────────────────────
+    g.selectAll('.sk-link').data(sLinks).join('path')
+      .attr('class', 'sk-link')
+      .attr('d', d3.sankeyLinkHorizontal())
+      .attr('fill', 'none')
+      .attr('stroke', d => nodes[d.target.index]?.col || '#aaa')
+      .attr('stroke-width', d => Math.max(1, d.width))
+      .attr('stroke-opacity', 0.25)
+      .style('cursor', 'pointer')
+      .on('mouseover', function() { d3.select(this).attr('stroke-opacity', 0.55); })
+      .on('mouseleave', function() { d3.select(this).attr('stroke-opacity', 0.25); })
+      .on('mousemove', (e, d) => showTip(e,
+        `<strong style="color:${nodes[d.source.index]?.col||'#fff'}">${nodes[d.source.index]?.name}</strong>` +
+        ` → <strong style="color:${nodes[d.target.index]?.col||'#fff'}">${nodes[d.target.index]?.name}</strong><br>` +
+        `Migranti: <strong>${d3.format(',.0f')(d.value)}</strong>`
+      ))
+      .on('mouseleave', () => { hideTip(); g.selectAll('.sk-link').attr('stroke-opacity', 0.25); });
+
+    // ── Nodes ──────────────────────────────────────────────────
+    const nodeG = g.selectAll('.sk-node').data(sNodes).join('g').attr('class', 'sk-node');
+
+    nodeG.append('rect')
+      .attr('x', d => d.x0).attr('y', d => d.y0)
+      .attr('width', d => d.x1 - d.x0)
+      .attr('height', d => Math.max(1, d.y1 - d.y0))
+      .attr('fill', d => nodes[d.index]?.col || '#888')
+      .attr('rx', 3).attr('opacity', 0.85)
+      .style('cursor', d => (d.layer === 1 && !sankeyDrillContinent) ? 'pointer' : 'default')
+      .on('click', (e, d) => {
+        if (d.layer === 1 && !sankeyDrillContinent) {
+          sankeyDrillContinent = d.id; draw();
+        }
+      })
+      .on('mousemove', (e, d) => showTip(e,
+        `<strong style="color:${nodes[d.index]?.col||'#fff'}">${d.name}</strong><br>` +
+        `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>` +
+        (d.layer === 1 && !sankeyDrillContinent ? '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio →</em>' : '')
+      ))
+      .on('mouseleave', hideTip);
+
+    // ── Labels ─────────────────────────────────────────────────
+    nodeG.append('text')
+      .attr('x', d => d.x0 < iw / 2 ? d.x0 - 6 : d.x1 + 6)
+      .attr('y', d => (d.y1 + d.y0) / 2)
+      .attr('text-anchor', d => d.x0 < iw / 2 ? 'end' : 'start')
+      .attr('dominant-baseline', 'middle')
+      .attr('font-size', d => d.layer === 0 ? 11 : 9)
+      .attr('font-weight', d => d.layer === 0 ? '700' : '500')
+      .attr('fill', d => nodes[d.index]?.col || '#555')
+      .style('pointer-events', 'none')
+      .text(d => {
+        const label = d.name.length > 16 ? d.name.slice(0, 15) + '…' : d.name;
+        return `${label}  ${d3.format('.2~s')(d.value)}`;
+      });
+
+    // ── Back button (when drilled) ──────────────────────────────
+    if (sankeyDrillContinent) {
+      svgArea.append('button')
+        .style('position', 'absolute').style('top', '8px').style('left', '8px')
+        .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+        .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+        .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+        .style('justify-content', 'center').style('color', '#4a6fa5').style('z-index', '10')
+        .html('<svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,1 1,6 6,11"/><line x1="1" y1="6" x2="13" y2="6"/></svg>')
+        .on('click', () => { sankeyDrillContinent = null; draw(); });
+    }
+
+    // ── Year label ─────────────────────────────────────────────
+    svg.append('text').attr('x', W - 8).attr('y', H - 8)
+      .attr('text-anchor', 'end').attr('font-size', 9).attr('fill', '#ccc')
+      .text(currentYear);
+  }
+
   /* ── Connection Map ────────────────────────────────────────── */
   async function drawMap(W, H) {
     if (!_migWorldData) {
       _migWorldData = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json');
     }
 
-    const yearData = migRaw.filter(d =>
-      d.year === currentYear && d.origin_continent === 'Africa' &&
+    const yearData = getYearData(currentYear).filter(d =>
+      d.origin_continent === 'Africa' &&
       d.dest_continent !== 'Africa' && d.stock > 0
     );
 
@@ -407,11 +647,6 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const activeSrcCodes = new Set(visiblePairs.map(p => p.srcCode));
     const activeDstCodes = new Set(visiblePairs.map(p => p.dstCode));
 
-    const maxDest    = d3.max(Array.from(stockByDest.values())) || 1;
-    const maxSrc     = d3.max(Array.from(origStockMap.values())) || 1;
-    const destColorS = d3.scaleSequential(d3.interpolateBlues).domain([0, maxDest]);
-    const srcColorS  = d3.scaleSequential(d3.interpolateOranges).domain([0, maxSrc]);
-
     // ── SVG + zoom ───────────────────────────────────────────────
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
@@ -434,109 +669,73 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .style('border', '1px solid #ddd').style('border-radius', '5px').style('background', '#fff')
       .style('cursor', 'pointer').style('color', '#555').on('click', fn));
 
-    // Countries
+    // Countries — flat grey fill
     g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
       .attr('stroke', '#fff').attr('stroke-width', 0.35)
-      .attr('fill', f => {
-        const a3 = _MIG_NUM_TO_A3[+f.id];
-        if (!a3) return '#ccd8df';
-        if (activeSrcCodes.has(a3)) return srcColorS(origStockMap.get(a3) || 0);
-        if (activeDstCodes.has(a3)) return destColorS(stockByDest.get(a3) || 0);
-        return '#ccd8df';
-      })
+      .attr('fill', '#ccd8df')
       .on('mousemove', (e, f) => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
         if (activeSrcCodes.has(a3)) {
-          g.selectAll('.mig-arc').attr('opacity', 0.05).attr('stroke', '#999').attr('fill', '#999');
-          g.selectAll(`.mig-arc[data-src="${a3}"]`)
-            .attr('opacity', 0.9).attr('stroke', '#c0602a').attr('fill', '#c0602a').raise();
+          g.selectAll('.mig-arc').attr('opacity', 0.05);
+          g.selectAll(`.mig-arc[data-src="${a3}"]`).attr('opacity', 0.85).raise();
           showTip(e,
-            `<strong style="color:#c0602a">${origNameMap.get(a3) || a3}</strong> (origine)<br>` +
+            `<strong>${origNameMap.get(a3) || a3}</strong> (origine)<br>` +
             `Emigrati fuori Africa: <strong>${d3.format(',.0f')(origStockMap.get(a3) || 0)}</strong>`
           );
         } else if (activeDstCodes.has(a3)) {
-          g.selectAll('.mig-arc').attr('opacity', 0.05).attr('stroke', '#999').attr('fill', '#999');
-          g.selectAll(`.mig-arc[data-dest="${a3}"]`)
-            .attr('opacity', 0.9).attr('stroke', '#1a5276').attr('fill', '#1a5276').raise();
+          g.selectAll('.mig-arc').attr('opacity', 0.05);
+          g.selectAll(`.mig-arc[data-dest="${a3}"]`).attr('opacity', 0.85).raise();
           showTip(e,
-            `<strong style="color:#1a5276">${destNameMap.get(a3) || a3}</strong> (destinazione)<br>` +
+            `<strong>${destNameMap.get(a3) || a3}</strong> (destinazione)<br>` +
             `Migranti africani: <strong>${d3.format(',.0f')(stockByDest.get(a3) || 0)}</strong>`
           );
         }
       })
       .on('mouseleave', () => {
         hideTip();
-        g.selectAll('.mig-arc').attr('opacity', 0.35).attr('stroke', '#999').attr('fill', '#999');
+        g.selectAll('.mig-arc').attr('opacity', 0.28);
       });
+
+    // Curved arcs — always curve upward (pick normal pointing to smaller Y)
+    function arcPath(src, dst) {
+      const mx = (src[0] + dst[0]) / 2;
+      const my = (src[1] + dst[1]) / 2;
+      const dx = dst[0] - src[0];
+      const dy = dst[1] - src[1];
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 1) return `M${src[0]},${src[1]}`;
+      const offset = dist * 0.42;
+      const nx = -dy / dist;
+      const ny =  dx / dist;
+      const [cpx, cpy] = (my + ny * offset) < (my - ny * offset)
+        ? [mx + nx * offset, my + ny * offset]
+        : [mx - nx * offset, my - ny * offset];
+      return `M${src[0]},${src[1]} Q${cpx},${cpy} ${dst[0]},${dst[1]}`;
+    }
 
     pairs.filter(p => p.stock >= threshold && centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
       .forEach(p => {
         const src = centroidByA3.get(p.srcCode);
         const dst = centroidByA3.get(p.dstCode);
+        const w = 1.4;
         g.append('path')
           .attr('class', 'mig-arc')
           .attr('data-src', p.srcCode).attr('data-dest', p.dstCode)
-          .attr('d', `M${src[0]},${src[1]} L${dst[0]},${dst[1]}`)
-          .attr('fill', 'none').attr('stroke', '#999')
-          .attr('stroke-width', 1).attr('opacity', 0.35)
+          .attr('d', arcPath(src, dst))
+          .attr('fill', 'none').attr('stroke', '#607d8b')
+          .attr('stroke-width', w).attr('opacity', 0.28)
           .style('pointer-events', 'none');
-
-        [src, dst].forEach(pt => {
-          g.append('circle')
-            .attr('class', 'mig-arc')
-            .attr('data-src', p.srcCode).attr('data-dest', p.dstCode)
-            .attr('cx', pt[0]).attr('cy', pt[1])
-            .attr('r', 2)
-            .attr('fill', '#999').attr('opacity', 0.35)
-            .style('pointer-events', 'none');
-        });
       });
-
-    // Legend — fixed on svg (outside g, doesn't zoom)
-    const lgW = 100, lgH = 7;
-    const lgY = H - 44;
-    const defs = svg.append('defs');
-
-    // Destination scale (blue)
-    const lgXd = W - lgW - 12;
-    const gradD = defs.append('linearGradient').attr('id', 'mig-map-grad-d');
-    [0, 0.5, 1].forEach(t =>
-      gradD.append('stop').attr('offset', `${t*100}%`).attr('stop-color', destColorS(t * maxDest))
-    );
-    svg.append('text').attr('x', lgXd).attr('y', lgY - 2)
-      .attr('font-size', 7.5).attr('fill', '#666').text('Destinazione');
-    svg.append('rect').attr('x', lgXd).attr('y', lgY).attr('width', lgW).attr('height', lgH)
-      .attr('fill', 'url(#mig-map-grad-d)').attr('rx', 2);
-    svg.append('text').attr('x', lgXd).attr('y', lgY + lgH + 9)
-      .attr('font-size', 7.5).attr('fill', '#888').text('meno');
-    svg.append('text').attr('x', lgXd + lgW).attr('y', lgY + lgH + 9)
-      .attr('text-anchor', 'end').attr('font-size', 7.5).attr('fill', '#888').text('più migranti ricevuti');
-
-    // Source scale (orange)
-    const lgXs = lgXd - lgW - 16;
-    const gradS = defs.append('linearGradient').attr('id', 'mig-map-grad-s');
-    [0, 0.5, 1].forEach(t =>
-      gradS.append('stop').attr('offset', `${t*100}%`).attr('stop-color', srcColorS(t * maxSrc))
-    );
-    svg.append('text').attr('x', lgXs).attr('y', lgY - 2)
-      .attr('font-size', 7.5).attr('fill', '#666').text('Origine (Africa)');
-    svg.append('rect').attr('x', lgXs).attr('y', lgY).attr('width', lgW).attr('height', lgH)
-      .attr('fill', 'url(#mig-map-grad-s)').attr('rx', 2);
-    svg.append('text').attr('x', lgXs).attr('y', lgY + lgH + 9)
-      .attr('font-size', 7.5).attr('fill', '#888').text('meno');
-    svg.append('text').attr('x', lgXs + lgW).attr('y', lgY + lgH + 9)
-      .attr('text-anchor', 'end').attr('font-size', 7.5).attr('fill', '#888').text('più emigrati');
   }
 
   draw();
 
   containerNode._migrationShowYear = function(year) {
-    stopAnim(); mode = 'network'; currentYear = year;
-    const i = MIGRATION_YEARS.indexOf(year);
-    if (i >= 0) { slider.property('value', i); yearLabel.text(year); }
+    stopAnim(); mode = 'network'; currentYear = Math.max(2000, Math.min(2020, year));
+    slider.property('value', currentYear - 2000); yearLabel.text(currentYear);
     header.selectAll('.chord-mode-btn')
       .style('background', d => d === 'network' ? '#333' : '#fff')
       .style('color', d => d === 'network' ? '#fff' : '#333');

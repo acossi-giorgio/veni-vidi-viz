@@ -87,26 +87,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   const maxGdpCap = 100000;
   const scaledMaxGdp = Math.min(maxGdp, maxGdpCap);
 
-  const colorScale = d3.scaleLog().domain([minGdp, scaledMaxGdp]).range(['#ffe8e8', '#0066ff']);
-
-  // Generate legend intervals dynamically based on data range (capped at 100k)
-  const numIntervals = 7;
-  const intervalSize = (scaledMaxGdp - minGdp) / numIntervals;
-  const legendData = Array.from({ length: numIntervals }, (_, i) => {
-    const start = minGdp + i * intervalSize;
-    const end = minGdp + (i + 1) * intervalSize;
-    const mid = (start + end) / 2;
-    const formatValue = (val) => {
-      if (val < 1000) return '$' + Math.round(val);
-      return '$' + Math.round(val / 1000) + 'K';
-    };
-    const startStr = formatValue(start);
-    const endStr = formatValue(end);
-    return {
-      value: i === numIntervals - 1 ? `${startStr}+` : `${startStr}-${endStr}`,
-      color: colorScale(mid)
-    };
-  });
+  const colorScale = d3.scaleSequentialLog([minGdp, scaledMaxGdp], d3.interpolateYlOrBr);
 
   // Dimensions
   // If in fullscreen, use window dimensions as fallback if clientWidth is 0
@@ -157,10 +138,10 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
     .attr('viewBox', `0 0 ${width} ${height}`)
     .style('width', '100%')
     .style('height', '100%')
-    .style('background', '#f5f5f5')
+    .style('background', '#eef2f7')
     .style('cursor', 'grab')
     .style('display', 'block')
-    .style('border-radius', '12px');
+    .style('border-radius', '10px');
 
   // Clip path so map doesn't overflow SVG bounds during zoom
   const clipId = `gdp-map-clip-${isFullscreen ? 'fullscreen' : 'small'}`;
@@ -237,42 +218,35 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
     .attr('x', width - 12)
     .attr('y', height - 12)
     .attr('text-anchor', 'end')
-    .attr('font-size', 48)
-    .attr('font-weight', 'bold')
-    .attr('fill', '#000')
-    .attr('opacity', 0.4)
+    .attr('font-size', 32)
+    .attr('font-weight', '700')
+    .attr('fill', '#555')
+    .attr('opacity', 0.18)
     .attr('pointer-events', 'none')
     .text(currentYear);
 
-  // Play/Pause icon (same style as year label, bottom left)
-  const playPauseLabel = svg
-    .append('text')
-    .attr('class', 'play-pause-label')
-    .attr('x', 12)
-    .attr('y', height - 12)
-    .attr('text-anchor', 'start')
-    .attr('font-size', 48)
-    .attr('font-weight', 'bold')
-    .attr('fill', '#000')
-    .attr('opacity', 0.4)
-    .attr('pointer-events', 'auto')
-    .style('cursor', 'pointer')
-    .text('▶');
-
   let isAnimationPlaying = true;
 
-  playPauseLabel.on('click', function(event) {
-    event.stopPropagation();
-    if (!isAnimationPlaying) {
-      isAnimationPlaying = true;
-      playPauseLabel.text('⏸');
-      if (container._gdpStartAnimation) container._gdpStartAnimation(1000);
-    } else {
-      isAnimationPlaying = false;
-      playPauseLabel.text('▶');
-      if (container._gdpClearAnimation) container._gdpClearAnimation();
-    }
-  });
+  // Play/pause button — small HTML button top-left
+  const playBtn = d3.select(container).append('button')
+    .style('position', 'absolute').style('top', '8px').style('left', '8px')
+    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+    .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+    .style('cursor', 'pointer').style('font-size', '13px').style('line-height', '1')
+    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+    .style('z-index', '10').style('color', '#4a6fa5')
+    .text('▶')
+    .on('click', function() {
+      if (!isAnimationPlaying) {
+        isAnimationPlaying = true;
+        d3.select(this).text('⏸');
+        if (container._gdpStartAnimation) container._gdpStartAnimation(1000);
+      } else {
+        isAnimationPlaying = false;
+        d3.select(this).text('▶');
+        if (container._gdpClearAnimation) container._gdpClearAnimation();
+      }
+    });
 
   // Year slider between play button and year watermark
   const sliderPadL = 72;
@@ -306,7 +280,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
       const y = +this.value;
       container._gdpClearAnimation();
       isAnimationPlaying = false;
-      playPauseLabel.text('▶');
+      playBtn.text('▶');
       update(y);
     });
 
@@ -344,52 +318,23 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
     document.head.appendChild(style);
   }
 
-  // Legend (TOP of chart, won't zoom) - styled like choroplethMap
-
-  const legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', `translate(0, 15)`);
-
-  const rectSize = 16;
-  const textPadding = 8;
-  const gapBetweenTexts = 20;
-
-  const items = legend.selectAll('.legend-item')
-    .data(legendData)
-    .enter()
-    .append('g')
-    .attr('class', 'legend-item');
-
-  items.append('rect')
-    .attr('width', rectSize)
-    .attr('height', rectSize)
-    .attr('fill', d => d.color)
-    .attr('stroke', '#333')
-    .attr('stroke-width', 0.5);
-
-  items.append('text')
-    .attr('x', rectSize + textPadding)
-    .attr('y', rectSize / 2)
-    .attr('alignment-baseline', 'middle')
-    .style('font-size', '12px')
-    .style('font-family', 'Roboto Slab, serif')
-    .text(d => d.value);
-
-  let x = 0;
-  items.each(function() {
-    const g = d3.select(this);
-    const textNode = g.select('text').node();
-    const textBBox = textNode.getBBox();
-    const groupWidth = rectSize + textPadding + textBBox.width;
-
-    g.attr('transform', `translate(${x}, 0)`);
-    x += groupWidth + gapBetweenTexts;
+  // Legend — compact gradient bar bottom-right (outside mapGroup, doesn't zoom)
+  const lgW = 120, lgH = 7;
+  const lgX = width - lgW - 16, lgY = height - 30;
+  const lgDefs = svg.append('defs');
+  const grad = lgDefs.append('linearGradient').attr('id', 'gdp-map-grad').attr('x1', '0%').attr('x2', '100%');
+  [0, 0.25, 0.5, 0.75, 1].forEach(t => {
+    grad.append('stop').attr('offset', `${t*100}%`)
+      .attr('stop-color', colorScale(minGdp * Math.pow(scaledMaxGdp / minGdp, t)));
   });
-
-  // Center legend horizontally within available chart width
-  const totalLegendWidth = x - gapBetweenTexts;
-  const startX = Math.max(0, (width - totalLegendWidth) / 2);
-  legend.attr('transform', `translate(${startX}, 15)`);
+  svg.append('text').attr('x', lgX).attr('y', lgY - 3)
+    .attr('font-size', 7.5).attr('fill', '#666').text('PIL pro capite (USD)');
+  svg.append('rect').attr('x', lgX).attr('y', lgY).attr('width', lgW).attr('height', lgH)
+    .attr('fill', 'url(#gdp-map-grad)').attr('rx', 2).attr('stroke', '#ccc').attr('stroke-width', 0.5);
+  svg.append('text').attr('x', lgX).attr('y', lgY + lgH + 9)
+    .attr('font-size', 7.5).attr('fill', '#888').text(`$${d3.format(',')(Math.round(minGdp))}`);
+  svg.append('text').attr('x', lgX + lgW).attr('y', lgY + lgH + 9)
+    .attr('text-anchor', 'end').attr('font-size', 7.5).attr('fill', '#888').text(`$${d3.format(',')(Math.round(scaledMaxGdp))}+`);
 
   // Zoom behaviour
   const zoom = d3
@@ -453,7 +398,7 @@ async function renderGdpMapChart(selector, initialYear = 2023, isFullscreen = fa
   // Start animation by default
   if (startAnimation) {
     startAnimation(2000);
-    playPauseLabel.text('⏸');
+    playBtn.text('⏸');
   }
 
   // Region zoom functions
