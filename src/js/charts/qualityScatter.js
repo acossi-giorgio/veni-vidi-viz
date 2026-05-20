@@ -16,6 +16,46 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   const COL_BOYS  = '#4a6fa5';   // GPI > 1
   const CONTS = ['Africa', 'Europe'];
 
+  const ALL_COUNTRIES = {
+    Africa: [
+      {code:'DZA',country:'Algeria'},{code:'AGO',country:'Angola'},{code:'BEN',country:'Benin'},
+      {code:'BWA',country:'Botswana'},{code:'BFA',country:'Burkina Faso'},{code:'BDI',country:'Burundi'},
+      {code:'CPV',country:'Cabo Verde'},{code:'CMR',country:'Cameroon'},{code:'CAF',country:'Central African Rep.'},
+      {code:'TCD',country:'Chad'},{code:'COM',country:'Comoros'},{code:'COG',country:'Congo'},
+      {code:'COD',country:'DR Congo'},{code:'DJI',country:'Djibouti'},{code:'EGY',country:'Egypt'},
+      {code:'GNQ',country:'Equatorial Guinea'},{code:'ERI',country:'Eritrea'},{code:'SWZ',country:'Eswatini'},
+      {code:'ETH',country:'Ethiopia'},{code:'GAB',country:'Gabon'},{code:'GMB',country:'Gambia'},
+      {code:'GHA',country:'Ghana'},{code:'GIN',country:'Guinea'},{code:'GNB',country:'Guinea-Bissau'},
+      {code:'CIV',country:"Cote d'Ivoire"},{code:'KEN',country:'Kenya'},{code:'LSO',country:'Lesotho'},
+      {code:'LBR',country:'Liberia'},{code:'LBY',country:'Libya'},{code:'MDG',country:'Madagascar'},
+      {code:'MWI',country:'Malawi'},{code:'MLI',country:'Mali'},{code:'MRT',country:'Mauritania'},
+      {code:'MUS',country:'Mauritius'},{code:'MAR',country:'Morocco'},{code:'MOZ',country:'Mozambique'},
+      {code:'NAM',country:'Namibia'},{code:'NER',country:'Niger'},{code:'NGA',country:'Nigeria'},
+      {code:'RWA',country:'Rwanda'},{code:'STP',country:'Sao Tome and Pr.'},{code:'SEN',country:'Senegal'},
+      {code:'SYC',country:'Seychelles'},{code:'SLE',country:'Sierra Leone'},{code:'SOM',country:'Somalia'},
+      {code:'ZAF',country:'South Africa'},{code:'SSD',country:'South Sudan'},{code:'SDN',country:'Sudan'},
+      {code:'TZA',country:'Tanzania'},{code:'TGO',country:'Togo'},{code:'TUN',country:'Tunisia'},
+      {code:'UGA',country:'Uganda'},{code:'ZMB',country:'Zambia'},{code:'ZWE',country:'Zimbabwe'},
+    ],
+    Europe: [
+      {code:'ALB',country:'Albania'},{code:'AND',country:'Andorra'},{code:'AUT',country:'Austria'},
+      {code:'BEL',country:'Belgium'},{code:'BIH',country:'Bosnia and Herz.'},{code:'BGR',country:'Bulgaria'},
+      {code:'BLR',country:'Belarus'},{code:'HRV',country:'Croatia'},{code:'CYP',country:'Cyprus'},
+      {code:'CZE',country:'Czechia'},{code:'DNK',country:'Denmark'},{code:'EST',country:'Estonia'},
+      {code:'FIN',country:'Finland'},{code:'FRA',country:'France'},{code:'DEU',country:'Germany'},
+      {code:'GRC',country:'Greece'},{code:'HUN',country:'Hungary'},{code:'ISL',country:'Iceland'},
+      {code:'IRL',country:'Ireland'},{code:'ITA',country:'Italy'},{code:'XKX',country:'Kosovo'},
+      {code:'LVA',country:'Latvia'},{code:'LIE',country:'Liechtenstein'},{code:'LTU',country:'Lithuania'},
+      {code:'LUX',country:'Luxembourg'},{code:'MLT',country:'Malta'},{code:'MDA',country:'Moldova'},
+      {code:'MCO',country:'Monaco'},{code:'MNE',country:'Montenegro'},{code:'NLD',country:'Netherlands'},
+      {code:'MKD',country:'North Macedonia'},{code:'NOR',country:'Norway'},{code:'POL',country:'Poland'},
+      {code:'PRT',country:'Portugal'},{code:'ROU',country:'Romania'},{code:'RUS',country:'Russia'},
+      {code:'SMR',country:'San Marino'},{code:'SRB',country:'Serbia'},{code:'SVK',country:'Slovakia'},
+      {code:'SVN',country:'Slovenia'},{code:'ESP',country:'Spain'},{code:'SWE',country:'Sweden'},
+      {code:'CHE',country:'Switzerland'},{code:'UKR',country:'Ukraine'},{code:'GBR',country:'United Kingdom'},
+    ],
+  };
+
   /* ── dati ───────────────────────────────────────────────── */
   const [gpiRaw, oosRaw] = await Promise.all([
     d3.csv('datasets/processed/gpi_secondary.csv', d3.autoType),
@@ -58,13 +98,15 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   const svg = d3.select(container).append('svg')
     .attr('width', W).attr('height', H)
-    .style('width','100%').style('height','100%').style('display','block');
+    .style('width','100%').style('height','100%').style('display','block')
+    .style('background','#fff');
   const root = svg.append('g');
 
   let drill = null; // null = overview, string = continent name
 
   function draw() {
     root.selectAll('*').remove();
+    d3.select(container).selectAll('button.qs-back').remove();
     drill ? drawDrill(drill) : drawOverview();
   }
 
@@ -72,12 +114,11 @@ async function renderQualityScatter(selector, isFullscreen = false) {
      OVERVIEW — dot strip
   ════════════════════════════════════════════════════════ */
   function drawOverview() {
-    const M  = { top: 48, right: 28, bottom: 36, left: 96 };
+    const M  = { top: 32, right: 28, bottom: 44, left: 110 };
     const iw = W - M.left - M.right;
     const ih = H - M.top - M.bottom;
     const g  = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
 
-    // X: GPI deviation (GPI - 1)
     const devs = countries.map(d => d.gpi - 1);
     const [dMin, dMax] = d3.extent(devs);
     const xS = d3.scaleLinear()
@@ -85,27 +126,33 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       .range([0, iw]);
 
     const bandH = ih / CONTS.length;
+    const DOT_R = 6;
+
+    // colored zones: left = bambine escluse, right = bambini esclusi
+    const parX = xS(0);
+
+    // zone labels — top of each zone
+    g.append('text').attr('x', parX / 2).attr('y', 14)
+      .attr('text-anchor','middle').attr('font-size',10).attr('font-weight','600')
+      .attr('fill', COL_GIRLS).attr('opacity', 0.7).style('pointer-events','none')
+      .text('più bambini a scuola');
+    g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', 14)
+      .attr('text-anchor','middle').attr('font-size',10).attr('font-weight','600')
+      .attr('fill', COL_BOYS).attr('opacity', 0.7).style('pointer-events','none')
+      .text('più bambine a scuola');
 
     // gridlines
     xS.ticks(8).forEach(t => {
       if (Math.abs(t) < 1e-9) return;
       g.append('line').attr('x1',xS(t)).attr('x2',xS(t)).attr('y1',0).attr('y2',ih)
-        .attr('stroke','#f0f0f0').attr('stroke-width',1);
+        .attr('stroke','rgba(0,0,0,0.06)').attr('stroke-width',1);
     });
 
-    // parity dashed line
-    g.append('line').attr('x1',xS(0)).attr('x2',xS(0)).attr('y1',-10).attr('y2',ih)
-      .attr('stroke','#bbb').attr('stroke-dasharray','4,3').attr('stroke-width',1);
-    g.append('text').attr('x',xS(0)).attr('y',-22)
-      .attr('text-anchor','middle').attr('font-size',8).attr('fill','#bbb').text('parità');
-
-    // direction labels
-    g.append('text').attr('x',xS(-0.22)).attr('y',-34)
-      .attr('text-anchor','middle').attr('font-size',8.5).attr('fill',COL_GIRLS)
-      .text('← bambine escluse (GPI < 1)');
-    g.append('text').attr('x',xS(0.11)).attr('y',-34)
-      .attr('text-anchor','middle').attr('font-size',8.5).attr('fill',COL_BOYS)
-      .text('bambini esclusi →');
+    // parity dashed line + label
+    g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#bbb').attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
+    g.append('text').attr('x',parX).attr('y',-10)
+      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#aaa').text('parità');
 
     // x axis
     g.append('g').attr('transform',`translate(0,${ih})`)
@@ -113,7 +160,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .tickFormat(d => d === 0 ? '0' : d > 0 ? `+${d.toFixed(2)}` : d.toFixed(2)))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size',9).attr('fill','#aaa');
+        ax.selectAll('.tick text').attr('font-size',10).attr('fill','#aaa');
         ax.selectAll('.tick line').attr('stroke','#dde3ef');
       });
 
@@ -123,9 +170,10 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       const color = COL[cont];
       const cy    = i * bandH + bandH / 2;
 
+
       // divider
       if (i > 0) g.append('line').attr('x1',-M.left+8).attr('x2',iw)
-        .attr('y1',i*bandH).attr('y2',i*bandH).attr('stroke','#f0f0f0');
+        .attr('y1',i*bandH).attr('y2',i*bandH).attr('stroke','#e8e8e8');
 
       // stats per tooltip
       const gpis   = rows.map(d => d.gpi).sort(d3.ascending);
@@ -136,14 +184,14 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       const nBelow = rows.filter(d => d.gpi < 1).length;
       const nAbove = rows.filter(d => d.gpi >= 1).length;
 
-      const showContTip = ev => {
+      const showContTip = () => {
         tip.innerHTML =
           `<strong style="color:${color}">${cont}</strong>&ensp;<span style="color:#aaa">${rows.length} paesi</span><br>` +
           `<span style="color:#aaa">Media:</span> <strong>${cMean.toFixed(3)}</strong>&ensp;` +
           `<span style="color:#aaa">Mediana:</span> <strong>${cMed.toFixed(3)}</strong><br>` +
           `<span style="color:#aaa">Min:</span> ${cMin.toFixed(3)}&ensp;` +
           `<span style="color:#aaa">Max:</span> ${cMax.toFixed(3)}<br>` +
-          `<span style="color:${COL_GIRLS}">▼ bambine escluse (GPI&lt;1):</span> ${nBelow}<br>` +
+          `<span style="color:${COL_GIRLS}">▼ bambine escluse (GPI&lt;1):</span> ${nBelow}&ensp;` +
           `<span style="color:${COL_BOYS}">▲ bambini esclusi (GPI&gt;1):</span> ${nAbove}`;
         tip.style.display = 'block';
       };
@@ -156,14 +204,11 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .on('mouseleave', hideTip)
         .on('click', () => { drill = cont; draw(); });
 
-      // label
-      g.append('text').attr('x',-8).attr('y',cy-5)
-        .attr('text-anchor','end').attr('font-size',11).attr('font-weight','700').attr('fill',color)
+      // continent label
+      g.append('text').attr('x',-10).attr('y',cy + 4)
+        .attr('text-anchor','end').attr('font-size',13).attr('font-weight','700').attr('fill',color)
         .style('cursor','pointer').text(cont)
         .on('click',() => { drill = cont; draw(); });
-      g.append('text').attr('x',-8).attr('y',cy+9)
-        .attr('text-anchor','end').attr('font-size',8).attr('fill','#ccc')
-        .text(`n=${rows.length} · click`);
 
       // mean tick
       const mean = d3.mean(rows, d => d.gpi - 1);
@@ -171,6 +216,31 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .attr('x1',xS(mean)).attr('x2',xS(mean))
         .attr('y1',cy - bandH*0.35).attr('y2',cy + bandH*0.35)
         .attr('stroke',color).attr('stroke-width',2).attr('opacity',0.5);
+
+      // missing countries — griglia compatta in basso a sinistra del band
+      const presentCodes = new Set(rows.map(d => d.code));
+      const missing = (ALL_COUNTRIES[cont] || []).filter(d => !presentCodes.has(d.code));
+      if (missing.length) {
+        const cols  = 4, r = 5, gap = 13;
+        const ndRows = Math.ceil(missing.length / cols);
+        const startX = xS(xS.domain()[0]) + 6;
+        const startY = i * bandH + bandH - ndRows * gap - 16;
+
+        missing.forEach((d, mi) => {
+          const col = mi % cols, row = Math.floor(mi / cols);
+          g.append('circle')
+            .attr('cx', startX + col * gap).attr('cy', startY + row * gap)
+            .attr('r', r).attr('fill', '#ccc').attr('opacity', 0.7)
+            .style('cursor', 'default')
+            .on('mouseover', function() {
+              d3.select(this).attr('fill', '#999');
+              tip.innerHTML = `<strong style="color:#888">${d.country}</strong><br><em style="color:#aaa">dato GPI non disponibile</em>`;
+              tip.style.display = 'block';
+            })
+            .on('mousemove', moveTip)
+            .on('mouseleave', function() { d3.select(this).attr('fill', '#ccc'); hideTip(); });
+        });
+      }
 
       // dots with bin jitter
       const binSz = 0.02;
@@ -181,7 +251,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         bins.get(k).push(d);
       });
       const maxBin = d3.max([...bins.values()], v => v.length);
-      const jScale = Math.min((bandH*0.38)/Math.max(maxBin,1), 9);
+      const jScale = Math.min((bandH*0.38)/Math.max(maxBin,1), DOT_R * 2.2);
 
       rows.forEach(d => {
         const dev  = d.gpi - 1;
@@ -193,11 +263,11 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
         g.append('circle')
           .attr('cx', xS(dev)).attr('cy', cy + jit)
-          .attr('r', 4.5).attr('fill', fill).attr('opacity', 0.68)
-          .attr('stroke','#fff').attr('stroke-width',0.5)
+          .attr('r', DOT_R).attr('fill', fill).attr('opacity', 0.68)
+          .attr('stroke','#fff').attr('stroke-width',0.8)
           .style('cursor','pointer')
           .on('mouseover', function() {
-            d3.select(this).attr('opacity',1).attr('r',6);
+            d3.select(this).attr('opacity',1).attr('r', DOT_R + 2);
             tip.innerHTML =
               `<strong style="color:${color}">${d.country}</strong><br>` +
               `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
@@ -206,9 +276,49 @@ async function renderQualityScatter(selector, isFullscreen = false) {
             tip.style.display = 'block';
           })
           .on('mousemove', moveTip)
-          .on('mouseleave', function() { d3.select(this).attr('opacity',0.68).attr('r',4.5); hideTip(); })
+          .on('mouseleave', function() { d3.select(this).attr('opacity',0.68).attr('r', DOT_R); hideTip(); })
           .on('click', () => { drill = cont; draw(); });
       });
+    });
+
+    // ── Legenda bottom-right ─────────────────────────────
+    const CONT_LEG = [
+      { col: COL.Africa, label: 'Africa' },
+      { col: COL.Europe, label: 'Europe' },
+      { col: '#ccc',     label: 'dato non disponibile' },
+    ];
+    const pillW  = 178;
+    const PAD    = 8;
+    const HDR_H  = 14;
+    const ROW_H  = 16;
+    const pillH  = PAD + HDR_H + 4 + CONT_LEG.length * ROW_H + PAD;
+
+    const legX = iw - 10;
+    const legY = ih - 10;
+    const legG = g.append('g').attr('transform', `translate(${legX},${legY})`);
+
+    legG.append('rect')
+      .attr('x', -pillW).attr('y', -pillH)
+      .attr('width', pillW).attr('height', pillH)
+      .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)')
+      .attr('stroke', '#e0e0e0').attr('stroke-width', 1);
+
+    // header
+    legG.append('text')
+      .attr('x', -pillW + 10).attr('y', -pillH + PAD + 9)
+      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa')
+      .attr('letter-spacing', '0.08em')
+      .style('pointer-events', 'none')
+      .text('CONTINENTE');
+
+    CONT_LEG.forEach((item, li) => {
+      const ly = -pillH + PAD + HDR_H + 4 + li * ROW_H;
+      legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
+        .attr('fill', item.col).attr('opacity', 0.85);
+      legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
+        .attr('font-size', 9).attr('fill', '#555')
+        .style('pointer-events', 'none')
+        .text(item.label);
     });
   }
 
@@ -224,11 +334,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 
-    // Symmetric domain around parity=1: min e max equidistanti → barre confrontabili
-    const absMax = d3.max(gpis, d => Math.abs(d - 1.0));
-    const pad    = absMax * 0.12;
-    const yS     = d3.scaleLinear()
-      .domain([1 - absMax - pad, 1 + absMax + pad])
+    // Fixed domain [0.6, 1.4] — same for all continents so drill-downs are comparable
+    const yS = d3.scaleLinear()
+      .domain([0.6, 1.4])
       .range([ih, 0]);
     const parY = yS(1.0); // parity line = centro esatto
 
@@ -237,14 +345,20 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     const g = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
 
-    /* back button */
-    const back = root.append('g').attr('transform','translate(10,10)').style('cursor','pointer')
-      .on('click', () => { drill = null; draw(); });
-    back.append('rect').attr('rx',6).attr('width',130).attr('height',26)
-      .attr('fill','rgba(255,255,255,0.92)').attr('stroke','#d0d8e8');
-    back.append('text').attr('x',10).attr('y',17)
-      .attr('font-size',11).attr('font-weight','600').attr('fill','#4a6fa5')
-      .text('← Tutti i continenti');
+    /* back button — round arrow, same style as dumbbell chart control buttons */
+    const backBtn = d3.select(container).append('button')
+      .attr('class', 'qs-back').attr('title', 'Tutti i continenti')
+      .style('position', 'absolute').style('top', '8px').style('left', '8px')
+      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+      .style('justify-content', 'center').style('color', '#4a6fa5')
+      .style('padding', '0').style('line-height', '1').style('z-index', '10')
+      .style('transition', 'all 0.15s')
+      .html('<svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,1 1,6 6,11"/><line x1="1" y1="6" x2="13" y2="6"/></svg>')
+      .on('mouseover', function() { d3.select(this).style('background','#e8eef7'); })
+      .on('mouseleave', function() { d3.select(this).style('background','#f5f7fb'); })
+      .on('click', () => { backBtn.remove(); drill = null; draw(); });
 
     /* title */
     root.append('text').attr('x',W/2).attr('y',26)
