@@ -1,7 +1,6 @@
 /* ============================================================
-   Grafico 1-2 (Atto I) — Gapminder bubble scatter
-   X = income (log), Y = life_expectancy | poverty | mpi (toggle)
-   Size = population, Color = continent, Play animation
+   Grafico 1-2 (Atto I) — Gapminder: reddito × aspettativa di vita
+   X = PIL pro capite (log/lin toggle), Y = aspettativa di vita, R = pop
    ============================================================ */
 async function renderGapminderBubble(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -9,20 +8,15 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const CONT_COLOR = {
-    'Africa': '#e07b39', 'Asia': '#4a90d9', 'Europe': '#5aab6e',
-    'North America': '#a45dc0', 'Oceania': '#888888', 'South America': '#d4b84a',
-  };
+  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
+  const PLAYER_H = 72;
 
-  const [incomeRaw, lifeRaw, povertyRaw, mpiRaw, popRaw] = await Promise.all([
+  const [incomeRaw, lifeRaw, popRaw] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
     d3.csv('datasets/processed/life_expectancy.csv', d3.autoType),
-    d3.csv('datasets/processed/poverty.csv', d3.autoType),
-    d3.csv('datasets/processed/mpi.csv', d3.autoType),
     d3.csv('datasets/processed/population.csv', d3.autoType),
   ]);
 
-  // Build year→code→value maps
   function buildMap(raw) {
     const m = {};
     raw.forEach(d => {
@@ -33,24 +27,14 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     return m;
   }
 
-  // For MPI (sparse): latest value per code
-  const mpiLatest = {};
-  d3.group(mpiRaw, d => d.code).forEach((rows, code) => {
-    const sorted = rows.filter(r => r.value != null).sort((a, b) => b.year - a.year);
-    if (sorted.length) mpiLatest[code] = sorted[0].value;
-  });
-
   const incomeMap = buildMap(incomeRaw);
-  const lifeMap = buildMap(lifeRaw);
-  const povertyMap = buildMap(povertyRaw);
-  const popMap = buildMap(popRaw);
+  const lifeMap   = buildMap(lifeRaw);
+  const popMap    = buildMap(popRaw);
 
-  // Continent lookup from income
   const codeContinent = {};
   incomeRaw.forEach(d => { if (d.code && d.continent) codeContinent[d.code] = d.continent; });
   lifeRaw.forEach(d => { if (d.code && d.continent && !codeContinent[d.code]) codeContinent[d.code] = d.continent; });
 
-  // Country name lookup
   const codeName = {};
   incomeRaw.forEach(d => { if (d.code && d.country) codeName[d.code] = d.country; });
 
@@ -58,302 +42,216 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   const YEAR_MIN = incomeYears[0], YEAR_MAX = incomeYears[incomeYears.length - 1];
 
   let currentYear = YEAR_MAX;
-  let yMetric = 'life'; // 'life' | 'poverty' | 'mpi'
-  let playing = false;
-  let playTimer = null;
+  let playing = false, playTimer = null;
   let highlightContinent = null;
-
-  const MARGIN = { top: 36, right: 20, bottom: 48, left: 58 };
-  const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);
-  const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 460);
+  const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
+  const H = (container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 460)) - PLAYER_H;
+  const MARGIN = { top: 28, right: 24, bottom: 44, left: 58 };
   const iw = W - MARGIN.left - MARGIN.right;
-  const ih = H - MARGIN.top - MARGIN.bottom;
+  const ih = H - MARGIN.top  - MARGIN.bottom;
 
-  const svg = d3.select(container).append('svg')
+  const allIncome = incomeRaw.map(d => d.value).filter(v => v > 0);
+  const allLife   = lifeRaw.map(d => d.value).filter(v => v > 0);
+  const allPop    = popRaw.map(d => d.value).filter(v => v > 0);
+
+  const incomeDomain = [d3.min(allIncome) * 0.8, d3.max(allIncome) * 1.2];
+  const yS = d3.scaleLinear().domain([d3.min(allLife) - 2, d3.max(allLife) + 2]).range([ih, 0]);
+  const rS = d3.scaleSqrt().domain([0, d3.max(allPop)]).range([2, 28]);
+  const xS = d3.scaleLog().domain(incomeDomain).range([0, iw]).clamp(true);
+
+  // ── Chart SVG ────────────────────────────────────────────
+  const chartDiv = d3.select(container).append('div')
+    .style('position', 'absolute').style('top', '0').style('left', '0')
+    .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
+
+  const svg = chartDiv.append('svg')
     .attr('width', W).attr('height', H)
-    .style('width', '100%').style('height', '100%')
-    .style('display', 'block').style('font-family', 'Roboto Slab, serif');
+    .style('width', '100%').style('height', '100%').style('display', 'block')
+    .style('background', '#fff').style('border-radius', '10px 10px 0 0')
+    .style('font-family', 'Roboto Slab, serif');
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-  // Scales
-  const allIncome = incomeRaw.map(d => d.value).filter(v => v > 0);
-  const xS = d3.scaleLog()
-    .domain([d3.min(allIncome) * 0.8, d3.max(allIncome) * 1.2])
-    .range([0, iw]).clamp(true);
+  // Gridlines (Y only)
+  const gridG = g.append('g');
+  yS.ticks(6).forEach(t => gridG.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
 
-  const allPop = popRaw.map(d => d.value).filter(v => v > 0);
-  const rS = d3.scaleSqrt().domain([0, d3.max(allPop)]).range([2, 28]);
-
-  // Y scales per metric
-  const allLife = lifeRaw.map(d => d.value).filter(v => v > 0);
-  const yScales = {
-    life:    d3.scaleLinear().domain([d3.min(allLife) - 2, d3.max(allLife) + 2]).range([ih, 0]),
-    poverty: d3.scaleLinear().domain([-2, 102]).range([ih, 0]),
-    mpi:     d3.scaleLinear().domain([-0.01, 0.62]).range([ih, 0]),
-  };
-
-  const Y_LABELS = {
-    life: 'Aspettativa di vita (anni)',
-    poverty: 'Povertà estrema (% pop)',
-    mpi: 'Indice MPI (0–1)',
-  };
-
-  // Axes groups
+  // Axes (X rebuilt on scale toggle)
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
-  const yAxisG = g.append('g');
+  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888');
+  g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', 9);
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
 
-  function drawAxes() {
-    xAxisG.call(d3.axisBottom(xS).tickValues([500, 1000, 2000, 5000, 10000, 30000, 100000])
-      .tickFormat(v => v >= 1000 ? `$${v / 1000}k` : `$${v}`));
-    yAxisG.call(d3.axisLeft(yScales[yMetric]).ticks(6));
-    yAxisG.select('.y-label').remove();
-    yAxisG.append('text').attr('class', 'y-label')
-      .attr('transform', 'rotate(-90)').attr('y', -46).attr('x', -ih / 2)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#555')
-      .text(Y_LABELS[yMetric]);
-  }
+  xAxisG.call(d3.axisBottom(xS).tickValues([500, 1000, 2000, 5000, 10000, 30000, 100000]).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
+    .call(ax => ax.select('.domain').remove()).attr('font-size', 9);
+  xLabelEl.text('PIL pro capite (USD PPP, scala log)');
 
-  // X axis label
-  g.append('text').attr('x', iw / 2).attr('y', ih + 40)
-    .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#555')
-    .text('PIL pro capite (USD PPP, scala log)');
+  // ── Legend (bottom-right above player, choropleth style) ─
+  const LEG_W = 120, LEG_H = 106;
+  const legDiv = d3.select(container).append('div')
+    .style('position', 'absolute')
+    .style('bottom', (PLAYER_H + 10) + 'px').style('right', '12px')
+    .style('width', LEG_W + 'px').style('background', 'rgba(255,255,255,0.94)')
+    .style('border', '1px solid #d8dce8').style('border-radius', '8px')
+    .style('padding', '10px 12px').style('z-index', '15')
+    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
 
-  // Gridlines
-  const gridG = g.insert('g', ':first-child').attr('class', 'grid-g');
-  function drawGrid() {
-    gridG.selectAll('*').remove();
-    yScales[yMetric].ticks(6).forEach(t => {
-      gridG.append('line').attr('x1', 0).attr('x2', iw)
-        .attr('y1', yScales[yMetric](t)).attr('y2', yScales[yMetric](t))
-        .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
-    });
-  }
+  legDiv.append('div').style('font-size', '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', '6px').text('Continente');
 
-  // Build frame data
-  function getFrame(year) {
-    // Nearest available income year
-    const iy = incomeYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
+  ['Africa', 'Europe'].forEach(cont => {
+    const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
+    row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', CONT_COLOR[cont]).style('flex-shrink', '0').style('opacity', '0.8');
+    row.append('div').style('font-size', '9px').style('color', '#444').text(cont);
+  });
 
-    const codes = Object.keys(incomeMap[iy] || {});
-    const rows = [];
-    codes.forEach(code => {
-      const income = incomeMap[iy]?.[code];
-      if (!income || income <= 0) return;
-      const continent = codeContinent[code];
-      if (!continent) return;
-      if (continent !== 'Africa' && continent !== 'Europe') return;
+  legDiv.append('div').style('font-size', '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', '8px').style('margin-bottom', '6px').text('Popolazione');
 
-      let yVal;
-      if (yMetric === 'life') {
-        const lifeY = Object.keys(lifeMap).map(Number).sort((a, b) => Math.abs(a - year) - Math.abs(b - year))[0];
-        yVal = lifeMap[lifeY]?.[code];
-      } else if (yMetric === 'poverty') {
-        const pvY = Object.keys(povertyMap).map(Number).sort((a, b) => Math.abs(a - year) - Math.abs(b - year))[0];
-        yVal = povertyMap[pvY]?.[code];
-      } else {
-        yVal = mpiLatest[code];
-      }
-      if (yVal == null) return;
+  [5e6, 50e6, 200e6].forEach(p => {
+    const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
+    const r = rS(p);
+    const sz = Math.round(r * 2);
+    row.append('div').style('width', sz + 'px').style('height', sz + 'px').style('border-radius', '50%')
+      .style('border', '1.5px solid #bbb').style('flex-shrink', '0').style('box-sizing', 'border-box');
+    row.append('div').style('font-size', '9px').style('color', '#777').text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
+  });
 
-      const popY = Object.keys(popMap).map(Number).sort((a, b) => Math.abs(a - year) - Math.abs(b - year))[0];
-      const pop = popMap[popY]?.[code] || 1000;
-
-      rows.push({ code, country: codeName[code] || code, continent, income, yVal, pop });
-    });
-    return rows;
-  }
-
-  // Bubbles
-  const bubblesG = g.append('g').attr('class', 'bubbles');
+  const bubblesG = g.append('g');
 
   // Tooltip
   let tipEl = document.getElementById('gapminder-tip');
   if (!tipEl) {
-    tipEl = document.createElement('div');
-    tipEl.id = 'gapminder-tip';
-    Object.assign(tipEl.style, {
-      position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: 'rgba(20,20,40,0.88)', color: '#fff',
-      padding: '7px 11px', borderRadius: '5px', fontSize: '12px',
-      lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap',
-    });
+    tipEl = document.createElement('div'); tipEl.id = 'gapminder-tip';
+    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: 'rgba(20,20,40,0.88)', color: '#fff', padding: '7px 11px', borderRadius: '5px', fontSize: '12px', lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap' });
     document.body.appendChild(tipEl);
   }
 
-  function draw(year, animate) {
-    const frame = getFrame(year);
-    const yS = yScales[yMetric];
+  function getFrame(year) {
+    const iy = incomeYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
+    const lyYears = Object.keys(lifeMap).map(Number);
+    const ly = lyYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
+    const pyYears = Object.keys(popMap).map(Number);
+    const py = pyYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
+    return Object.keys(incomeMap[iy] || {}).map(code => {
+      const income = incomeMap[iy][code];
+      if (!income || income <= 0) return null;
+      const cont = codeContinent[code];
+      if (cont !== 'Africa' && cont !== 'Europe') return null;
+      const lifeVal = lifeMap[ly]?.[code];
+      if (lifeVal == null) return null;
+      const pop = popMap[py]?.[code] || 1000;
+      return { code, country: codeName[code] || code, continent: cont, income, lifeVal, pop };
+    }).filter(Boolean).sort((a, b) => b.pop - a.pop);
+  }
+
+  function draw(animate) {
+    const frame = getFrame(currentYear);
     const dur = animate ? 450 : 0;
 
-    const circles = bubblesG.selectAll('circle').data(frame, d => d.code);
-
-    const enter = circles.enter().append('circle')
-      .attr('cx', d => xS(d.income))
-      .attr('cy', d => yS(d.yVal))
-      .attr('r', 0)
-      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
-      .attr('opacity', d => highlightContinent ? (d.continent === highlightContinent ? 0.8 : 0.08) : 0.65)
-      .attr('stroke', '#fff').attr('stroke-width', 0.5)
-      .style('cursor', 'pointer');
-
-    enter.merge(circles).transition().duration(dur)
-      .attr('cx', d => xS(d.income))
-      .attr('cy', d => yS(d.yVal))
-      .attr('r', d => rS(d.pop))
+    bubblesG.selectAll('circle').data(frame, d => d.code).join(
+      enter => enter.append('circle')
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', 0)
+        .attr('fill', d => CONT_COLOR[d.continent] || '#888')
+        .attr('opacity', d => highlightContinent ? (d.continent === highlightContinent ? 0.82 : 0.07) : 0.65)
+        .attr('stroke', '#fff').attr('stroke-width', 0.5).style('cursor', 'pointer'),
+      update => update,
+      exit => exit.transition().duration(dur).attr('r', 0).remove()
+    ).transition().duration(dur)
+      .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', d => rS(d.pop))
       .attr('opacity', d => highlightContinent ? (d.continent === highlightContinent ? 0.82 : 0.07) : 0.65);
 
-    circles.exit().transition().duration(dur).attr('r', 0).remove();
-
     bubblesG.selectAll('circle')
-      .on('mouseover', function (event, d) {
-        tipEl.innerHTML = `<strong>${d.country}</strong> (${d.continent})<br>
-          Reddito: $${d3.format(',.0f')(d.income)}<br>
-          ${Y_LABELS[yMetric]}: ${d3.format('.1f')(d.yVal)}`;
+      .on('mouseover', function(event, d) {
+        tipEl.innerHTML = `<strong>${d.country}</strong> (${d.continent})<br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni`;
         tipEl.style.display = 'block';
         d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
       })
-      .on('mousemove', event => {
-        let x = event.clientX + 14, y = event.clientY - 28;
-        tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
-      })
-      .on('mouseleave', function () {
-        tipEl.style.display = 'none';
-        d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.5);
-      });
-  }
+      .on('mousemove', ev => { tipEl.style.left = (ev.clientX + 14) + 'px'; tipEl.style.top = (ev.clientY - 28) + 'px'; })
+      .on('mouseleave', function() { tipEl.style.display = 'none'; d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.5); });
 
-  function renderAll(animate = false) {
-    drawAxes();
-    drawGrid();
-    draw(currentYear, animate);
-    yearLabel.text(currentYear);
     sliderEl.property('value', currentYear);
+    yearDisplay.text(currentYear);
   }
 
-  // Year watermark
-  const yearLabel = svg.append('text')
-    .attr('x', W - MARGIN.right - 8).attr('y', H - MARGIN.bottom - 8)
-    .attr('text-anchor', 'end').attr('font-size', 40).attr('font-weight', 'bold')
-    .attr('fill', '#000').attr('opacity', 0.12).attr('pointer-events', 'none')
-    .text(currentYear);
+  // ── Player bar ────────────────────────────────────────────
+  const playerBar = d3.select(container).append('div')
+    .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
+    .style('height', PLAYER_H + 'px').style('background', '#fff')
+    .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e8eef7')
+    .style('display', 'flex').style('align-items', 'center')
+    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
-  // Controls row (play + slider)
-  const ctrlFO = svg.append('foreignObject')
-    .attr('x', MARGIN.left).attr('y', H - MARGIN.bottom + 10)
-    .attr('width', iw).attr('height', 30)
-    .attr('pointer-events', 'auto')
-    .on('mousedown', e => e.stopPropagation());
+  const ctrlWrap = playerBar.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
-  const ctrlDiv = ctrlFO.append('xhtml:div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '8px');
-
-  const playBtn = ctrlDiv.append('xhtml:button')
-    .style('border', 'none').style('background', 'none').style('cursor', 'pointer')
-    .style('font-size', '16px').style('line-height', '1').style('padding', '0')
-    .text('▶');
-
-  const sliderEl = ctrlDiv.append('xhtml:input')
-    .attr('type', 'range').attr('min', YEAR_MIN).attr('max', YEAR_MAX).attr('step', 1)
-    .attr('value', currentYear).style('flex', '1').style('accent-color', '#4a6fa5')
-    .style('cursor', 'pointer')
-    .on('input', function () {
-      stopPlay();
-      currentYear = +this.value;
-      renderAll(false);
-    });
-
-  function stopPlay() {
-    playing = false;
-    playBtn.text('▶');
-    if (playTimer) { clearInterval(playTimer); playTimer = null; }
+  function mkCtrlBtn(inner, title) {
+    return ctrlWrap.append('button').attr('title', title)
+      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+      .style('justify-content', 'center').style('color', '#4a6fa5')
+      .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
+      .html(inner);
   }
+
+  mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = YEAR_MIN; draw(false); });
+  mkCtrlBtn('&#8249;', 'Precedente').style('font-size', '18px').on('click', () => {
+    stopPlay(); const i = incomeYears.indexOf(currentYear);
+    if (i > 0) { currentYear = incomeYears[i - 1]; draw(false); }
+  });
+
+  const btnPlay = ctrlWrap.append('button')
+    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
+    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
+    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
+    .on('click', () => playing ? stopPlay() : startPlay());
+
+  mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
+    stopPlay(); const i = incomeYears.indexOf(currentYear);
+    if (i < incomeYears.length - 1) { currentYear = incomeYears[i + 1]; draw(false); }
+  });
 
   function startPlay() {
     playing = true;
-    playBtn.text('⏸');
+    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
     playTimer = setInterval(() => {
-      currentYear = currentYear < YEAR_MAX ? currentYear + 1 : YEAR_MIN;
-      renderAll(true);
+      currentYear = currentYear < YEAR_MAX ? incomeYears[incomeYears.indexOf(currentYear) + 1] : YEAR_MIN;
+      draw(true);
     }, 600);
   }
 
-  playBtn.on('click', () => { playing ? stopPlay() : startPlay(); });
+  function stopPlay() {
+    playing = false; clearInterval(playTimer); playTimer = null;
+    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+  }
 
-  // Y-metric buttons (top-right of chart area)
-  const yBtnFO = svg.append('foreignObject')
-    .attr('x', MARGIN.left + iw - 280).attr('y', 6)
-    .attr('width', 286).attr('height', 26)
-    .attr('pointer-events', 'auto')
-    .on('mousedown', e => e.stopPropagation());
+  const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');
+  const labelRow = timelineWrap.append('div').style('display', 'flex').style('justify-content', 'space-between').style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px').style('pointer-events', 'none');
+  incomeYears.filter((y, i) => i % 5 === 0 || i === incomeYears.length - 1).forEach(y => labelRow.append('span').text(y));
 
-  const yBtnDiv = yBtnFO.append('xhtml:div')
-    .style('display', 'flex').style('gap', '4px').style('justify-content', 'flex-end');
+  const sliderEl = timelineWrap.append('input').attr('type', 'range')
+    .attr('min', YEAR_MIN).attr('max', YEAR_MAX).attr('step', 1).attr('value', currentYear)
+    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
+    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .on('input', function() { stopPlay(); currentYear = +this.value; draw(false); });
 
-  [{ key: 'life', label: 'Aspettativa vita' }, { key: 'poverty', label: 'Povertà' }, { key: 'mpi', label: 'MPI' }].forEach(b => {
-    yBtnDiv.append('xhtml:button')
-      .attr('data-ymetric', b.key)
-      .style('padding', '2px 8px').style('font-size', '10px').style('border-radius', '16px')
-      .style('border', '1.5px solid #e07b39').style('cursor', 'pointer')
-      .style('font-family', 'Roboto Slab, serif')
-      .style('background', b.key === yMetric ? '#e07b39' : 'rgba(255,255,255,0.92)')
-      .style('color', b.key === yMetric ? '#fff' : '#e07b39')
-      .text(b.label)
-      .on('click', function () {
-        yMetric = this.dataset.ymetric;
-        yBtnDiv.selectAll('button').each(function () {
-          const a = this.dataset.ymetric === yMetric;
-          this.style.background = a ? '#e07b39' : 'rgba(255,255,255,0.92)';
-          this.style.color = a ? '#fff' : '#e07b39';
-        });
-        renderAll(true);
-      });
-  });
+  const yearDisplay = playerBar.append('div')
+    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('letter-spacing', '-0.5px').text(currentYear);
 
-  // Legend
-  const legG = svg.append('g').attr('transform', `translate(${MARGIN.left + 4}, ${MARGIN.top + 4})`);
-  [['Africa', CONT_COLOR['Africa']], ['Europe', CONT_COLOR['Europe']]].forEach(([c, col], i) => {
-    legG.append('circle').attr('cx', 6).attr('cy', i * 14 + 6).attr('r', 5).attr('fill', col).attr('opacity', 0.75);
-    legG.append('text').attr('x', 15).attr('y', i * 14 + 10).attr('font-size', 9).attr('fill', '#555').text(c);
-  });
+  draw(false);
 
-  renderAll(false);
-
-  // DOM API
-  container._gapminderPlay = () => { if (!playing) startPlay(); };
+  // ── DOM API ───────────────────────────────────────────────
+  container._gapminderPlay  = () => { if (!playing) startPlay(); };
   container._gapminderPause = stopPlay;
-  container._gapminderReset = () => {
-    stopPlay();
-    currentYear = YEAR_MAX;
-    highlightContinent = null;
-    yMetric = 'life';
-    yBtnDiv.selectAll('button').each(function () {
-      const a = this.dataset.ymetric === 'life';
-      this.style.background = a ? '#e07b39' : 'rgba(255,255,255,0.92)';
-      this.style.color = a ? '#fff' : '#e07b39';
-    });
-    renderAll(false);
-  };
+  container._gapminderReset = () => { stopPlay(); currentYear = YEAR_MAX; highlightContinent = null; draw(false); };
+  container._gapminderAnimate = () => { stopPlay(); currentYear = YEAR_MIN; draw(false); startPlay(); };
   container._gapminderHighlightContinent = (c) => {
     highlightContinent = c;
-    bubblesG.selectAll('circle')
-      .attr('opacity', d => c ? (d.continent === c ? 0.82 : 0.07) : 0.65);
+    bubblesG.selectAll('circle').attr('opacity', d => c ? (d.continent === c ? 0.82 : 0.07) : 0.65);
   };
-  container._gapminderAnimate = () => {
-    stopPlay();
-    currentYear = YEAR_MIN;
-    renderAll(false);
-    startPlay();
-  };
-  container._gapminderSwitchY = (metric) => {
-    if (!yScales[metric]) return;
-    stopPlay();
-    yMetric = metric;
-    yBtnDiv.selectAll('button').each(function () {
-      const a = this.dataset.ymetric === yMetric;
-      this.style.background = a ? '#e07b39' : 'rgba(255,255,255,0.92)';
-      this.style.color = a ? '#fff' : '#e07b39';
-    });
-    renderAll(true);
-  };
+  container._gapminderSwitchY = () => {};
 }

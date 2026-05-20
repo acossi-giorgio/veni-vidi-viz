@@ -1,506 +1,253 @@
-async function renderDumbbellChart(selector = "#chart-2-1", isFullscreen = false) {
-  const container = d3.select(selector);
-  if (container.empty()) return;
+/* ============================================================
+   Grafico 1-3 (Atto I) — Gapminder: reddito × aspettativa di vita
+   X = PIL pro capite (log), Y = aspettativa di vita, R = popolazione
+   Player bar riciclato da choroplethMulti
+   ============================================================ */
+async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false) {
+  const containerEl = document.querySelector(selector);
+  if (!containerEl) return;
+  containerEl.innerHTML = '';
+  containerEl.style.position = 'relative';
 
-  // Clear previous content but retain the container structure if needed
-  container.html("");
+  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
+  const PLAYER_H = 72;
 
-  // In fullscreen, we want the container to fill the modal content area
-  if (isFullscreen) {
-    container
-      .style("width", "100%")
-      .style("height", "100%")
-      .style("display", "flex") // Use flex for fullscreen too (better control)
-      .style("flex-direction", "column")
-      .style("overflow", "hidden") // Keep container static, scroll inside
-      .style("position", "relative");
-  } else {
-      // Reset styles for normal mode, and ensure strict flex layout
-      container
-      .style("width", "100%")
-      .style("height", "100%")
-      .style("display", "block") 
-      .style("overflow", "hidden")
-      .style("position", "relative");
+  const [lifeRaw, incomeRaw, popRaw] = await Promise.all([
+    d3.csv('datasets/processed/life_expectancy.csv', d3.autoType),
+    d3.csv('datasets/processed/income.csv', d3.autoType),
+    d3.csv('datasets/processed/population.csv', d3.autoType),
+  ]);
+
+  // Build per-code year→value maps
+  function buildYearMap(raw) {
+    const m = new Map();
+    raw.forEach(d => {
+      if (d.value == null) return;
+      if (!m.has(d.code)) m.set(d.code, { country: d.country, continent: d.continent, pts: new Map() });
+      m.get(d.code).pts.set(d.year, d.value);
+    });
+    return m;
   }
 
-  const raw = await d3.csv("datasets/processed/life_expectancy.csv", d3.autoType);
+  const lifeSeries   = buildYearMap(lifeRaw);
+  const incomeSeries = buildYearMap(incomeRaw);
+  const popSeries    = buildYearMap(popRaw);
 
-  // Pivot long → wide: for each country find year~2000 and most-recent value
-  const byCode = d3.group(raw, d => d.code);
-  const countryRows = [];
-  byCode.forEach((rows, code) => {
-    const sorted = rows.filter(d => d.value != null).sort((a, b) => a.year - b.year);
-    if (sorted.length < 2) return;
-    const early = sorted.find(d => d.year >= 2000 && d.year <= 2003) || sorted[0];
-    const late = sorted[sorted.length - 1];
-    if (!early || !late || early.year === late.year) return;
-    const r = sorted[0];
-    countryRows.push({
-      country:   r.country,
-      continent: r.continent,
-      start:     early.value,
-      end:       late.value,
-      diff:      late.value - early.value,
-    });
+  function nearest(pts, year) {
+    if (!pts || !pts.size) return null;
+    const yrs = [...pts.keys()];
+    const best = yrs.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
+    return pts.get(best);
+  }
+
+  const allYears = [...new Set(incomeRaw.map(d => d.year))].sort((a, b) => a - b);
+
+  const codes = [...lifeSeries.keys()].filter(code => {
+    const s = lifeSeries.get(code);
+    return (s.continent === 'Africa' || s.continent === 'Europe') && incomeSeries.has(code);
   });
 
-  // Continent aggregate rows (mean of countries)
-  const contGroups = d3.group(countryRows, d => d.continent);
-  const continentRows = Array.from(contGroups, ([continent, rows]) => ({
-    continent,
-    start: d3.mean(rows, r => r.start),
-    end:   d3.mean(rows, r => r.end),
-    diff:  d3.mean(rows, r => r.diff),
-  })).sort((a, b) => d3.ascending(a.end, b.end));
-
-  const continents = [...new Set(countryRows.map(d => d.continent))].sort();
-  const continentColor = {
-    "Africa":        "#c0392b",
-    "Asia":          "#2980b9",
-    "Europe":        "#27ae60",
-    "North America": "#8e44ad",
-    "South America": "#d35400",
-    "Oceania":       "#16a085",
-  };
-
-  container.style("font-family", "inherit");
-
-  // ── Shared tooltip ───────────────────────────────────────────────────────
-  d3.select("body").selectAll(".tooltip-dumbbell").remove();
-  const tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip-dumbbell")
-    .style("position", "absolute")
-    .style("background", "rgba(0,0,0,0.9)")
-    .style("color", "#fff")
-    .style("border-radius", "6px")
-    .style("padding", "10px 14px")
-    .style("pointer-events", "none")
-    .style("box-shadow", "0 4px 12px rgba(0,0,0,0.3)")
-    .style("font-size", "12px")
-    .style("line-height", "1.6")
-    .style("z-index", "10000")
-    .style("display", "none");
-
-  function showTooltip(event, html) {
-    tooltip.style("display", "block").html(html);
-    const rect = tooltip.node().getBoundingClientRect();
-    let tx = event.pageX + 12, ty = event.pageY + 8;
-    if (tx + rect.width > window.innerWidth - 8) tx = event.pageX - rect.width - 12;
-    if (ty + rect.height > window.innerHeight - 8) ty = event.pageY - rect.height - 8;
-    tooltip.style("left", `${tx}px`).style("top", `${ty}px`);
-  }
-  function hideTooltip() { tooltip.style("display", "none"); }
-
-  // ── Main view container (swapped between overview and drill-down) ────────
-  const view = container.append("div")
-    .style("width", "100%")
-    .style("max-width", "100%");
-
-  // ═══════════════════════════════════════════════════════════════════════
-  // OVERVIEW — continent-level aggregated dumbbell
-  // ═══════════════════════════════════════════════════════════════════════
-  function renderOverview() {
-    view.html("");
-    
-    // Reset view styles and ensure full height flex column
-    view.attr("style", "")
-        .style("width", "100%")
-        .style("height", "100%")
-        .style("display", "flex")
-        .style("flex-direction", "column")
-        .style("overflow", "hidden");
-
-    const margin = { left: 160, right: 40 };
-    const containerWidth = container.node().getBoundingClientRect().width;
-    const totalWidth = containerWidth > 0 ? containerWidth : (isFullscreen ? window.innerWidth * 0.8 : 700);
-    const W = totalWidth - margin.left - margin.right;
-    const rowH = 52;
-    const bodyH = continentRows.length * rowH; // Fixed height for overview is fine as it's short
-    const xAxisH = 48;
-
-    const xMin = Math.floor(d3.min(continentRows, d => d.start) / 5) * 5 - 2;
-    const xMax = Math.ceil(d3.max(continentRows, d => d.end) / 5) * 5 + 2;
-    const x = d3.scaleLinear().domain([xMin, xMax]).range([0, W]);
-    const y = d3.scaleBand()
-      .domain(continentRows.map(d => d.continent))
-      .range([0, bodyH])
-      .padding(0.4);
-
-    // ── Header Section ─────────────────────────────────────────────────────
-    const headerDiv = view.append("div")
-      .style("flex", "0 0 auto")
-      .style("z-index", "10");
-
-    // Hint label
-    headerDiv.append("div")
-      .style("font-size", "12px")
-      .style("color", "#888")
-      .style("margin-bottom", "6px")
-      .style("padding-left", `${margin.left}px`)
-      .text("← Clicca su un continente per esplorare i paesi");
-
-    // ── Scrollable Body (Flexible) ─────────────────────────────────────────
-    const scrollBody = view.append("div")
-      .style("flex", "1 1 auto")
-      .style("overflow-y", "auto")
-      .style("overflow-x", "hidden")
-      .style("position", "relative")
-      .style("display", "flex") // Enable flex layout for centering
-      .style("flex-direction", "column");
-
-    const svgBody = scrollBody.append("svg")
-      .attr("width", totalWidth)
-      .attr("height", bodyH)
-      .style("width", "100%")
-      .style("display", "block")
-      .style("font-family", "inherit")
-      .style("margin", "auto"); // Safe centering
-
-    const g = svgBody.append("g").attr("transform", `translate(${margin.left},0)`);
-
-    // Vertical grid lines
-    g.append("g")
-      .call(d3.axisBottom(x).ticks(8).tickSize(bodyH).tickFormat(""))
-      .call(gg => gg.select(".domain").remove())
-      .call(gg => gg.selectAll("line").attr("stroke", "#e8e8e8").attr("stroke-dasharray", "3,3"));
-
-    // Dumbbell lines
-    g.selectAll(".db-line")
-      .data(continentRows)
-      .join("line")
-      .attr("class", "db-line")
-      .attr("x1", d => x(d.start))
-      .attr("x2", d => x(d.end))
-      .attr("y1", d => y(d.continent) + y.bandwidth() / 2)
-      .attr("y2", d => y(d.continent) + y.bandwidth() / 2)
-      .attr("stroke", d => continentColor[d.continent] || "#555")
-      .attr("stroke-width", 2.5)
-      .attr("opacity", 0.55);
-
-    // Dot 2000 (small)
-    g.selectAll(".db-dot-start")
-      .data(continentRows)
-      .join("circle")
-      .attr("class", "db-dot-start")
-      .attr("cx", d => x(d.start))
-      .attr("cy", d => y(d.continent) + y.bandwidth() / 2)
-      .attr("r", 5)
-      .attr("fill", d => continentColor[d.continent] || "#555")
-      .attr("opacity", 0.45)
-      .style("cursor", "pointer")
-      .on("mousemove", (event, d) => {
-        const c = continentColor[d.continent] || "#555";
-        showTooltip(event,
-          `<div style="font-weight:700;color:${c};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.continent}</div>` +
-          `<span style="color:#aaa">2000 (media):</span> ${d.start.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">2023 (media):</span> ${d.end.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa;font-style:italic">Clicca per esplorare i paesi</span>`
-        );
-      })
-      .on("mouseleave", hideTooltip)
-      .on("click", (event, d) => renderDrillDown(d.continent));
-
-    // Dot 2023 (large)
-    g.selectAll(".db-dot-end")
-      .data(continentRows)
-      .join("circle")
-      .attr("class", "db-dot-end")
-      .attr("cx", d => x(d.end))
-      .attr("cy", d => y(d.continent) + y.bandwidth() / 2)
-      .attr("r", 8)
-      .attr("fill", d => continentColor[d.continent] || "#555")
-      .attr("opacity", 1)
-      .style("cursor", "pointer")
-      .on("mousemove", (event, d) => {
-        const c = continentColor[d.continent] || "#555";
-        showTooltip(event,
-          `<div style="font-weight:700;color:${c};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.continent}</div>` +
-          `<span style="color:#aaa">2000 (media):</span> ${d.start.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">2023 (media):</span> ${d.end.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa;font-style:italic">Clicca per esplorare i paesi</span>`
-        );
-      })
-      .on("mouseleave", hideTooltip)
-      .on("click", (event, d) => renderDrillDown(d.continent));
-
-    // Invisible hover band covering the full row (easier click target)
-    g.selectAll(".db-hover-band")
-      .data(continentRows)
-      .join("rect")
-      .attr("class", "db-hover-band")
-      .attr("x", 0)
-      .attr("y", d => y(d.continent))
-      .attr("width", W)
-      .attr("height", y.bandwidth())
-      .attr("fill", "transparent")
-      .style("cursor", "pointer")
-      .on("mousemove", (event, d) => {
-        const c = continentColor[d.continent] || "#555";
-        showTooltip(event,
-          `<div style="font-weight:700;color:${c};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.continent}</div>` +
-          `<span style="color:#aaa">2000 (media):</span> ${d.start.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">2023 (media):</span> ${d.end.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(2)} anni<br/>` +
-          `<span style="color:#aaa;font-style:italic">Clicca per esplorare i paesi</span>`
-        );
-      })
-      .on("mouseleave", hideTooltip)
-      .on("click", (event, d) => renderDrillDown(d.continent));
-
-    // Y axis
-    svgBody.append("g")
-      .attr("transform", `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickSize(0).tickPadding(8))
-      .call(gg => gg.select(".domain").remove())
-      .call(gg => gg.selectAll("text")
-        .attr("font-size", "12px")
-        .attr("font-weight", "500")
-        .attr("fill", "#333")
-        .style("cursor", "pointer"))
-      .selectAll("text")
-      .on("click", (event, d) => renderDrillDown(d));
-
-    // ── Footer Section (Fixed X-Axis) ──────────────────────────────────────
-    const footerDiv = view.append("div")
-      .style("flex", "0 0 auto")
-      .style("border-top", "1px solid #e8e8e8")
-      .style("background", "#fff")
-      .style("z-index", "10");
-
-    const svgX = footerDiv.append("svg")
-      .attr("width", totalWidth).attr("height", xAxisH)
-      .style("width", "100%").style("display", "block").style("font-family", "inherit");
-    svgX.append("g")
-      .attr("transform", `translate(${margin.left},8)`)
-      .call(d3.axisBottom(x).ticks(8))
-      .call(gg => gg.select(".domain").attr("stroke", "#ccc"))
-      .call(gg => gg.selectAll("text").attr("font-size", "11px").attr("fill", "#555"))
-      .call(gg => gg.selectAll(".tick line").attr("stroke", "#ccc"));
-    svgX.append("text")
-      .attr("x", margin.left + W / 2).attr("y", xAxisH - 4)
-      .attr("text-anchor", "middle").attr("fill", "#888").style("font-size", "11px")
-      .text("Life Expectancy (anni)");
+  function getPoints(year) {
+    return codes.map(code => {
+      const life   = lifeSeries.get(code);
+      const lifeV  = nearest(life.pts, year);
+      const incV   = nearest(incomeSeries.get(code)?.pts, year);
+      const popV   = nearest(popSeries.get(code)?.pts, year) || 1e6;
+      if (lifeV == null || incV == null || incV <= 0) return null;
+      return { code, country: life.country, continent: life.continent, life: lifeV, income: incV, pop: popV };
+    }).filter(Boolean).sort((a, b) => b.pop - a.pop);
   }
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // DRILL-DOWN — per-country dumbbell for a selected continent
-  // ═══════════════════════════════════════════════════════════════════════
-  function renderDrillDown(continent) {
-    view.html("");
-    hideTooltip();
-    
-    // Reset view styles and ensure full height flex column (internal scroll)
-    view.attr("style", "")
-        .style("width", "100%")
-        .style("height", "100%")
-        .style("display", "flex")
-        .style("flex-direction", "column")
-        .style("overflow", "hidden");
+  let currentYear = allYears[allYears.length - 1];
+  let playing = false, animTimer = null;
 
-    const color = continentColor[continent] || "#555";
-    
-    // ── Header Section (Fixed) ─────────────────────────────────────────────
-    const headerDiv = view.append("div")
-      .style("flex", "0 0 auto")
-      .style("padding", "10px 0")
-      .style("background", "#fff")
-      .style("z-index", "10")
-      .style("border-bottom", "1px solid #f0f0f0");
+  // Fixed scales across all years
+  const incAll  = incomeRaw.filter(d => d.value > 0 && (d.continent === 'Africa' || d.continent === 'Europe')).map(d => d.value);
+  const lifeAll = lifeRaw.filter(d => d.value != null && (d.continent === 'Africa' || d.continent === 'Europe')).map(d => d.value);
+  const popAll  = popRaw.filter(d => d.value != null && (d.continent === 'Africa' || d.continent === 'Europe')).map(d => d.value);
 
-    // Container for back button and continent title
-    const headerContent = headerDiv.append("div")
-      .style("display", "flex")
-      .style("align-items", "center")
-      .style("justify-content", "space-between")
-      .style("margin-bottom", "6px");
+  const W = containerEl.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 800);
+  const H = (containerEl.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 480)) - PLAYER_H;
+  const MARGIN = { top: 20, right: 24, bottom: 44, left: 52 };
+  const iw = W - MARGIN.left - MARGIN.right;
+  const ih = H - MARGIN.top  - MARGIN.bottom;
 
-    // Back button
-    headerContent.append("button")
-      .style("display", "inline-flex")
-      .style("align-items", "center")
-      .style("gap", "6px")
-      .style("padding", "6px 14px")
-      .style("background", "#f5f5f5")
-      .style("border", "1px solid #ddd")
-      .style("border-radius", "6px")
-      .style("font-size", "13px")
-      .style("font-weight", "600")
-      .style("color", "#333")
-      .style("cursor", "pointer")
-      .html("&#8592; Indietro")
-      .on("click", () => renderOverview())
-      .on("mouseover", function() { d3.select(this).style("background", "#e8e8e8"); })
-      .on("mouseout",  function() { d3.select(this).style("background", "#f5f5f5"); });
-      
-    // Continent name header
-    headerContent.append("span")
-      .style("font-size", "14px")
-      .style("font-weight", "700")
-      .style("color", color)
-      .text(continent);
+  const xS = d3.scaleLog().domain(d3.extent(incAll)).range([0, iw]).nice();
+  const yS = d3.scaleLinear().domain([d3.min(lifeAll) * 0.95, d3.max(lifeAll) * 1.02]).range([ih, 0]).nice();
+  const rS = d3.scaleSqrt().domain([0, d3.max(popAll)]).range([3, 22]);
 
-    // ── Pre-calculate scales and dimensions ────────────────────────────────
-    const rows = countryRows
-      .filter(d => d.continent === continent)
-      .sort((a, b) => d3.ascending(a.end, b.end));
+  // ── Chart SVG ────────────────────────────────────────────
+  const chartDiv = d3.select(containerEl).append('div')
+    .style('position', 'absolute').style('top', '0').style('left', '0')
+    .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
 
-    const margin = { left: 160, right: 40 };
-    // Get width of parent .chart-box (container.style.width is 100%, so use bounding client rect)
-    // IMPORTANT: If clientWidth is small/zero (e.g. during transitions), fallback to a reasonable default
-    let containerWidth = container.node().getBoundingClientRect().width;
-    
-    // Fallback if width is suspicious
-    if (!containerWidth || containerWidth < 100) {
-        // Try to find the closest chart-box parent's width
-        const box = container.node().closest('.chart-box');
-        if (box) containerWidth = box.getBoundingClientRect().width;
-    }
+  const svg = chartDiv.append('svg')
+    .attr('width', W).attr('height', H)
+    .style('width', '100%').style('height', '100%').style('display', 'block')
+    .style('background', '#fff').style('border-radius', '10px 10px 0 0');
 
-    const totalWidth = (containerWidth > 200) ? containerWidth : (isFullscreen ? window.innerWidth * 0.9 : 700);
-    const W = totalWidth - margin.left - margin.right;
-    
-    // Ensure W is positive
-    const safeW = Math.max(W, 100);
-    const rowH = 22; 
-    // Calculate full height needed for all rows
-    const contentHeight = Math.max(200, rows.length * rowH);
+  const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-    const xAxisH = 48;
+  // Gridlines
+  xS.ticks(6).forEach(t => g.append('line').attr('x1', xS(t)).attr('x2', xS(t)).attr('y1', 0).attr('y2', ih).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+  yS.ticks(6).forEach(t => g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
 
-    const xMin = Math.floor(d3.min(rows, d => d.start) / 5) * 5 - 2;
-    const xMax = Math.ceil(d3.max(rows, d => d.end) / 5) * 5 + 2;
-    // Use safeW instead of W
-    const x = d3.scaleLinear().domain([xMin, xMax]).range([0, safeW]);
-    const y = d3.scaleBand()
-      .domain(rows.map(d => d.country))
-      .range([0, contentHeight])
-      .padding(0.35);
+  // Axes
+  g.append('g').attr('transform', `translate(0,${ih})`)
+    .call(d3.axisBottom(xS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
+    .call(ax => ax.select('.domain').remove()).attr('font-size', 9);
+  g.append('g')
+    .call(d3.axisLeft(yS).ticks(6))
+    .call(ax => ax.select('.domain').remove()).attr('font-size', 9);
 
-    // Legend / Explanation
-    headerDiv.append("div")
-      .style("font-size", "12px")
-      .style("color", "#666")
-      .style("padding-left", `${margin.left}px`)
-      .text("2000 (piccolo) → 2023 (grande)");
+  g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('PIL pro capite (USD PPP, scala log)');
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -40).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
 
+  // Year watermark
+  const yearLabel = g.append('text')
+    .attr('x', iw - 8).attr('y', ih - 10).attr('text-anchor', 'end')
+    .attr('font-size', 60).attr('font-weight', '700').attr('fill', '#eaecef')
+    .style('pointer-events', 'none').text(currentYear);
 
-    // ── Scrollable Body (must scroll, NOT the SVG) ─────────────────────────────
-    const scrollBody = view.append("div")
-      .style("flex", "1 1 auto")
-      .style("overflow-y", "auto")
-      .style("overflow-x", "hidden")
-      .style("position", "relative")
-      .style("display", "block")
-      .style("min-height", "0") // Allow shrinking in flex container
-      .style("width", "100%")
-      .style("border-bottom", "1px solid #e8e8e8");
+  // Legend
+  const legG = g.append('g').attr('transform', `translate(8, 4)`);
+  ['Africa', 'Europe'].forEach((cont, i) => {
+    const col = CONT_COLOR[cont];
+    legG.append('circle').attr('cx', 6).attr('cy', i * 16).attr('r', 5).attr('fill', col).attr('opacity', 0.8);
+    legG.append('text').attr('x', 15).attr('y', i * 16 + 4).attr('font-size', 9).attr('fill', '#555').text(cont);
+  });
 
-    const svgBody = scrollBody.append("svg")
-      .attr("width", totalWidth)
-      .attr("height", contentHeight)
-      .style("width", "100%")
-      .style("height", `${contentHeight}px`)
-      .style("display", "block")
-      .style("font-family", "inherit");
+  svg.append('defs').append('clipPath').attr('id', `db-clip-${isFullscreen ? 'fs' : 'sm'}`)
+    .append('rect').attr('width', iw + 4).attr('height', ih + 4).attr('x', -2).attr('y', -2);
 
-    const g = svgBody.append("g").attr("transform", `translate(${margin.left},0)`);
+  const bubbleLayer = g.append('g').attr('clip-path', `url(#db-clip-${isFullscreen ? 'fs' : 'sm'})`);
 
-    // Dotted guide lines (part of scrolling content)
-    g.append("g")
-      .call(d3.axisBottom(x).ticks(8).tickSize(contentHeight).tickFormat(""))
-      .call(gg => gg.select(".domain").remove())
-      .call(gg => gg.selectAll("line").attr("stroke", "#e8e8e8").attr("stroke-dasharray", "3,3"));
-
-    g.selectAll(".db-line")
-      .data(rows).join("line").attr("class", "db-line")
-      .attr("x1", d => x(d.start)).attr("x2", d => x(d.end))
-      .attr("y1", d => y(d.country) + y.bandwidth() / 2)
-      .attr("y2", d => y(d.country) + y.bandwidth() / 2)
-      .attr("stroke", color).attr("stroke-width", 2).attr("opacity", 0.55);
-
-    g.selectAll(".db-dot-start")
-      .data(rows).join("circle").attr("class", "db-dot-start")
-      .attr("cx", d => x(d.start)).attr("cy", d => y(d.country) + y.bandwidth() / 2)
-      .attr("r", 4).attr("fill", color).attr("opacity", 0.45).style("cursor", "pointer")
-      .on("mousemove", (event, d) => showTooltip(event,
-        `<div style="font-weight:700;color:${color};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.country}</div>` +
-        `<span style="color:#aaa">2000:</span> ${d.start.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">2023:</span> ${d.end.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(1)} anni`
-      ))
-      .on("mouseleave", hideTooltip);
-
-    g.selectAll(".db-hover-band")
-      .data(rows)
-      .join("rect")
-      .attr("class", "db-hover-band")
-      .attr("x", 0)
-      .attr("y", d => y(d.country))
-      .attr("width", safeW)
-      .attr("height", y.bandwidth())
-      .attr("fill", "transparent")
-      .style("cursor", "pointer")
-      .on("mousemove", (event, d) => showTooltip(event,
-        `<div style="font-weight:700;color:${color};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.country}</div>` +
-        `<span style="color:#aaa">2000:</span> ${d.start.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">2023:</span> ${d.end.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(1)} anni`
-      ))
-      .on("mouseleave", hideTooltip);
-
-    g.selectAll(".db-dot-end")
-      .data(rows).join("circle").attr("class", "db-dot-end")
-      .attr("cx", d => x(d.end)).attr("cy", d => y(d.country) + y.bandwidth() / 2)
-      .attr("r", 6).attr("fill", color).attr("opacity", 1).style("cursor", "pointer")
-      .on("mousemove", (event, d) => showTooltip(event,
-        `<div style="font-weight:700;color:${color};margin-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:4px;">${d.country}</div>` +
-        `<span style="color:#aaa">2000:</span> ${d.start.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">2023:</span> ${d.end.toFixed(1)} anni<br/>` +
-        `<span style="color:#aaa">Variazione:</span> +${d.diff.toFixed(1)} anni`
-      ))
-      .on("mouseleave", hideTooltip);
-
-    svgBody.append("g")
-      .attr("transform", `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickSize(0).tickPadding(8))
-      .call(gg => gg.select(".domain").remove())
-      .call(gg => gg.selectAll("text")
-        .attr("font-size", "11px").attr("fill", "#333")
-        .each(function(d) { if (d.length > 22) d3.select(this).text(d.slice(0, 21) + "…"); }));
-
-    // ── X-Axis Footer (Fixed) ──────────────────────────────────────────────
-    const footerDiv = view.append("div")
-      .style("flex", "0 0 auto")
-      .style("border-top", "1px solid #e8e8e8")
-      .style("background", "#fff")
-      .style("z-index", "10");
-
-    const svgX = footerDiv.append("svg")
-      .attr("width", totalWidth).attr("height", xAxisH)
-      .style("width", "100%").style("display", "block").style("font-family", "inherit");
-
-    svgX.append("g")
-      .attr("transform", `translate(${margin.left},8)`)
-      .call(d3.axisBottom(x).ticks(8))
-      .call(gg => gg.select(".domain").attr("stroke", "#ccc"))
-      .call(gg => gg.selectAll("text").attr("font-size", "11px").attr("fill", "#555"))
-      .call(gg => gg.selectAll(".tick line").attr("stroke", "#ccc"));
-
-    svgX.append("text")
-      .attr("x", margin.left + W / 2).attr("y", xAxisH - 4)
-      .attr("text-anchor", "middle").attr("fill", "#888").style("font-size", "11px")
-      .text("Life Expectancy (anni)");
+  // Tooltip
+  let tipEl = document.getElementById('db-gapminder-tip');
+  if (!tipEl) {
+    tipEl = document.createElement('div'); tipEl.id = 'db-gapminder-tip';
+    Object.assign(tipEl.style, {
+      position: 'fixed', display: 'none', pointerEvents: 'none',
+      background: 'rgba(20,20,40,0.9)', color: '#fff',
+      padding: '8px 12px', borderRadius: '6px', fontSize: '11px',
+      lineHeight: '1.6', zIndex: '10000', maxWidth: '200px',
+    });
+    document.body.appendChild(tipEl);
   }
 
-  // Start with the overview
-  renderOverview();
+  function draw() {
+    const pts = getPoints(currentYear);
+    yearLabel.text(currentYear);
 
-  // Expose API on DOM element for narrative card triggers
-  const node = container.node();
-  node._dumbbellShowOverview = renderOverview;
-  node._dumbbellDrillDown = renderDrillDown;
+    bubbleLayer.selectAll('circle').data(pts, d => d.code).join(
+      enter => enter.append('circle')
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop))
+        .attr('fill', d => CONT_COLOR[d.continent] || '#888')
+        .attr('fill-opacity', 0.65).attr('stroke', '#fff').attr('stroke-width', 0.8)
+        .style('cursor', 'pointer'),
+      update => update.transition().duration(500).ease(d3.easeLinear)
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop)),
+      exit => exit.remove()
+    )
+    .on('mouseover', function(event, d) {
+      d3.select(this).attr('fill-opacity', 0.95).attr('stroke', '#333').attr('stroke-width', 1.5);
+      tipEl.innerHTML =
+        `<strong>${d.country}</strong><br>` +
+        `Aspettativa: ${d.life.toFixed(1)} anni<br>` +
+        `PIL pro capite: $${d3.format(',.0f')(d.income)}<br>` +
+        `Pop.: ${d.pop >= 1e6 ? (d.pop / 1e6).toFixed(1) + 'M' : d3.format(',')(d.pop)}`;
+      tipEl.style.display = 'block';
+    })
+    .on('mousemove', ev => { tipEl.style.left = (ev.clientX + 14) + 'px'; tipEl.style.top = (ev.clientY - 28) + 'px'; })
+    .on('mouseleave', function() {
+      d3.select(this).attr('fill-opacity', 0.65).attr('stroke', '#fff').attr('stroke-width', 0.8);
+      tipEl.style.display = 'none';
+    });
+  }
+
+  draw();
+
+  // ── Player bar ────────────────────────────────────────────
+  const playerBar = d3.select(containerEl).append('div')
+    .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
+    .style('height', PLAYER_H + 'px').style('background', '#fff')
+    .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e8eef7')
+    .style('display', 'flex').style('align-items', 'center')
+    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
+
+  const ctrlWrap = playerBar.append('div')
+    .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
+
+  function mkCtrlBtn(inner, title) {
+    return ctrlWrap.append('button').attr('title', title)
+      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+      .style('justify-content', 'center').style('color', '#4a6fa5')
+      .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
+      .html(inner);
+  }
+
+  function syncSlider() { yearDisplay.text(currentYear); sliderEl.property('value', currentYear); }
+
+  mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = allYears[0]; draw(); syncSlider(); });
+  mkCtrlBtn('&#8249;', 'Precedente').style('font-size', '18px').on('click', () => {
+    stopPlay();
+    const i = allYears.indexOf(currentYear);
+    if (i > 0) { currentYear = allYears[i - 1]; draw(); syncSlider(); }
+  });
+
+  const btnPlay = ctrlWrap.append('button')
+    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
+    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
+    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
+    .on('click', () => playing ? stopPlay() : startPlay());
+
+  mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
+    stopPlay();
+    const i = allYears.indexOf(currentYear);
+    if (i < allYears.length - 1) { currentYear = allYears[i + 1]; draw(); syncSlider(); }
+  });
+
+  function startPlay() {
+    playing = true;
+    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+    animTimer = setInterval(() => {
+      const i = allYears.indexOf(currentYear);
+      if (i >= allYears.length - 1) { stopPlay(); return; }
+      currentYear = allYears[i + 1];
+      draw(); syncSlider();
+    }, 600);
+  }
+
+  function stopPlay() {
+    playing = false; clearInterval(animTimer);
+    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+  }
+
+  const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');
+  const labelRow = timelineWrap.append('div')
+    .style('display', 'flex').style('justify-content', 'space-between')
+    .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px').style('pointer-events', 'none');
+  allYears.filter((y, i) => i % 5 === 0 || i === allYears.length - 1).forEach(y => labelRow.append('span').text(y));
+
+  const sliderEl = timelineWrap.append('input').attr('type', 'range')
+    .attr('min', allYears[0]).attr('max', allYears[allYears.length - 1]).attr('step', 1).attr('value', currentYear)
+    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
+    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .on('input', function() { stopPlay(); currentYear = +this.value; draw(); yearDisplay.text(currentYear); });
+
+  const yearDisplay = playerBar.append('div')
+    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('letter-spacing', '-0.5px').text(currentYear);
+
+  // ── DOM API ───────────────────────────────────────────────
+  const node = containerEl;
+  node._dumbbellShowOverview = () => { stopPlay(); currentYear = allYears[allYears.length - 1]; draw(); syncSlider(); };
+  node._dumbbellDrillDown    = () => { stopPlay(); currentYear = allYears[0]; draw(); syncSlider(); startPlay(); };
 }
-

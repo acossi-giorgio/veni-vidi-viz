@@ -390,7 +390,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 #fullscreenChartContainer {
   flex: 1;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,7 +398,6 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 #fullscreenChartContainer svg {
   max-width: 100% !important;
-  height: auto !important;
   display: block !important;
   overflow: visible !important;
 }

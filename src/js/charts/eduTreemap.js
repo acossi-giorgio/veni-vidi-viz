@@ -1,7 +1,6 @@
 /* ============================================================
-   Grafico 3-1 (Atto II) — Bubble scatter: spesa istruzione × miglioramento
-   X = edu_spending (% PIL), Y = delta completamento
-   Colore = continente, dimensione = popolazione
+   Grafico 3-1 (Atto II) — Multi-line: spesa pubblica istruzione
+   Vista 1: % PIL  |  Vista 2: $ assoluto (% × PIL × pop)
    ============================================================ */
 async function renderEduTreemap(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -9,212 +8,287 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const CONTINENTS = ['Africa', 'Europe'];
-  const CONT_COLOR = {
-    'Africa': '#e07b39', 'Europe': '#5aab6e',
-  };
+  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
+  const CONTS = ['Africa', 'Europe'];
+  const MAX_YEAR = 2022;
 
-  const [spendRaw, compRaw, popRaw] = await Promise.all([
+  const [spendRaw, incomeRaw, popRaw] = await Promise.all([
     d3.csv('datasets/processed/edu_spending.csv', d3.autoType),
-    d3.csv('datasets/processed/edu_completion.csv', d3.autoType),
+    d3.csv('datasets/processed/income.csv', d3.autoType),
     d3.csv('datasets/processed/population.csv', d3.autoType),
   ]);
 
-  function nearest(rows, targetYear) {
-    const valid = rows.filter(d => d.value != null && d.value > 0);
-    if (!valid.length) return null;
-    return valid.sort((a, b) => Math.abs(a.year - targetYear) - Math.abs(b.year - targetYear))[0];
+  // Nearest-year lookup
+  function buildNearest(raw) {
+    const m = new Map();
+    raw.forEach(d => {
+      if (d.value == null) return;
+      if (!m.has(d.code)) m.set(d.code, []);
+      m.get(d.code).push({ year: d.year, value: d.value });
+    });
+    return m;
+  }
+  const incomeMap = buildNearest(incomeRaw);
+  const popMap    = buildNearest(popRaw);
+
+  function nearestVal(arr, year) {
+    if (!arr || !arr.length) return null;
+    return arr.reduce((a, b) => Math.abs(b.year - year) < Math.abs(a.year - year) ? b : a).value;
   }
 
-  const spendByCode = new Map();
-  d3.group(spendRaw, d => d.code).forEach((rows, code) => spendByCode.set(code, rows));
-  const compByCode = new Map();
-  d3.group(compRaw, d => d.code).forEach((rows, code) => compByCode.set(code, rows));
-  const popByCode = new Map();
-  d3.group(popRaw, d => d.code).forEach((rows, code) => {
-    const r = rows.filter(d => d.value != null).sort((a, b) => b.year - a.year)[0];
-    if (r) popByCode.set(code, r.value);
-  });
+  const spendData = spendRaw.filter(d =>
+    d.value != null && d.year <= MAX_YEAR &&
+    (d.continent === 'Africa' || d.continent === 'Europe')
+  );
 
-  const data = [];
-  spendByCode.forEach((spRows, code) => {
-    const cpRows = compByCode.get(code);
-    if (!cpRows) return;
-    const r = spRows[0];
-    if (r.continent !== 'Africa' && r.continent !== 'Europe') return;
-    const spendRecent = nearest(spRows, 2019);
-    const compEarly   = nearest(cpRows, 2003);
-    const compRecent  = nearest(cpRows, 2020);
-    if (!spendRecent || !compEarly || !compRecent) return;
-    if (Math.abs(compRecent.year - compEarly.year) < 4) return;
-    const delta = compRecent.value - compEarly.value;
-    const pop   = popByCode.get(code) || 1e6;
-    data.push({
-      code, country: r.country, continent: r.continent,
-      spending: spendRecent.value, delta, pop,
-      compEarly: compEarly.value, compRecent: compRecent.value,
-      yrEarly: compEarly.year, yrRecent: compRecent.year,
+  // Absolute: (spend% / 100) × GDP_per_capita × population → total USD
+  const absData = spendData.map(d => {
+    const gdp = nearestVal(incomeMap.get(d.code), d.year);
+    const pop = nearestVal(popMap.get(d.code), d.year);
+    if (gdp == null || pop == null) return null;
+    return { ...d, value: (d.value / 100) * gdp * pop };
+  }).filter(Boolean);
+
+  let viewMetric = 'pct'; // 'pct' | 'abs'
+
+  function currentData() { return viewMetric === 'pct' ? spendData : absData; }
+
+  function buildSeries(data) {
+    const cs = new Map();
+    d3.group(data, d => d.continent).forEach((rows, cont) => {
+      const countries = new Map();
+      d3.group(rows, d => d.code).forEach((pts, code) => {
+        const sorted = pts.slice().sort((a, b) => a.year - b.year);
+        countries.set(code, { country: sorted[0].country, pts: sorted });
+      });
+      const byYear = d3.rollup(rows, v => {
+        const mean = d3.mean(v, d => d.value);
+        const std  = d3.deviation(v, d => d.value) || 0;
+        return { mean, lo: Math.max(0, mean - std), hi: mean + std };
+      }, d => d.year);
+      const mean = Array.from(byYear, ([year, s]) => ({ year, ...s })).sort((a, b) => a.year - b.year);
+      cs.set(cont, { mean, countries });
     });
-  });
-
-  let activeContinent = null;
-
-  // Continent filter buttons
-  const btnBar = d3.select(container).append('div')
-    .style('display', 'flex').style('flex-wrap', 'wrap').style('gap', '4px')
-    .style('padding', '4px 6px 0').style('z-index', '10');
-
-  function renderBtns() {
-    btnBar.selectAll('button').remove();
-
-    btnBar.append('button')
-      .style('font-size', '10px').style('padding', '2px 9px')
-      .style('border-radius', '12px').style('cursor', 'pointer')
-      .style('border', '1px solid #ccc')
-      .style('background', activeContinent === null ? '#444' : '#f5f5f5')
-      .style('color', activeContinent === null ? '#fff' : '#555')
-      .style('font-weight', activeContinent === null ? '700' : '400')
-      .text('Tutti')
-      .on('click', () => { activeContinent = null; renderBtns(); draw(); });
-
-    CONTINENTS.forEach(c => {
-      const active = activeContinent === c;
-      const col = CONT_COLOR[c] || '#888';
-      btnBar.append('button')
-        .style('font-size', '10px').style('padding', '2px 9px')
-        .style('border-radius', '12px').style('cursor', 'pointer')
-        .style('border', `1px solid ${active ? col : '#ccc'}`)
-        .style('background', active ? col : '#f5f5f5')
-        .style('color', active ? '#fff' : '#555')
-        .style('font-weight', active ? '700' : '400')
-        .text(c)
-        .on('click', () => { activeContinent = c; renderBtns(); draw(); });
-    });
+    return cs;
   }
 
-  renderBtns();
+  const allYears = [...new Set(spendData.map(d => d.year))].sort((a, b) => a - b);
+  const xDomain  = [allYears[0], MAX_YEAR];
 
-  const MARGIN = { top: 20, right: 130, bottom: 48, left: 58 };
+  // ── Layout ───────────────────────────────────────────────
+  const MARGIN = { top: 36, right: 112, bottom: 44, left: 62 };
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
-  const H = (container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480)) - 28;
+  const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
-  const xExt = d3.extent(data, d => d.spending);
-  const yExt = d3.extent(data, d => d.delta);
+  const xS = d3.scaleLinear().domain(xDomain).range([0, iw]);
 
-  const xS = d3.scaleLinear().domain([0, xExt[1] * 1.06]).range([0, iw]).nice();
-  const yS = d3.scaleLinear().domain([yExt[0] * 1.1, yExt[1] * 1.1]).range([ih, 0]).nice();
+  // ── Controls row (top-left) ───────────────────────────────
+  const ctrlRow = d3.select(container).append('div')
+    .style('position', 'absolute').style('top', '10px').style('left', '10px')
+    .style('display', 'flex').style('gap', '8px').style('z-index', '20').style('align-items', 'center');
 
-  const popExt = d3.extent(data, d => d.pop);
-  const rS = d3.scaleSqrt().domain([0, popExt[1]]).range([3, 18]);
+  function makePillBar(parent) {
+    return parent.append('div')
+      .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
+      .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+      .style('padding', '3px').style('gap', '2px')
+      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
+  }
 
+  function makePillBtn(bar, label) {
+    return bar.append('button')
+      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
+      .style('transition', 'all 0.15s').text(label);
+  }
+
+  function setPillActive(btn, active) {
+    btn.style('background', active ? '#4a6fa5' : 'transparent')
+       .style('color', active ? '#fff' : '#7a8aaa')
+       .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+  }
+
+  // Metric pills
+  const metricBar = makePillBar(ctrlRow);
+  const btnPct = makePillBtn(metricBar, '% PIL');
+  const btnAbs = makePillBtn(metricBar, '$ Assoluto');
+
+  btnPct.on('click', () => { viewMetric = 'pct'; updateMetricPills(); redraw(); });
+  btnAbs.on('click', () => { viewMetric = 'abs'; updateMetricPills(); redraw(); });
+
+  function updateMetricPills() {
+    setPillActive(btnPct, viewMetric === 'pct');
+    setPillActive(btnAbs, viewMetric === 'abs');
+  }
+  updateMetricPills();
+
+  // ── SVG ──────────────────────────────────────────────────
   const svg = d3.select(container).append('svg')
     .attr('width', W).attr('height', H)
-    .style('width', '100%').style('display', 'block');
+    .style('width', '100%').style('height', '100%').style('display', 'block');
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-  svg.append('defs').append('clipPath').attr('id', 'bubble-clip')
-    .append('rect').attr('width', iw + 4).attr('height', ih + 4).attr('x', -2).attr('y', -2);
+  svg.append('defs').append('clipPath').attr('id', `edu-clip-${isFullscreen ? 'fs' : 'sm'}`)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const chartG = g.append('g').attr('clip-path', `url(#edu-clip-${isFullscreen ? 'fs' : 'sm'})`);
 
-  // Gridlines
-  xS.ticks(6).forEach(t => g.append('line').attr('x1', xS(t)).attr('x2', xS(t)).attr('y1', 0).attr('y2', ih).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
-  yS.ticks(10).forEach(t => g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+  // Axes groups (rebuilt on redraw)
+  const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
+  const yAxisG = g.append('g');
+  const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  // Zero line
-  g.append('line').attr('x1', 0).attr('x2', iw)
-    .attr('y1', yS(0)).attr('y2', yS(0))
-    .attr('stroke', '#bbb').attr('stroke-width', 1).attr('stroke-dasharray', '4,3');
+  g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa').text('Anno');
+  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa');
 
-  // Axes
-  g.append('g').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(xS).ticks(6).tickFormat(d => `${d}%`))
-    .attr('font-size', 9).call(ax => ax.select('.domain').remove());
-  g.append('g').call(d3.axisLeft(yS).ticks(10).tickFormat(d => `${d >= 0 ? '+' : ''}${d}%`))
-    .attr('font-size', 9).call(ax => ax.select('.domain').remove());
-  g.append('text').attr('x', iw / 2).attr('y', ih + 38).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
-    .text('Spesa pubblica istruzione (% PIL, anno recente)');
-  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
-    .text('Variazione completamento secondaria (punti %)');
-
-  // Quadrant labels
-  g.append('text').attr('x', iw * 0.12).attr('y', 12).attr('font-size', 8).attr('fill', '#5aab6e').attr('opacity', 0.7).text('Bassa spesa · molto migliorato');
-  g.append('text').attr('x', iw * 0.72).attr('y', 12).attr('font-size', 8).attr('fill', '#4a90d9').attr('opacity', 0.7).text('Alta spesa · molto migliorato');
-  if (yExt[0] < 0) {
-    g.append('text').attr('x', iw * 0.72).attr('y', ih - 4).attr('font-size', 8).attr('fill', '#e07b39').attr('opacity', 0.7).text('Alta spesa · peggiorato');
-  }
-
-  // Legend: continents + pop size guide
-  const lgX = iw + 10;
-  g.append('text').attr('x', lgX).attr('y', 14).attr('font-size', 7.5).attr('fill', '#aaa').text('Continente');
-  CONTINENTS.forEach((c, i) => {
-    const col = CONT_COLOR[c];
-    const ly = 26 + i * 18;
-    g.append('circle').attr('cx', lgX + 5).attr('cy', ly).attr('r', 5).attr('fill', col).attr('opacity', 0.75);
-    g.append('text').attr('x', lgX + 13).attr('y', ly + 4).attr('font-size', 8).attr('fill', '#555').text(c);
-  });
-
-  const lgY2 = 26 + CONTINENTS.length * 18 + 16;
-  g.append('text').attr('x', lgX).attr('y', lgY2).attr('font-size', 7.5).attr('fill', '#aaa').text('Popolazione');
-  [5e6, 50e6, 200e6].forEach((p, i) => {
-    const r = rS(p);
-    const ly = lgY2 + 14 + i * 28 + r;
-    g.append('circle').attr('cx', lgX + 9).attr('cy', ly).attr('r', r).attr('fill', 'none').attr('stroke', '#bbb').attr('stroke-width', 1);
-    g.append('text').attr('x', lgX + 22).attr('y', ly + 4).attr('font-size', 7.5).attr('fill', '#888')
-      .text(p >= 1e9 ? `${(p/1e9).toFixed(0)}B` : p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
-  });
+  // Crosshair
+  const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)
+    .attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '4,3').attr('opacity', 0).style('pointer-events', 'none');
+  const crossDots = CONTS.map(cont => ({
+    cont, dot: g.append('circle').attr('r', 5).attr('fill', CONT_COLOR[cont]).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('opacity', 0).style('pointer-events', 'none'),
+  }));
 
   // Tooltip
-  let tipEl = document.getElementById('edu-bubble-tip');
+  let tipEl = document.getElementById('edu-ml-tip');
   if (!tipEl) {
-    tipEl = document.createElement('div'); tipEl.id = 'edu-bubble-tip';
-    Object.assign(tipEl.style, {
-      position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: 'rgba(20,20,40,0.92)', color: '#fff',
-      padding: '8px 12px', borderRadius: '6px', fontSize: '11px',
-      lineHeight: '1.6', zIndex: '10000', maxWidth: '220px',
-    });
+    tipEl = document.createElement('div'); tipEl.id = 'edu-ml-tip';
+    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: 'rgba(20,20,40,0.9)', color: '#fff', padding: '6px 11px', borderRadius: '5px', fontSize: '11px', lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap' });
     document.body.appendChild(tipEl);
   }
 
-  const bubbleLayer = g.append('g').attr('clip-path', 'url(#bubble-clip)');
+  let currentYS = null;
+  let meanByContYear = new Map();
 
-  function draw() {
-    bubbleLayer.selectAll('*').remove();
-
-    const filtered = activeContinent
-      ? data.filter(d => d.continent === activeContinent)
-      : data;
-
-    // Sort: large bubbles behind small
-    const sorted = filtered.slice().sort((a, b) => b.pop - a.pop);
-
-    bubbleLayer.selectAll('circle').data(sorted).join('circle')
-      .attr('cx', d => xS(d.spending))
-      .attr('cy', d => yS(d.delta))
-      .attr('r',  d => rS(d.pop))
-      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
-      .attr('fill-opacity', 0.65)
-      .attr('stroke', '#fff').attr('stroke-width', 0.8)
-      .style('cursor', 'pointer')
-      .on('mouseover', function(event, d) {
-        d3.select(this).attr('fill-opacity', 0.9).attr('stroke', '#333').attr('stroke-width', 1.5);
-        tipEl.innerHTML =
-          `<strong>${d.country}</strong> <span style="opacity:.6">(${d.continent})</span><br>` +
-          `Spesa: ${d.spending.toFixed(1)}% PIL<br>` +
-          `Completamento: ${d.delta >= 0 ? '+' : ''}${d.delta.toFixed(1)} pp (${d.yrEarly}→${d.yrRecent})<br>` +
-          `Pop.: ${d.pop >= 1e6 ? (d.pop/1e6).toFixed(1)+'M' : d3.format(',')(d.pop)}`;
-        tipEl.style.display = 'block';
-      })
-      .on('mousemove', event => { tipEl.style.left = (event.clientX + 14) + 'px'; tipEl.style.top = (event.clientY - 28) + 'px'; })
-      .on('mouseleave', function() {
-        d3.select(this).attr('fill-opacity', 0.65).attr('stroke', '#fff').attr('stroke-width', 0.8);
-        tipEl.style.display = 'none';
-      });
+  function fmtY(v) {
+    if (viewMetric === 'pct') return `${v.toFixed(1)}%`;
+    if (v >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+    if (v >= 1e9)  return `$${(v / 1e9).toFixed(1)}B`;
+    if (v >= 1e6)  return `$${(v / 1e6).toFixed(0)}M`;
+    return `$${d3.format(',.0f')(v)}`;
   }
 
-  draw();
+  function draw(cs) {
+    // Y domain from mean series only (not raw per-country values)
+    const allMeans = [];
+    cs.forEach(s => s.mean.forEach(pt => { if (pt.mean != null) allMeans.push(pt.mean); }));
+    const yMin = d3.min(allMeans) || 0;
+    const yMax = d3.max(allMeans) || 1;
+    const pad  = (yMax - yMin) * 0.10;
+    currentYS = d3.scaleLinear()
+      .domain([Math.max(0, yMin - pad), yMax + pad])
+      .range([ih, 0]).nice();
 
-  container._treemapReset     = () => { activeContinent = null; renderBtns(); draw(); };
-  container._treemapHighlight = (c) => { activeContinent = c;   renderBtns(); draw(); };
+    // Gridlines
+    gridG.selectAll('.h-grid').remove();
+    currentYS.ticks(5).forEach(t => {
+      gridG.append('line').attr('class', 'h-grid')
+        .attr('x1', 0).attr('x2', iw).attr('y1', currentYS(t)).attr('y2', currentYS(t))
+        .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+    });
+
+    // Rebuild axes
+    xAxisG.call(
+      d3.axisBottom(xS).ticks(6).tickFormat(d3.format('d'))
+        .tickSize(4)
+    )
+    .call(ax => {
+      ax.select('.domain').remove();
+      ax.selectAll('.tick line').attr('stroke', '#dde3ef');
+      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', 9);
+    });
+
+    yAxisG.call(
+      d3.axisLeft(currentYS).ticks(5).tickFormat(fmtY).tickSize(4)
+    )
+    .call(ax => {
+      ax.select('.domain').remove();
+      ax.selectAll('.tick line').attr('stroke', '#dde3ef');
+      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', 9);
+    });
+
+    yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
+
+    // Rebuild crosshair lookup
+    meanByContYear = new Map();
+    CONTS.forEach(cont => {
+      (cs.get(cont)?.mean || []).forEach(pt => {
+        if (!meanByContYear.has(pt.year)) meanByContYear.set(pt.year, {});
+        meanByContYear.get(pt.year)[cont] = pt.mean;
+      });
+    });
+
+    chartG.selectAll('.mean-line').remove();
+    g.selectAll('.end-label').remove();
+
+    const lineFn = d3.line().x(d => xS(d.year)).y(d => currentYS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null);
+
+    CONTS.forEach(cont => {
+      const col = CONT_COLOR[cont];
+      const s = cs.get(cont);
+      if (!s) return;
+
+      const meanPath = chartG.append('path').datum(s.mean).attr('class', 'mean-line')
+        .attr('fill', 'none').attr('stroke', col).attr('stroke-width', 2.5).attr('opacity', 0.9)
+        .attr('d', lineFn);
+
+      const len = meanPath.node().getTotalLength();
+      meanPath.attr('stroke-dasharray', len).attr('stroke-dashoffset', len)
+        .transition().duration(1200).ease(d3.easeCubicInOut).attr('stroke-dashoffset', 0);
+
+      const last = s.mean[s.mean.length - 1];
+      if (last) {
+        g.append('text').attr('class', 'end-label')
+          .attr('x', xS(last.year) + 5).attr('y', currentYS(last.mean) + 4)
+          .attr('font-size', 9).attr('font-weight', '700').attr('fill', col).attr('opacity', 0)
+          .text(`${cont} ${fmtY(last.mean)}`)
+          .transition().duration(400).delay(1200).attr('opacity', 0.9);
+      }
+    });
+  }
+
+  function redraw() {
+    draw(buildSeries(currentData()));
+  }
+
+  // ── Crosshair overlay ────────────────────────────────────
+  g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent').style('cursor', 'crosshair')
+    .on('mousemove', function(event) {
+      if (!currentYS) return;
+      const [mx] = d3.pointer(event);
+      const nearYear = allYears.reduce((a, b) => Math.abs(b - xS.invert(mx)) < Math.abs(a - xS.invert(mx)) ? b : a);
+      const cx = xS(nearYear);
+      crossLine.attr('x1', cx).attr('x2', cx).attr('opacity', 0.5);
+
+      crossDots.forEach(({ cont, dot }) => {
+        const v = meanByContYear.get(nearYear)?.[cont];
+        if (v != null) dot.attr('cx', cx).attr('cy', currentYS(v)).attr('opacity', 1);
+        else dot.attr('opacity', 0);
+      });
+
+      let html = `<strong style="color:#aaa">${nearYear}</strong>`;
+      CONTS.forEach(cont => {
+        const v = meanByContYear.get(nearYear)?.[cont];
+        const col = CONT_COLOR[cont];
+        html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? fmtY(v) : 'N/D'}`;
+      });
+      tipEl.innerHTML = html;
+      tipEl.style.display = 'block';
+      let tx = event.clientX + 14, ty = event.clientY - 28;
+      if (tx + 200 > window.innerWidth - 8) tx = event.clientX - 200 - 14;
+      tipEl.style.left = tx + 'px'; tipEl.style.top = ty + 'px';
+    })
+    .on('mouseleave', () => {
+      crossLine.attr('opacity', 0);
+      crossDots.forEach(({ dot }) => dot.attr('opacity', 0));
+      tipEl.style.display = 'none';
+    });
+
+  // Initial draw
+  redraw();
+
+  // ── DOM API ───────────────────────────────────────────────
+  container._treemapReset     = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
+  container._treemapHighlight = () => redraw();
 }
