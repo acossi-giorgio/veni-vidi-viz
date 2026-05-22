@@ -752,14 +752,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 }
 
 /* ============================================================
-   Grafico 5-2 — Rimesse come % PIL — Bubble Map + toggle Bolle
+   Grafico 5-2 — Rimesse come % PIL (Africa)
+   Treemap | Choropleth  +  player anni
    ============================================================ */
 async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = false) {
   const containerEl = document.querySelector(selector);
   if (!containerEl) return;
   containerEl.innerHTML = '';
-  containerEl.style.position = 'relative';
-  containerEl.style.fontFamily = 'inherit';
+  containerEl.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
 
   const [remRaw, worldData] = await Promise.all([
     d3.csv('datasets/processed/remittances.csv', d3.autoType),
@@ -768,177 +768,297 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       : d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(d => { _migWorldData = d; return d; }),
   ]);
 
-  const CONT_COLOR = {
-    'Africa': '#e07b39', 'Asia': '#4a90d9', 'Europe': '#5aab6e',
-    'North America': '#a45dc0', 'South America': '#d4b84a', 'Oceania': '#888888',
-  };
+  /* ── Data prep ──────────────────────────────────────────── */
+  const africaRaw = remRaw.filter(d => d.continent === 'Africa' && d.code && d.value != null && d.value > 0);
+  const years     = [...new Set(africaRaw.map(d => d.year))].sort((a, b) => a - b);
+  const byYear    = d3.group(africaRaw, d => d.year);
 
-  const remLatest = new Map();
-  remRaw.forEach(d => {
-    if (!d.code || d.value == null) return;
-    const prev = remLatest.get(d.code);
-    if (!prev || d.year > prev.year) remLatest.set(d.code, d);
+  /* per each code keep latest year as fallback */
+  const latestByCode = new Map();
+  africaRaw.forEach(d => {
+    const prev = latestByCode.get(d.code);
+    if (!prev || d.year > prev.year) latestByCode.set(d.code, d);
   });
-  const allData = Array.from(remLatest.values()).filter(d => d.value > 0 && (d.continent === 'Africa' || d.continent === 'Europe'));
 
-  const geoCountries = topojson.feature(worldData, worldData.objects.countries).features;
+  const allFeatures = topojson.feature(worldData, worldData.objects.countries).features;
+  const AFRICA_CODES = new Set([
+    'DZA','AGO','BEN','BWA','BFA','BDI','CMR','CPV','CAF','TCD','COM','COG','COD',
+    'CIV','DJI','EGY','GNQ','ERI','ETH','GAB','GMB','GHA','GIN','GNB','KEN','LSO',
+    'LBR','LBY','MDG','MWI','MLI','MRT','MUS','MAR','MOZ','NAM','NER','NGA','RWA',
+    'STP','SEN','SLE','SOM','ZAF','SSD','SDN','SWZ','TZA','TGO','TUN','UGA','ZMB',
+    'ZWE','ESH',
+  ]);
+  const africaFeatures = allFeatures.filter(f => {
+    const c = _MIG_NUM_TO_A3[+f.id]; return c && AFRICA_CODES.has(c);
+  });
 
+  /* ── Threshold color scale (discrete, fixed across all years) ── */
+  const globalMax = d3.max(africaRaw, d => d.value) || 1;
+  const THRESHOLDS = [1, 3, 7, 12, 20];
+  const COLORS     = ['#edf5e1', '#c5e1a5', '#81c784', '#4caf50', '#2e7d32', '#1b5e20'];
+  const COLOR_SCALE = d3.scaleThreshold().domain(THRESHOLDS).range(COLORS);
+  const NO_DATA_COLOR = '#cccccc';
+
+  /* ── State ──────────────────────────────────────────────── */
+  let viewMode  = 'treemap';
+  let curYear   = years[years.length - 1];
+  let playing   = false;
+  let playTimer = null;
+
+  /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-rem').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-rem')
-    .style('position', 'absolute').style('background', 'rgba(0,0,0,0.88)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 12px')
-    .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.6')
-    .style('z-index', '10000').style('display', 'none');
+    .style('position', 'absolute').style('background', 'rgba(20,20,40,0.93)')
+    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 13px')
+    .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.7')
+    .style('z-index', '10000').style('display', 'none').style('max-width', '220px');
 
   function showTip(e, d) {
-    const col = CONT_COLOR[d.continent] || '#fff';
     tooltip.style('display', 'block').html(
-      `<div style="font-weight:700;color:${col};margin-bottom:3px">${d.country}</div>` +
+      `<strong style="color:#81c784">${d.country}</strong><br>` +
       `Rimesse: <strong>${d.value.toFixed(1)}% del PIL</strong><br>` +
-      `Anno: ${d.year}`
+      `<em style="opacity:.5;font-size:9px">Anno: ${d.year}</em>`
     );
     const r = tooltip.node().getBoundingClientRect();
-    let tx = e.pageX + 12, ty = e.pageY + 8;
-    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 12;
-    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 8;
+    let tx = e.pageX + 14, ty = e.pageY + 10;
+    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 14;
+    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 10;
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
   function hideTip() { tooltip.style('display', 'none'); }
 
-  let mode = 'map'; // 'map' | 'bubble'
+  /* ── Viz area ───────────────────────────────────────────── */
+  const vizDiv = d3.select(containerEl).append('div')
+    .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden')
+    .style('padding-top', '40px');
 
-  // Toggle button
-  const btnWrap = d3.select(containerEl).append('div')
-    .style('position', 'absolute').style('top', '6px').style('right', '8px')
-    .style('z-index', '10').style('display', 'flex').style('gap', '4px');
+  /* ── Player bar ─────────────────────────────────────────── */
+  const playerBar = d3.select(containerEl).append('div')
+    .style('flex', '0 0 auto').style('display', 'flex').style('align-items', 'center')
+    .style('gap', '8px').style('padding', '4px 12px 6px').style('background', 'transparent');
 
-  const btnMap = btnWrap.append('button')
-    .style('font-size', '10px').style('padding', '2px 8px').style('border-radius', '5px')
-    .style('cursor', 'pointer').style('border', '1px solid #c8d4e8').style('font-family', 'inherit')
-    .text('Mappa').on('click', () => { mode = 'map'; updateBtns(); draw(); });
+  /* Play/pause button */
+  const playBtn = playerBar.append('button')
+    .style('width', '28px').style('height', '28px').style('border-radius', '50%')
+    .style('border', '1px solid #c8d8c8').style('background', '#f0f7f0')
+    .style('cursor', 'pointer').style('display', 'flex')
+    .style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#5a8a6e').style('flex-shrink', '0').style('transition', 'background .15s');
 
-  const btnBub = btnWrap.append('button')
-    .style('font-size', '10px').style('padding', '2px 8px').style('border-radius', '5px')
-    .style('cursor', 'pointer').style('border', '1px solid #c8d4e8').style('font-family', 'inherit')
-    .text('Bolle').on('click', () => { mode = 'bubble'; updateBtns(); draw(); });
+  function playIcon() { return '<svg width="10" height="11" viewBox="0 0 10 11" fill="currentColor"><polygon points="0,0 10,5.5 0,11"/></svg>'; }
+  function pauseIcon() { return '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="0" y="0" width="3.5" height="10"/><rect x="6.5" y="0" width="3.5" height="10"/></svg>'; }
+  playBtn.html(playIcon());
+
+  /* Year label */
+  const yearLabel = playerBar.append('span')
+    .style('font-size', '11px').style('font-weight', '700').style('color', '#5a8a6e')
+    .style('min-width', '36px').style('text-align', 'center').text(curYear);
+
+  /* Slider */
+  const slider = playerBar.append('input').attr('type', 'range')
+    .attr('min', 0).attr('max', years.length - 1)
+    .attr('value', years.length - 1).attr('step', 1)
+    .style('flex', '1').style('accent-color', '#5a8a6e').style('cursor', 'pointer');
+
+  /* End-year label */
+  playerBar.append('span')
+    .style('font-size', '10px').style('color', '#aaa')
+    .text(years[years.length - 1]);
+
+  /* ── Pill buttons — top-right ───────────────────────────── */
+  const pillBar = d3.select(containerEl).append('div')
+    .style('position', 'absolute').style('top', '8px').style('left', '8px')
+    .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
+    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', '3px').style('gap', '2px')
+    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)').style('z-index', '10');
+
+  function mkBtn(label, val) {
+    return pillBar.append('button')
+      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
+      .style('transition', 'all 0.15s').text(label)
+      .on('click', () => { viewMode = val; updateBtns(); redraw(); });
+  }
+  const btnTree = mkBtn('Treemap', 'treemap');
+  const btnMap  = mkBtn('Mappa',   'map');
 
   function updateBtns() {
-    btnMap.style('background', mode === 'map'    ? '#e8eef7' : 'rgba(255,255,255,0.92)').style('font-weight', mode === 'map'    ? '700' : '400');
-    btnBub.style('background', mode === 'bubble' ? '#e8eef7' : 'rgba(255,255,255,0.92)').style('font-weight', mode === 'bubble' ? '700' : '400');
+    const set = (btn, active) => btn
+      .style('background', active ? '#5a8a6e' : 'transparent')
+      .style('color',      active ? '#fff'    : '#7a8aaa')
+      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+    set(btnTree, viewMode === 'treemap');
+    set(btnMap,  viewMode === 'map');
   }
   updateBtns();
 
-  const svgWrap = d3.select(containerEl).append('div').style('width', '100%').style('height', '100%');
-  let _bubbleSim = null;
+  /* ── Legend — discrete swatches, bottom-right ──────────── */
+  function drawLegend(svg, W, H) {
+    const SW = 14, SH = 14, GAP = 4, TW = 52;
+    const rowH   = SH + GAP;
+    const labels = [
+      { color: COLORS[5], text: '> 20%'   },
+      { color: COLORS[4], text: '12 – 20%' },
+      { color: COLORS[3], text: '7 – 12%'  },
+      { color: COLORS[2], text: '3 – 7%'   },
+      { color: COLORS[1], text: '1 – 3%'   },
+      { color: COLORS[0], text: '< 1%'     },
+      { color: NO_DATA_COLOR, text: 'No data' },
+    ];
+    const boxW = SW + 8 + TW + 10;
+    const boxH = 14 + labels.length * rowH + 8;
+    const LX   = W - boxW - 10;
+    const LY   = 10;
 
-  const maxVal = d3.max(allData, d => d.value) || 1;
-  const rScale = d3.scaleSqrt().domain([0, maxVal]).range([2, 28]);
+    const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
+    legG.append('rect').attr('x', 0).attr('y', 0).attr('width', boxW).attr('height', boxH)
+      .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)').attr('stroke', '#e0e0e0').attr('stroke-width', 1);
 
-  function draw() {
-    if (_bubbleSim) { _bubbleSim.stop(); _bubbleSim = null; }
-    svgWrap.html('');
-    const W = containerEl.clientWidth  || 560;
-    const H = containerEl.clientHeight || 460;
-    if (mode === 'map') drawBubbleMap(W, H);
-    else                drawBubbles(W, H);
+    legG.append('text').attr('x', 8).attr('y', 11)
+      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa').attr('letter-spacing', '0.06em')
+      .text('RIMESSE % PIL');
+
+    labels.forEach((item, i) => {
+      const y = 14 + i * rowH + GAP / 2;
+      legG.append('rect').attr('x', 8).attr('y', y)
+        .attr('width', SW).attr('height', SH).attr('rx', 2)
+        .attr('fill', item.color).attr('stroke', '#ddd').attr('stroke-width', 0.5);
+      legG.append('text').attr('x', 8 + SW + 6).attr('y', y + SH - 3)
+        .attr('font-size', 9).attr('fill', '#444').text(item.text);
+    });
   }
 
-  function drawBubbleMap(W, H) {
+  /* ── Data for current year ──────────────────────────────── */
+  function dataForYear(yr) {
+    const yearData = byYear.get(yr) || [];
+    const byCode   = new Map(yearData.map(d => [d.code, d]));
+    /* fallback: use latest available if country missing in this year */
+    latestByCode.forEach((d, code) => { if (!byCode.has(code)) byCode.set(code, d); });
+    return Array.from(byCode.values()).filter(d => d.value > 0).sort((a, b) => b.value - a.value);
+  }
+
+  /* ── Treemap ────────────────────────────────────────────── */
+  function drawTreemap(W, H) {
+    const data    = dataForYear(curYear);
+    const LEG_W   = 104; /* reserved for legend on the right */
+    const PAD     = { top: 8, right: 8 + LEG_W, bottom: 8, left: 8 };
+    const iw      = W - PAD.left - PAD.right;
+    const ih      = H - PAD.top  - PAD.bottom;
+
+    const root = d3.hierarchy({ children: data })
+      .sum(d => d.value ?? 0).sort((a, b) => b.value - a.value);
+    d3.treemap().size([iw, ih]).paddingOuter(4).paddingInner(2).round(true)(root);
+
+    const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
+      .style('display', 'block').style('font-family', 'inherit');
+    const g = svg.append('g').attr('transform', `translate(${PAD.left},${PAD.top})`);
+
+    const cell = g.selectAll('g').data(root.leaves()).join('g')
+      .attr('transform', d => `translate(${d.x0},${d.y0})`);
+
+    cell.append('rect')
+      .attr('width',  d => Math.max(0, d.x1 - d.x0))
+      .attr('height', d => Math.max(0, d.y1 - d.y0))
+      .attr('rx', 3).attr('fill', d => COLOR_SCALE(d.data.value))
+      .attr('stroke', '#fff').attr('stroke-width', 1.5).style('cursor', 'default')
+      .on('mousemove', (e, d) => showTip(e, d.data)).on('mouseleave', hideTip);
+
+    cell.each(function(d) {
+      const cw = d.x1 - d.x0, ch = d.y1 - d.y0;
+      if (cw < 20 || ch < 12) return;
+      const sel  = d3.select(this);
+      const dark = d.data.value >= 12;
+      const fill = dark ? '#fff' : '#1a1a1a';
+      const maxChars = Math.max(2, Math.floor(cw / 6));
+      const name = d.data.country.length > maxChars
+        ? d.data.country.slice(0, maxChars - 1) + '…' : d.data.country;
+      if (ch >= 22) sel.append('text').attr('x', 4).attr('y', 13)
+        .attr('font-size', Math.min(11, Math.max(7, cw / 8))).attr('font-weight', '600')
+        .attr('fill', fill).attr('pointer-events', 'none').text(name);
+      if (ch >= 34) sel.append('text').attr('x', 4).attr('y', ch - 5)
+        .attr('font-size', Math.min(10, Math.max(6, cw / 9))).attr('fill', fill)
+        .attr('opacity', 0.85).attr('pointer-events', 'none')
+        .text(d.data.value.toFixed(1) + '%');
+    });
+
+    drawLegend(svg, W, H);
+  }
+
+  /* ── Choropleth ─────────────────────────────────────────── */
+  function drawMap(W, H) {
+    const data      = dataForYear(curYear);
+    const dataByCode = new Map(data.map(d => [d.code, d]));
+    const PAD       = 24;
     const projection = d3.geoNaturalEarth1()
-      .fitExtent([[4, 4], [W - 4, H - 4]], { type: 'FeatureCollection', features: geoCountries });
-    const pathGen = d3.geoPath().projection(projection);
+      .fitSize([W - PAD * 2, H - PAD * 2], { type: 'FeatureCollection', features: africaFeatures });
+    const path = d3.geoPath().projection(projection);
 
-    // Centroid of largest polygon
-    function bestCentroid(f) {
-      if (f.geometry && f.geometry.type === 'MultiPolygon') {
-        let best = null, bestA = -1;
-        f.geometry.coordinates.forEach(rings => {
-          const ff = { type: 'Feature', geometry: { type: 'Polygon', coordinates: rings } };
-          const a = d3.geoArea(ff);
-          if (a > bestA) { bestA = a; best = ff; }
-        });
-        if (best) return pathGen.centroid(best);
-      }
-      return pathGen.centroid(f);
-    }
+    const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
+      .style('display', 'block').style('font-family', 'inherit');
+    const g = svg.append('g').attr('transform', `translate(${PAD},${PAD})`);
 
-    const centByA3 = new Map();
-    geoCountries.forEach(f => {
-      const a3 = _MIG_NUM_TO_A3[+f.id];
-      if (!a3) return;
-      const c = bestCentroid(f);
-      if (!isNaN(c[0]) && !isNaN(c[1])) centByA3.set(a3, c);
-    });
+    g.selectAll('.bg-cty').data(allFeatures).join('path').attr('class', 'bg-cty')
+      .attr('d', path).attr('fill', '#e8e8e8').attr('stroke', '#fff').attr('stroke-width', 0.4);
 
-    const svg = svgWrap.append('svg').attr('width', W).attr('height', H)
-      .style('display', 'block').style('background', '#eef2f7').style('border-radius', '10px');
-
-    const mapG = svg.append('g');
-
-    // Zoom
-    const zoom = d3.zoom().scaleExtent([0.5, 10])
-      .on('zoom', e => mapG.attr('transform', e.transform));
-    svg.call(zoom).on('dblclick.zoom', null);
-
-    // Countries base
-    mapG.selectAll('.rem-cty').data(geoCountries).join('path')
-      .attr('class', 'rem-cty').attr('d', pathGen)
-      .attr('fill', '#d8e4ed').attr('stroke', '#fff').attr('stroke-width', 0.35);
-
-    // Bubbles — only countries with data and centroid
-    const bubData = allData.filter(d => centByA3.has(d.code)).sort((a, b) => b.value - a.value);
-
-    mapG.selectAll('.rem-bub').data(bubData).join('circle')
-      .attr('class', 'rem-bub')
-      .attr('cx', d => centByA3.get(d.code)[0])
-      .attr('cy', d => centByA3.get(d.code)[1])
-      .attr('r', d => rScale(d.value))
-      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
-      .attr('fill-opacity', 0.72)
+    g.selectAll('.af-cty').data(africaFeatures).join('path').attr('class', 'af-cty')
+      .attr('d', path)
+      .attr('fill', f => {
+        const rec = dataByCode.get(_MIG_NUM_TO_A3[+f.id]);
+        return rec ? COLOR_SCALE(rec.value) : NO_DATA_COLOR;
+      })
       .attr('stroke', '#fff').attr('stroke-width', 0.8)
-      .style('cursor', 'pointer')
-      .on('mousemove', showTip).on('mouseleave', hideTip);
+      .on('mousemove', (e, f) => {
+        const rec = dataByCode.get(_MIG_NUM_TO_A3[+f.id]);
+        if (rec) showTip(e, rec);
+      })
+      .on('mouseleave', hideTip);
+
+    drawLegend(svg, W, H);
   }
 
-  function drawBubbles(W, H) {
-    const nodes = allData.map(d => ({ ...d, r: rScale(d.value) }));
+  /* ── Redraw ─────────────────────────────────────────────── */
+  const VIZ_PAD_TOP = 40;
 
-    const svg = svgWrap.append('svg').attr('width', W).attr('height', H)
-      .style('display', 'block').style('background', '#eef2f7').style('border-radius', '10px');
-
-    const nodeEls = svg.selectAll('.bub-g').data(nodes).join('g').attr('class', 'bub-g')
-      .style('cursor', 'pointer')
-      .on('mousemove', (e, d) => showTip(e, d)).on('mouseleave', hideTip);
-
-    nodeEls.append('circle')
-      .attr('r', d => d.r)
-      .attr('fill', d => CONT_COLOR[d.continent] || '#888')
-      .attr('fill-opacity', 0.75)
-      .attr('stroke', '#fff').attr('stroke-width', 0.8);
-
-    nodeEls.append('text')
-      .style('pointer-events', 'none')
-      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-      .attr('font-size', d => Math.min(9, d.r * 0.7))
-      .attr('fill', '#fff').attr('font-weight', '600')
-      .text(d => d.r >= 10 ? (d.country.length > 10 ? d.code : d.country) : '');
-
-    _bubbleSim = d3.forceSimulation(nodes)
-      .force('center', d3.forceCenter(W / 2, H / 2))
-      .force('collide', d3.forceCollide(d => d.r + 1.5).strength(0.85))
-      .force('x', d3.forceX(W / 2).strength(0.04))
-      .force('y', d3.forceY(H / 2).strength(0.06))
-      .on('tick', () => nodeEls.attr('transform', d => `translate(${d.x},${d.y})`));
-
-    // Legend
-    const conts = [...new Set(nodes.map(d => d.continent))].sort();
-    const lgG = svg.append('g').attr('transform', `translate(8,${H - conts.length * 13 - 8})`);
-    conts.forEach((c, i) => {
-      lgG.append('circle').attr('cx', 5).attr('cy', i * 13 + 5).attr('r', 5).attr('fill', CONT_COLOR[c] || '#888').attr('opacity', 0.8);
-      lgG.append('text').attr('x', 13).attr('y', i * 13 + 9).attr('font-size', 8).attr('fill', '#555').text(c);
-    });
+  function redraw() {
+    vizDiv.selectAll('*').remove();
+    const W = containerEl.clientWidth  || 560;
+    const H = (containerEl.clientHeight || 460) - 38 - VIZ_PAD_TOP;
+    if (viewMode === 'treemap') drawTreemap(W, H);
+    else                        drawMap(W, H);
   }
 
-  draw();
-  containerEl._remittancesReset = () => { mode = 'map'; updateBtns(); draw(); };
+  /* ── Player controls ────────────────────────────────────── */
+  slider.on('input', function() {
+    curYear = years[+this.value];
+    yearLabel.text(curYear);
+    redraw();
+  });
+
+  playBtn.on('click', () => {
+    playing = !playing;
+    playBtn.html(playing ? pauseIcon() : playIcon());
+    if (playing) {
+      function step() {
+        const idx = years.indexOf(curYear);
+        const next = (idx + 1) % years.length;
+        curYear = years[next];
+        slider.attr('value', next).node().value = next;
+        yearLabel.text(curYear);
+        redraw();
+        if (next === 0) { playing = false; playBtn.html(playIcon()); return; }
+        playTimer = setTimeout(step, 900);
+      }
+      playTimer = setTimeout(step, 900);
+    } else {
+      if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+    }
+  });
+
+  redraw();
+
+  /* ── API ────────────────────────────────────────────────── */
+  containerEl._remittancesReset     = () => { viewMode = 'treemap'; updateBtns(); redraw(); };
+  containerEl._remittancesHighlight = () => { viewMode = 'treemap'; updateBtns(); redraw(); };
+  containerEl._remittancesShowTrend = () => { viewMode = 'map';     updateBtns(); redraw(); };
 }
