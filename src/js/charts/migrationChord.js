@@ -99,16 +99,17 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     .style('width', '100%').style('height', '100%').style('position', 'relative')
     .style('display', 'flex').style('flex-direction', 'column');
 
-  // ── Top header: pill buttons overlay ─────────────────────────
+  // ── Top header: pill buttons ─────────────────────────────────
   const header = wrap.append('div')
-    .style('position', 'absolute').style('top', '8px').style('left', '10px')
-    .style('z-index', '10').style('display', 'flex').style('align-items', 'center');
+    .style('display', 'flex').style('align-items', 'center')
+    .style('padding', '8px 10px 4px').style('flex-shrink', '0');
 
   const pillBar = header.append('div')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
     .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
     .style('padding', '3px').style('gap', '2px')
-    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
+    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)')
+    .style('position', 'relative').style('z-index', '20');
 
   function mkModeBtn(m, label) {
     return pillBar.append('button')
@@ -253,6 +254,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   function draw() {
     svgArea.html('');
+    d3.select(containerNode).selectAll('svg.mig-map-svg').remove();
     const rect = containerNode.getBoundingClientRect();
     const W = rect.width  || 560;
     const H = mode === 'map'
@@ -662,9 +664,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .domain([0, maxDest]).interpolator(d3.interpolateBlues);
 
     // ── SVG + zoom ───────────────────────────────────────────────
-    const svg = svgArea.append('svg').attr('width', W).attr('height', H)
+    const svg = d3.select(containerNode).append('svg').attr('width', W).attr('height', H)
+      .attr('class', 'mig-map-svg')
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
-      .style('position', 'absolute').style('top', '0').style('left', '0')
+      .style('position', 'absolute').style('top', '0').style('left', '0').style('z-index', '1')
       .style('border-radius', '10px').style('cursor', 'grab');
 
     const g    = svg.append('g');
