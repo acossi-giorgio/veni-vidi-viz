@@ -91,38 +91,45 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const containerNode = container.node();
   let currentYear = 2020;
-  let mode = 'network';
+  let mode = 'sankey';
   let animTimer = null;
   let sankeyDrillContinent = null; // null = overview, string = dest continent
 
   const wrap = container.append('div')
-    .style('width', '100%').style('height', '100%')
+    .style('width', '100%').style('height', '100%').style('position', 'relative')
     .style('display', 'flex').style('flex-direction', 'column');
 
-  // ── Top header: mode buttons only ────────────────────────────
+  // ── Top header: pill buttons overlay ─────────────────────────
   const header = wrap.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '6px')
-    .style('padding', '6px 10px').style('background', '#fff')
-    .style('border-bottom', '1px solid #e4e8f0').style('flex-shrink', '0');
+    .style('position', 'absolute').style('top', '8px').style('left', '10px')
+    .style('z-index', '10').style('display', 'flex').style('align-items', 'center');
 
-  [['network', 'Rete'], ['map', 'Mappa'], ['sankey', 'Sankey']].forEach(([m, label]) => {
-    header.append('button')
-      .datum(m)
-      .attr('class', 'chord-mode-btn')
-      .style('padding', '4px 12px').style('border-radius', '14px').style('font-size', '11px')
-      .style('cursor', 'pointer').style('border', '1px solid #d0d9e8').style('font-family', 'inherit')
-      .style('font-weight', '600')
-      .style('background', m === 'network' ? '#1a3a5c' : '#fff')
-      .style('color', m === 'network' ? '#fff' : '#6b7e95')
-      .text(label)
-      .on('click', function(e, d) {
-        mode = d; stopAnim(); sankeyDrillContinent = null;
-        header.selectAll('.chord-mode-btn')
-          .style('background', btn => btn === d ? '#1a3a5c' : '#fff')
-          .style('color', btn => btn === d ? '#fff' : '#6b7e95');
-        draw();
-      });
-  });
+  const pillBar = header.append('div')
+    .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
+    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', '3px').style('gap', '2px')
+    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
+
+  function mkModeBtn(m, label) {
+    return pillBar.append('button')
+      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
+      .style('transition', 'all 0.15s').text(label)
+      .on('click', () => { mode = m; stopAnim(); sankeyDrillContinent = null; updateModeBtns(); draw(); });
+  }
+
+  const btnSankey = mkModeBtn('sankey', 'Sankey');
+  const btnMap    = mkModeBtn('map',    'Mappa');
+
+  function updateModeBtns() {
+    const set = (btn, active) => btn
+      .style('background', active ? '#5a8a6e' : 'transparent')
+      .style('color',      active ? '#fff'    : '#7a8aaa')
+      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+    set(btnSankey, mode === 'sankey');
+    set(btnMap,    mode === 'map');
+  }
+  updateModeBtns();
 
   const svgArea = wrap.append('div').style('flex', '1').style('position', 'relative').style('min-height', '0');
 
@@ -246,12 +253,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   function draw() {
     svgArea.html('');
-    const W = containerNode.getBoundingClientRect().width  || 560;
-    const H = svgArea.node().getBoundingClientRect().height || 380;
+    const rect = containerNode.getBoundingClientRect();
+    const W = rect.width  || 560;
+    const H = mode === 'map'
+      ? (rect.height || 480)
+      : (svgArea.node().getBoundingClientRect().height || 380);
     if (W < 10 || H < 10) return;
     if (mode === 'map') drawMap(W, H);
-    else if (mode === 'sankey') drawSankey(W, H);
-    else drawNetwork(W, H);
+    else drawSankey(W, H);
   }
 
   /* ── Network: expand/collapse in-place ────────────────────── */
@@ -647,9 +656,15 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const activeSrcCodes = new Set(visiblePairs.map(p => p.srcCode));
     const activeDstCodes = new Set(visiblePairs.map(p => p.dstCode));
 
+    // ── Color scale for destination countries ───────────────────
+    const maxDest   = d3.max(stockByDest.values()) || 1;
+    const destColor = d3.scaleSequential()
+      .domain([0, maxDest]).interpolator(d3.interpolateBlues);
+
     // ── SVG + zoom ───────────────────────────────────────────────
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
+      .style('position', 'absolute').style('top', '0').style('left', '0')
       .style('border-radius', '10px').style('cursor', 'grab');
 
     const g    = svg.append('g');
@@ -658,23 +673,18 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .on('end',  () => svg.style('cursor', 'grab'));
     svg.call(zoom).on('dblclick.zoom', null);
 
-    const ctrl = svgArea.append('div')
-      .style('position', 'absolute').style('top', '8px').style('right', '8px')
-      .style('display', 'flex').style('flex-direction', 'column').style('gap', '3px').style('z-index', '5');
-    [['＋', () => svg.transition().duration(220).call(zoom.scaleBy, 1.6)],
-     ['－', () => svg.transition().duration(220).call(zoom.scaleBy, 0.625)],
-     ['⌂',  () => svg.transition().duration(280).call(zoom.transform, d3.zoomIdentity)],
-    ].forEach(([lbl, fn]) => ctrl.append('button').text(lbl)
-      .style('width', '26px').style('height', '26px').style('font-size', '14px').style('line-height', '1')
-      .style('border', '1px solid #ddd').style('border-radius', '5px').style('background', '#fff')
-      .style('cursor', 'pointer').style('color', '#555').on('click', fn));
-
-    // Countries — flat grey fill
+    // Countries — choropleth for destinations, orange for Africa origins, grey otherwise
     g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
       .attr('stroke', '#fff').attr('stroke-width', 0.35)
-      .attr('fill', '#ccd8df')
+      .attr('fill', f => {
+        const a3 = _MIG_NUM_TO_A3[+f.id];
+        if (!a3) return '#ccd8df';
+        if (africaCodes.has(a3)) return '#e07b39';
+        const stock = stockByDest.get(a3);
+        return stock ? destColor(stock) : '#ccd8df';
+      })
       .on('mousemove', (e, f) => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
