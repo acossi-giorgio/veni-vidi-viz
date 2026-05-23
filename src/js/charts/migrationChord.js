@@ -93,7 +93,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   let currentYear = 2020;
   let mode = 'sankey';
   let animTimer = null;
-  let sankeyDrillContinent = null; // null = overview, string = dest continent
+  let sankeyDrillContinents = new Set(); // expanded dest continents
 
   const wrap = container.append('div')
     .style('width', '100%').style('height', '100%').style('position', 'relative')
@@ -116,7 +116,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
-      .on('click', () => { mode = m; stopAnim(); sankeyDrillContinent = null; updateModeBtns(); draw(); });
+      .on('click', () => { mode = m; stopAnim(); sankeyDrillContinents.clear(); updateModeBtns(); draw(); });
   }
 
   const btnSankey = mkModeBtn('sankey', 'Sankey');
@@ -475,39 +475,50 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const destContStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_continent);
     const destConts = [...destContStock.keys()].sort((a, b) => destContStock.get(b) - destContStock.get(a));
 
-    // Show top-8 dest countries per continent if drilled, else cont-level
-    const TOP_N_COUNTRIES = 8;
     let nodes = [], links = [];
 
-    if (!sankeyDrillContinent) {
-      // Overview: Africa → dest continents
-      const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
-      nodes = [srcNode];
-      destConts.forEach(cont => {
-        nodes.push({ id: cont, name: cont, layer: 1, col: CONT_COLOR[cont] || '#888' });
-        links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
-      });
-    } else {
-      // Drilled: Africa → selected cont → top countries
-      const contData = yearData.filter(d => d.dest_continent === sankeyDrillContinent);
-      const countryStock = d3.rollup(contData, v => d3.sum(v, d => d.stock), d => d.dest_code);
-      const topCountries = [...countryStock.entries()]
-        .sort((a, b) => b[1] - a[1]).slice(0, TOP_N_COUNTRIES);
+    // Always show all continents at layer 1
+    const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
+    nodes = [srcNode];
+    destConts.forEach(cont => {
+      nodes.push({ id: cont, name: cont, layer: 1, col: CONT_COLOR[cont] || '#888' });
+      links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
+    });
 
-      const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
-      const contNode = { id: sankeyDrillContinent, name: sankeyDrillContinent, layer: 1, col: CONT_COLOR[sankeyDrillContinent] || '#888' };
-      nodes = [srcNode, contNode];
-      links.push({ source: 'AFRICA', target: sankeyDrillContinent, value: destContStock.get(sankeyDrillContinent) });
-      topCountries.forEach(([code, val]) => {
+    // Collect all country nodes globally, sort by value desc
+    // Dynamic threshold: 1% of that continent's total → aggregate rest into "Altri"
+    const pendingCountries = [];
+    sankeyDrillContinents.forEach(cont => {
+      const contData = yearData.filter(d => d.dest_continent === cont);
+      const countryStock = d3.rollup(contData, v => d3.sum(v, d => d.stock), d => d.dest_code);
+      const contTotal = d3.sum(countryStock.values());
+      const threshold = contTotal * 0.01;
+      const sorted = [...countryStock.entries()].sort((a, b) => b[1] - a[1]);
+      const visible = sorted.filter(([, v]) => v >= threshold);
+      const hidden  = sorted.filter(([, v]) => v < threshold);
+      visible.forEach(([code, val]) => {
         const name = contData.find(d => d.dest_code === code)?.dest_country || code;
-        nodes.push({ id: code, name, layer: 2, col: CONT_COLOR[sankeyDrillContinent] || '#888' });
-        links.push({ source: sankeyDrillContinent, target: code, value: val });
+        pendingCountries.push({ id: code, name, col: CONT_COLOR[cont] || '#888', source: cont, value: val, detail: null });
       });
-    }
+      if (hidden.length > 0) {
+        const othVal = d3.sum(hidden, d => d[1]);
+        const detail = hidden.map(([code, val]) => {
+          const name = contData.find(d => d.dest_code === code)?.dest_country || code;
+          return { name, val };
+        });
+        pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail });
+      }
+    });
+    pendingCountries.sort((a, b) => b.value - a.value);
+    pendingCountries.forEach(c => {
+      nodes.push({ id: c.id, name: c.name, layer: 2, col: c.col, detail: c.detail });
+      links.push({ source: c.source, target: c.id, value: c.value });
+    });
+
+    const DUMMY_ID = '__dummy__'; // kept for filter references below
 
     // Build sankey-compatible index
     const nodeById = new Map(nodes.map((n, i) => [n.id, i]));
-    const sankeyNodes = nodes.map(n => ({ ...n }));
     const sankeyLinks = links.map(l => ({
       source: nodeById.get(l.source),
       target: nodeById.get(l.target),
@@ -516,17 +527,21 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     const sankeyGen = d3.sankey()
       .nodeId(d => d.index)
+      .nodeAlign(d3.sankeyLeft)
+      .nodeSort(null)
+      .linkSort(null)
       .nodeWidth(16)
-      .nodePadding(12)
+      .nodePadding(10)
       .extent([[0, 0], [iw, ih]]);
 
     const { nodes: sNodes, links: sLinks } = sankeyGen({
-      nodes: sankeyNodes.map((d, i) => ({ ...d, index: i })),
+      nodes: nodes.map((d, i) => ({ ...d, index: i })),
       links: sankeyLinks,
     });
 
-    // ── Links ──────────────────────────────────────────────────
-    g.selectAll('.sk-link').data(sLinks).join('path')
+    // ── Links (exclude dummy) ──────────────────────────────────
+    const visLinks = sLinks.filter(l => nodes[l.target.index]?.id !== DUMMY_ID);
+    g.selectAll('.sk-link').data(visLinks).join('path')
       .attr('class', 'sk-link')
       .attr('d', d3.sankeyLinkHorizontal())
       .attr('fill', 'none')
@@ -543,8 +558,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       ))
       .on('mouseleave', () => { hideTip(); g.selectAll('.sk-link').attr('stroke-opacity', 0.25); });
 
-    // ── Nodes ──────────────────────────────────────────────────
-    const nodeG = g.selectAll('.sk-node').data(sNodes).join('g').attr('class', 'sk-node');
+    // ── Nodes (exclude dummy) ──────────────────────────────────
+    const visNodes = sNodes.filter(n => nodes[n.index]?.id !== DUMMY_ID);
+    const nodeG = g.selectAll('.sk-node').data(visNodes).join('g').attr('class', 'sk-node');
 
     nodeG.append('rect')
       .attr('x', d => d.x0).attr('y', d => d.y0)
@@ -552,45 +568,50 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('height', d => Math.max(1, d.y1 - d.y0))
       .attr('fill', d => nodes[d.index]?.col || '#888')
       .attr('rx', 3).attr('opacity', 0.85)
-      .style('cursor', d => (d.layer === 1 && !sankeyDrillContinent) ? 'pointer' : 'default')
+      .style('cursor', d => nodes[d.index]?.layer === 1 ? 'pointer' : 'default')
       .on('click', (e, d) => {
-        if (d.layer === 1 && !sankeyDrillContinent) {
-          sankeyDrillContinent = d.id; draw();
-        }
+        const nd = nodes[d.index];
+        if (!nd || nd.layer !== 1) return;
+        if (sankeyDrillContinents.has(nd.id)) sankeyDrillContinents.delete(nd.id);
+        else sankeyDrillContinents.add(nd.id);
+        draw();
       })
-      .on('mousemove', (e, d) => showTip(e,
-        `<strong style="color:${nodes[d.index]?.col||'#fff'}">${d.name}</strong><br>` +
-        `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>` +
-        (d.layer === 1 && !sankeyDrillContinent ? '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio →</em>' : '')
-      ))
+      .on('mousemove', (e, d) => {
+        const nd = nodes[d.index];
+        if (!nd || !nd.name) return;
+        let html = `<strong style="color:${nd.col||'#fff'}">${nd.name}</strong><br>` +
+          `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>`;
+        if (nd.layer === 1) {
+          html += sankeyDrillContinents.has(nd.id)
+            ? '<br><em style="opacity:.6;font-size:10px">Clicca per chiudere ↩</em>'
+            : '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio →</em>';
+        }
+        if (nd.detail) {
+          html += '<br><span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi</span>';
+          nd.detail.forEach(r => {
+            html += `<br><span style="opacity:.8">${r.name}</span>: ${d3.format(',.0f')(r.val)}`;
+          });
+        }
+        showTip(e, html);
+      })
       .on('mouseleave', hideTip);
 
     // ── Labels ─────────────────────────────────────────────────
     nodeG.append('text')
-      .attr('x', d => d.x0 < iw / 2 ? d.x0 - 6 : d.x1 + 6)
+      .attr('x', d => nodes[d.index]?.layer === 0 ? d.x0 - 6 : d.x1 + 6)
       .attr('y', d => (d.y1 + d.y0) / 2)
-      .attr('text-anchor', d => d.x0 < iw / 2 ? 'end' : 'start')
+      .attr('text-anchor', d => nodes[d.index]?.layer === 0 ? 'end' : 'start')
       .attr('dominant-baseline', 'middle')
-      .attr('font-size', d => d.layer === 0 ? 11 : 9)
-      .attr('font-weight', d => d.layer === 0 ? '700' : '500')
+      .attr('font-size', d => nodes[d.index]?.layer === 0 ? 11 : 9)
+      .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '700' : '500')
       .attr('fill', d => nodes[d.index]?.col || '#555')
       .style('pointer-events', 'none')
       .text(d => {
-        const label = d.name.length > 16 ? d.name.slice(0, 15) + '…' : d.name;
+        const nd = nodes[d.index];
+        if (!nd || !nd.name) return '';
+        const label = nd.name.length > 16 ? nd.name.slice(0, 15) + '…' : nd.name;
         return `${label}  ${d3.format('.2~s')(d.value)}`;
       });
-
-    // ── Back button (when drilled) ──────────────────────────────
-    if (sankeyDrillContinent) {
-      svgArea.append('button')
-        .style('position', 'absolute').style('top', '8px').style('left', '8px')
-        .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-        .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
-        .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-        .style('justify-content', 'center').style('color', '#4a6fa5').style('z-index', '10')
-        .html('<svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,1 1,6 6,11"/><line x1="1" y1="6" x2="13" y2="6"/></svg>')
-        .on('click', () => { sankeyDrillContinent = null; draw(); });
-    }
 
     // ── Year label ─────────────────────────────────────────────
     svg.append('text').attr('x', W - 8).attr('y', H - 8)
