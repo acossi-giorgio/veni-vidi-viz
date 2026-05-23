@@ -1,8 +1,8 @@
 /* ============================================================
-   Grafico 3-3 (Atto II) — Bubble chart: spesa × alfabetizzazione
-   Africa (corallo) / Europa (teal)  ·  2000–2020 annuale
-   X = spesa istruzione (B USD o % PIL)  Y = alfabetizzazione %
-   R = √(bambini fuori scuola, M)
+   Grafico 3-3 (Atto II) — Scatter: spesa × alfabetizzazione / fuori scuola
+   Africa (corallo) / Europa (teal)  ·  2000–2023 annuale
+   X = spesa istruzione (B USD o % PIL)
+   Y = alfabetizzazione % OR bambini fuori scuola (M)
    ============================================================ */
 async function renderExclusionChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -87,7 +87,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   });
 
   /* ── State ──────────────────────────────────────────────── */
-  let xMode = 'absolute'; // 'absolute' | 'pct'
+  let xMode    = 'absolute'; // 'absolute' | 'pct'
+  let yMode    = 'literacy'; // 'literacy' | 'oos'
+  let contMode = 'Africa';   // 'Africa' | 'Europe'
 
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-excl').remove();
@@ -119,47 +121,56 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   }
   function hideTip() { tooltip.style('display', 'none'); }
 
-  /* ── Top bar: legend + toggle ───────────────────────────── */
+  /* ── Top bar: toggles left ──────────────────────────────── */
   const topBar = d3.select(container).append('div')
-    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'space-between')
+    .style('display', 'flex').style('align-items', 'center')
     .style('padding', '8px 16px 4px').style('flex-shrink', '0');
 
-  const legendDiv = topBar.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '16px');
+  const togglesDiv = topBar.append('div')
+    .style('display', 'flex').style('align-items', 'center').style('gap', '8px');
 
-  CONTS.forEach(c => {
-    const item = legendDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px');
-    item.append('div')
-      .style('width', '12px').style('height', '12px').style('border-radius', '50%')
-      .style('background', COLORS[c]).style('opacity', '0.85');
-    item.append('span').style('font-size', '11px').style('color', '#555').text(c);
-  });
+  function mkPill(parent) {
+    return parent.append('div')
+      .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
+      .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+      .style('padding', '3px').style('gap', '2px')
+      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
+  }
 
-  const sizeLeg = legendDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '8px').style('margin-left', '8px');
-  sizeLeg.append('span').style('font-size', '10px').style('color', '#bbb').text('● bolla = bambini fuori scuola');
+  const contPill = mkPill(togglesDiv);
+  const yPill    = mkPill(togglesDiv);
+  const xPill    = mkPill(togglesDiv);
 
-  /* Pill toggle */
-  const pillBar = topBar.append('div')
-    .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-    .style('padding', '3px').style('gap', '2px')
-    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
-
-  function mkBtn(label, val) {
-    return pillBar.append('button')
-      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+  function mkBtn(pill, label, onClick) {
+    return pill.append('button')
+      .style('font-size', '11px').style('padding', '5px 12px').style('border-radius', '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
-      .on('click', () => { xMode = val; updateBtns(); draw(); });
+      .on('click', onClick);
   }
-  const btnAbs = mkBtn('Assoluto (USD)', 'absolute');
-  const btnPct = mkBtn('% PIL',          'pct');
+
+  const btnAfr = mkBtn(contPill, 'Africa',  () => { contMode = 'Africa';  updateBtns(); draw(); });
+  const btnEur = mkBtn(contPill, 'Europe',  () => { contMode = 'Europe';  updateBtns(); draw(); });
+  const btnLit = mkBtn(yPill, 'Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
+  const btnOos = mkBtn(yPill, 'Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
+  const btnAbs = mkBtn(xPill, 'Assoluto (USD)',   () => { xMode = 'absolute'; updateBtns(); draw(); });
+  const btnPct = mkBtn(xPill, '% PIL',             () => { xMode = 'pct';     updateBtns(); draw(); });
 
   function updateBtns() {
+    const col = COLORS[contMode];
+    const shadow = `0 1px 4px ${col}55`;
+    const setC = (btn, active, c) => btn
+      .style('background', active ? c    : 'transparent')
+      .style('color',      active ? '#fff' : '#7a8aaa')
+      .style('box-shadow', active ? `0 1px 4px ${c}55` : 'none');
     const set = (btn, active) => btn
       .style('background', active ? '#c97c3e' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
       .style('box-shadow', active ? '0 1px 4px rgba(201,124,62,0.3)' : 'none');
+    setC(btnAfr, contMode === 'Africa',  COLORS['Africa']);
+    setC(btnEur, contMode === 'Europe',  COLORS['Europe']);
+    set(btnLit, yMode === 'literacy');
+    set(btnOos, yMode === 'oos');
     set(btnAbs, xMode === 'absolute');
     set(btnPct, xMode === 'pct');
   }
@@ -169,26 +180,61 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   const vizDiv = d3.select(container).append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('min-height', '0');
 
+  /* ── Legend bottom-right ────────────────────────────────── */
+  const legDiv = vizDiv.append('div')
+    .style('position', 'absolute').style('bottom', '48px').style('right', '16px')
+    .style('display', 'flex').style('flex-direction', 'column').style('gap', '4px')
+    .style('background', 'rgba(255,255,255,0.88)').style('border-radius', '6px')
+    .style('padding', '6px 10px').style('pointer-events', 'none')
+    .style('box-shadow', '0 1px 4px rgba(0,0,0,0.08)').style('z-index', '10');
+  CONTS.forEach(c => {
+    const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px');
+    row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%')
+      .style('background', COLORS[c]).style('opacity', '0.85').style('flex-shrink', '0');
+    row.append('span').style('font-size', '11px').style('color', '#555').text(c);
+  });
+
   /* ── Draw ───────────────────────────────────────────────── */
   function draw() {
     vizDiv.html('');
     const W = container.clientWidth  || 600;
     const H = vizDiv.node().clientHeight || 340;
 
-    const margin = { top: 20, right: 44, bottom: 44, left: 64 };
+    const margin = { top: 20, right: 32, bottom: 44, left: 56 };
     const iw = W - margin.left - margin.right;
     const ih = H - margin.top  - margin.bottom;
 
-    const xVal   = d => xMode === 'absolute' ? d.spendB : d.eduPct;
-    const xExt   = d3.extent(points, xVal);
-    const xPad   = (xExt[1] - xExt[0]) * 0.08;
-    const xScale = d3.scaleLinear().domain([Math.max(0, xExt[0] - xPad), xExt[1] + xPad]).range([0, iw]).nice();
-    const yScale = d3.scaleLinear().domain([50, 102]).range([ih, 0]);
-    const maxOos = d3.max(points, d => d.oosM) || 1;
-    const rScale = d3.scaleSqrt().domain([0, maxOos]).range([4, 22]);
+    const col  = COLORS[contMode];
+    const pts  = points.filter(d => d.continent === contMode).sort((a, b) => a.year - b.year);
+
+    const xVal = d => xMode === 'absolute' ? d.spendB : d.eduPct;
+    const yVal = d => yMode === 'literacy' ? d.litPct : d.oosM;
+
+    /* Tight axes on Africa data */
+    const xExt = d3.extent(pts, xVal);
+    const xPad = (xExt[1] - xExt[0]) * 0.06;
+    const xScale = d3.scaleLinear()
+      .domain([Math.max(0, xExt[0] - xPad), xExt[1] + xPad])
+      .range([0, iw]).nice();
+
+    const yExt = d3.extent(pts, yVal);
+    const yPad = (yExt[1] - yExt[0]) * 0.12;
+    const yScale = d3.scaleLinear()
+      .domain([Math.max(0, yExt[0] - yPad), yExt[1] + yPad])
+      .range([ih, 0]).nice();
+
+    const xFmt = xMode === 'absolute'
+      ? v => v >= 1000 ? (v/1000).toFixed(0)+'T$' : v >= 1 ? v.toFixed(0)+'B$' : (v*1000).toFixed(0)+'M$'
+      : v => v.toFixed(1) + '%';
+    const yFmt = yMode === 'literacy' ? v => v.toFixed(0) + '%' : v => v.toFixed(0) + ' M';
+
+    const markerId = `arrow-excl-${contMode}`;
 
     const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit');
+
+    svg.append('defs');
+
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
     /* Grid */
@@ -199,67 +245,81 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .call(a => { a.select('.domain').remove(); a.selectAll('line').attr('stroke', '#ececec'); });
 
     /* Axes */
-    const xFmt = xMode === 'absolute'
-      ? v => v >= 1000 ? (v / 1000).toFixed(0) + 'T$' : v >= 1 ? v.toFixed(0) + 'B$' : (v * 1000).toFixed(0) + 'M$'
-      : v => v.toFixed(1) + '%';
-
+    g.append('g').call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt))
+      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xScale).ticks(5).tickFormat(xFmt))
-      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
-
-    g.append('g').call(d3.axisLeft(yScale).ticks(6).tickFormat(v => v + '%'))
       .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
 
     /* Axis labels */
     g.append('text').attr('x', iw / 2).attr('y', ih + 36)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa')
       .text(xMode === 'absolute' ? 'Spesa pubblica istruzione (USD)' : 'Spesa pubblica istruzione (% PIL)');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -42)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa')
-      .text('Tasso di alfabetizzazione (%)');
+      .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
 
-    /* Trajectory lines */
-    CONTS.forEach(cont => {
-      const pts = points.filter(d => d.continent === cont).sort((a, b) => a.year - b.year);
-      if (pts.length < 2) return;
-      const line = d3.line().x(d => xScale(xVal(d))).y(d => yScale(d.litPct)).curve(d3.curveCatmullRom.alpha(0.5));
-      g.append('path').datum(pts).attr('d', line)
-        .attr('fill', 'none').attr('stroke', COLORS[cont])
-        .attr('stroke-width', 1.2).attr('stroke-dasharray', '4,3').attr('opacity', 0.4);
-    });
+    /* Trajectory line — animated draw */
+    const line = d3.line().x(d => xScale(xVal(d))).y(d => yScale(yVal(d))).curve(d3.curveCatmullRom.alpha(0.5));
+    const pathEl = g.append('path').datum(pts).attr('d', line)
+      .attr('fill', 'none').attr('stroke', col)
+      .attr('stroke-width', 1.8).attr('opacity', 0.65).node();
+    const totalLen = pathEl.getTotalLength();
+    d3.select(pathEl)
+      .attr('stroke-dasharray', totalLen)
+      .attr('stroke-dashoffset', totalLen)
+      .transition().duration(2800).ease(d3.easeCubicInOut)
+      .attr('stroke-dashoffset', 0);
 
-    /* Dots — all years */
-    points.forEach(d => {
-      const cx = xScale(xVal(d)), cy = yScale(d.litPct);
-      const r  = rScale(d.oosM);
-      const isLabel = LABEL_YEARS.includes(d.year);
-      const col = COLORS[d.continent];
-
+    /* Dots */
+    const R = 5;
+    pts.forEach((d, i) => {
+      const cx = xScale(xVal(d)), cy = yScale(yVal(d));
+      const delay = 2700 * (i / pts.length);
       g.append('circle')
-        .attr('cx', cx).attr('cy', cy)
-        .attr('r', isLabel ? r : Math.max(3, r * 0.55))
-        .attr('fill', col)
-        .attr('fill-opacity', isLabel ? 0.6 : 0.3)
-        .attr('stroke', isLabel ? col : 'none')
-        .attr('stroke-width', isLabel ? 1.5 : 0)
+        .attr('cx', cx).attr('cy', cy).attr('r', R)
+        .attr('fill', col).attr('fill-opacity', 0)
+        .attr('stroke', col).attr('stroke-width', 1.2)
         .style('cursor', 'default')
         .on('mousemove', e => showTip(e, d))
-        .on('mouseleave', hideTip);
+        .on('mouseleave', hideTip)
+        .transition().delay(delay).duration(200)
+        .attr('fill-opacity', 0.75);
+    });
 
-      if (isLabel) {
-        g.append('text')
-          .attr('x', cx).attr('y', cy - r - 5)
-          .attr('text-anchor', 'middle').attr('font-size', 9)
-          .attr('fill', col).attr('font-weight', '600')
-          .attr('pointer-events', 'none')
-          .text(d.year);
-      }
+    /* Labels — force simulation for collision avoidance */
+    const labelNodes = pts.map((d, i) => {
+      const cx = xScale(xVal(d)), cy = yScale(yVal(d));
+      const prev = pts[Math.max(0, i - 1)];
+      const next = pts[Math.min(pts.length - 1, i + 1)];
+      const tdx = xScale(xVal(next)) - xScale(xVal(prev));
+      const tdy = yScale(yVal(next)) - yScale(yVal(prev));
+      const tlen = Math.sqrt(tdx * tdx + tdy * tdy) || 1;
+      const side = i % 2 === 0 ? 1 : -1;
+      const LOFF = R + 12;
+      return { d, i, cx, cy,
+        x: cx + (-tdy / tlen) * LOFF * side,
+        y: cy + ( tdx / tlen) * LOFF * side };
+    });
+
+    /* Labels — only first and last point */
+    [labelNodes[0], labelNodes[labelNodes.length - 1]].forEach(n => {
+      const isLast = n.i === pts.length - 1;
+      const delay = isLast ? 2750 : 200;
+      g.append('text')
+        .attr('x', n.x).attr('y', n.y + 3)
+        .attr('text-anchor', 'middle').attr('font-size', 9)
+        .attr('fill', col).attr('font-weight', '600')
+        .attr('pointer-events', 'none').attr('opacity', 0)
+        .text(n.d.year)
+        .transition().delay(delay).duration(250)
+        .attr('opacity', 1);
     });
   }
 
   draw();
 
   container._exclusionHighlight  = () => draw();
-  container._exclusionShowGpi    = () => draw();
-  container._exclusionShowTrend  = () => draw();
+  container._exclusionShowGpi    = () => { yMode = 'oos';     updateBtns(); draw(); };
+  container._exclusionShowTrend  = () => { yMode = 'literacy'; updateBtns(); draw(); };
 }
