@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Grafico 5-1 (Atto IV) — Migrazioni africane
    Tab: Rete (force-directed) | Mappa (choropleth + archi)
    ============================================================ */
@@ -96,13 +96,13 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   let sankeyDrillContinents = new Set(); // expanded dest continents
 
   const wrap = container.append('div')
-    .style('width', '100%').style('height', '100%').style('position', 'relative')
-    .style('display', 'flex').style('flex-direction', 'column');
+    .style('width', '100%').style('height', '100%').style('position', 'relative');
 
-  // ── Top header: pill buttons ─────────────────────────────────
+  // ── Top header: pill buttons (overlay) ───────────────────────
   const header = wrap.append('div')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '8px 10px 4px').style('flex-shrink', '0');
+    .style('padding', '8px 10px 4px')
+    .style('position', 'absolute').style('top', '0').style('left', '0').style('z-index', '20');
 
   const pillBar = header.append('div')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
@@ -135,16 +135,17 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   const PLAYER_H = 72;
 
   const svgArea = wrap.append('div')
-    .style('flex', '1').style('position', 'relative').style('min-height', '0')
-    .style('padding-bottom', PLAYER_H + 'px');
+    .style('position', 'absolute').style('top', '0').style('left', '0')
+    .style('right', '0').style('bottom', '0');
 
-  // ── Bottom player bar ─────────────────────────────────────
+  // ── Bottom player bar (overlay) ───────────────────────────
   const footer = wrap.append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px')
-    .style('background', '#fff')
+    .style('background', 'rgba(255,255,255,0.88)')
+    .style('backdrop-filter', 'blur(4px)')
     .style('border-radius', '0 0 10px 10px')
-    .style('border-top', '1px solid #e8eef7')
+    .style('border-top', '1px solid rgba(232,238,247,0.8)')
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
@@ -197,7 +198,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         yearLabel.text(y);
         draw();
         y++;
-        if (y <= 2020) animTimer = setTimeout(step, 250);
+        if (y <= 2020) animTimer = setTimeout(step, 1200);
         else stopAnim();
       }
       step();
@@ -233,7 +234,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       draw();
     });
 
-  // Year display
+  // Year display — bottom-right of player bar
   const yearLabel = footer.append('div')
     .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
     .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
@@ -244,14 +245,21 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
   }
 
+  const HEADER_H = 44; // approximate height of the top pill-bar header
+
   function draw() {
     svgArea.html('');
     const svgRect = svgArea.node().getBoundingClientRect();
     const W = svgRect.width  || 560;
-    const H = Math.max(50, (svgRect.height || (PLAYER_H + 380)) - PLAYER_H);
+    const H = svgRect.height || 380;
     if (W < 10 || H < 10) return;
-    if (mode === 'map') drawMap(W, H);
-    else drawSankey(W, H);
+    if (mode === 'map') {
+      drawMap(W, H);
+    } else {
+      const sankeyH = Math.max(50, H - HEADER_H - PLAYER_H);
+      drawSankey(W, sankeyH);
+      svgArea.select('svg').style('margin-top', HEADER_H + 'px');
+    }
   }
 
   /* ── Network: expand/collapse in-place ────────────────────── */
@@ -607,10 +615,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         return `${label}  ${d3.format('.2~s')(d.value)}`;
       });
 
-    // ── Year label ─────────────────────────────────────────────
-    svg.append('text').attr('x', W - 8).attr('y', 16)
-      .attr('text-anchor', 'end').attr('font-size', 10).attr('fill', '#888').attr('font-weight', '600')
-      .text(currentYear);
+
   }
 
   /* ── Connection Map ────────────────────────────────────────── */
@@ -981,6 +986,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   const vizDiv = d3.select(containerEl).append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden')
+    .style('padding-top', '48px')
     .style('padding-bottom', PLAYER_H + 'px');
 
   /* ── Player bar ─────────────────────────────────────────── */
@@ -1068,7 +1074,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
   }
 
-  /* ── Pill buttons — top-right ───────────────────────────── */
+  /* ── Pill buttons — top bar (in-flow, above chart) ───────── */
   const pillBar = d3.select(containerEl).append('div')
     .style('position', 'absolute').style('top', '8px').style('left', '8px')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
@@ -1135,7 +1141,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const boxW = SW + 8 + TW + 10;
     const boxH = 14 + labels.length * rowH + 8;
     const LX   = W - boxW - 10;
-    const LY   = 10;
+    const LY   = H - boxH - 10;
 
     const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
     legG.append('rect').attr('x', 0).attr('y', 0).attr('width', boxW).attr('height', boxH)
@@ -1252,12 +1258,14 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   }
 
   /* ── Redraw ─────────────────────────────────────────────── */
-  const VIZ_PAD_TOP = 40;
+  const VIZ_PAD_TOP = 48;
 
   function redraw() {
     vizDiv.selectAll('*').remove();
+    const padTop = viewMode === 'treemap' ? VIZ_PAD_TOP : 0;
+    vizDiv.style('padding-top', padTop + 'px');
     const W = containerEl.clientWidth  || 560;
-    const H = Math.max(50, (containerEl.clientHeight || (PLAYER_H + 460)) - PLAYER_H);
+    const H = Math.max(50, (containerEl.clientHeight || (PLAYER_H + 460)) - PLAYER_H - padTop);
     if (viewMode === 'treemap') drawTreemap(W, H);
     else                        drawMap(W, H);
   }
