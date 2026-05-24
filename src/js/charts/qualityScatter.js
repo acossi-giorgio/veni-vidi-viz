@@ -345,19 +345,19 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     const g = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
 
-    /* back button — round arrow, same style as dumbbell chart control buttons */
+    /* back button — rectangular text style matching chart 1 */
     const backBtn = d3.select(container).append('button')
-      .attr('class', 'qs-back').attr('title', 'Tutti i continenti')
+      .attr('class', 'qs-back')
       .style('position', 'absolute').style('top', '8px').style('left', '8px')
-      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
-      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('color', '#4a6fa5')
-      .style('padding', '0').style('line-height', '1').style('z-index', '10')
-      .style('transition', 'all 0.15s')
-      .html('<svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,1 1,6 6,11"/><line x1="1" y1="6" x2="13" y2="6"/></svg>')
-      .on('mouseover', function() { d3.select(this).style('background','#e8eef7'); })
-      .on('mouseleave', function() { d3.select(this).style('background','#f5f7fb'); })
+      .style('display', 'inline-flex').style('align-items', 'center')
+      .style('padding', '4px 10px')
+      .style('background', '#f5f5f5').style('border', '1px solid #ddd')
+      .style('border-radius', '6px').style('font-size', '12px').style('font-weight', '600')
+      .style('color', '#333').style('cursor', 'pointer').style('white-space', 'nowrap')
+      .style('z-index', '10')
+      .html('&#8592; Tutti i continenti')
+      .on('mouseover', function() { d3.select(this).style('background', '#e8e8e8'); })
+      .on('mouseout',  function() { d3.select(this).style('background', '#f5f5f5'); })
       .on('click', () => { backBtn.remove(); drill = null; draw(); });
 
     /* title */

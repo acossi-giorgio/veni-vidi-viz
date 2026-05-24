@@ -55,14 +55,15 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   /* ── Back button ────────────────────────────────────────── */
   const backBtn = container.append('button')
     .style('position', 'absolute').style('top', '8px').style('left', '8px')
-    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-    .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
-    .style('cursor', 'pointer').style('display', 'none').style('z-index', '20')
-    .style('color', '#4a6fa5').style('align-items', 'center').style('justify-content', 'center')
-    .style('transition', 'background 0.15s')
-    .html('<svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,1 1,6 6,11"/><line x1="1" y1="6" x2="13" y2="6"/></svg>')
-    .on('mouseover', function() { d3.select(this).style('background', '#e8eef7'); })
-    .on('mouseleave', function() { d3.select(this).style('background', '#f5f7fb'); })
+    .style('display', 'none').style('z-index', '20')
+    .style('align-items', 'center')
+    .style('padding', '4px 10px')
+    .style('background', '#f5f5f5').style('border', '1px solid #ddd')
+    .style('border-radius', '6px').style('font-size', '12px').style('font-weight', '600')
+    .style('color', '#333').style('cursor', 'pointer').style('white-space', 'nowrap')
+    .html('&#8592; Panoramica')
+    .on('mouseover', function() { d3.select(this).style('background', '#e8e8e8'); })
+    .on('mouseout',  function() { d3.select(this).style('background', '#f5f5f5'); })
     .on('click', () => { drillDown = false; dotMode = false; draw(); });
 
   /* ── Waffle helper ──────────────────────────────────────── */
@@ -227,7 +228,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     /* ── Toggle % / Assoluto — top-left pill (after back btn) ─ */
     const pillBar = vizDiv.append('div')
-      .style('position', 'absolute').style('top', '8px').style('left', '48px')
+      .style('position', 'absolute').style('top', '8px').style('left', '116px')
       .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
       .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
       .style('padding', '3px').style('gap', '2px')
@@ -333,7 +334,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   function draw() {
     vizDiv.selectAll('svg,div').remove();
     vizDiv.style('overflow-x', drillDown ? 'auto' : 'hidden').style('overflow-y', 'hidden');
-    backBtn.style('display', drillDown ? 'flex' : 'none');
+    backBtn.style('display', drillDown ? 'inline-flex' : 'none');
 
     const cn = vizDiv.node();
     const W  = cn.getBoundingClientRect().width  || 560;

@@ -171,9 +171,9 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
   const playerBar = d3.select(containerEl).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px').style('background', '#fff')
-    .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e8eef7')
+    .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e4e8f0')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('padding', '8px 16px').style('gap', '8px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
   const ctrlWrap = playerBar.append('div')
@@ -182,9 +182,9 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
   function mkCtrlBtn(inner, title) {
     return ctrlWrap.append('button').attr('title', title)
       .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('border', '1px solid #d0d9e8').style('background', '#fff')
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('color', '#4a6fa5')
+      .style('justify-content', 'center').style('color', '#8096b0')
       .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
       .html(inner);
   }
@@ -199,12 +199,12 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
   });
 
   const btnPlay = ctrlWrap.append('button')
-    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('width', '42px').style('height', '42px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#1a3a5c').style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
-    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
-    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
+    .style('font-size', '16px')
+    .text('▶')
     .on('click', () => playing ? stopPlay() : startPlay());
 
   mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
@@ -215,7 +215,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
 
   function startPlay() {
     playing = true;
-    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+    btnPlay.text('⏸');
     animTimer = setInterval(() => {
       const i = allYears.indexOf(currentYear);
       if (i >= allYears.length - 1) { stopPlay(); return; }
@@ -226,7 +226,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
 
   function stopPlay() {
     playing = false; clearInterval(animTimer);
-    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+    btnPlay.text('▶');
   }
 
   const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');
@@ -236,15 +236,35 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
   allYears.filter((y, i) => i % 5 === 0 || i === allYears.length - 1).forEach(y => labelRow.append('span').text(y));
 
   const sliderEl = timelineWrap.append('input').attr('type', 'range')
+    .attr('id', 'db-gapminder-slider')
     .attr('min', allYears[0]).attr('max', allYears[allYears.length - 1]).attr('step', 1).attr('value', currentYear)
-    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .style('width', '100%').style('height', '5px').style('cursor', 'pointer')
+    .style('-webkit-appearance', 'none').style('appearance', 'none')
+    .style('background', 'rgba(0,0,0,0.25)').style('border-radius', '2px')
+    .style('outline', 'none').style('display', 'block')
     .on('input', function() { stopPlay(); currentYear = +this.value; draw(); yearDisplay.text(currentYear); });
 
+  if (!document.getElementById('db-gapminder-slider-style')) {
+    const st = document.createElement('style');
+    st.id = 'db-gapminder-slider-style';
+    st.textContent = `
+      #db-gapminder-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer;
+      }
+      #db-gapminder-slider::-moz-range-thumb {
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer; border: none;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
   const yearDisplay = playerBar.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
-    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
-    .style('letter-spacing', '-0.5px').text(currentYear);
+    .style('font-size', '28px').style('font-weight', '700').style('color', '#1a3a5c')
+    .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('font-family', 'inherit').style('letter-spacing', '-0.5px').text(currentYear);
 
   // ── DOM API ───────────────────────────────────────────────
   const node = containerEl;

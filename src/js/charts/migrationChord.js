@@ -868,36 +868,63 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   /* ── Player bar ─────────────────────────────────────────── */
   const playerBar = d3.select(containerEl).append('div')
-    .style('flex', '0 0 auto').style('display', 'flex').style('align-items', 'center')
-    .style('gap', '8px').style('padding', '4px 12px 6px').style('background', 'transparent');
+    .style('display', 'flex').style('align-items', 'center')
+    .style('gap', '8px').style('padding', '8px 16px')
+    .style('background', '#fff').style('border-top', '1px solid #e4e8f0')
+    .style('flex-shrink', '0');
 
   /* Play/pause button */
   const playBtn = playerBar.append('button')
-    .style('width', '28px').style('height', '28px').style('border-radius', '50%')
-    .style('border', '1px solid #c8d8c8').style('background', '#f0f7f0')
+    .style('width', '42px').style('height', '42px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#1a3a5c')
     .style('cursor', 'pointer').style('display', 'flex')
     .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#5a8a6e').style('flex-shrink', '0').style('transition', 'background .15s');
+    .style('color', '#fff').style('flex-shrink', '0').style('font-size', '16px')
+    .text('▶');
 
-  function playIcon() { return '<svg width="10" height="11" viewBox="0 0 10 11" fill="currentColor"><polygon points="0,0 10,5.5 0,11"/></svg>'; }
-  function pauseIcon() { return '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="0" y="0" width="3.5" height="10"/><rect x="6.5" y="0" width="3.5" height="10"/></svg>'; }
-  playBtn.html(playIcon());
+  /* Timeline slider + tick labels */
+  const timelineWrap = playerBar.append('div')
+    .style('flex', '1').style('display', 'flex').style('flex-direction', 'column')
+    .style('padding', '0 8px').style('min-width', '0');
 
-  /* Year label */
-  const yearLabel = playerBar.append('span')
-    .style('font-size', '11px').style('font-weight', '700').style('color', '#5a8a6e')
-    .style('min-width', '36px').style('text-align', 'center').text(curYear);
-
-  /* Slider */
-  const slider = playerBar.append('input').attr('type', 'range')
+  const slider = timelineWrap.append('input').attr('type', 'range')
+    .attr('id', 'rem-chart-slider')
     .attr('min', 0).attr('max', years.length - 1)
     .attr('value', years.length - 1).attr('step', 1)
-    .style('flex', '1').style('accent-color', '#5a8a6e').style('cursor', 'pointer');
+    .style('width', '100%').style('cursor', 'pointer')
+    .style('-webkit-appearance', 'none').style('appearance', 'none')
+    .style('height', '5px').style('background', 'rgba(0,0,0,0.25)')
+    .style('border-radius', '2px').style('outline', 'none');
 
-  /* End-year label */
-  playerBar.append('span')
-    .style('font-size', '10px').style('color', '#aaa')
-    .text(years[years.length - 1]);
+  if (!document.getElementById('rem-chart-slider-style')) {
+    const st = document.createElement('style');
+    st.id = 'rem-chart-slider-style';
+    st.textContent = `
+      #rem-chart-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer;
+      }
+      #rem-chart-slider::-moz-range-thumb {
+        width: 16px; height: 16px; border-radius: 50%;
+        background: #1a3a5c; cursor: pointer; border: none;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  const tickRow = timelineWrap.append('div')
+    .style('display', 'flex').style('justify-content', 'space-between')
+    .style('padding', '2px 2px 0');
+  [years[0], years[Math.floor(years.length / 2)], years[years.length - 1]]
+    .filter((y, i, a) => a.indexOf(y) === i)
+    .forEach(y => tickRow.append('span').style('font-size', '9px').style('color', '#aaa').text(y));
+
+  /* Year display */
+  const yearLabel = playerBar.append('div')
+    .style('font-size', '28px').style('font-weight', '700').style('color', '#1a3a5c')
+    .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('font-family', 'inherit').style('letter-spacing', '-0.5px').text(curYear);
 
   /* ── Pill buttons — top-right ───────────────────────────── */
   const pillBar = d3.select(containerEl).append('div')
@@ -1057,7 +1084,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   function redraw() {
     vizDiv.selectAll('*').remove();
     const W = containerEl.clientWidth  || 560;
-    const H = (containerEl.clientHeight || 460) - 38 - VIZ_PAD_TOP;
+    const H = (containerEl.clientHeight || 460) - 58 - VIZ_PAD_TOP;
     if (viewMode === 'treemap') drawTreemap(W, H);
     else                        drawMap(W, H);
   }
@@ -1071,7 +1098,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   playBtn.on('click', () => {
     playing = !playing;
-    playBtn.html(playing ? pauseIcon() : playIcon());
+    playBtn.text(playing ? '⏸' : '▶');
     if (playing) {
       function step() {
         const idx = years.indexOf(curYear);
@@ -1080,7 +1107,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
         slider.attr('value', next).node().value = next;
         yearLabel.text(curYear);
         redraw();
-        if (next === 0) { playing = false; playBtn.html(playIcon()); return; }
+        if (next === 0) { playing = false; playBtn.text('▶'); return; }
         playTimer = setTimeout(step, 900);
       }
       playTimer = setTimeout(step, 900);
