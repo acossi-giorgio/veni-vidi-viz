@@ -151,18 +151,20 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     pairs.forEach(d => {
       const cx = xBand(d.year) + xBand.bandwidth() / 2;
 
-      /* Segment */
+      /* Segment — grows from Europe dot downward */
       g.append('line')
         .attr('x1', cx).attr('x2', cx)
-        .attr('y1', yS(d.europe)).attr('y2', yS(d.africa))
-        .attr('stroke', '#d8d8d8').attr('stroke-width', 1.5);
+        .attr('y1', yS(d.europe)).attr('y2', yS(d.europe))
+        .attr('stroke', '#d8d8d8').attr('stroke-width', 1.5)
+        .transition().duration(700).ease(d3.easeCubicOut)
+        .attr('y2', yS(d.africa));
 
       /* Dots */
       CONTS.forEach(cont => {
         const val = cont === 'Africa' ? d.africa : d.europe;
         g.append('circle')
-          .attr('cx', cx).attr('cy', yS(val)).attr('r', 5)
-          .attr('fill', COLORS[cont]).attr('fill-opacity', 0.85)
+          .attr('cx', cx).attr('cy', yS(val)).attr('r', 0)
+          .attr('fill', COLORS[cont]).attr('fill-opacity', 0)
           .style('cursor', 'default')
           .on('mousemove', e => {
             tip.style('display', 'block')
@@ -175,7 +177,9 @@ async function renderMortalityChart(selector, isFullscreen = false) {
               )
               .style('left', (e.clientX + 14) + 'px').style('top', (e.clientY - 28) + 'px');
           })
-          .on('mouseleave', () => tip.style('display', 'none'));
+          .on('mouseleave', () => tip.style('display', 'none'))
+          .transition().duration(600).ease(d3.easeCubicOut)
+          .attr('r', 5).attr('fill-opacity', 0.85);
       });
     });
 

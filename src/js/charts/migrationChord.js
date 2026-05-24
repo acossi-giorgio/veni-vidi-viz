@@ -58,9 +58,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const map1 = new Map();
     migRaw.filter(d => d.year === y1).forEach(d => map1.set(`${d.origin_code}|${d.dest_code}`, d.stock));
     return rows0.map(d => {
-      const s1 = map1.get(`${d.origin_code}|${d.dest_code}`) ?? d.stock;
+      const s1 = map1.get(`${d.origin_code}|${d.dest_code}`) ?? 0;
       return { ...d, year: clamped, stock: Math.round(d.stock + t * (s1 - d.stock)) };
-    });
+    }).filter(d => d.stock > 0);
   }
 
   const CONT_COLOR = {
@@ -254,12 +254,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   function draw() {
     svgArea.html('');
-    d3.select(containerNode).selectAll('svg.mig-map-svg').remove();
-    const rect = containerNode.getBoundingClientRect();
-    const W = rect.width  || 560;
-    const H = mode === 'map'
-      ? (rect.height || 480)
-      : (svgArea.node().getBoundingClientRect().height || 380);
+    const svgRect = svgArea.node().getBoundingClientRect();
+    const W = svgRect.width  || 560;
+    const H = svgRect.height || 380;
     if (W < 10 || H < 10) return;
     if (mode === 'map') drawMap(W, H);
     else drawSankey(W, H);
@@ -547,10 +544,11 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('fill', 'none')
       .attr('stroke', d => nodes[d.target.index]?.col || '#aaa')
       .attr('stroke-width', d => Math.max(1, d.width))
-      .attr('stroke-opacity', 0.25)
+      .attr('stroke-opacity', 0)
       .style('cursor', 'pointer')
       .on('mouseover', function() { d3.select(this).attr('stroke-opacity', 0.55); })
       .on('mouseleave', function() { d3.select(this).attr('stroke-opacity', 0.25); })
+      .call(s => s.transition().duration(600).ease(d3.easeCubicOut).attr('stroke-opacity', 0.25))
       .on('mousemove', (e, d) => showTip(e,
         `<strong style="color:${nodes[d.source.index]?.col||'#fff'}">${nodes[d.source.index]?.name}</strong>` +
         ` → <strong style="color:${nodes[d.target.index]?.col||'#fff'}">${nodes[d.target.index]?.name}</strong><br>` +
@@ -567,7 +565,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('width', d => d.x1 - d.x0)
       .attr('height', d => Math.max(1, d.y1 - d.y0))
       .attr('fill', d => nodes[d.index]?.col || '#888')
-      .attr('rx', 3).attr('opacity', 0.85)
+      .attr('rx', 3).attr('opacity', 0)
+      .call(s => s.transition().duration(500).ease(d3.easeCubicOut)
+        .delay((_, i) => i * 30).attr('opacity', 0.85))
       .style('cursor', d => nodes[d.index]?.layer === 1 ? 'pointer' : 'default')
       .on('click', (e, d) => {
         const nd = nodes[d.index];
@@ -605,7 +605,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('font-size', d => nodes[d.index]?.layer === 0 ? 11 : 9)
       .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '700' : '500')
       .attr('fill', d => nodes[d.index]?.col || '#555')
+      .attr('opacity', 0)
       .style('pointer-events', 'none')
+      .call(s => s.transition().duration(400).ease(d3.easeCubicOut).delay(300).attr('opacity', 1))
       .text(d => {
         const nd = nodes[d.index];
         if (!nd || !nd.name) return '';
@@ -679,16 +681,50 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const activeSrcCodes = new Set(visiblePairs.map(p => p.srcCode));
     const activeDstCodes = new Set(visiblePairs.map(p => p.dstCode));
 
-    // ── Color scale for destination countries ───────────────────
-    const maxDest   = d3.max(stockByDest.values()) || 1;
-    const destColor = d3.scaleSequential()
-      .domain([0, maxDest]).interpolator(d3.interpolateBlues);
+    // breakdown: destCode → [{srcName, stock}] sorted desc
+    const byDest = new Map();
+    visiblePairs.forEach(p => {
+      if (!byDest.has(p.dstCode)) byDest.set(p.dstCode, []);
+      byDest.get(p.dstCode).push({ srcName: p.srcName, stock: p.stock });
+    });
+    byDest.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+
+    // breakdown: srcCode → [{dstName, stock}] sorted desc
+    const bySrc = new Map();
+    visiblePairs.forEach(p => {
+      if (!bySrc.has(p.srcCode)) bySrc.set(p.srcCode, []);
+      bySrc.get(p.srcCode).push({ dstName: p.dstName, stock: p.stock });
+    });
+    bySrc.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+
+    // ── Color helpers: continent color + sqrt-opacity by stock ──────
+    const destContMap = new Map();
+    yearData.forEach(d => destContMap.set(d.dest_code, d.dest_continent));
+
+    const maxDest = d3.max(stockByDest.values()) || 1;
+    const maxOrig = d3.max(origStockMap.values()) || 1;
+    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.18, 0.88]);
+    const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.22, 1.00]);
+
+    function hexToRgba(hex, op) {
+      const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      return `rgba(${r},${g},${b},${op.toFixed(2)})`;
+    }
+    function destFill(a3) {
+      const stock = stockByDest.get(a3);
+      if (!stock) return null; // no immigration → grey
+      const cont = destContMap.get(a3);
+      return hexToRgba(CONT_COLOR[cont] || '#607d8b', destOpScale(stock));
+    }
+    function origFill(a3) {
+      const stock = origStockMap.get(a3);
+      if (!stock) return null;
+      return hexToRgba('#e07b39', origOpScale(stock));
+    }
 
     // ── SVG + zoom ───────────────────────────────────────────────
-    const svg = d3.select(containerNode).append('svg').attr('width', W).attr('height', H)
-      .attr('class', 'mig-map-svg')
+    const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
-      .style('position', 'absolute').style('top', '0').style('left', '0').style('z-index', '1')
       .style('border-radius', '10px').style('cursor', 'grab');
 
     const g    = svg.append('g');
@@ -705,62 +741,116 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('fill', f => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return '#ccd8df';
-        if (africaCodes.has(a3)) return '#e07b39';
-        const stock = stockByDest.get(a3);
-        return stock ? destColor(stock) : '#ccd8df';
+        if (activeSrcCodes.has(a3)) return origFill(a3) || '#ccd8df';
+        if (activeDstCodes.has(a3)) return destFill(a3) || '#ccd8df';
+        return '#ccd8df';
+      })
+      .style('cursor', f => {
+        const a3 = _MIG_NUM_TO_A3[+f.id];
+        return (a3 && (activeSrcCodes.has(a3) || activeDstCodes.has(a3))) ? 'pointer' : 'default';
       })
       .on('mousemove', (e, f) => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
-        if (activeSrcCodes.has(a3)) {
-          g.selectAll('.mig-arc').attr('opacity', 0.05);
-          g.selectAll(`.mig-arc[data-src="${a3}"]`).attr('opacity', 0.85).raise();
-          showTip(e,
-            `<strong>${origNameMap.get(a3) || a3}</strong> (origine)<br>` +
-            `Emigrati fuori Africa: <strong>${d3.format(',.0f')(origStockMap.get(a3) || 0)}</strong>`
-          );
-        } else if (activeDstCodes.has(a3)) {
-          g.selectAll('.mig-arc').attr('opacity', 0.05);
-          g.selectAll(`.mig-arc[data-dest="${a3}"]`).attr('opacity', 0.85).raise();
-          showTip(e,
-            `<strong>${destNameMap.get(a3) || a3}</strong> (destinazione)<br>` +
-            `Migranti africani: <strong>${d3.format(',.0f')(stockByDest.get(a3) || 0)}</strong>`
-          );
-        }
+        if (activeSrcCodes.has(a3) || activeDstCodes.has(a3))
+          showTip(e, arcTipHtml(a3));
       })
-      .on('mouseleave', () => {
-        hideTip();
-        g.selectAll('.mig-arc').attr('opacity', 0.28);
+      .on('mouseleave', hideTip)
+      .on('click', (e, f) => {
+        const a3 = _MIG_NUM_TO_A3[+f.id];
+        if (!a3) return;
+        if (a3 === arcHoverA3) { clearArcHover(); return; } // click again → hide
+        clearArcHover();
+        if (activeSrcCodes.has(a3) || activeDstCodes.has(a3)) {
+          arcHoverA3 = a3;
+          revealArcs(a3);
+        }
       });
 
-    // Curved arcs — always curve upward (pick normal pointing to smaller Y)
-    function arcPath(src, dst) {
-      const mx = (src[0] + dst[0]) / 2;
-      const my = (src[1] + dst[1]) / 2;
-      const dx = dst[0] - src[0];
-      const dy = dst[1] - src[1];
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 1) return `M${src[0]},${src[1]}`;
-      const offset = dist * 0.42;
-      const nx = -dy / dist;
-      const ny =  dx / dist;
-      const [cpx, cpy] = (my + ny * offset) < (my - ny * offset)
-        ? [mx + nx * offset, my + ny * offset]
-        : [mx - nx * offset, my - ny * offset];
-      return `M${src[0]},${src[1]} Q${cpx},${cpy} ${dst[0]},${dst[1]}`;
+    // Arc click state
+    let arcHoverA3 = null;
+
+    function arcTipHtml(a3) {
+      const fmt = d3.format(',.0f');
+      if (activeSrcCodes.has(a3)) {
+        const total = origStockMap.get(a3) || 0;
+        const rows  = bySrc.get(a3) || [];
+        let html = `<strong style="color:#e07b39">${origNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
+        html += `Totale emigrati: <strong>${fmt(total)}</strong>`;
+        if (rows.length) {
+          html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PRINCIPALI DESTINAZIONI</span>`;
+          rows.slice(0, 8).forEach(r => {
+            html += `<br><span style="opacity:.8">${r.dstName}</span>: <strong>${fmt(r.stock)}</strong>`;
+          });
+          if (rows.length > 8) html += `<br><span style="opacity:.4;font-size:9px">+ altri ${rows.length - 8} paesi</span>`;
+        }
+        html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i flussi</em>`;
+        return html;
+      }
+      const total = stockByDest.get(a3) || 0;
+      const rows  = byDest.get(a3) || [];
+      const cont  = destContMap.get(a3);
+      const col   = CONT_COLOR[cont] || '#607d8b';
+      let html = `<strong style="color:${col}">${destNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>`;
+      html += `Totale migranti africani: <strong>${fmt(total)}</strong>`;
+      if (rows.length) {
+        html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PER PAESE DI ORIGINE</span>`;
+        rows.slice(0, 8).forEach(r => {
+          html += `<br><span style="opacity:.8">${r.srcName}</span>: <strong>${fmt(r.stock)}</strong>`;
+        });
+        if (rows.length > 8) html += `<br><span style="opacity:.4;font-size:9px">+ altri ${rows.length - 8} paesi</span>`;
+      }
+      html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i flussi</em>`;
+      return html;
+    }
+    function revealArcs(a3) {
+      const sel = activeSrcCodes.has(a3)
+        ? g.selectAll(`.mig-arc[data-src="${a3}"]`)
+        : g.selectAll(`.mig-arc[data-dest="${a3}"]`);
+      sel.raise().each(function() {
+        const len = this.getTotalLength();
+        d3.select(this)
+          .attr('stroke-dasharray', len)
+          .attr('stroke-dashoffset', len)
+          .attr('opacity', 0.75)
+          .transition().duration(700).ease(d3.easeLinear)
+          .attr('stroke-dashoffset', 0);
+      });
+    }
+    function clearArcHover() {
+      arcHoverA3 = null;
+      g.selectAll('.mig-arc').interrupt()
+        .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
     }
 
-    pairs.filter(p => p.stock >= threshold && centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
+    // Great circle arcs via projection invert → GeoJSON LineString → pathGen
+    function arcPath(src, dst) {
+      const srcGeo = projection.invert(src);
+      const dstGeo = projection.invert(dst);
+      if (!srcGeo || !dstGeo) return `M${src[0]},${src[1]}`;
+      return pathGen({ type: 'LineString', coordinates: [srcGeo, dstGeo] }) || `M${src[0]},${src[1]}`;
+    }
+
+    const arcWScale = d3.scaleSqrt().domain([threshold, maxPair]).range([0.7, 5]);
+
+    // draw small arcs first so large ones render on top
+    pairs
+      .filter(p => p.stock >= threshold && centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
+      .sort((a, b) => a.stock - b.stock)
       .forEach(p => {
-        const src = centroidByA3.get(p.srcCode);
-        const dst = centroidByA3.get(p.dstCode);
-        const w = 1.4;
+        const src  = centroidByA3.get(p.srcCode);
+        const dst  = centroidByA3.get(p.dstCode);
+        const cont = destContMap.get(p.dstCode);
+        const col  = CONT_COLOR[cont] || '#607d8b';
         g.append('path')
           .attr('class', 'mig-arc')
           .attr('data-src', p.srcCode).attr('data-dest', p.dstCode)
           .attr('d', arcPath(src, dst))
-          .attr('fill', 'none').attr('stroke', '#607d8b')
-          .attr('stroke-width', w).attr('opacity', 0.28)
+          .attr('fill', 'none')
+          .attr('stroke', col)
+          .attr('stroke-width', arcWScale(p.stock))
+          .attr('stroke-linecap', 'round')
+          .attr('opacity', 0)
           .style('pointer-events', 'none');
       });
   }
@@ -795,15 +885,31 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   containerEl.innerHTML = '';
   containerEl.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
 
-  const [remRaw, worldData] = await Promise.all([
+  const [remRaw, incomeRaw, popRaw, worldData] = await Promise.all([
     d3.csv('datasets/processed/remittances.csv', d3.autoType),
+    d3.csv('datasets/processed/income.csv',      d3.autoType),
+    d3.csv('datasets/processed/population.csv',  d3.autoType),
     _migWorldData
       ? Promise.resolve(_migWorldData)
       : d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(d => { _migWorldData = d; return d; }),
   ]);
 
   /* ── Data prep ──────────────────────────────────────────── */
-  const africaRaw = remRaw.filter(d => d.continent === 'Africa' && d.code && d.value != null && d.value > 0);
+  // income lookup: Map<"code|year", gdp_per_capita>
+  const incomeMap = new Map();
+  incomeRaw.forEach(d => incomeMap.set(`${d.code}|${d.year}`, d.value));
+  // population lookup: Map<"code|year", pop>
+  const popMap = new Map();
+  popRaw.forEach(d => popMap.set(`${d.code}|${d.year}`, d.value));
+
+  const africaRaw = remRaw.filter(d => d.continent === 'Africa' && d.code && d.value != null && d.value > 0 && d.year <= 2023)
+    .map(d => {
+      const gdp = incomeMap.get(`${d.code}|${d.year}`);
+      const pop = popMap.get(`${d.code}|${d.year}`);
+      const absUSD = (gdp && pop) ? (d.value / 100) * gdp * pop : null;
+      return { ...d, absUSD };
+    });
+
   const years     = [...new Set(africaRaw.map(d => d.year))].sort((a, b) => a - b);
   const byYear    = d3.group(africaRaw, d => d.year);
 
@@ -826,18 +932,34 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const c = _MIG_NUM_TO_A3[+f.id]; return c && AFRICA_CODES.has(c);
   });
 
-  /* ── Threshold color scale (discrete, fixed across all years) ── */
-  const globalMax = d3.max(africaRaw, d => d.value) || 1;
-  const THRESHOLDS = [1, 3, 7, 12, 20];
-  const COLORS     = ['#edf5e1', '#c5e1a5', '#81c784', '#4caf50', '#2e7d32', '#1b5e20'];
-  const COLOR_SCALE = d3.scaleThreshold().domain(THRESHOLDS).range(COLORS);
+  /* ── Color scales ───────────────────────────────────────── */
+  const COLORS        = ['#edf5e1', '#c5e1a5', '#81c784', '#4caf50', '#2e7d32', '#1b5e20'];
   const NO_DATA_COLOR = '#cccccc';
+  // pct scale: thresholds in %
+  const PCT_THRESHOLDS = [1, 3, 7, 12, 20];
+  const PCT_SCALE      = d3.scaleThreshold().domain(PCT_THRESHOLDS).range(COLORS);
+  // abs scale: thresholds in USD (billions)
+  const ABS_THRESHOLDS = [1e8, 5e8, 1e9, 5e9, 1e10]; // 100M, 500M, 1B, 5B, 10B
+  const ABS_SCALE      = d3.scaleThreshold().domain(ABS_THRESHOLDS).range(COLORS);
+
+  function colorScale(d) {
+    if (metricMode === 'pct') return d.value != null ? PCT_SCALE(d.value) : NO_DATA_COLOR;
+    return d.absUSD != null ? ABS_SCALE(d.absUSD) : NO_DATA_COLOR;
+  }
+  function displayVal(d) {
+    if (metricMode === 'pct') return d.value != null ? d.value.toFixed(1) + '% PIL' : 'N/D';
+    if (d.absUSD == null) return 'N/D';
+    return d.absUSD >= 1e9
+      ? (d.absUSD / 1e9).toFixed(1) + ' Mld USD'
+      : (d.absUSD / 1e6).toFixed(0) + ' Mln USD';
+  }
 
   /* ── State ──────────────────────────────────────────────── */
-  let viewMode  = 'treemap';
-  let curYear   = years[years.length - 1];
-  let playing   = false;
-  let playTimer = null;
+  let viewMode   = 'treemap';
+  let metricMode = 'pct'; // 'pct' | 'abs'
+  let curYear    = years[years.length - 1];
+  let playing    = false;
+  let playTimer  = null;
 
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-rem').remove();
@@ -850,7 +972,8 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   function showTip(e, d) {
     tooltip.style('display', 'block').html(
       `<strong style="color:#81c784">${d.country}</strong><br>` +
-      `Rimesse: <strong>${d.value.toFixed(1)}% del PIL</strong><br>` +
+      `Rimesse: <strong>${displayVal(d)}</strong><br>` +
+      (metricMode === 'abs' && d.value != null ? `<em style="opacity:.6;font-size:10px">${d.value.toFixed(1)}% del PIL</em><br>` : '') +
       `<em style="opacity:.5;font-size:9px">Anno: ${d.year}</em>`
     );
     const r = tooltip.node().getBoundingClientRect();
@@ -873,14 +996,43 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     .style('background', '#fff').style('border-top', '1px solid #e4e8f0')
     .style('flex-shrink', '0');
 
-  /* Play/pause button */
+  const remBtnStyle = btn => btn
+    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+    .style('border', '1px solid #d0d9e8').style('background', '#fff')
+    .style('cursor', 'pointer').style('font-size', '13px').style('display', 'flex')
+    .style('align-items', 'center').style('justify-content', 'center')
+    .style('color', '#8096b0').style('flex-shrink', '0').style('line-height', '1');
+
+  remBtnStyle(playerBar.append('button').text('↺'))
+    .on('click', () => {
+      stopPlay();
+      curYear = years[0];
+      slider.property('value', 0);
+      yearLabel.text(curYear);
+      redraw();
+    });
+
+  remBtnStyle(playerBar.append('button').text('‹'))
+    .on('click', () => {
+      stopPlay();
+      const idx = years.indexOf(curYear);
+      if (idx > 0) { curYear = years[idx - 1]; slider.property('value', idx - 1); yearLabel.text(curYear); redraw(); }
+    });
+
   const playBtn = playerBar.append('button')
     .style('width', '42px').style('height', '42px').style('border-radius', '50%')
     .style('border', 'none').style('background', '#1a3a5c')
-    .style('cursor', 'pointer').style('display', 'flex')
+    .style('cursor', 'pointer').style('font-size', '16px').style('display', 'flex')
     .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#fff').style('flex-shrink', '0').style('font-size', '16px')
+    .style('color', '#fff').style('flex-shrink', '0')
     .text('▶');
+
+  remBtnStyle(playerBar.append('button').text('›'))
+    .on('click', () => {
+      stopPlay();
+      const idx = years.indexOf(curYear);
+      if (idx < years.length - 1) { curYear = years[idx + 1]; slider.property('value', idx + 1); yearLabel.text(curYear); redraw(); }
+    });
 
   /* Timeline slider + tick labels */
   const timelineWrap = playerBar.append('div')
@@ -926,6 +1078,12 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
     .style('font-family', 'inherit').style('letter-spacing', '-0.5px').text(curYear);
 
+  function stopPlay() {
+    playing = false;
+    if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+    playBtn.text('▶');
+  }
+
   /* ── Pill buttons — top-right ───────────────────────────── */
   const pillBar = d3.select(containerEl).append('div')
     .style('position', 'absolute').style('top', '8px').style('left', '8px')
@@ -944,6 +1102,19 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   const btnTree = mkBtn('Treemap', 'treemap');
   const btnMap  = mkBtn('Mappa',   'map');
 
+  // Separator
+  pillBar.append('div').style('width', '1px').style('background', '#d0d8e8').style('margin', '4px 2px');
+
+  function mkMetricBtn(label, val) {
+    return pillBar.append('button')
+      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
+      .style('transition', 'all 0.15s').text(label)
+      .on('click', () => { metricMode = val; updateBtns(); redraw(); });
+  }
+  const btnPct = mkMetricBtn('% PIL',    'pct');
+  const btnAbs = mkMetricBtn('Assoluto', 'abs');
+
   function updateBtns() {
     const set = (btn, active) => btn
       .style('background', active ? '#5a8a6e' : 'transparent')
@@ -951,21 +1122,31 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
     set(btnTree, viewMode === 'treemap');
     set(btnMap,  viewMode === 'map');
+    set(btnPct,  metricMode === 'pct');
+    set(btnAbs,  metricMode === 'abs');
   }
   updateBtns();
 
   /* ── Legend — discrete swatches, bottom-right ──────────── */
   function drawLegend(svg, W, H) {
-    const SW = 14, SH = 14, GAP = 4, TW = 52;
+    const SW = 14, SH = 14, GAP = 4, TW = 72;
     const rowH   = SH + GAP;
-    const labels = [
-      { color: COLORS[5], text: '> 20%'   },
+    const labels = metricMode === 'pct' ? [
+      { color: COLORS[5], text: '> 20%'    },
       { color: COLORS[4], text: '12 – 20%' },
       { color: COLORS[3], text: '7 – 12%'  },
       { color: COLORS[2], text: '3 – 7%'   },
       { color: COLORS[1], text: '1 – 3%'   },
       { color: COLORS[0], text: '< 1%'     },
-      { color: NO_DATA_COLOR, text: 'No data' },
+      ...(viewMode !== 'treemap' ? [{ color: NO_DATA_COLOR, text: 'No data' }] : []),
+    ] : [
+      { color: COLORS[5], text: '> 10 Mld' },
+      { color: COLORS[4], text: '5 – 10 Mld' },
+      { color: COLORS[3], text: '1 – 5 Mld' },
+      { color: COLORS[2], text: '500M – 1Mld' },
+      { color: COLORS[1], text: '100 – 500M' },
+      { color: COLORS[0], text: '< 100M'   },
+      ...(viewMode !== 'treemap' ? [{ color: NO_DATA_COLOR, text: 'No data' }] : []),
     ];
     const boxW = SW + 8 + TW + 10;
     const boxH = 14 + labels.length * rowH + 8;
@@ -978,7 +1159,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
     legG.append('text').attr('x', 8).attr('y', 11)
       .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa').attr('letter-spacing', '0.06em')
-      .text('RIMESSE % PIL');
+      .text(metricMode === 'pct' ? 'RIMESSE % PIL' : 'RIMESSE USD');
 
     labels.forEach((item, i) => {
       const y = 14 + i * rowH + GAP / 2;
@@ -992,11 +1173,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   /* ── Data for current year ──────────────────────────────── */
   function dataForYear(yr) {
-    const yearData = byYear.get(yr) || [];
-    const byCode   = new Map(yearData.map(d => [d.code, d]));
-    /* fallback: use latest available if country missing in this year */
-    latestByCode.forEach((d, code) => { if (!byCode.has(code)) byCode.set(code, d); });
-    return Array.from(byCode.values()).filter(d => d.value > 0).sort((a, b) => b.value - a.value);
+    return (byYear.get(yr) || []).filter(d => d.value > 0).sort((a, b) => b.value - a.value);
   }
 
   /* ── Treemap ────────────────────────────────────────────── */
@@ -1007,8 +1184,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const iw      = W - PAD.left - PAD.right;
     const ih      = H - PAD.top  - PAD.bottom;
 
+    const sortKey = d => metricMode === 'pct' ? (d.value ?? 0) : (d.absUSD ?? 0);
     const root = d3.hierarchy({ children: data })
-      .sum(d => d.value ?? 0).sort((a, b) => b.value - a.value);
+      .sum(d => sortKey(d)).sort((a, b) => sortKey(b.data) - sortKey(a.data));
     d3.treemap().size([iw, ih]).paddingOuter(4).paddingInner(2).round(true)(root);
 
     const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
@@ -1018,10 +1196,20 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const cell = g.selectAll('g').data(root.leaves()).join('g')
       .attr('transform', d => `translate(${d.x0},${d.y0})`);
 
+    // Clip each cell so text never overflows its bounds
+    cell.append('clipPath')
+      .attr('id', (d, i) => `rem-cp-${i}`)
+      .append('rect')
+      .attr('width',  d => Math.max(0, d.x1 - d.x0))
+      .attr('height', d => Math.max(0, d.y1 - d.y0))
+      .attr('rx', 3);
+
+    cell.attr('clip-path', (d, i) => `url(#rem-cp-${i})`);
+
     cell.append('rect')
       .attr('width',  d => Math.max(0, d.x1 - d.x0))
       .attr('height', d => Math.max(0, d.y1 - d.y0))
-      .attr('rx', 3).attr('fill', d => COLOR_SCALE(d.data.value))
+      .attr('rx', 3).attr('fill', d => colorScale(d.data))
       .attr('stroke', '#fff').attr('stroke-width', 1.5).style('cursor', 'default')
       .on('mousemove', (e, d) => showTip(e, d.data)).on('mouseleave', hideTip);
 
@@ -1029,8 +1217,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       const cw = d.x1 - d.x0, ch = d.y1 - d.y0;
       if (cw < 20 || ch < 12) return;
       const sel  = d3.select(this);
-      const dark = d.data.value >= 12;
-      const fill = dark ? '#fff' : '#1a1a1a';
+      const v    = metricMode === 'pct' ? (d.data.value ?? 0) : (d.data.absUSD ?? 0);
+      const light = metricMode === 'pct' ? v >= 7 : v >= 5e8;
+      const fill = light ? '#fff' : '#2a2a2a';
       const maxChars = Math.max(2, Math.floor(cw / 6));
       const name = d.data.country.length > maxChars
         ? d.data.country.slice(0, maxChars - 1) + '…' : d.data.country;
@@ -1040,7 +1229,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       if (ch >= 34) sel.append('text').attr('x', 4).attr('y', ch - 5)
         .attr('font-size', Math.min(10, Math.max(6, cw / 9))).attr('fill', fill)
         .attr('opacity', 0.85).attr('pointer-events', 'none')
-        .text(d.data.value.toFixed(1) + '%');
+        .text(displayVal(d.data));
     });
 
     drawLegend(svg, W, H);
@@ -1066,7 +1255,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       .attr('d', path)
       .attr('fill', f => {
         const rec = dataByCode.get(_MIG_NUM_TO_A3[+f.id]);
-        return rec ? COLOR_SCALE(rec.value) : NO_DATA_COLOR;
+        return rec ? colorScale(rec) : NO_DATA_COLOR;
       })
       .attr('stroke', '#fff').attr('stroke-width', 0.8)
       .on('mousemove', (e, f) => {
@@ -1091,29 +1280,28 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   /* ── Player controls ────────────────────────────────────── */
   slider.on('input', function() {
+    stopPlay();
     curYear = years[+this.value];
     yearLabel.text(curYear);
     redraw();
   });
 
   playBtn.on('click', () => {
-    playing = !playing;
-    playBtn.text(playing ? '⏸' : '▶');
-    if (playing) {
-      function step() {
-        const idx = years.indexOf(curYear);
-        const next = (idx + 1) % years.length;
-        curYear = years[next];
-        slider.attr('value', next).node().value = next;
-        yearLabel.text(curYear);
-        redraw();
-        if (next === 0) { playing = false; playBtn.text('▶'); return; }
-        playTimer = setTimeout(step, 900);
-      }
-      playTimer = setTimeout(step, 900);
-    } else {
-      if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+    if (playing) { stopPlay(); return; }
+    playing = true;
+    playBtn.text('⏸');
+    let idx = years.indexOf(curYear);
+    if (idx >= years.length - 1) idx = -1;
+    function step() {
+      idx++;
+      curYear = years[idx];
+      slider.property('value', idx);
+      yearLabel.text(curYear);
+      redraw();
+      if (idx < years.length - 1) playTimer = setTimeout(step, 900);
+      else stopPlay();
     }
+    playTimer = setTimeout(step, 900);
   });
 
   redraw();

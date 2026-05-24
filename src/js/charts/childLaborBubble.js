@@ -22,18 +22,12 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     if (!prev || d.year > prev.year) clMap.set(d.code, d);
   });
 
-  const incLatest = new Map();
-  incRaw.forEach(d => {
-    if (!d.code || d.value == null) return;
-    const prev = incLatest.get(d.code);
-    if (!prev || d.year > prev.year) incLatest.set(d.code, d.value);
-  });
   const incByYear = new Map();
   incRaw.forEach(d => { if (d.code && d.value != null) incByYear.set(`${d.code}|${d.year}`, d.value); });
 
   const data = [];
   clMap.forEach((cl, code) => {
-    const inc = incByYear.get(`${code}|${cl.year}`) ?? incLatest.get(code);
+    const inc = incByYear.get(`${code}|${cl.year}`);
     if (!inc) return;
     data.push({ code, country: cl.country, labor: cl.value, income: inc, year: cl.year, continent: cl.continent });
   });
@@ -160,14 +154,20 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     });
 
     // Dots — colored by quadrant
-    g.selectAll('circle.dot').data(data, d => d.code).join('circle').attr('class', 'dot')
-      .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
-      .attr('r', 5)
-      .attr('fill', d => getQuadrant(d).color)
-      .attr('fill-opacity', 0.8)
-      .attr('stroke', '#fff').attr('stroke-width', 1)
-      .style('cursor', 'default')
-      .on('mousemove', showTip).on('mouseleave', hideTip);
+    g.selectAll('circle.dot').data(data, d => d.code).join(
+      enter => enter.append('circle').attr('class', 'dot')
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
+        .attr('r', 0).attr('fill', d => getQuadrant(d).color)
+        .attr('fill-opacity', 0).attr('stroke', '#fff').attr('stroke-width', 1)
+        .style('cursor', 'default')
+        .on('mousemove', showTip).on('mouseleave', hideTip)
+        .call(s => s.transition().duration(600).ease(d3.easeCubicOut)
+          .delay((_, i) => i * 8)
+          .attr('r', 5).attr('fill-opacity', 0.8)),
+      update => update
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
+        .attr('fill', d => getQuadrant(d).color)
+    );
 
     // Axes
     // X axis: explicit ticks to avoid crowding at low end of log scale

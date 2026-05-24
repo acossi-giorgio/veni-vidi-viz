@@ -78,7 +78,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         svg.append('rect')
           .attr('x', x0 + col * (cs + gap)).attr('y', y0 + row * (cs + gap))
           .attr('width', cs).attr('height', cs).attr('rx', Math.max(1, cs * 0.12))
-          .attr('fill', fill).attr('opacity', fill === C_EMPTY ? 0.4 : 0.9);
+          .attr('fill', fill).attr('opacity', 0)
+          .transition().duration(300).ease(d3.easeCubicOut).delay(idx * 6)
+          .attr('opacity', fill === C_EMPTY ? 0.4 : 0.9);
       }
     }
   }

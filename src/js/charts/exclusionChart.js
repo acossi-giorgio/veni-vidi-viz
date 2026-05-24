@@ -35,14 +35,6 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   const incIdx = idx(incRaw);
   const popIdx = idx(popRaw);
 
-  function nearest(map, code, targetYear, range = 4) {
-    for (let d = 0; d <= range; d++) {
-      const v = map.get(`${code}|${targetYear + d}`) ?? map.get(`${code}|${targetYear - d}`);
-      if (v != null) return v;
-    }
-    return null;
-  }
-
   /* ── Continent → codes map ──────────────────────────────── */
   const codeContinent = new Map();
   [...eduRaw, ...litRaw, ...oosRaw, ...incRaw, ...popRaw].forEach(d => {
@@ -60,11 +52,11 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       let totalSpendB = 0, eduPctSum = 0, eduPctW = 0;
       let litSum = 0, litW = 0, oosSum = 0;
       codes.forEach(code => {
-        const edu = nearest(eduIdx, code, yr);
-        const inc = nearest(incIdx, code, yr);
-        const pop = nearest(popIdx, code, yr);
-        const lit = nearest(litIdx, code, yr);
-        const oos = nearest(oosIdx, code, yr);
+        const edu = eduIdx.get(`${code}|${yr}`);
+        const inc = incIdx.get(`${code}|${yr}`);
+        const pop = popIdx.get(`${code}|${yr}`);
+        const lit = litIdx.get(`${code}|${yr}`);
+        const oos = oosIdx.get(`${code}|${yr}`);
         if (edu != null && inc != null && pop != null) {
           totalSpendB += (edu / 100) * inc * pop / 1e9;
           eduPctSum   += edu * pop;
@@ -126,49 +118,41 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', '8px 16px 4px').style('flex-shrink', '0');
 
-  const togglesDiv = topBar.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '8px');
+  const pillBar = topBar.append('div')
+    .style('display', 'flex').style('align-items', 'center')
+    .style('background', 'rgba(255,255,255,0.92)')
+    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', '3px').style('gap', '2px')
+    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
-  function mkPill(parent) {
-    return parent.append('div')
-      .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-      .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-      .style('padding', '3px').style('gap', '2px')
-      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
-  }
-
-  const contPill = mkPill(togglesDiv);
-  const yPill    = mkPill(togglesDiv);
-  const xPill    = mkPill(togglesDiv);
-
-  function mkBtn(pill, label, onClick) {
-    return pill.append('button')
+  function mkBtn(label, onClick) {
+    return pillBar.append('button')
       .style('font-size', '11px').style('padding', '5px 12px').style('border-radius', '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
       .on('click', onClick);
   }
+  function mkSep() {
+    pillBar.append('div')
+      .style('width', '1px').style('background', '#d0d8e8').style('margin', '4px 2px').style('align-self', 'stretch');
+  }
 
-  const btnAfr = mkBtn(contPill, 'Africa',  () => { contMode = 'Africa';  updateBtns(); draw(); });
-  const btnEur = mkBtn(contPill, 'Europe',  () => { contMode = 'Europe';  updateBtns(); draw(); });
-  const btnLit = mkBtn(yPill, 'Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
-  const btnOos = mkBtn(yPill, 'Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
-  const btnAbs = mkBtn(xPill, 'Assoluto (USD)',   () => { xMode = 'absolute'; updateBtns(); draw(); });
-  const btnPct = mkBtn(xPill, '% PIL',             () => { xMode = 'pct';     updateBtns(); draw(); });
+  const btnAfr = mkBtn('Africa',  () => { contMode = 'Africa';  updateBtns(); draw(); });
+  const btnEur = mkBtn('Europe',  () => { contMode = 'Europe';  updateBtns(); draw(); });
+  mkSep();
+  const btnLit = mkBtn('Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
+  const btnOos = mkBtn('Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
+  mkSep();
+  const btnAbs = mkBtn('Assoluto (USD)',   () => { xMode = 'absolute'; updateBtns(); draw(); });
+  const btnPct = mkBtn('% PIL',             () => { xMode = 'pct';     updateBtns(); draw(); });
 
   function updateBtns() {
-    const col = COLORS[contMode];
-    const shadow = `0 1px 4px ${col}55`;
-    const setC = (btn, active, c) => btn
-      .style('background', active ? c    : 'transparent')
-      .style('color',      active ? '#fff' : '#7a8aaa')
-      .style('box-shadow', active ? `0 1px 4px ${c}55` : 'none');
     const set = (btn, active) => btn
-      .style('background', active ? '#c97c3e' : 'transparent')
+      .style('background', active ? '#5a8a6e' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(201,124,62,0.3)' : 'none');
-    setC(btnAfr, contMode === 'Africa',  COLORS['Africa']);
-    setC(btnEur, contMode === 'Europe',  COLORS['Europe']);
+      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+    set(btnAfr, contMode === 'Africa');
+    set(btnEur, contMode === 'Europe');
     set(btnLit, yMode === 'literacy');
     set(btnOos, yMode === 'oos');
     set(btnAbs, xMode === 'absolute');

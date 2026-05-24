@@ -18,23 +18,10 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     d3.csv('datasets/processed/population.csv', d3.autoType),
   ]);
 
-  // Nearest-year lookup
-  function buildNearest(raw) {
-    const m = new Map();
-    raw.forEach(d => {
-      if (d.value == null) return;
-      if (!m.has(d.code)) m.set(d.code, []);
-      m.get(d.code).push({ year: d.year, value: d.value });
-    });
-    return m;
-  }
-  const incomeMap = buildNearest(incomeRaw);
-  const popMap    = buildNearest(popRaw);
-
-  function nearestVal(arr, year) {
-    if (!arr || !arr.length) return null;
-    return arr.reduce((a, b) => Math.abs(b.year - year) < Math.abs(a.year - year) ? b : a).value;
-  }
+  const incByYear = new Map();
+  incomeRaw.forEach(d => { if (d.code && d.value != null) incByYear.set(`${d.code}|${d.year}`, d.value); });
+  const popByYear = new Map();
+  popRaw.forEach(d => { if (d.code && d.value != null) popByYear.set(`${d.code}|${d.year}`, d.value); });
 
   const spendData = spendRaw.filter(d =>
     d.value != null && d.year <= MAX_YEAR &&
@@ -43,8 +30,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
 
   // Absolute: (spend% / 100) × GDP_per_capita × population → total USD
   const absData = spendData.map(d => {
-    const gdp = nearestVal(incomeMap.get(d.code), d.year);
-    const pop = nearestVal(popMap.get(d.code), d.year);
+    const gdp = incByYear.get(`${d.code}|${d.year}`);
+    const pop = popByYear.get(`${d.code}|${d.year}`);
     if (gdp == null || pop == null) return null;
     return { ...d, value: (d.value / 100) * gdp * pop };
   }).filter(Boolean);

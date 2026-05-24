@@ -263,7 +263,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
         g.append('circle')
           .attr('cx', xS(dev)).attr('cy', cy + jit)
-          .attr('r', DOT_R).attr('fill', fill).attr('opacity', 0.68)
+          .attr('r', 0).attr('fill', fill).attr('opacity', 0)
           .attr('stroke','#fff').attr('stroke-width',0.8)
           .style('cursor','pointer')
           .on('mouseover', function() {
@@ -277,7 +277,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
           })
           .on('mousemove', moveTip)
           .on('mouseleave', function() { d3.select(this).attr('opacity',0.68).attr('r', DOT_R); hideTip(); })
-          .on('click', () => { drill = cont; draw(); });
+          .on('click', () => { drill = cont; draw(); })
+          .transition().duration(500).ease(d3.easeCubicOut)
+          .attr('r', DOT_R).attr('opacity', 0.68);
       });
     });
 
