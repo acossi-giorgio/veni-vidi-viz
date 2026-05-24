@@ -241,9 +241,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
         .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
         .style('transition', 'all 0.15s')
-        .style('background', active ? '#b04a4a' : 'transparent')
+        .style('background', active ? '#4a6fa5' : 'transparent')
         .style('color',      active ? '#fff'    : '#7a8aaa')
-        .style('box-shadow', active ? '0 1px 4px rgba(176,74,74,0.3)' : 'none')
+        .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none')
         .text(label);
     }
 

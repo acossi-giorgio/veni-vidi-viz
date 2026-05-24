@@ -64,9 +64,9 @@ async function renderMortalityChart(selector, isFullscreen = false) {
 
   function updateBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#b04a4a' : 'transparent')
+      .style('background', active ? '#4a6fa5' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(176,74,74,0.3)' : 'none');
+      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
     set(btnM, metric === 'maternal');
     set(btnC, metric === 'child');
   }

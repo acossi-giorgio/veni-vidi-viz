@@ -64,9 +64,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   }
 
   const CONT_COLOR = {
-    'Africa':        '#c0392b',
+    'Africa':        '#e07b39',
     'Asia':          '#2980b9',
-    'Europe':        '#27ae60',
+    'Europe':        '#5aab6e',
     'North America': '#8e44ad',
     'South America': '#d35400',
     'Oceania':       '#16a085',
@@ -124,58 +124,73 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   function updateModeBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#5a8a6e' : 'transparent')
+      .style('background', active ? '#4a6fa5' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
     set(btnSankey, mode === 'sankey');
     set(btnMap,    mode === 'map');
   }
   updateModeBtns();
 
-  const svgArea = wrap.append('div').style('flex', '1').style('position', 'relative').style('min-height', '0');
+  const PLAYER_H = 72;
 
-  // ── Bottom player bar — styled like GDP map ───────────────────
+  const svgArea = wrap.append('div')
+    .style('flex', '1').style('position', 'relative').style('min-height', '0')
+    .style('padding-bottom', PLAYER_H + 'px');
+
+  // ── Bottom player bar ─────────────────────────────────────
   const footer = wrap.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '8px')
-    .style('padding', '8px 16px').style('background', '#fff')
-    .style('border-top', '1px solid #e4e8f0').style('flex-shrink', '0');
+    .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
+    .style('height', PLAYER_H + 'px')
+    .style('background', '#fff')
+    .style('border-radius', '0 0 10px 10px')
+    .style('border-top', '1px solid #e8eef7')
+    .style('display', 'flex').style('align-items', 'center')
+    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
-  const btnStyle = btn => btn
-    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-    .style('border', '1px solid #d0d9e8').style('background', '#fff')
-    .style('cursor', 'pointer').style('font-size', '13px').style('display', 'flex')
-    .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#8096b0').style('flex-shrink', '0').style('line-height', '1');
+  const ctrlWrap = footer.append('div')
+    .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
-  btnStyle(footer.append('button').text('↺'))
-    .on('click', () => {
-      stopAnim();
-      currentYear = 2000;
-      slider.property('value', 0);
-      yearLabel.text(currentYear);
-      draw();
-    });
+  function mkCtrlBtn(inner, title) {
+    return ctrlWrap.append('button')
+      .attr('title', title)
+      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+      .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
+      .style('flex-shrink', '0').style('transition', 'all 0.15s')
+      .style('padding', '0').style('line-height', '1')
+      .html(inner);
+  }
 
-  btnStyle(footer.append('button').text('‹'))
-    .on('click', () => {
-      stopAnim();
-      currentYear = Math.max(2000, currentYear - 1);
-      slider.property('value', currentYear - 2000);
-      yearLabel.text(currentYear);
-      draw();
-    });
+  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => {
+    stopAnim();
+    currentYear = 2000;
+    slider.property('value', 0);
+    yearLabel.text(currentYear);
+    draw();
+  });
+  const btnPrev = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
+    stopAnim();
+    currentYear = Math.max(2000, currentYear - 1);
+    slider.property('value', currentYear - 2000);
+    yearLabel.text(currentYear);
+    draw();
+  });
 
-  const playBtn = footer.append('button')
-    .style('width', '42px').style('height', '42px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#1a3a5c')
-    .style('cursor', 'pointer').style('font-size', '16px').style('display', 'flex')
-    .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#fff').style('flex-shrink', '0')
-    .text('▶')
+  const playBtn = ctrlWrap.append('button')
+    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+    .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
+    .style('padding', '0').style('line-height', '1')
+    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
+    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
     .on('click', () => {
       if (animTimer) { stopAnim(); return; }
       let y = currentYear >= 2020 ? 2000 : currentYear;
-      playBtn.text('⏸');
+      playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
       function step() {
         currentYear = y;
         slider.property('value', y - 2000);
@@ -188,28 +203,29 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       step();
     });
 
-  btnStyle(footer.append('button').text('›'))
-    .on('click', () => {
-      stopAnim();
-      currentYear = Math.min(2020, currentYear + 1);
-      slider.property('value', currentYear - 2000);
-      yearLabel.text(currentYear);
-      draw();
-    });
+  const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
+    stopAnim();
+    currentYear = Math.min(2020, currentYear + 1);
+    slider.property('value', currentYear - 2000);
+    yearLabel.text(currentYear);
+    draw();
+  });
 
-  // Timeline slider + tick labels
+  // Timeline
   const timelineWrap = footer.append('div')
-    .style('flex', '1').style('display', 'flex').style('flex-direction', 'column')
-    .style('padding', '0 8px').style('min-width', '0');
+    .style('flex', '1').style('position', 'relative').style('padding', '0 4px');
+
+  const labelRow = timelineWrap.append('div')
+    .style('display', 'flex').style('justify-content', 'space-between')
+    .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
+    .style('pointer-events', 'none');
+  DATA_YEARS.forEach(y => labelRow.append('span').text(y));
 
   const slider = timelineWrap.append('input')
-    .attr('id', 'mig-chord-slider')
     .attr('type', 'range')
-    .attr('min', 0).attr('max', 20).attr('value', 20).attr('step', 1)
-    .style('width', '100%').style('cursor', 'pointer')
-    .style('-webkit-appearance', 'none').style('appearance', 'none')
-    .style('height', '5px').style('background', 'rgba(0,0,0,0.25)')
-    .style('border-radius', '2px').style('outline', 'none')
+    .attr('min', 0).attr('max', 20).attr('step', 1).attr('value', 20)
+    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
+    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
     .on('input', function() {
       stopAnim();
       currentYear = 2000 + +this.value;
@@ -217,46 +233,22 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       draw();
     });
 
-  if (!document.getElementById('mig-chord-slider-style')) {
-    const st = document.createElement('style');
-    st.id = 'mig-chord-slider-style';
-    st.textContent = `
-      #mig-chord-slider::-webkit-slider-thumb {
-        -webkit-appearance: none; appearance: none;
-        width: 16px; height: 16px; border-radius: 50%;
-        background: #1a3a5c; cursor: pointer;
-      }
-      #mig-chord-slider::-moz-range-thumb {
-        width: 16px; height: 16px; border-radius: 50%;
-        background: #1a3a5c; cursor: pointer; border: none;
-      }
-    `;
-    document.head.appendChild(st);
-  }
-
-  const tickRow = timelineWrap.append('div')
-    .style('display', 'flex').style('justify-content', 'space-between')
-    .style('padding', '2px 2px 0');
-  DATA_YEARS.forEach(y => {
-    tickRow.append('span').style('font-size', '9px').style('color', '#aaa').text(y);
-  });
-
+  // Year display
   const yearLabel = footer.append('div')
-    .style('font-size', '28px').style('font-weight', '700').style('color', '#1a3a5c')
-    .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
-    .style('font-family', 'inherit').style('letter-spacing', '-0.5px')
-    .text('2020');
+    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('letter-spacing', '-0.5px').text(currentYear);
 
   function stopAnim() {
     if (animTimer) { clearTimeout(animTimer); animTimer = null; }
-    playBtn.text('▶');
+    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
   }
 
   function draw() {
     svgArea.html('');
     const svgRect = svgArea.node().getBoundingClientRect();
     const W = svgRect.width  || 560;
-    const H = svgRect.height || 380;
+    const H = Math.max(50, (svgRect.height || (PLAYER_H + 380)) - PLAYER_H);
     if (W < 10 || H < 10) return;
     if (mode === 'map') drawMap(W, H);
     else drawSankey(W, H);
@@ -616,8 +608,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       });
 
     // ── Year label ─────────────────────────────────────────────
-    svg.append('text').attr('x', W - 8).attr('y', H - 8)
-      .attr('text-anchor', 'end').attr('font-size', 9).attr('fill', '#ccc')
+    svg.append('text').attr('x', W - 8).attr('y', 16)
+      .attr('text-anchor', 'end').attr('font-size', 10).attr('fill', '#888').attr('font-weight', '600')
       .text(currentYear);
   }
 
@@ -642,7 +634,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     const geoCountries = topojson.feature(_migWorldData, _migWorldData.objects.countries).features;
     const projection   = d3.geoNaturalEarth1()
-      .fitExtent([[4, 4], [W - 4, H - 36]], { type: 'FeatureCollection', features: geoCountries });
+      .fitSize([W, H], { type: 'FeatureCollection', features: geoCountries });
     const pathGen      = d3.geoPath().projection(projection);
 
     // Projected centroids — for MultiPolygon use largest polygon to avoid overseas-territory skew
@@ -985,103 +977,95 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   function hideTip() { tooltip.style('display', 'none'); }
 
   /* ── Viz area ───────────────────────────────────────────── */
+  const PLAYER_H = 72;
+
   const vizDiv = d3.select(containerEl).append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden')
-    .style('padding-top', '40px');
+    .style('padding-bottom', PLAYER_H + 'px');
 
   /* ── Player bar ─────────────────────────────────────────── */
+
   const playerBar = d3.select(containerEl).append('div')
+    .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
+    .style('height', PLAYER_H + 'px')
+    .style('background', '#fff')
+    .style('border-radius', '0 0 10px 10px')
+    .style('border-top', '1px solid #e8eef7')
     .style('display', 'flex').style('align-items', 'center')
-    .style('gap', '8px').style('padding', '8px 16px')
-    .style('background', '#fff').style('border-top', '1px solid #e4e8f0')
-    .style('flex-shrink', '0');
+    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
-  const remBtnStyle = btn => btn
-    .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-    .style('border', '1px solid #d0d9e8').style('background', '#fff')
-    .style('cursor', 'pointer').style('font-size', '13px').style('display', 'flex')
-    .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#8096b0').style('flex-shrink', '0').style('line-height', '1');
+  const ctrlWrap = playerBar.append('div')
+    .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
-  remBtnStyle(playerBar.append('button').text('↺'))
-    .on('click', () => {
-      stopPlay();
-      curYear = years[0];
-      slider.property('value', 0);
-      yearLabel.text(curYear);
-      redraw();
-    });
+  function mkCtrlBtn(inner, title) {
+    return ctrlWrap.append('button')
+      .attr('title', title)
+      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
+      .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
+      .style('flex-shrink', '0').style('transition', 'all 0.15s')
+      .style('padding', '0').style('line-height', '1')
+      .html(inner);
+  }
 
-  remBtnStyle(playerBar.append('button').text('‹'))
-    .on('click', () => {
-      stopPlay();
-      const idx = years.indexOf(curYear);
-      if (idx > 0) { curYear = years[idx - 1]; slider.property('value', idx - 1); yearLabel.text(curYear); redraw(); }
-    });
+  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => {
+    stopPlay();
+    curYear = years[0];
+    slider.property('value', 0);
+    yearLabel.text(curYear);
+    redraw();
+  });
+  const btnPrev = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
+    stopPlay();
+    const idx = years.indexOf(curYear);
+    if (idx > 0) { curYear = years[idx - 1]; slider.property('value', idx - 1); yearLabel.text(curYear); redraw(); }
+  });
 
-  const playBtn = playerBar.append('button')
-    .style('width', '42px').style('height', '42px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#1a3a5c')
-    .style('cursor', 'pointer').style('font-size', '16px').style('display', 'flex')
-    .style('align-items', 'center').style('justify-content', 'center')
-    .style('color', '#fff').style('flex-shrink', '0')
-    .text('▶');
+  const playBtn = ctrlWrap.append('button')
+    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
+    .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
+    .style('padding', '0').style('line-height', '1')
+    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
+    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>');
 
-  remBtnStyle(playerBar.append('button').text('›'))
-    .on('click', () => {
-      stopPlay();
-      const idx = years.indexOf(curYear);
-      if (idx < years.length - 1) { curYear = years[idx + 1]; slider.property('value', idx + 1); yearLabel.text(curYear); redraw(); }
-    });
+  const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
+    stopPlay();
+    const idx = years.indexOf(curYear);
+    if (idx < years.length - 1) { curYear = years[idx + 1]; slider.property('value', idx + 1); yearLabel.text(curYear); redraw(); }
+  });
 
   /* Timeline slider + tick labels */
   const timelineWrap = playerBar.append('div')
-    .style('flex', '1').style('display', 'flex').style('flex-direction', 'column')
-    .style('padding', '0 8px').style('min-width', '0');
+    .style('flex', '1').style('position', 'relative').style('padding', '0 4px');
 
-  const slider = timelineWrap.append('input').attr('type', 'range')
-    .attr('id', 'rem-chart-slider')
-    .attr('min', 0).attr('max', years.length - 1)
-    .attr('value', years.length - 1).attr('step', 1)
-    .style('width', '100%').style('cursor', 'pointer')
-    .style('-webkit-appearance', 'none').style('appearance', 'none')
-    .style('height', '5px').style('background', 'rgba(0,0,0,0.25)')
-    .style('border-radius', '2px').style('outline', 'none');
-
-  if (!document.getElementById('rem-chart-slider-style')) {
-    const st = document.createElement('style');
-    st.id = 'rem-chart-slider-style';
-    st.textContent = `
-      #rem-chart-slider::-webkit-slider-thumb {
-        -webkit-appearance: none; appearance: none;
-        width: 16px; height: 16px; border-radius: 50%;
-        background: #1a3a5c; cursor: pointer;
-      }
-      #rem-chart-slider::-moz-range-thumb {
-        width: 16px; height: 16px; border-radius: 50%;
-        background: #1a3a5c; cursor: pointer; border: none;
-      }
-    `;
-    document.head.appendChild(st);
-  }
-
-  const tickRow = timelineWrap.append('div')
+  const labelRow = timelineWrap.append('div')
     .style('display', 'flex').style('justify-content', 'space-between')
-    .style('padding', '2px 2px 0');
+    .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
+    .style('pointer-events', 'none');
   [years[0], years[Math.floor(years.length / 2)], years[years.length - 1]]
     .filter((y, i, a) => a.indexOf(y) === i)
-    .forEach(y => tickRow.append('span').style('font-size', '9px').style('color', '#aaa').text(y));
+    .forEach(y => labelRow.append('span').text(y));
+
+  const slider = timelineWrap.append('input').attr('type', 'range')
+    .attr('min', 0).attr('max', years.length - 1)
+    .attr('value', years.length - 1).attr('step', 1)
+    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
+    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block');
 
   /* Year display */
   const yearLabel = playerBar.append('div')
-    .style('font-size', '28px').style('font-weight', '700').style('color', '#1a3a5c')
-    .style('min-width', '60px').style('text-align', 'right').style('flex-shrink', '0')
-    .style('font-family', 'inherit').style('letter-spacing', '-0.5px').text(curYear);
+    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('letter-spacing', '-0.5px').text(curYear);
 
   function stopPlay() {
     playing = false;
     if (playTimer) { clearTimeout(playTimer); playTimer = null; }
-    playBtn.text('▶');
+    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
   }
 
   /* ── Pill buttons — top-right ───────────────────────────── */
@@ -1117,9 +1101,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   function updateBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#5a8a6e' : 'transparent')
+      .style('background', active ? '#4a6fa5' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
     set(btnTree, viewMode === 'treemap');
     set(btnMap,  viewMode === 'map');
     set(btnPct,  metricMode === 'pct');
@@ -1273,7 +1257,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   function redraw() {
     vizDiv.selectAll('*').remove();
     const W = containerEl.clientWidth  || 560;
-    const H = (containerEl.clientHeight || 460) - 58 - VIZ_PAD_TOP;
+    const H = Math.max(50, (containerEl.clientHeight || (PLAYER_H + 460)) - PLAYER_H);
     if (viewMode === 'treemap') drawTreemap(W, H);
     else                        drawMap(W, H);
   }
@@ -1289,7 +1273,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   playBtn.on('click', () => {
     if (playing) { stopPlay(); return; }
     playing = true;
-    playBtn.text('⏸');
+    playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
     let idx = years.indexOf(curYear);
     if (idx >= years.length - 1) idx = -1;
     function step() {

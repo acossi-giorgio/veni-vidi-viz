@@ -11,7 +11,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
 
   const CONTS  = ['Africa', 'Europe'];
-  const COLORS = { Africa: '#e07b6a', Europe: '#3a9e8c' };
+  const COLORS = { Africa: '#e07b39', Europe: '#5aab6e' };
   const LABEL_YEARS = [2000, 2005, 2010, 2015, 2020];
 
   /* ── Load data ──────────────────────────────────────────── */
@@ -148,9 +148,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
   function updateBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#5a8a6e' : 'transparent')
+      .style('background', active ? '#4a6fa5' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(90,138,110,0.3)' : 'none');
+      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
     set(btnAfr, contMode === 'Africa');
     set(btnEur, contMode === 'Europe');
     set(btnLit, yMode === 'literacy');
