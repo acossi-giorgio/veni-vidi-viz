@@ -45,7 +45,7 @@ async function init() {
   if (document.getElementById('chart-4-2')) await renderMarriageChart('#chart-4-2');
   if (document.getElementById('chart-4-3')) await renderMortalityChart('#chart-4-3');
   if (document.getElementById('chart-5-1')) await renderMigrationChord('#chart-5-1');
-  if (document.getElementById('chart-5-2')) await renderRemittancesChart('#chart-5-2');
+  // if (document.getElementById('chart-5-2')) await renderRemittancesChart('#chart-5-2');
 
   initProgressBar();
   initFullscreenModal();
@@ -135,11 +135,11 @@ function triggerChartState(chartId, state) {
     else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
   }
 
-  if (chartId === 'chart-5-2') {
-    const el = document.getElementById('chart-5-2');
-    if (!el) return;
-    if (state === 0 && el._remittancesReset) el._remittancesReset();
-  }
+  // if (chartId === 'chart-5-2') {
+  //   const el = document.getElementById('chart-5-2');
+  //   if (!el) return;
+  //   if (state === 0 && el._remittancesReset) el._remittancesReset();
+  // }
 }
 
 function initNarrativeCards() {
@@ -221,7 +221,7 @@ function initFullscreenModal() {
       else if (chartId === 'chart-4-2') await renderMarriageChart(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-4-3') await renderMortalityChart(`#fullscreen-${chartId}`, true);
       else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
+      // else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }
