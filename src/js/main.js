@@ -48,113 +48,120 @@ async function init() {
   // if (document.getElementById('chart-5-2')) await renderRemittancesChart('#chart-5-2');
 
   initProgressBar();
+  initMobilePlaceholders();
   initFullscreenModal();
   initNarrativeCards();
 }
 
 /* ── Narrative Cards ─────────────────────────────────────── */
-function triggerChartState(chartId, state) {
+function triggerChartState(chartId, state, targetEl = null) {
+  window._chartStates = window._chartStates || {};
+  window._chartStates[chartId] = state;
+
+  const el = targetEl || document.getElementById(chartId);
+  if (!el) return;
+
   if (chartId === 'chart-1-1') {
-    const el = document.getElementById('chart-1-1');
-    if (!el) return;
     if (state === 0 && el._choroplethReset) el._choroplethReset();
     else if (state === 1 && el._choroplethSetMetric) el._choroplethSetMetric('life_expectancy');
     else if (state === 2 && el._choroplethSetMetric) el._choroplethSetMetric('poverty');
   }
 
   if (chartId === 'chart-1-2') {
-    const el = document.getElementById('chart-1-2');
-    if (!el) return;
     if (state === 0 && el._gapminderReset) el._gapminderReset();
     else if (state === 1 && el._gapminderAnimate) el._gapminderAnimate();
     else if (state === 2 && el._gapminderSwitchY) el._gapminderSwitchY('mpi');
   }
 
   if (chartId === 'chart-2-1') {
-    const el = document.getElementById('chart-2-1');
-    if (!el) return;
     if (state === 0 && el._mpiReset) el._mpiReset();
     else if (state === 1 && el._mpiFilterContinent) el._mpiFilterContinent('Africa');
     else if (state === 2 && el._mpiFilterContinent) el._mpiFilterContinent('Europe');
   }
 
   if (chartId === 'chart-3-1') {
-    const el = document.getElementById('chart-3-1');
-    if (!el) return;
     if (state === 0 && el._treemapReset) el._treemapReset();
     else if (state === 1 && el._treemapHighlight) el._treemapHighlight('Europe');
     else if (state === 2 && el._treemapHighlight) el._treemapHighlight('Africa');
   }
 
   if (chartId === 'chart-3-2') {
-    const el = document.getElementById('chart-3-2');
-    if (!el) return;
     if (state === 0 && el._bumpReset) el._bumpReset();
     else if (state === 1 && el._bumpHighlightAfrica) el._bumpHighlightAfrica();
     else if (state === 2 && el._bumpHighlightEurope) el._bumpHighlightEurope();
   }
 
   if (chartId === 'chart-3-3') {
-    const el = document.getElementById('chart-3-3');
-    if (!el) return;
     if (state === 0 && el._exclusionShowBase) el._exclusionShowBase();
     else if (state === 1 && el._exclusionOverlayGPI) el._exclusionOverlayGPI();
     else if (state === 2 && el._exclusionShowTrend) el._exclusionShowTrend();
   }
 
-
   if (chartId === 'chart-4-1') {
-    const el = document.getElementById('chart-4-1');
-    if (!el) return;
     if (state === 0 && el._bubbleReset) el._bubbleReset();
     else if (state === 1 && el._bubbleHighlightContinent) el._bubbleHighlightContinent('Africa');
     else if (state === 2 && el._bubbleReset) el._bubbleReset();
   }
 
   if (chartId === 'chart-4-2') {
-    const el = document.getElementById('chart-4-2');
-    if (!el) return;
     if (state === 0 && el._marriageReset) el._marriageReset();
     else if (state === 1 && el._marriageHighlight) el._marriageHighlight('Africa');
     else if (state === 2 && el._marriageShowTrend) el._marriageShowTrend();
   }
 
   if (chartId === 'chart-4-3') {
-    const el = document.getElementById('chart-4-3');
-    if (!el) return;
     if (state === 0 && el._mortalityScatter) el._mortalityScatter();
     else if (state === 1 && el._mortalityHighlightMarriage) el._mortalityHighlightMarriage();
     else if (state === 2 && el._mortalitySlope) el._mortalitySlope();
   }
 
   if (chartId === 'chart-5-1') {
-    const el = document.getElementById('chart-5-1');
-    if (!el) return;
     if (state === 0 && el._migrationShowYear) el._migrationShowYear(2020);
     else if (state === 1 && el._migrationAnimate) el._migrationAnimate();
     else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
   }
-
-  // if (chartId === 'chart-5-2') {
-  //   const el = document.getElementById('chart-5-2');
-  //   if (!el) return;
-  //   if (state === 0 && el._remittancesReset) el._remittancesReset();
-  // }
 }
 
 function initNarrativeCards() {
   const cards = document.querySelectorAll('.narrative-card');
+  const activate = (card) => {
+    const chartId = card.dataset.chart;
+    const state = parseInt(card.dataset.state, 10);
+    document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`)
+      .forEach(c => c.classList.remove('is-active'));
+    card.classList.add('is-active');
+    triggerChartState(chartId, state);
+  };
   cards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      const chartId = card.dataset.chart;
-      const state = parseInt(card.dataset.state, 10);
+    card.addEventListener('mouseenter', () => activate(card));
+    card.addEventListener('click', () => activate(card));
+  });
+}
 
-      document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`)
-        .forEach(c => c.classList.remove('is-active'));
-      card.classList.add('is-active');
+/* ── Mobile Placeholders ─────────────────────────────────── */
+function initMobilePlaceholders() {
+  document.querySelectorAll('.chart-box').forEach(box => {
+    const chartDiv = box.querySelector('div[id^="chart-"]');
+    if (!chartDiv || box.querySelector('.chart-mobile-placeholder')) return;
 
-      triggerChartState(chartId, state);
+    const ph = document.createElement('div');
+    ph.className = 'chart-mobile-placeholder';
+    ph.dataset.target = '#' + chartDiv.id;
+    ph.setAttribute('role', 'button');
+    ph.setAttribute('tabindex', '0');
+    ph.setAttribute('aria-label', 'Apri grafico interattivo a schermo intero');
+    ph.innerHTML = `
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" fill="none"/><path d="M2 12h20M12 2v20" stroke="currentColor" stroke-dasharray="4 3"/></svg>
+      <span class="chart-mobile-placeholder-title">Grafico interattivo</span>
+      <span class="chart-mobile-placeholder-hint">Tocca per esplorare a schermo intero</span>
+    `;
+    ph.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        ph.click();
+      }
     });
+    box.appendChild(ph);
   });
 }
 
@@ -190,9 +197,8 @@ function initProgressBar() {
 function initFullscreenModal() {
   const modal = document.getElementById('fullscreenModal');
   const closeBtn = document.querySelector('.fullscreen-modal-close');
-  const btns = document.querySelectorAll('.chart-fullscreen-btn');
   const container = document.getElementById('fullscreenChartContainer');
-  if (!modal || !closeBtn || !btns.length) return;
+  if (!modal || !closeBtn || !container) return;
 
   function close() {
     modal.classList.remove('is-active');
@@ -225,14 +231,20 @@ function initFullscreenModal() {
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }
+
+    // Apply the last selected narrative state (if any) to the fullscreen chart
+    const savedState = window._chartStates?.[chartId] ?? 0;
+    const fsEl = document.getElementById(`fullscreen-${chartId}`);
+    if (fsEl) triggerChartState(chartId, savedState, fsEl);
   }
 
-  btns.forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const id = (btn.dataset.target || '').replace(/^#/, '');
-      if (id) open(id);
-    });
+  // Event delegation: handles both inline fullscreen buttons and mobile placeholders
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('.chart-fullscreen-btn, .chart-mobile-placeholder');
+    if (!trigger) return;
+    e.stopPropagation();
+    const id = (trigger.dataset.target || '').replace(/^#/, '');
+    if (id) open(id);
   });
 
   closeBtn.addEventListener('click', e => { e.stopPropagation(); close(); });

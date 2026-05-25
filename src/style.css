@@ -325,6 +325,9 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 .chart-placeholder-icon { font-size: 2rem; opacity: 0.35; }
 
+/* Mobile-only placeholder: hidden on desktop via media query */
+.chart-mobile-placeholder { display: none; }
+
 /* ── FOOTER ──────────────────────────────────────────────── */
 .site-footer {
   background: #1a1a1a;
@@ -567,18 +570,114 @@ section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accen
   .chart-section-inner.layout-reversed,
   .chart-section-inner.layout-stacked {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
-  /* Chart always on top on mobile */
+  /* Text first, chart placeholder after */
   .chart-viz,
   .chart-section-inner.layout-reversed .chart-viz {
     position: static;
-    order: -1;
+    order: 1;
   }
   .chart-section-inner.layout-stacked .chart-text {
     grid-template-columns: 1fr;
   }
   .navbar-tagline { display: none; }
+
+  /* Smaller chart box for the placeholder */
+  .chart-box {
+    height: 260px;
+  }
+
+  /* Hide the inline chart visually (but keep it in DOM so APIs still exist) */
+  .chart-box > div[id^="chart-"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Hide the inline fullscreen button – replaced by the placeholder */
+  .chart-fullscreen-btn { display: none; }
+
+  /* Mobile placeholder shown in place of the chart */
+  .chart-mobile-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border-radius: 10px;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 1.5rem;
+    cursor: pointer;
+    border: 2px dashed var(--border);
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .chart-mobile-placeholder:hover,
+  .chart-mobile-placeholder:active {
+    background: var(--bg);
+    border-color: var(--accent-1);
+    color: var(--ink);
+  }
+  .chart-mobile-placeholder-title {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .chart-mobile-placeholder-hint {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+  .chart-mobile-placeholder svg {
+    width: 40px;
+    height: 40px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Make narrative cards usable on touch devices */
+  .narrative-card {
+    opacity: 1;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.03);
+    border-left: 3px solid transparent;
+    border-radius: 6px;
+  }
+  .narrative-card.is-active {
+    background: rgba(0,0,0,0.06);
+  }
+  .narrative-card p {
+    position: static;
+    opacity: 1;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0.5rem 0 0;
+    pointer-events: auto;
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  /* Fullscreen modal takes the whole screen on phones */
+  .fullscreen-modal {
+    padding: 0;
+  }
+  .fullscreen-modal-content {
+    max-width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
 }
 
 @media (min-width: 1920px) { :root { --page-max: 1800px; } }
