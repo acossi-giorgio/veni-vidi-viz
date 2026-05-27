@@ -30,6 +30,10 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   const childData    = buildGrouped(childRaw);
 
   let metric = 'maternal';
+  const compact = isFullscreen && (
+    (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
+    (container.clientHeight || window.innerHeight * 0.82) < 420
+  );
 
   /* ── Tooltip ────────────────────────────────────────────── */
   const tip = d3.select('body').selectAll('.mortality-tip').data([0]).join('div')
@@ -43,17 +47,17 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   /* ── Top bar ────────────────────────────────────────────── */
   const topBar = d3.select(container).append('div')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '8px 16px 4px').style('flex-shrink', '0');
+    .style('padding', compact ? '6px 10px 2px' : '8px 16px 4px').style('flex-shrink', '0');
 
   const pillBar = topBar.append('div')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-    .style('padding', '3px').style('gap', '2px')
+    .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', compact ? '2px' : '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
   function mkBtn(label, val) {
     return pillBar.append('button')
-      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px').style('border-radius', compact ? '5px' : '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
       .on('click', () => { metric = val; updateBtns(); draw(); });
@@ -78,16 +82,16 @@ async function renderMortalityChart(selector, isFullscreen = false) {
 
   /* ── Legend bottom-right ────────────────────────────────── */
   const legDiv = vizDiv.append('div')
-    .style('position', 'absolute').style('bottom', '52px').style('right', '16px')
+    .style('position', 'absolute').style('bottom', compact ? '38px' : '52px').style('right', compact ? '8px' : '16px')
     .style('display', 'flex').style('flex-direction', 'column').style('gap', '4px')
     .style('background', 'rgba(255,255,255,0.88)').style('border-radius', '6px')
-    .style('padding', '6px 10px').style('pointer-events', 'none')
+    .style('padding', compact ? '4px 8px' : '6px 10px').style('pointer-events', 'none')
     .style('box-shadow', '0 1px 4px rgba(0,0,0,0.08)').style('z-index', '10');
   CONTS.forEach(c => {
     const row = legDiv.append('div').style('display','flex').style('align-items','center').style('gap','6px');
     row.append('div').style('width','10px').style('height','10px').style('border-radius','50%')
       .style('background', COLORS[c]).style('flex-shrink','0');
-    row.append('span').style('font-size','11px').style('color','#555').text(c);
+    row.append('span').style('font-size', compact ? '9px' : '11px').style('color','#555').text(c);
   });
 
   /* ── Draw ───────────────────────────────────────────────── */
@@ -97,7 +101,9 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     const W = container.clientWidth  || 700;
     const H = (vizDiv.node().clientHeight || 380);
 
-    const margin = { top: 20, right: 56, bottom: 48, left: 60 };
+    const margin = compact
+      ? { top: 16, right: 30, bottom: 40, left: 46 }
+      : { top: 20, right: 56, bottom: 48, left: 60 };
     const iw = W - margin.left - margin.right;
     const ih = H - margin.top  - margin.bottom;
 
@@ -134,17 +140,17 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     });
 
     /* Axes */
-    const everyN = Math.ceil(pairs.length / 10);
+    const everyN = Math.ceil(pairs.length / (compact ? 7 : 10));
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xBand).tickValues(pairs.filter((_, i) => i % everyN === 0).map(d => d.year)).tickSize(3))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
 
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
 
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text(unitLabel);
 
     /* Dumbbells */
@@ -193,7 +199,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       g.append('text')
         .attr('x', tx).attr('y', midY + 4)
         .attr('text-anchor', isFirst ? 'end' : 'start')
-        .attr('font-size', 10).attr('fill', '#999').attr('font-weight', '600')
+        .attr('font-size', compact ? 9 : 10).attr('fill', '#999').attr('font-weight', '600')
         .text(`×${Math.round(d.ratio)}`);
     });
   }

@@ -103,13 +103,16 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   let playing      = false;
   let animTimer    = null;
 
-  const PLAYER_H = 72;
-  const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 800);
-  const H = (container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 480)) - PLAYER_H;
+  const rawW = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 800);
+  const rawH = container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 480);
+  const compact = isFullscreen && (rawW < 760 || rawH < 420);
+  const PLAYER_H = compact ? 64 : 72;
+  const W = rawW;
+  const H = rawH - PLAYER_H;
 
   // ── View toggle ───────────────────────────────────────────
   const viewToggle = d3.select(container).append('div')
-    .style('position', 'absolute').style('top', '10px').style('left', '10px')
+    .style('position', 'absolute').style('top', compact ? '6px' : '10px').style('left', compact ? '6px' : '10px')
     .style('z-index', '20').style('display', 'flex').style('flex-direction', 'column')
     .style('gap', '4px');
 
@@ -121,7 +124,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   function mkPill(label, val) {
     return pillWrap.append('button')
-      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px').style('border-radius', '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').style('white-space', 'nowrap')
       .text(label)
@@ -216,12 +219,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     legG.selectAll('*').remove();
 
     const STEPS = 5;
-    const SW = 14, SH = 14, GAP = 4, LABEL_X = SW + 7;
+    const SW = compact ? 12 : 14, SH = compact ? 12 : 14, GAP = compact ? 3 : 4, LABEL_X = SW + (compact ? 5 : 7);
     const rowH = SH + GAP;
     const extraRows = 2; // separator + no-data
-    const totalH = STEPS * rowH + 8 + rowH + 14 + 10; // steps + title + no-data + padding
-    const totalW = 110;
-    const px = W - totalW - 10, py = H - totalH - 10;
+    const totalH = STEPS * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 8 : 10);
+    const totalW = compact ? 88 : 110;
+    const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
 
     // Background panel
     legG.append('rect')
@@ -233,7 +236,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     // Title
     legG.append('text')
       .attr('x', px).attr('y', py + 10)
-      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#888')
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#888')
       .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE');
 
     // Build log-spaced thresholds
@@ -251,7 +254,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
         .attr('fill', colorScale(v));
       legG.append('text')
         .attr('x', px + LABEL_X).attr('y', cy + SH / 2 + 4)
-        .attr('font-size', 9).attr('fill', '#444')
+        .attr('font-size', compact ? 8 : 9).attr('fill', '#444')
         .text(`$${d3.format('.2s')(v)}`);
     });
 
@@ -263,7 +266,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .attr('fill', '#c8cdd4');
     legG.append('text')
       .attr('x', px + LABEL_X).attr('y', ndY + SH / 2 + 4)
-      .attr('font-size', 9).attr('fill', '#888').text('No data');
+      .attr('font-size', compact ? 8 : 9).attr('fill', '#888').text('No data');
   }
 
   // Country detail panel — floats near click position, reactive to year slider
@@ -445,7 +448,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   function drawTrend() {
     trendDiv.selectAll('*').remove();
-    const MARGIN = { top: 32, right: 72, bottom: 40, left: 58 };
+    const MARGIN = compact
+      ? { top: 24, right: 36, bottom: 34, left: 44 }
+      : { top: 32, right: 72, bottom: 40, left: 58 };
     const tw = container.clientWidth || W;
     const th = container.clientHeight || H + PLAYER_H;
     const iw = tw - MARGIN.left - MARGIN.right;
@@ -483,8 +488,8 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
       .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
-    g.append('text').attr('x', iw / 2).attr('y', ih + 34).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666').text('Anno');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666').text('PIL pro capite (USD PPP)');
+    g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666').text('Anno');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666').text('PIL pro capite (USD PPP)');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
 
@@ -571,7 +576,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     .style('border-radius', '0 0 10px 10px')
     .style('border-top', '1px solid #e8eef7')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('padding', compact ? '0 10px' : '0 16px').style('gap', compact ? '10px' : '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
   // Control buttons
@@ -581,7 +586,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   function mkCtrlBtn(inner, title) {
     return ctrlWrap.append('button')
       .attr('title', title)
-      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
       .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
       .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
@@ -598,7 +603,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   });
 
   const btnPlay = ctrlWrap.append('button')
-    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('width', compact ? '32px' : '36px').style('height', compact ? '32px' : '36px').style('border-radius', '50%')
     .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
@@ -654,8 +659,8 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   // Year display
   const yearDisplay = playerBar.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
-    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 
   // ── Switch views ──────────────────────────────────────────

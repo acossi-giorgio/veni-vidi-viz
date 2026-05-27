@@ -12,6 +12,16 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     .style('display', 'flex').style('flex-direction', 'column')
     .style('font-family', 'inherit').style('box-sizing', 'border-box').style('position', 'relative');
 
+  const containerNode = container.node();
+  const compact = isFullscreen && (
+    (containerNode.clientWidth  || window.innerWidth  * 0.85) < 760 ||
+    (containerNode.clientHeight || window.innerHeight * 0.82) < 420
+  );
+  const veryCompact = isFullscreen && (
+    (containerNode.clientWidth  || window.innerWidth  * 0.85) < 620 ||
+    (containerNode.clientHeight || window.innerHeight * 0.82) < 360
+  );
+
   const raw = await d3.csv('datasets/processed/child_marriage_cmmm.csv', d3.autoType);
 
   const C_BY15  = '#7b2226';
@@ -54,16 +64,12 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
   /* ── Back button ────────────────────────────────────────── */
   const backBtn = container.append('button')
+    .attr('class', 'chart-back-btn chart-back-btn--icon')
+    .attr('aria-label', 'Torna alla panoramica')
+    .attr('title', 'Torna alla panoramica')
     .style('position', 'absolute').style('top', '8px').style('left', '8px')
     .style('display', 'none').style('z-index', '20')
-    .style('align-items', 'center')
-    .style('padding', '4px 10px')
-    .style('background', '#f5f5f5').style('border', '1px solid #ddd')
-    .style('border-radius', '6px').style('font-size', '12px').style('font-weight', '600')
-    .style('color', '#333').style('cursor', 'pointer').style('white-space', 'nowrap')
-    .html('&#8592; Panoramica')
-    .on('mouseover', function() { d3.select(this).style('background', '#e8e8e8'); })
-    .on('mouseout',  function() { d3.select(this).style('background', '#f5f5f5'); })
+    .html('<span class="chart-back-icon" aria-hidden="true"></span>')
     .on('click', () => { drillDown = false; dotMode = false; draw(); });
 
   /* ── Waffle helper ──────────────────────────────────────── */
@@ -102,8 +108,10 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const eu15   = euNTot > 0 ? euN15 / euNTot * 100 : 0;
     const eu18   = euNTot > 0 ? euN18 / euNTot * 100 : 0;
 
-    const PAD  = { top: 16, bottom: 16, left: 24, right: 20 };
-    const PW   = 80, PGAP = 28, PP = 14;
+    const PAD  = compact ? { top: 12, bottom: 12, left: 16, right: 14 } : { top: 16, bottom: 16, left: 24, right: 20 };
+    const PW   = compact ? (veryCompact ? 64 : 70) : 80;
+    const PGAP = compact ? (veryCompact ? 16 : 20) : 28;
+    const PP   = compact ? 10 : 14;
     const leftZoneW = W - PAD.left - PAD.right - PW - PGAP;
     const avH       = H - PAD.top - PAD.bottom;
 
@@ -121,10 +129,10 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .style('display', 'block').style('font-family', 'inherit');
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 14)
-      .attr('text-anchor', 'middle').attr('font-size', 14).attr('font-weight', '700').attr('fill', '#b04a4a')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 12 : 14).attr('font-weight', '700').attr('fill', '#b04a4a')
       .text('Africa');
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 28)
-      .attr('text-anchor', 'middle').attr('font-size', 8.5).attr('fill', '#bbb')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 7.5 : 8.5).attr('fill', '#bbb')
       .text(`${n} paesi · ponderato per base donne · ogni cella = 1%`);
 
     drawWaffle(svg, afX, afY, af15, af18, afCS, afGap, 10, 10);
@@ -141,12 +149,12 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .on('click', () => { drillDown = true; draw(); });
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
-      .attr('text-anchor', 'middle').attr('font-size', 8).attr('fill', '#ccc')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 7 : 8).attr('fill', '#ccc')
       .text('clicca per esplorare i singoli paesi →');
 
     /* ── Pannello stats destra ──────────────────────────────── */
     const px0    = afX + afW + PGAP;
-    const panelH = 250;
+    const panelH = compact ? 220 : 250;
     const py0    = blockY + (blockH - panelH) / 2;
 
     svg.append('rect').attr('x', px0 - PP).attr('y', py0 - PP)
@@ -174,25 +182,25 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         curY += 10;
       }
       svg.append('text').attr('x', px0).attr('y', curY + 10)
-        .attr('font-size', 9).attr('font-weight', '700').attr('fill', sec.titleColor).text(sec.title);
+        .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', sec.titleColor).text(sec.title);
       curY += 20;
       sec.rows.forEach(r => {
         svg.append('circle').attr('cx', px0 + 5).attr('cy', curY + 2).attr('r', 4.5)
           .attr('fill', r.color).attr('opacity', 0.88);
         svg.append('text').attr('x', px0 + 14).attr('y', curY + 6)
-          .attr('font-size', 8).attr('fill', '#999').text(r.label);
+          .attr('font-size', compact ? 7 : 8).attr('fill', '#999').text(r.label);
         curY += 16;
         svg.append('text').attr('x', px0).attr('y', curY + 12)
-          .attr('font-size', 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
+          .attr('font-size', compact ? 15 : 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
         curY += 16;
         svg.append('text').attr('x', px0).attr('y', curY + 4)
-          .attr('font-size', 7.5).attr('fill', '#bbb').text(`≈ ${r.n}`);
+          .attr('font-size', compact ? 6.5 : 7.5).attr('fill', '#bbb').text(`≈ ${r.n}`);
         curY += 18;
       });
     });
 
     svg.append('text').attr('x', px0).attr('y', py0 + panelH + PP + 10)
-      .attr('font-size', 7).attr('fill', '#ccc').text('Fonte: CMMM/UNICEF 2025');
+      .attr('font-size', compact ? 6 : 7).attr('fill', '#ccc').text('Fonte: CMMM/UNICEF 2025');
   }
 
   /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
@@ -210,7 +218,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       }
     });
 
-    const PAD    = { top: 44, bottom: 68, left: 52, right: 12 };
+    const PAD    = compact ? { top: 40, bottom: 60, left: 42, right: 10 } : { top: 44, bottom: 68, left: 52, right: 12 };
     const chartH = H - PAD.top - PAD.bottom;
     const BAR_G  = 2;
     const availW = W - PAD.left - PAD.right;
@@ -229,16 +237,28 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .style('display', 'block').style('font-family', 'inherit');
 
     /* ── Toggle % / Assoluto — top-left pill (after back btn) ─ */
-    const pillBar = vizDiv.append('div')
-      .style('position', 'absolute').style('top', '8px').style('left', '116px')
+    const controlRow = vizDiv.append('div')
+      .style('position', 'absolute').style('top', compact ? '6px' : '8px').style('left', compact ? '6px' : '8px')
+      .style('display', 'flex').style('align-items', 'center').style('gap', compact ? '4px' : '6px')
+      .style('z-index', '10');
+
+    controlRow.node().appendChild(backBtn.node());
+    backBtn
+      .style('position', 'static')
+      .style('top', null)
+      .style('left', null)
+      .style('z-index', null)
+      .style('display', 'inline-flex');
+
+    const pillBar = controlRow.append('div')
       .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-      .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-      .style('padding', '3px').style('gap', '2px')
-      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)').style('z-index', '10');
+      .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+      .style('padding', compact ? '2px' : '3px').style('gap', '2px')
+      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
     function mkToggleBtn(label, active) {
       return pillBar.append('button')
-        .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+        .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px').style('border-radius', compact ? '5px' : '6px')
         .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
         .style('transition', 'all 0.15s')
         .style('background', active ? '#4a6fa5' : 'transparent')
@@ -265,7 +285,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt).tickSize(-barsW));
     yG.select('.domain').remove();
     yG.selectAll('.tick line').attr('stroke', '#e8e8e8');
-    yG.selectAll('.tick text').attr('font-size', 8).attr('fill', '#888');
+    yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', '#888');
 
     svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 8)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#999')
@@ -293,7 +313,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
       svg.append('text')
         .attr('transform', `translate(${bx + BAR_W / 2},${PAD.top + chartH + 4}) rotate(-55)`)
-        .attr('text-anchor', 'end').attr('font-size', 7.5).attr('fill', '#666').text(name);
+        .attr('text-anchor', 'end').attr('font-size', compact ? 6.5 : 7.5).attr('fill', '#666').text(name);
 
       svg.append('rect').attr('x', bx).attr('y', PAD.top).attr('width', BAR_W).attr('height', chartH)
         .attr('fill', 'transparent').style('cursor', 'default')
@@ -313,7 +333,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       { color: C_BY15, label: 'Prima dei 15 anni' },
       { color: C_BY18, label: 'Tra 15 e 18 anni'  },
     ];
-    const LP = 8, LHH = 14, LRH = 16, LW = 148;
+    const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
     const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
     const LX = Math.min(svgW, axisX + barsW) - 4;
     const LY = PAD.top + 4;
@@ -321,14 +341,14 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)
       .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)').attr('stroke', '#e0e0e0').attr('stroke-width', 1);
     legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
-      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa').attr('letter-spacing', '0.08em')
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#aaa').attr('letter-spacing', '0.08em')
       .text('FASCIA');
     LEG_ITEMS.forEach((item, i) => {
       const ly = LP + LHH + 4 + i * LRH;
       legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)
         .attr('fill', item.color).attr('opacity', 0.85);
       legG.append('text').attr('x', -LW + 23).attr('y', ly + 9)
-        .attr('font-size', 9).attr('fill', '#555').text(item.label);
+        .attr('font-size', compact ? 8 : 9).attr('fill', '#555').text(item.label);
     });
   }
 

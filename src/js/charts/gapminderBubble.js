@@ -9,7 +9,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   container.style.position = 'relative';
 
   const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
-  const PLAYER_H = 72;
+  const BASE_PLAYER_H = 72;
 
   const [incomeRaw, lifeRaw, popRaw] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
@@ -44,9 +44,13 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   let currentYear = YEAR_MAX;
   let playing = false, playTimer = null;
   let highlightContinent = null;
-  const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
-  const H = (container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 460)) - PLAYER_H;
-  const MARGIN = { top: 28, right: 24, bottom: 44, left: 58 };
+  const rawW = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
+  const rawH = container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 460);
+  const compact = isFullscreen && (rawW < 760 || rawH < 420);
+  const PLAYER_H = compact ? 64 : BASE_PLAYER_H;
+  const W = rawW;
+  const H = rawH - PLAYER_H;
+  const MARGIN = compact ? { top: 22, right: 14, bottom: 34, left: 46 } : { top: 28, right: 24, bottom: 44, left: 58 };
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
@@ -78,41 +82,41 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   // Axes (X rebuilt on scale toggle)
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
-  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888');
-  g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', 9);
-  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -46).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
+  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#888');
+  g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
 
   xAxisG.call(d3.axisBottom(xS).tickValues([500, 1000, 2000, 5000, 10000, 30000, 100000]).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
-    .call(ax => ax.select('.domain').remove()).attr('font-size', 9);
+    .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
   xLabelEl.text('PIL pro capite (USD PPP, scala log)');
 
   // ── Legend (bottom-right above player, choropleth style) ─
-  const LEG_W = 120, LEG_H = 106;
+  const LEG_W = compact ? 96 : 120, LEG_H = compact ? 84 : 106;
   const legDiv = d3.select(container).append('div')
     .style('position', 'absolute')
-    .style('bottom', (PLAYER_H + 10) + 'px').style('right', '12px')
+    .style('bottom', (PLAYER_H + (compact ? 6 : 10)) + 'px').style('right', compact ? '8px' : '12px')
     .style('width', LEG_W + 'px').style('background', 'rgba(255,255,255,0.94)')
     .style('border', '1px solid #d8dce8').style('border-radius', '8px')
-    .style('padding', '10px 12px').style('z-index', '15')
+    .style('padding', compact ? '8px 9px' : '10px 12px').style('z-index', '15')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
 
-  legDiv.append('div').style('font-size', '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', '6px').text('Continente');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', compact ? '4px' : '6px').text('Continente');
 
   ['Africa', 'Europe'].forEach(cont => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
     row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', CONT_COLOR[cont]).style('flex-shrink', '0').style('opacity', '0.8');
-    row.append('div').style('font-size', '9px').style('color', '#444').text(cont);
+    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', '#444').text(cont);
   });
 
-  legDiv.append('div').style('font-size', '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', '8px').style('margin-bottom', '6px').text('Popolazione');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
 
-  [5e6, 50e6, 200e6].forEach(p => {
+  (compact ? [5e6, 50e6] : [5e6, 50e6, 200e6]).forEach(p => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
     const r = rS(p);
     const sz = Math.round(r * 2);
     row.append('div').style('width', sz + 'px').style('height', sz + 'px').style('border-radius', '50%')
       .style('border', '1.5px solid #bbb').style('flex-shrink', '0').style('box-sizing', 'border-box');
-    row.append('div').style('font-size', '9px').style('color', '#777').text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
+    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', '#777').text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
   });
 
   const bubblesG = g.append('g');
@@ -178,14 +182,14 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     .style('height', PLAYER_H + 'px').style('background', '#fff')
     .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e8eef7')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
+    .style('padding', compact ? '0 10px' : '0 16px').style('gap', compact ? '10px' : '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
 
   const ctrlWrap = playerBar.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
     return ctrlWrap.append('button').attr('title', title)
-      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
+      .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
       .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
       .style('justify-content', 'center').style('color', '#4a6fa5')
@@ -200,7 +204,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   });
 
   const btnPlay = ctrlWrap.append('button')
-    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
+    .style('width', compact ? '32px' : '36px').style('height', compact ? '32px' : '36px').style('border-radius', '50%')
     .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
@@ -238,8 +242,8 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     .on('input', function() { stopPlay(); currentYear = +this.value; draw(false); });
 
   const yearDisplay = playerBar.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
-    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
+    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 
   draw(false);

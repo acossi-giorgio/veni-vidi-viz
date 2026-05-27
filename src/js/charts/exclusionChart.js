@@ -82,6 +82,10 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   let xMode    = 'absolute'; // 'absolute' | 'pct'
   let yMode    = 'literacy'; // 'literacy' | 'oos'
   let contMode = 'Africa';   // 'Africa' | 'Europe'
+  const compact = isFullscreen && (
+    (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
+    (container.clientHeight || window.innerHeight * 0.82) < 420
+  );
 
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-excl').remove();
@@ -116,18 +120,19 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   /* ── Top bar: toggles left ──────────────────────────────── */
   const topBar = d3.select(container).append('div')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '8px 16px 4px').style('flex-shrink', '0');
+    .style('padding', compact ? '6px 10px 2px' : '8px 16px 4px').style('flex-shrink', '0');
 
   const pillBar = topBar.append('div')
     .style('display', 'flex').style('align-items', 'center')
+    .style('flex-wrap', compact ? 'wrap' : 'nowrap')
     .style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-    .style('padding', '3px').style('gap', '2px')
+    .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', compact ? '2px' : '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
   function mkBtn(label, onClick) {
     return pillBar.append('button')
-      .style('font-size', '11px').style('padding', '5px 12px').style('border-radius', '6px')
+      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 8px' : '5px 12px').style('border-radius', compact ? '5px' : '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
       .on('click', onClick);
@@ -166,16 +171,16 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
   /* ── Legend bottom-right ────────────────────────────────── */
   const legDiv = vizDiv.append('div')
-    .style('position', 'absolute').style('bottom', '48px').style('right', '16px')
+    .style('position', 'absolute').style('bottom', compact ? '38px' : '48px').style('right', compact ? '8px' : '16px')
     .style('display', 'flex').style('flex-direction', 'column').style('gap', '4px')
     .style('background', 'rgba(255,255,255,0.88)').style('border-radius', '6px')
-    .style('padding', '6px 10px').style('pointer-events', 'none')
+    .style('padding', compact ? '4px 8px' : '6px 10px').style('pointer-events', 'none')
     .style('box-shadow', '0 1px 4px rgba(0,0,0,0.08)').style('z-index', '10');
   CONTS.forEach(c => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px');
     row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%')
       .style('background', COLORS[c]).style('opacity', '0.85').style('flex-shrink', '0');
-    row.append('span').style('font-size', '11px').style('color', '#555').text(c);
+    row.append('span').style('font-size', compact ? '9px' : '11px').style('color', '#555').text(c);
   });
 
   /* ── Draw ───────────────────────────────────────────────── */
@@ -184,7 +189,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     const W = container.clientWidth  || 600;
     const H = vizDiv.node().clientHeight || 340;
 
-    const margin = { top: 20, right: 32, bottom: 44, left: 56 };
+    const margin = compact
+      ? { top: 18, right: 18, bottom: 38, left: 46 }
+      : { top: 20, right: 32, bottom: 44, left: 56 };
     const iw = W - margin.left - margin.right;
     const ih = H - margin.top  - margin.bottom;
 
@@ -230,17 +237,17 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
     /* Axes */
     g.append('g').call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt))
-      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xScale).ticks(5).tickFormat(xFmt))
-      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
 
     /* Axis labels */
     g.append('text').attr('x', iw / 2).attr('y', ih + 36)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text(xMode === 'absolute' ? 'Spesa pubblica istruzione (USD)' : 'Spesa pubblica istruzione (% PIL)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -42)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
 
     /* Trajectory line — animated draw */
@@ -292,7 +299,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       const delay = isLast ? 2750 : 200;
       g.append('text')
         .attr('x', n.x).attr('y', n.y + 3)
-        .attr('text-anchor', 'middle').attr('font-size', 9)
+        .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9)
         .attr('fill', col).attr('font-weight', '600')
         .attr('pointer-events', 'none').attr('opacity', 0)
         .text(n.d.year)

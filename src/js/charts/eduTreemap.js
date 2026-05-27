@@ -63,9 +63,13 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const xDomain  = [allYears[0], MAX_YEAR];
 
   // ── Layout ───────────────────────────────────────────────
-  const MARGIN = { top: 36, right: 112, bottom: 44, left: 62 };
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
+  const compact = isFullscreen && (W < 760 || H < 420);
+  const veryCompact = isFullscreen && (W < 620 || H < 360);
+  const MARGIN = compact
+    ? { top: 32, right: veryCompact ? 42 : 60, bottom: 38, left: 44 }
+    : { top: 36, right: 112, bottom: 44, left: 62 };
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
@@ -73,20 +77,20 @@ async function renderEduTreemap(selector, isFullscreen = false) {
 
   // ── Controls row (top-left) ───────────────────────────────
   const ctrlRow = d3.select(container).append('div')
-    .style('position', 'absolute').style('top', '10px').style('left', '10px')
-    .style('display', 'flex').style('gap', '8px').style('z-index', '20').style('align-items', 'center');
+    .style('position', 'absolute').style('top', compact ? '8px' : '10px').style('left', compact ? '8px' : '10px')
+    .style('display', 'flex').style('gap', compact ? '6px' : '8px').style('z-index', '20').style('align-items', 'center');
 
   function makePillBar(parent) {
     return parent.append('div')
       .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-      .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-      .style('padding', '3px').style('gap', '2px')
+      .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+      .style('padding', compact ? '2px' : '3px').style('gap', '2px')
       .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
   }
 
   function makePillBtn(bar, label) {
     return bar.append('button')
-      .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
+      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px').style('border-radius', compact ? '5px' : '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label);
   }
@@ -127,14 +131,14 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa').text('Anno');
-  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa');
+  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('Anno');
+  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa');
 
   // Crosshair
   const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)
     .attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '4,3').attr('opacity', 0).style('pointer-events', 'none');
   const crossDots = CONTS.map(cont => ({
-    cont, dot: g.append('circle').attr('r', 5).attr('fill', CONT_COLOR[cont]).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('opacity', 0).style('pointer-events', 'none'),
+    cont, dot: g.append('circle').attr('r', compact ? 4 : 5).attr('fill', CONT_COLOR[cont]).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('opacity', 0).style('pointer-events', 'none'),
   }));
 
   // Tooltip
@@ -183,7 +187,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     .call(ax => {
       ax.select('.domain').remove();
       ax.selectAll('.tick line').attr('stroke', '#dde3ef');
-      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', 9);
+      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', compact ? 8 : 9);
     });
 
     yAxisG.call(
@@ -192,7 +196,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     .call(ax => {
       ax.select('.domain').remove();
       ax.selectAll('.tick line').attr('stroke', '#dde3ef');
-      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', 9);
+      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', compact ? 8 : 9);
     });
 
     yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
@@ -228,8 +232,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
       if (last) {
         g.append('text').attr('class', 'end-label')
           .attr('x', xS(last.year) + 5).attr('y', currentYS(last.mean) + 4)
-          .attr('font-size', 9).attr('font-weight', '700').attr('fill', col).attr('opacity', 0)
-          .text(`${cont} ${fmtY(last.mean)}`)
+          .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', col).attr('opacity', 0)
+          .text(compact ? cont : `${cont} ${fmtY(last.mean)}`)
           .transition().duration(400).delay(1200).attr('opacity', 0.9);
       }
     });

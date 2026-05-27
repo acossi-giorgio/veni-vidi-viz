@@ -78,8 +78,12 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     d3.select(containerNode).selectAll('svg').remove();
     const W = containerNode.getBoundingClientRect().width  || 560;
     const H = containerNode.getBoundingClientRect().height || 480;
+    const compact = isFullscreen && (W < 760 || H < 420);
+    const veryCompact = isFullscreen && (W < 620 || H < 360);
 
-    const MARGIN = { top: 24, right: 44, bottom: 72, left: 64 };
+    const MARGIN = compact
+      ? { top: 18, right: 12, bottom: 58, left: 46 }
+      : { top: 24, right: 44, bottom: 72, left: 64 };
     const iw = W - MARGIN.left - MARGIN.right;
     const ih = H - MARGIN.top  - MARGIN.bottom;
 
@@ -126,8 +130,9 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
       g.append('text').attr('x', lx).attr('y', ly)
-        .attr('text-anchor', q.anchor).attr('font-size', 8.5).attr('font-weight', '600')
-        .attr('fill', q.color).attr('opacity', 0.6).text(q.label);
+        .attr('text-anchor', q.anchor).attr('font-size', compact ? 7.5 : 8.5).attr('font-weight', '600')
+        .attr('fill', q.color).attr('opacity', 0.6)
+        .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 
     // Gridlines (light, behind dots)
@@ -171,19 +176,20 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
     // Axes
     // X axis: explicit ticks to avoid crowding at low end of log scale
-    const xTicks = [200, 500, 1000, 2000, 5000, 10000].filter(v => v >= xS.domain()[0] * 0.9 && v <= xS.domain()[1] * 1.1);
+    const xTicks = (compact ? [200, 1000, 5000, 10000] : [200, 500, 1000, 2000, 5000, 10000])
+      .filter(v => v >= xS.domain()[0] * 0.9 && v <= xS.domain()[1] * 1.1);
     g.append('g').attr('transform', `translate(0,${ih})`).call(
       d3.axisBottom(xS).tickValues(xTicks).tickFormat(d => `$${d3.format(',.0f')(d)}`)
-    ).call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', 9); });
+    ).call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', compact ? 8 : 9); });
 
     g.append('g').call(d3.axisLeft(yS).ticks(5).tickFormat(d => `${d}%`))
-      .call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', 9); });
+      .call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', compact ? 8 : 9); });
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
-      .text('Reddito pro capite (USD, scala logaritmica) — Africa');
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666')
+      .text(compact ? 'Reddito pro capite (USD, log)' : 'Reddito pro capite (USD, scala logaritmica) — Africa');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#666')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666')
       .text('Lavoro minorile 5-17 anni (%)');
 
     // Count per quadrant (corners, below the quadrant label)
@@ -192,17 +198,17 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 25 : y + h - 18;
       g.append('text').attr('x', lx).attr('y', ly)
-        .attr('text-anchor', q.anchor).attr('font-size', 9).attr('fill', q.color).attr('opacity', 0.5)
+        .attr('text-anchor', q.anchor).attr('font-size', compact ? 8 : 9).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
         .text(`${n} paesi`);
     });
 
     // ── Legend top-right — pill style ────────────────────────
     const PAD = 8, HDR_H = 14, ROW_H = 16;
-    const pillW = 190;
+    const pillW = compact ? 144 : 190;
     const pillH = PAD + HDR_H + 4 + QUADRANT.length * ROW_H + PAD;
     // Position below quadrant labels (y=14 label + y=25 count → start at 34)
-    const LEG_X = iw, LEG_Y = 34;
+    const LEG_X = iw, LEG_Y = compact ? 28 : 34;
     const legG = g.append('g').attr('transform', `translate(${LEG_X},${LEG_Y})`);
     legG.append('rect').attr('x', -pillW).attr('y', 0)
       .attr('width', pillW).attr('height', pillH)
@@ -217,8 +223,8 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
       legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
         .attr('fill', q.color).attr('opacity', 0.85);
       legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
-        .attr('font-size', 9).attr('fill', '#555').style('pointer-events', 'none')
-        .text(q.label);
+        .attr('font-size', compact ? 8 : 9).attr('fill', '#555').style('pointer-events', 'none')
+        .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 
     // ── Missing countries (no matching data) ──────────────────

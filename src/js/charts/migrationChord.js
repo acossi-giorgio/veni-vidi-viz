@@ -460,9 +460,18 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       d.dest_continent !== 'Africa' && d.stock > 0
     );
 
-    const margin = { top: 20, right: 180, bottom: 20, left: 120 };
-    const iw = W - margin.left - margin.right;
-    const ih = H - margin.top  - margin.bottom;
+    const isCompact = W < 760;
+    const isVeryCompact = W < 560;
+    const margin = {
+      top: isCompact ? 12 : 20,
+      right: isVeryCompact ? 84 : (isCompact ? 112 : 180),
+      bottom: isCompact ? 12 : 20,
+      left: isVeryCompact ? 54 : (isCompact ? 72 : 120),
+    };
+    const iw = Math.max(140, W - margin.left - margin.right);
+    const ih = Math.max(120, H - margin.top - margin.bottom);
+    const nodeWidth = isVeryCompact ? 10 : (isCompact ? 12 : 16);
+    const nodePadding = isVeryCompact ? 7 : (isCompact ? 8 : 10);
 
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('background', '#fff').style('font-family', 'inherit');
@@ -527,8 +536,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .nodeAlign(d3.sankeyLeft)
       .nodeSort(null)
       .linkSort(null)
-      .nodeWidth(16)
-      .nodePadding(10)
+      .nodeWidth(nodeWidth)
+      .nodePadding(nodePadding)
       .extent([[0, 0], [iw, ih]]);
 
     const { nodes: sNodes, links: sLinks } = sankeyGen({
@@ -602,7 +611,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('y', d => (d.y1 + d.y0) / 2)
       .attr('text-anchor', d => nodes[d.index]?.layer === 0 ? 'end' : 'start')
       .attr('dominant-baseline', 'middle')
-      .attr('font-size', d => nodes[d.index]?.layer === 0 ? 11 : 9)
+      .attr('font-size', d => {
+        if (nodes[d.index]?.layer === 0) return isCompact ? 10 : 11;
+        return isVeryCompact ? 8 : 9;
+      })
       .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '700' : '500')
       .attr('fill', d => nodes[d.index]?.col || '#555')
       .attr('opacity', 0)
@@ -611,8 +623,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .text(d => {
         const nd = nodes[d.index];
         if (!nd || !nd.name) return '';
-        const label = nd.name.length > 16 ? nd.name.slice(0, 15) + '…' : nd.name;
-        return `${label}  ${d3.format('.2~s')(d.value)}`;
+        const maxChars = isVeryCompact ? 9 : (isCompact ? 12 : 16);
+        const label = nd.name.length > maxChars ? nd.name.slice(0, maxChars - 1) + '…' : nd.name;
+        return isVeryCompact ? label : `${label}  ${d3.format('.2~s')(d.value)}`;
       });
 
 

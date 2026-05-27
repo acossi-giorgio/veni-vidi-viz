@@ -422,20 +422,11 @@
         topBar.append("button")
             .style("display", "inline-flex")
             .style("align-items", "center")
-            .style("padding", "4px 10px")
-            .style("background", "#f5f5f5")
-            .style("border", "1px solid #ddd")
-            .style("border-radius", "6px")
-            .style("font-size", "12px")
-            .style("font-weight", "600")
-            .style("color", "#333")
-            .style("cursor", "pointer")
+            .attr("class", "chart-back-btn")
             .style("white-space", "nowrap")
             .style("flex-shrink", "0")
             .html("&#8592; Tutti i continenti")
-            .on("click", () => { d3.select(document).on("click.gdp-drilldown", null); renderOverview(); })
-            .on("mouseover", function() { d3.select(this).style("background", "#e8e8e8"); })
-            .on("mouseout",  function() { d3.select(this).style("background", "#f5f5f5"); });
+            .on("click", () => { d3.select(document).on("click.gdp-drilldown", null); renderOverview(); });
 
         // Searchable country dropdown
         const searchWrap = topBar.append("div")

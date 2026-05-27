@@ -402,8 +402,14 @@
     </footer>
 
     <!-- ── Fullscreen Modal ───────────────────────────────── -->
-    <div id="fullscreenModal" class="fullscreen-modal">
+    <div id="fullscreenModal" class="fullscreen-modal" role="dialog" aria-modal="true" aria-labelledby="fullscreenModalTitle">
       <div class="fullscreen-modal-content">
+        <div class="fullscreen-modal-meta">
+          <span id="fullscreenModalKicker" class="fullscreen-modal-kicker">Grafico interattivo</span>
+          <h2 id="fullscreenModalTitle" class="fullscreen-modal-title">Grafico interattivo</h2>
+          <p id="fullscreenModalHint" class="fullscreen-modal-hint">Usa i controlli del grafico per esplorare i dati a schermo intero.</p>
+          <p id="fullscreenRotateHint" class="fullscreen-rotate-hint" hidden>Ruota il telefono in orizzontale: in verticale il grafico viene mostrato ruotato ma resta piÃ¹ compresso.</p>
+        </div>
         <button class="fullscreen-modal-close" aria-label="Chiudi">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>

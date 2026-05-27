@@ -204,8 +204,7 @@ async function renderLiteracySlope(selector = '#chart-3-3', isFullscreen = false
 
     headerBar.html('');
     headerBar.append('button')
-      .style('padding', '3px 10px').style('border-radius', '4px').style('font-size', '11px')
-      .style('cursor', 'pointer').style('border', '1px solid #ccc').style('background', '#fff')
+      .attr('class', 'chart-back-btn')
       .style('font-family', 'inherit')
       .text('← Continenti')
       .on('click', () => { drillContinent = null; draw(); });

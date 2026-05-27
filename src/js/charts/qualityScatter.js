@@ -78,6 +78,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   /* ── layout base ────────────────────────────────────────── */
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
+  const compact = isFullscreen && (W < 760 || H < 420);
+  const veryCompact = isFullscreen && (W < 620 || H < 360);
 
   /* ── tooltip ────────────────────────────────────────────── */
   let tip = document.getElementById('qs-tip');
@@ -114,7 +116,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
      OVERVIEW — dot strip
   ════════════════════════════════════════════════════════ */
   function drawOverview() {
-    const M  = { top: 32, right: 28, bottom: 44, left: 110 };
+    const M  = compact
+      ? { top: 28, right: 14, bottom: 38, left: veryCompact ? 62 : 76 }
+      : { top: 32, right: 28, bottom: 44, left: 110 };
     const iw = W - M.left - M.right;
     const ih = H - M.top - M.bottom;
     const g  = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
@@ -133,11 +137,11 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     // zone labels — top of each zone
     g.append('text').attr('x', parX / 2).attr('y', 14)
-      .attr('text-anchor','middle').attr('font-size',10).attr('font-weight','600')
+      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
       .attr('fill', COL_GIRLS).attr('opacity', 0.7).style('pointer-events','none')
       .text('più bambini a scuola');
     g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', 14)
-      .attr('text-anchor','middle').attr('font-size',10).attr('font-weight','600')
+      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
       .attr('fill', COL_BOYS).attr('opacity', 0.7).style('pointer-events','none')
       .text('più bambine a scuola');
 
@@ -152,7 +156,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
       .attr('stroke','#bbb').attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
     g.append('text').attr('x',parX).attr('y',-10)
-      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#aaa').text('parità');
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa').text('parità');
 
     // x axis
     g.append('g').attr('transform',`translate(0,${ih})`)
@@ -160,7 +164,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .tickFormat(d => d === 0 ? '0' : d > 0 ? `+${d.toFixed(2)}` : d.toFixed(2)))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size',10).attr('fill','#aaa');
+        ax.selectAll('.tick text').attr('font-size',compact ? 8.5 : 10).attr('fill','#aaa');
         ax.selectAll('.tick line').attr('stroke','#dde3ef');
       });
 
@@ -206,7 +210,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
       // continent label
       g.append('text').attr('x',-10).attr('y',cy + 4)
-        .attr('text-anchor','end').attr('font-size',13).attr('font-weight','700').attr('fill',color)
+        .attr('text-anchor','end').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
         .style('cursor','pointer').text(cont)
         .on('click',() => { drill = cont; draw(); });
 
@@ -289,7 +293,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       { col: COL.Europe, label: 'Europe' },
       { col: '#ccc',     label: 'dato non disponibile' },
     ];
-    const pillW  = 178;
+    const pillW  = compact ? 144 : 178;
     const PAD    = 8;
     const HDR_H  = 14;
     const ROW_H  = 16;
@@ -308,7 +312,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     // header
     legG.append('text')
       .attr('x', -pillW + 10).attr('y', -pillH + PAD + 9)
-      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa')
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#aaa')
       .attr('letter-spacing', '0.08em')
       .style('pointer-events', 'none')
       .text('CONTINENTE');
@@ -318,7 +322,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
         .attr('fill', item.col).attr('opacity', 0.85);
       legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
-        .attr('font-size', 9).attr('fill', '#555')
+        .attr('font-size', compact ? 8 : 9).attr('fill', '#555')
         .style('pointer-events', 'none')
         .text(item.label);
     });
@@ -332,7 +336,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     const color = COL[cont];
     const gpis  = rows.map(d => d.gpi);
 
-    const M  = { top: 52, right: 80, bottom: 90, left: 48 };
+    const M  = compact
+      ? { top: 44, right: 18, bottom: 74, left: 40 }
+      : { top: 52, right: 80, bottom: 90, left: 48 };
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 
@@ -349,25 +355,21 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     /* back button — rectangular text style matching chart 1 */
     const backBtn = d3.select(container).append('button')
-      .attr('class', 'qs-back')
-      .style('position', 'absolute').style('top', '8px').style('left', '8px')
-      .style('display', 'inline-flex').style('align-items', 'center')
-      .style('padding', '4px 10px')
-      .style('background', '#f5f5f5').style('border', '1px solid #ddd')
-      .style('border-radius', '6px').style('font-size', '12px').style('font-weight', '600')
-      .style('color', '#333').style('cursor', 'pointer').style('white-space', 'nowrap')
+      .attr('class', 'chart-back-btn chart-back-btn--icon qs-back')
+      .attr('aria-label', 'Torna alla vista di tutti i continenti')
+      .attr('title', 'Torna alla vista di tutti i continenti')
+      .style('position', 'absolute').style('top', compact ? '6px' : '8px').style('left', compact ? '6px' : '8px')
+      .style('display', 'inline-flex')
       .style('z-index', '10')
-      .html('&#8592; Tutti i continenti')
-      .on('mouseover', function() { d3.select(this).style('background', '#e8e8e8'); })
-      .on('mouseout',  function() { d3.select(this).style('background', '#f5f5f5'); })
+      .html('<span class="chart-back-icon" aria-hidden="true"></span>')
       .on('click', () => { backBtn.remove(); drill = null; draw(); });
 
     /* title */
     root.append('text').attr('x',W/2).attr('y',26)
-      .attr('text-anchor','middle').attr('font-size',13).attr('font-weight','700').attr('fill',color)
+      .attr('text-anchor','middle').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
       .text(cont);
     root.append('text').attr('x',W/2).attr('y',40)
-      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#aaa')
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa')
       .text('GPI < 1 → barra sotto (bambine escluse)   ·   GPI > 1 → barra sopra (bambini esclusi)');
 
     /* horizontal gridlines */
@@ -381,7 +383,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     /* parity label */
     g.append('text').attr('x', iw + 5).attr('y', parY + 4)
-      .attr('font-size',8.5).attr('fill','#999').text('1 (parità)');
+      .attr('font-size',compact ? 7.5 : 8.5).attr('fill','#999').text('1 (parità)');
 
     /* Y axis */
     g.append('g')
@@ -392,7 +394,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         ax.selectAll('.tick line').attr('stroke','#dde3ef');
       });
     g.append('text').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
-      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#aaa')
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa')
       .text('GPI (indice di parità di genere)');
 
     /* hit areas: colonna intera invisibile, cattura hover anche sopra/sotto la barra */
@@ -435,7 +437,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       .on('mouseleave', () => { barSel.attr('opacity', 0.78); hideTip(); });
 
     /* labels: tutti i paesi, testo verticale -90° */
-    const labelFsz = Math.max(6.5, Math.min(8.5, bw * 0.75));
+    const labelFsz = Math.max(6, Math.min(compact ? 7.5 : 8.5, bw * (compact ? 0.68 : 0.75)));
     rows.forEach(d => {
       const cx   = xS(d.code) + bw / 2;
       const fill = d.gpi < 1 ? COL_GIRLS : COL_BOYS;

@@ -193,8 +193,7 @@ async function renderCompletionWaffle(selector = '#chart-3-2', isFullscreen = fa
     headerBar.html('');
     headerBar.append('button')
       .attr('aria-label', 'Torna alla vista per continente')
-      .style('padding', '3px 10px').style('border-radius', '4px').style('font-size', '11px')
-      .style('cursor', 'pointer').style('border', '1px solid #ccc').style('background', '#fff')
+      .attr('class', 'chart-back-btn')
       .style('font-family', 'inherit')
       .text('← Continenti')
       .on('click', () => { drillContinent = null; draw(); });

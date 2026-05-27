@@ -49,18 +49,23 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   let mode     = 'africa'; // 'africa' | 'severe'
   let viewType = 'dist';   // 'dist' | 'rank'
 
+  const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
+  const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
+  const compact = isFullscreen && (W < 760 || H < 420);
+  const veryCompact = isFullscreen && (W < 620 || H < 360);
+
   // ── Toggle pills (top-left) ────────────────────────────────
   const toggleBar = d3.select(container).append('div')
-    .style('position', 'absolute').style('top', '10px').style('left', '10px')
+    .style('position', 'absolute').style('top', compact ? '8px' : '10px').style('left', compact ? '8px' : '10px')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
-    .style('padding', '3px').style('gap', '2px').style('z-index', '20')
+    .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+    .style('padding', compact ? '2px' : '3px').style('gap', '2px').style('z-index', '20')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
   function makeToggleBtn(label, val) {
     return toggleBar.append('button')
-      .style('font-size', '11px').style('padding', '5px 14px')
-      .style('border-radius', '6px').style('border', 'none').style('cursor', 'pointer')
+      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px')
+      .style('border-radius', compact ? '5px' : '6px').style('border', 'none').style('cursor', 'pointer')
       .style('font-weight', '600').style('transition', 'all 0.15s')
       .text(label)
       .on('click', () => { viewType = val; updateToggle(); draw(); });
@@ -80,16 +85,17 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   updateToggle();
 
   // ── Layout constants ────────────────────────────────────────
-  const PILL_H    = 48;
-  const AXIS_H    = 36;
+  const PILL_H    = compact ? 42 : 48;
+  const AXIS_H    = compact ? 30 : 36;
   const MIN_BAR_H = 10;
   const ND_ROW_H  = 11; // no-data row height in rank
   const ND_PAD    = 20; // padding above no-data section
-  const MARGIN_DIST = { top: 32, right: 24, bottom: 56, left: 52 };
-  const MARGIN_RANK = { top: 8,  right: 24, bottom: 0,  left: 124 };
-
-  const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
-  const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
+  const MARGIN_DIST = compact
+    ? { top: 26, right: 14, bottom: 46, left: 42 }
+    : { top: 32, right: 24, bottom: 56, left: 52 };
+  const MARGIN_RANK = compact
+    ? { top: 8,  right: 16, bottom: 0,  left: veryCompact ? 86 : 96 }
+    : { top: 8,  right: 24, bottom: 0,  left: 124 };
 
   // Scrollable area
   const scrollWrap = d3.select(container).append('div')
@@ -130,7 +136,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   // Rank: ghost rows below main bars. Dist: chip grid below chart.
   function appendNoDataRankRows(parent, yStart, barRowH, marginLeft, iw) {
     if (!noData.length) return;
-    const fontSize = Math.max(7, Math.min(9, barRowH));
+    const fontSize = Math.max(compact ? 6.5 : 7, Math.min(compact ? 8.5 : 9, barRowH));
 
     parent.append('line')
       .attr('x1', -marginLeft + 8).attr('x2', iw)
@@ -144,7 +150,9 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
         .attr('font-size', fontSize).attr('fill', '#ccc').attr('font-style', 'italic')
         .style('pointer-events', 'none')
-        .text(d.country.length > 18 ? d.country.slice(0, 17) + '…' : d.country);
+        .text(d.country.length > (veryCompact ? 13 : compact ? 15 : 18)
+          ? d.country.slice(0, veryCompact ? 12 : compact ? 14 : 17) + '…'
+          : d.country);
 
     });
   }
@@ -152,7 +160,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   function appendNoDataDistChips(parent, iw, yStart) {
     if (!noData.length) return;
 
-    const cols = 4;
+    const cols = veryCompact ? 2 : compact ? 3 : 4;
     const colW = iw / cols;
     noData.forEach((d, i) => {
       const col = i % cols;
@@ -161,7 +169,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       const y = yStart + 12 + row * 14;
       parent.append('text')
         .attr('x', x).attr('y', y)
-        .attr('font-size', 8).attr('fill', '#bbb').attr('font-style', 'italic')
+        .attr('font-size', compact ? 7 : 8).attr('fill', '#bbb').attr('font-style', 'italic')
         .text(d.country);
     });
   }
@@ -182,7 +190,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   /* ── Distribuzione (istogramma) ─────────────────────────── */
   function drawDist() {
-    const ndRows = Math.ceil(noData.length / 4);
+    const ndRows = Math.ceil(noData.length / (veryCompact ? 2 : compact ? 3 : 4));
     const ndH    = noData.length ? 12 + ndRows * 14 + 8 : 0;
     const M  = { ...MARGIN_DIST, bottom: MARGIN_DIST.bottom + ndH };
     const iw = W - M.left - M.right;
@@ -205,15 +213,15 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     });
 
     g.append('g').attr('transform', `translate(0,${ih})`)
-      .call(d3.axisBottom(xS).ticks(10).tickFormat(d3.format('.2f')))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').attr('stroke', '#dde3ef'); });
+      .call(d3.axisBottom(xS).ticks(compact ? 7 : 10).tickFormat(d3.format('.2f')))
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa'); ax.selectAll('.tick line').attr('stroke', '#dde3ef'); });
 
     g.append('g')
       .call(d3.axisLeft(yS).ticks(5).tickFormat(d => Math.round(d)))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
 
-    g.append('text').attr('x', iw / 2).attr('y', ih + 40).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa').text('Indice di Povertà Multidimensionale (MPI)');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -40).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa').text('N° paesi');
+    g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 32 : 40)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('Indice di Povertà Multidimensionale (MPI)');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -30 : -40).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('N° paesi');
 
     if (severeCut) {
       g.append('line').attr('x1', xS(severeCut)).attr('x2', xS(severeCut)).attr('y1', 0).attr('y2', ih)
@@ -280,7 +288,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const xS   = d3.scaleLinear().domain([0, xMax * 1.05]).range([0, iw]).nice();
     const yS   = d3.scaleBand().domain(africa.map(d => d.code)).range([0, ih]).padding(0.15);
     const barH = yS.bandwidth();
-    const fontSize = Math.max(7, Math.min(9, barH));
+    const fontSize = Math.max(compact ? 6.5 : 7, Math.min(compact ? 8.5 : 9, barH));
 
     // Vertical gridlines
     xS.ticks(5).forEach(t => {
@@ -304,7 +312,9 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
         .attr('font-size', fontSize).attr('fill', fill).attr('opacity', Math.max(opa, 0.6))
         .style('pointer-events', 'none')
-        .text(d.country.length > 18 ? d.country.slice(0, 17) + '…' : d.country);
+        .text(d.country.length > (veryCompact ? 13 : compact ? 15 : 18)
+          ? d.country.slice(0, veryCompact ? 12 : compact ? 14 : 17) + '…'
+          : d.country);
 
       g.append('rect')
         .attr('x', 0).attr('y', yS(d.code))
@@ -326,8 +336,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     // Fixed X axis
     const ag = axisSvg.append('g').attr('transform', `translate(${M.left}, 4)`);
     ag.call(d3.axisBottom(xS).ticks(5).tickFormat(d3.format('.2f')))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').attr('stroke', '#dde3ef'); });
-    ag.append('text').attr('x', iw / 2).attr('y', 28).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#aaa').text('MPI');
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa'); ax.selectAll('.tick line').attr('stroke', '#dde3ef'); });
+    ag.append('text').attr('x', iw / 2).attr('y', compact ? 24 : 28).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('MPI');
   }
 
   draw();
