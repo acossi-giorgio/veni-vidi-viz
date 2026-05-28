@@ -62,6 +62,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   const yS = d3.scaleLinear().domain([d3.min(allLife) - 2, d3.max(allLife) + 2]).range([ih, 0]);
   const rS = d3.scaleSqrt().domain([0, d3.max(allPop)]).range([2, 28]);
   const xS = d3.scaleLog().domain(incomeDomain).range([0, iw]).clamp(true);
+  const xTicks = [500, 1000, 2000, 5000, 10000, 30000, 100000];
 
   // ── Chart SVG ────────────────────────────────────────────
   const chartDiv = d3.select(container).append('div')
@@ -76,9 +77,16 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-  // Gridlines (Y only)
+  // Gridlines
   const gridG = g.append('g');
   yS.ticks(6).forEach(t => gridG.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+  xTicks.forEach(t => {
+    if (t < incomeDomain[0] || t > incomeDomain[1]) return;
+    gridG.append('line')
+      .attr('x1', xS(t)).attr('x2', xS(t))
+      .attr('y1', 0).attr('y2', ih)
+      .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+  });
 
   // Axes (X rebuilt on scale toggle)
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
@@ -86,7 +94,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
   g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
 
-  xAxisG.call(d3.axisBottom(xS).tickValues([500, 1000, 2000, 5000, 10000, 30000, 100000]).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
+  xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
   xLabelEl.text('PIL pro capite (USD PPP, scala log)');
 

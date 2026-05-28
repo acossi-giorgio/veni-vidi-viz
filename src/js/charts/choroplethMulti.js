@@ -43,6 +43,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     'Africa': '#e07b39', 'Europe': '#5aab6e',
   };
   const CONT_ORDER = ['Africa', 'Europe'];
+  const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
 
   const [incomeRaw, lifeRaw, povertyRaw, geoData] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
@@ -166,8 +167,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   const paths = mapGroup.selectAll('path.country')
     .data(countries).join('path').attr('class', 'country')
-    .attr('d', geoPath).attr('stroke', '#fff').attr('stroke-width', 0.35)
-    .style('cursor', 'pointer');
+    .attr('d', geoPath).attr('stroke', '#fff').attr('stroke-width', 0.35);
 
   const zoom = d3.zoom().scaleExtent([1, 8])
     .on('zoom', e => { mapGroup.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
@@ -189,7 +189,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   const vals = Object.values(incomeMap).flatMap(y => Object.values(y)).filter(v => v > 0);
   const [vLo, vHi] = d3.extent(vals);
-  const colorScale = d3.scaleSequentialLog(d3.interpolateYlGnBu).domain([Math.max(1, vLo), vHi]);
+  const colorScale = d3.scaleSequential(d3.interpolateRgb('#fff8b8', '#b8860b')).domain([vLo, vHi]);
 
   function getYearData(year) {
     const ys = incomeYears;
@@ -197,15 +197,26 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     return incomeMap[best] || {};
   }
 
+  function isInteractiveCountry(code) {
+    return INTERACTIVE_CONTINENTS.has(codeToContinent[code]);
+  }
+
   function updateColors(transition = true) {
     const data = getYearData(currentYear);
     const upd  = transition ? paths.transition().duration(300) : paths;
     upd.attr('fill', d => {
       const code = numericToAlpha3[+d.id] || '';
-      const cont = codeToContinent[code];
-      if (cont !== 'Africa' && cont !== 'Europe') return '#d8dce4';
+      if (!isInteractiveCountry(code)) return '#d8dce4';
       const v = data[code];
       return v != null ? colorScale(v) : '#c8cdd4';
+    })
+    .attr('pointer-events', d => {
+      const code = numericToAlpha3[+d.id] || '';
+      return isInteractiveCountry(code) ? 'all' : 'none';
+    })
+    .style('cursor', d => {
+      const code = numericToAlpha3[+d.id] || '';
+      return isInteractiveCountry(code) ? 'pointer' : 'default';
     });
     yearDisplay.text(currentYear);
     sliderEl.property('value', currentYear);
@@ -239,11 +250,10 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#888')
       .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE');
 
-    // Build log-spaced thresholds
-    const logLo = Math.log(Math.max(1, vLo)), logHi = Math.log(vHi);
+    // Build linearly spaced thresholds
     const thresholds = d3.range(STEPS).map(i => {
       const t = 1 - i / (STEPS - 1);
-      return Math.round(Math.exp(logLo + t * (logHi - logLo)));
+      return vLo + t * (vHi - vLo);
     });
 
     thresholds.forEach((v, i) => {
@@ -395,13 +405,13 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   paths
     .on('mouseover', function (event, d) {
       const code = numericToAlpha3[+d.id] || '';
+      if (!isInteractiveCountry(code)) return;
       const data = getYearData(currentYear);
       const v    = data[code];
       const name = incomeSeries[code]?.country || code || '?';
       const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'N/D';
       tipEl.innerHTML = `<strong>${name}</strong><br>PIL pro capite: ${fv}`;
       tipEl.style.display = 'block';
-      d3.select(this).attr('stroke', '#333').attr('stroke-width', 1);
     })
     .on('mousemove', event => {
       let x = event.clientX + 14, y = event.clientY - 28;
@@ -411,13 +421,10 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     })
     .on('mouseleave', function () {
       tipEl.style.display = 'none';
-      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.35);
     })
     .on('click', function (event, d) {
       const code = numericToAlpha3[+d.id] || '';
-      const cont = codeToContinent[code];
-      // Gray country → close panel
-      if (cont !== 'Africa' && cont !== 'Europe') { closePanel(); return; }
+      if (!isInteractiveCountry(code)) return;
       if (selectedCode === code) {
         closePanel();
       } else {

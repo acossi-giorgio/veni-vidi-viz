@@ -67,9 +67,10 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
   const veryCompact = isFullscreen && (W < 620 || H < 360);
+  const CONTROLS_SAFE_H = compact ? 58 : 74;
   const MARGIN = compact
-    ? { top: 32, right: veryCompact ? 42 : 60, bottom: 38, left: 44 }
-    : { top: 36, right: 112, bottom: 44, left: 62 };
+    ? { top: CONTROLS_SAFE_H, right: veryCompact ? 42 : 60, bottom: 38, left: 44 }
+    : { top: CONTROLS_SAFE_H, right: 112, bottom: 44, left: 62 };
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 

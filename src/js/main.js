@@ -185,7 +185,7 @@ function triggerChartState(chartId, state, targetEl = null) {
   if (chartId === 'chart-2-1') {
     if (state === 0 && el._mpiReset) el._mpiReset();
     else if (state === 1 && el._mpiFilterContinent) el._mpiFilterContinent('Africa');
-    else if (state === 2 && el._mpiFilterContinent) el._mpiFilterContinent('Europe');
+    else if (state === 2 && el._mpiShowMap) el._mpiShowMap();
   }
 
   if (chartId === 'chart-3-1') {
