@@ -46,10 +46,12 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-marriage').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-marriage')
-    .style('position', 'absolute').style('background', 'rgba(20,20,40,0.93)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 13px')
-    .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.7')
-    .style('z-index', '10000').style('display', 'none').style('max-width', '230px');
+    .style('position', 'absolute').style('background', 'rgba(28,31,52,0.97)')
+    .style('color', '#f3f6ff').style('border-radius', '8px').style('padding', '10px 14px')
+    .style('border', '1px solid rgba(255,255,255,0.08)')
+    .style('box-shadow', '0 10px 28px rgba(16,18,34,0.35)')
+    .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.65')
+    .style('z-index', '10000').style('display', 'none').style('max-width', '250px');
 
   function showTip(e, html) {
     tooltip.style('display', 'block').html(html);
@@ -344,6 +346,61 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', titleColor)
       .text(`${continentLabel} · ${data.length} paesi · ordinati per % prima dei 18`);
 
+    const BASE_OPACITY_BY15 = 0.9;
+    const BASE_OPACITY_BY18 = 0.88;
+    const INACTIVE_FADE = 0.28;
+    const HOVER_BY15 = isEurope ? '#1f4f7f' : '#b13539';
+    const HOVER_BY18 = isEurope ? '#77b2d4' : '#f09a8c';
+    const columns = [];
+    let activeColumnIndex = -1;
+
+    function styleColumn(c, { active = false, dimmed = false } = {}) {
+      if (!c) return;
+      const fade = dimmed ? INACTIVE_FADE : 1;
+      const o18 = active ? 1 : BASE_OPACITY_BY18 * fade;
+      const o15 = active ? 1 : BASE_OPACITY_BY15 * fade;
+
+      if (c.bar18) {
+        c.bar18.interrupt().transition().duration(140)
+          .attr('fill', active ? HOVER_BY18 : colorBy18)
+          .attr('opacity', o18)
+          .attr('stroke', active ? '#ffffff' : 'none')
+          .attr('stroke-width', active ? 1.2 : 0);
+      }
+      if (c.bar15) {
+        c.bar15.interrupt().transition().duration(140)
+          .attr('fill', active ? HOVER_BY15 : colorBy15)
+          .attr('opacity', o15)
+          .attr('stroke', active ? '#ffffff' : 'none')
+          .attr('stroke-width', active ? 1.2 : 0);
+      }
+
+      c.label.interrupt().transition().duration(140)
+        .attr('fill', active ? '#233d61' : '#666')
+        .attr('opacity', active ? 1 : (dimmed ? 0.68 : 0.92))
+        .attr('font-weight', active ? '700' : null);
+
+      c.hit.interrupt().transition().duration(140)
+        .attr('fill', 'transparent')
+        .attr('stroke', 'none')
+        .attr('stroke-width', 0);
+    }
+
+    function activateColumn(idx) {
+      if (activeColumnIndex === idx) return;
+      columns.forEach((c, i) => {
+        styleColumn(c, { active: i === idx, dimmed: i !== idx });
+      });
+      activeColumnIndex = idx;
+    }
+
+    function clearActiveColumn() {
+      if (activeColumnIndex >= 0) {
+        columns.forEach((c) => styleColumn(c, { active: false, dimmed: false }));
+      }
+      activeColumnIndex = -1;
+    }
+
     data.forEach((d, i) => {
       const bx = axisX + i * (BAR_W + BAR_G);
       let h15, h18;
@@ -358,27 +415,45 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       }
 
       const barBottom = PAD.top + chartH;
-      if (h18 > 0) svg.append('rect').attr('x', bx).attr('y', barBottom - h15 - h18)
-        .attr('width', BAR_W).attr('height', h18).attr('fill', colorBy18).attr('opacity', 0.88);
-      if (h15 > 0) svg.append('rect').attr('x', bx).attr('y', barBottom - h15)
-        .attr('width', BAR_W).attr('height', h15).attr('fill', colorBy15).attr('opacity', 0.9);
+      const bar18 = h18 > 0
+        ? svg.append('rect').attr('x', bx).attr('y', barBottom - h15 - h18)
+          .attr('width', BAR_W).attr('height', h18).attr('fill', colorBy18).attr('opacity', BASE_OPACITY_BY18)
+        : null;
+      const bar15 = h15 > 0
+        ? svg.append('rect').attr('x', bx).attr('y', barBottom - h15)
+          .attr('width', BAR_W).attr('height', h15).attr('fill', colorBy15).attr('opacity', BASE_OPACITY_BY15)
+        : null;
 
       const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
-      svg.append('text')
+      const label = svg.append('text')
         .attr('transform', `translate(${bx + BAR_W / 2},${PAD.top + chartH + 4}) rotate(-55)`)
         .attr('text-anchor', 'end').attr('font-size', compact ? 6.5 : 7.5).attr('fill', '#666').text(name);
 
-      svg.append('rect').attr('x', bx).attr('y', PAD.top).attr('width', BAR_W).attr('height', chartH)
+      const hit = svg.append('rect').attr('x', bx).attr('y', PAD.top).attr('width', BAR_W).attr('height', chartH)
+        .attr('rx', 3)
         .attr('fill', 'transparent').style('cursor', 'default')
-        .on('mousemove', e => showTip(e,
+        .on('mousemove', e => {
+          activateColumn(i);
+          showTip(e,
           `<strong>${d.country}</strong> · ${d.year ?? '—'}<br>` +
           (d.source ? `<em style="opacity:.6;font-size:9px">${d.source}</em><br>` : '') +
           `<span style="color:${colorBy15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
           (d.by15_n != null ? `  (${fmtN(d.by15_n)})` : '') + '<br>' +
           `<span style="color:${colorBy18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
           (d.by18_n != null ? `  (${fmtN(d.by18_n)})` : '')
-        ))
-        .on('mouseleave', hideTip);
+          );
+        })
+        .on('mouseleave', () => {
+          clearActiveColumn();
+          hideTip();
+        });
+
+      columns.push({ bar18, bar15, label, hit });
+    });
+
+    svg.on('mouseleave', () => {
+      clearActiveColumn();
+      hideTip();
     });
 
     /* ── Legenda top-right ──────────────────────────────────── */
