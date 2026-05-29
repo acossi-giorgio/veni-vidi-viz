@@ -278,8 +278,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     const gpis  = rows.map(d => d.gpi);
 
     const M  = compact
-      ? { top: 44, right: 20, bottom: 74, left: 44 }
-      : { top: 52, right: 44, bottom: 90, left: 56 };
+      ? { top: 44, right: 14, bottom: 74, left: 42 }
+      : { top: 52, right: 30, bottom: 90, left: 52 };
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 

@@ -92,6 +92,58 @@ function animateChartSwitch(chartId, targetEl = null) {
   nodes.forEach(node => retriggerAnimationClass(node, 'chart-anim-switch'));
 }
 
+function getChartInteractionHost(chartId, targetEl = null) {
+  const baseEl = targetEl
+    || document.getElementById(chartId)
+    || document.getElementById(`fullscreen-${chartId}`);
+  if (!baseEl) return null;
+  return baseEl.closest('.chart-box')
+    || baseEl.closest('.fullscreen-chart-wrap')
+    || baseEl;
+}
+
+function ensureChartLoadingOverlay(host) {
+  if (!host) return null;
+  let overlay = host.querySelector('.chart-loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'chart-loading-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    host.appendChild(overlay);
+  }
+  return overlay;
+}
+
+function setChartLoading(host, isLoading) {
+  if (!host) return;
+  host.classList.add('chart-loading-host');
+  ensureChartLoadingOverlay(host);
+  host.classList.toggle('is-loading', Boolean(isLoading));
+}
+
+function pulseChartBusy(chartId, targetEl = null) {
+  const host = getChartInteractionHost(chartId, targetEl);
+  if (!host) return;
+  host.classList.add('chart-loading-host');
+  host.classList.remove('chart-busy');
+  void host.offsetWidth;
+  host.classList.add('chart-busy');
+}
+
+async function withChartLoading(chartId, renderFn, targetEl = null) {
+  const host = getChartInteractionHost(chartId, targetEl);
+  const t0 = performance.now();
+  setChartLoading(host, true);
+  try {
+    return await renderFn();
+  } finally {
+    const elapsed = performance.now() - t0;
+    const minVisibleMs = 180;
+    const wait = Math.max(0, minVisibleMs - elapsed);
+    setTimeout(() => setChartLoading(host, false), wait);
+  }
+}
+
 function initChartInteractionAnimations() {
   const shouldSkipButton = (btn) =>
     btn.classList.contains('chart-fullscreen-btn') ||
@@ -118,6 +170,16 @@ function initChartInteractionAnimations() {
     const chartId = getBaseChartIdFromElement(range);
     if (chartId) animateChartSwitch(chartId);
   });
+
+  document.addEventListener('click', (event) => {
+    const chartRoot = event.target.closest('div[id^="chart-"], div[id^="fullscreen-chart-"]');
+    if (!chartRoot) return;
+    if (event.target.closest('button, input, select, a')) return;
+    const chartId = getBaseChartIdFromElement(chartRoot);
+    if (!chartId) return;
+    pulseChartBusy(chartId, chartRoot);
+    animateChartSwitch(chartId, chartRoot);
+  });
 }
 
 const MOBILE_ROTATED_CHARTS = new Set([
@@ -125,6 +187,187 @@ const MOBILE_ROTATED_CHARTS = new Set([
   'chart-4-2', // map / regional trend hybrid
   'chart-5-1', // chord / migration flows
 ]);
+
+const MISSING_DATA_NOTES = {
+  'chart-1-1': [
+    'Categoria Reddito pro capite: copertura quasi completa.',
+    'Categoria Aspettativa di vita: copertura quasi completa.',
+    'Categoria Povertà estrema: 49 paesi senza serie completa.',
+    'Esempi mancanti (Povertà): Aruba, Afghanistan, Andorra, Argentina, Bahrain, Bahamas.'
+  ].join('\n'),
+  'chart-1-2': [
+    'Categoria geografica: il grafico visualizza solo Africa + Europa (gli altri continenti non sono inclusi in questa vista).',
+    'Categoria Reddito pro capite: copertura quasi completa nel sottoinsieme mostrato.',
+    'Categoria Aspettativa di vita: copertura quasi completa nel sottoinsieme mostrato.',
+    'Categoria Popolazione: copertura quasi completa nel sottoinsieme mostrato.'
+  ].join('\n'),
+  'chart-2-1': [
+    'Categoria MPI (globale): 103 paesi senza dato.',
+    'Categoria MPI (solo Africa): 7 paesi senza dato.',
+    'Esempi mancanti (MPI Africa): Capo Verde, Gibuti, Eritrea, Somalia, Sud Sudan, Mauritius, Guinea Equatoriale.'
+  ].join('\n'),
+  'chart-3-1': [
+    'Categoria Spesa istruzione (globale): 13 paesi senza serie.',
+    'Categoria Spesa istruzione (Africa+Europa usate nel grafico): 5 paesi senza serie.',
+    'Esempi mancanti (Africa+Europa): Libia, Montenegro, Guinea Equatoriale, Faroe Islands, Isle of Man.'
+  ].join('\n'),
+  'chart-3-2': [
+    'Categoria GPI secondaria (globale): 31 paesi senza dato.',
+    'Categoria GPI secondaria (Africa+Europa del grafico): 13 paesi senza dato.',
+    'Esempi mancanti (GPI Africa+Europa): RD Congo, Gibuti, Croazia, Irlanda, Libia, Faroe Islands.'
+  ].join('\n'),
+  'chart-3-3': [
+    'Categoria Alfabetizzazione (globale): 61 paesi senza dato.',
+    'Categoria Alfabetizzazione (Africa+Europa del grafico): 27 paesi senza dato.',
+    'Categoria Out-of-school (Africa+Europa): 7 paesi senza dato.',
+    'Categoria GPI (Africa+Europa): 13 paesi senza dato.',
+    'Esempi mancanti frequenti: Andorra, Austria, Belgio, Svizzera, Gibuti, RD Congo, Libia.'
+  ].join('\n'),
+  'chart-4-1': [
+    'Categoria Lavoro minorile (survey): copertura limitata, 93 paesi con dato.',
+    'Categoria Lavoro minorile (solo Africa nel grafico): 14 paesi senza dato.',
+    'Esempi mancanti (Africa): Botswana, Capo Verde, Gibuti, Libia, Marocco, Mauritius, Eritrea.'
+  ].join('\n'),
+  'chart-4-2': [
+    'Categoria Matrimoni precoci by18 (globale): 71 paesi senza dato.',
+    'Categoria Africa: 4 paesi senza dato (Botswana, Libia, Mauritius, Seychelles).',
+    'Categoria Europa: 29 paesi senza dato.',
+    'Esempi mancanti (Europa): Andorra, Austria, Bulgaria, Svizzera, Germania, Estonia.'
+  ].join('\n'),
+  'chart-4-3': [
+    'Categoria Mortalità materna (globale): 19 paesi senza dato.',
+    'Categoria Mortalità infantile (globale): 19 paesi senza dato.',
+    'Categoria Africa+Europa nel grafico: 3 paesi senza dato in entrambe le metriche.',
+    'Paesi mancanti (Africa+Europa): Faroe Islands, Isle of Man, Liechtenstein.'
+  ].join('\n'),
+  'chart-5-1': [
+    'Categoria Migrazione: dati disponibili come stock bilaterali quinquennali (2000-2020), non come flussi annuali.',
+    'Categoria Paesi origine: copertura quasi completa, 2 codici non allineati.',
+    'Categoria Paesi destinazione: copertura quasi completa, 2 codici non allineati.',
+    'Codici/paesi non allineati: Saint Martin (MAF) e Sudan (SDN).'
+  ].join('\n'),
+};
+
+const CHART_HELP_NOTES = {
+  'chart-1-1': [
+    'Questo grafico è una mappa mondiale multi-metrica: ogni paese è colorato in base al valore selezionato (reddito, aspettativa di vita, povertà o disuguaglianza).',
+    'La legenda mostra il significato dei colori: tonalità più intense indicano valori più alti nella metrica attiva.',
+    'Con slider e play puoi cambiare anno e vedere come la distribuzione evolve nel tempo.',
+    'Interazioni: hover su un paese per il tooltip, click su un paese per aprire il pannello con la sua serie storica, zoom/pan per esplorare aree specifiche.'
+  ].join('\n'),
+  'chart-1-2': [
+    'Ogni bolla rappresenta un paese: la posizione orizzontale (asse X) è il reddito pro capite, la posizione verticale (asse Y) è l\'aspettativa di vita o la metrica selezionata.',
+    'La dimensione della bolla rappresenta la popolazione: bolle più grandi = paesi più popolosi.',
+    'Play e slider animano la traiettoria 2000-2024 per mostrare spostamenti nel tempo.',
+    'Interazioni: hover per tooltip dettagliato e filtri/toggle per cambiare lettura degli assi.'
+  ].join('\n'),
+  'chart-2-1': [
+    'Il grafico ha due viste: distribuzione (istogramma) e mappa.',
+    'Nella distribuzione, asse X = valore MPI, asse Y = numero di paesi in ogni intervallo; serve a capire dove si concentra la povertà multidimensionale.',
+    'Nella mappa, il colore mostra l\'intensità del MPI paese per paese.',
+    'Interazioni: toggle distribuzione/mappa, hover per tooltip, e card narrative che cambiano focus interpretativo.'
+  ].join('\n'),
+  'chart-3-1': [
+    'Le linee mostrano l\'andamento medio della spesa pubblica in istruzione per continente nel tempo.',
+    'Asse X = anno; asse Y = spesa, visualizzabile come % del PIL o come valore assoluto in USD tramite toggle.',
+    'La distanza tra le linee indica il gap tra continenti; la pendenza indica accelerazioni o rallentamenti nel periodo.',
+    'Interazioni: hover per leggere i valori puntuali e cambio metrica con i pulsanti in alto.'
+  ].join('\n'),
+  'chart-3-2': [
+    'Questo grafico mostra il gap di genere nella scuola secondaria usando il GPI.',
+    'Asse X = distanza dalla parità (GPI = 1): valori a sinistra indicano svantaggio per le bambine, a destra svantaggio per i bambini.',
+    'La vista iniziale confronta i continenti; con click su un continente entri nel drill-down per paese.',
+    'Interazioni: hover per dettagli, click per drill-down e pulsante back per tornare alla vista aggregata.'
+  ].join('\n'),
+  'chart-3-3': [
+    'Ogni punto rappresenta un anno aggregato per continente: la traiettoria mostra come i sistemi educativi si muovono nel tempo.',
+    'Asse X = spesa in istruzione (% PIL o USD, in base al toggle); asse Y = alfabetizzazione oppure bambini fuori scuola.',
+    'La forma della traiettoria aiuta a capire se più spesa è associata a miglioramenti educativi.',
+    'Interazioni: toggle assi/metriche, filtri di focus e hover con valori completi anno per anno.'
+  ].join('\n'),
+  'chart-4-1': [
+    'Scatter per paesi africani: ogni punto è un paese.',
+    'Asse X (logaritmico) = reddito pro capite; asse Y = quota di lavoro minorile (%).',
+    'Le linee mediane dividono il grafico in quattro quadranti per identificare i profili di rischio relativi.',
+    'Interazioni: hover sui punti per dettagli e lettura rapida dei quadranti con etichette e conteggi.'
+  ].join('\n'),
+  'chart-4-2': [
+    'La vista principale è un waffle: ogni cella vale 1% di donne 20-24 sposate prima dei 18 anni.',
+    'I colori distinguono i matrimoni prima dei 15 anni e tra 15-18 anni.',
+    'La lettura combina percentuali e volumi assoluti per evitare interpretazioni distorte.',
+    'Interazioni: hover per dettagli, click sul continente per drill-down per paese e confronto più fine.'
+  ].join('\n'),
+  'chart-4-3': [
+    'Confronto temporale tra Africa ed Europa su due metriche: mortalità materna e mortalità infantile.',
+    'Asse X = anno; asse Y = livello di mortalità della metrica selezionata.',
+    'Il toggle cambia metrica mantenendo lo stesso impianto di lettura, così il confronto tra aree resta immediato.',
+    'Interazioni: hover sui punti per valori annuali e rapporto tra continenti.'
+  ].join('\n'),
+  'chart-5-1': [
+    'Questo grafico ha due modalità: rete dei collegamenti migratori e mappa delle rotte geografiche.',
+    'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio tra origine e destinazione.',
+    'Slider e play mostrano l\'evoluzione tra 2000 e 2020 (con interpolazione tra anni quinquennali).',
+    'Interazioni: hover per valori dei collegamenti, filtri/toggle vista e funzioni di esplorazione spaziale.'
+  ].join('\n'),
+};
+
+const DATASET_NOTES = {
+  'chart-1-1': [
+    'Dataset principale: datasets/processed/income.csv',
+    'Dataset integrativi: datasets/processed/life_expectancy.csv, datasets/processed/poverty.csv',
+    'Base geografica: World Atlas TopoJSON (countries-110m)'
+  ].join('\n'),
+  'chart-1-2': [
+    'Dataset principale: datasets/processed/income.csv',
+    'Dataset integrativi: datasets/processed/life_expectancy.csv, datasets/processed/population.csv'
+  ].join('\n'),
+  'chart-2-1': [
+    'Dataset principale: datasets/processed/mpi.csv',
+    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
+  ].join('\n'),
+  'chart-3-1': [
+    'Dataset principale: datasets/processed/edu_spending.csv',
+    'Dataset integrativi: datasets/processed/income.csv, datasets/processed/population.csv'
+  ].join('\n'),
+  'chart-3-2': [
+    'Dataset principale: datasets/processed/gpi_secondary.csv',
+    'Dataset integrativo: datasets/processed/out_of_school.csv'
+  ].join('\n'),
+  'chart-3-3': [
+    'Dataset principali: datasets/processed/edu_spending.csv, datasets/processed/literacy.csv',
+    'Dataset integrativi: datasets/processed/out_of_school.csv, datasets/processed/income.csv, datasets/processed/population.csv'
+  ].join('\n'),
+  'chart-4-1': [
+    'Dataset principale: datasets/processed/child_labor.csv',
+    'Dataset integrativo: datasets/processed/income.csv'
+  ].join('\n'),
+  'chart-4-2': [
+    'Dataset principale: datasets/processed/child_marriage_cmmm.csv'
+  ].join('\n'),
+  'chart-4-3': [
+    'Dataset principali: datasets/processed/maternal_mortality.csv, datasets/processed/child_mortality.csv'
+  ].join('\n'),
+  'chart-5-1': [
+    'Dataset principale: datasets/processed/migration.csv',
+    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
+  ].join('\n'),
+};
+
+const MISSING_DATA_ICON = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <ellipse cx="12" cy="5.5" rx="7.25" ry="2.75"></ellipse>
+    <path d="M4.75 5.5v5.2c0 1.5 3.25 2.75 7.25 2.75s7.25-1.25 7.25-2.75V5.5"></path>
+    <path d="M4.75 10.7v5.2c0 1.5 3.25 2.75 7.25 2.75s7.25-1.25 7.25-2.75v-5.2"></path>
+    <path d="M5 19l14-14"></path>
+  </svg>
+`;
+
+const DATASET_ICON = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <rect x="4.5" y="5.5" width="15" height="13" rx="2"></rect>
+    <path d="M4.5 10h15M9.5 5.5v13M14.5 5.5v13"></path>
+  </svg>
+`;
 
 function shouldRotateMobileChart(chartId) {
   return MOBILE_ROTATED_CHARTS.has(chartId);
@@ -207,7 +450,7 @@ async function renderInlineChartsIfNeeded() {
     for (const [chartId, renderFn] of renderSteps) {
       if (!document.getElementById(chartId)) continue;
       try {
-        await renderFn();
+        await withChartLoading(chartId, renderFn);
         animateChartEntrance(chartId);
       } catch (err) {
         console.error(`Render failed for ${chartId}:`, err);
@@ -225,9 +468,12 @@ async function init() {
   initMobilePlaceholders();
   initFullscreenModal();
   initNarrativeCards();
+  initMissingDataHints();
+  initAdaptiveHintButtons();
   initChartInteractionAnimations();
   window.addEventListener('resize', debounce(() => {
     syncAllMobilePlaceholders();
+    updateAdaptiveHintButtons();
     renderInlineChartsIfNeeded();
   }, 120));
   await renderInlineChartsIfNeeded();
@@ -301,6 +547,7 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
     else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
   }
 
+  pulseChartBusy(chartId, el);
   if (!options.skipAnimation) animateChartSwitch(chartId, targetEl);
   syncMobilePlaceholder(chartId);
   updateFullscreenModalMeta(chartId);
@@ -329,6 +576,92 @@ function initNarrativeCards() {
   });
 
   [...new Set(Array.from(cards).map(card => card.dataset.chart))].forEach(syncMobilePlaceholder);
+}
+
+function initMissingDataHints() {
+  const formatTooltipMarkup = (title, bodyText, className) => {
+    const lines = String(bodyText || '')
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean);
+    const listItems = lines.map(line => `<li>${line}</li>`).join('');
+    return `
+      <span class="${className}">
+        <span class="${className}-title">${title}</span>
+        <ul class="${className}-list">${listItems}</ul>
+      </span>
+    `;
+  };
+
+  const chartBoxes = document.querySelectorAll('.chart-box');
+  chartBoxes.forEach((box) => {
+    const chartEl = box.querySelector('div[id^="chart-"]');
+    if (!chartEl) return;
+    const missingNote = MISSING_DATA_NOTES[chartEl.id];
+    const helpNote = CHART_HELP_NOTES[chartEl.id];
+    const datasetNote = DATASET_NOTES[chartEl.id];
+
+    if (missingNote && !box.querySelector('.missing-data-hint')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'missing-data-hint';
+      btn.setAttribute('aria-label', 'Informazioni sui dati mancanti');
+      btn.innerHTML = `${MISSING_DATA_ICON}${formatTooltipMarkup('Dati mancanti e copertura', missingNote, 'missing-data-tooltip')}`;
+      box.appendChild(btn);
+    }
+
+    if (datasetNote && !box.querySelector('.chart-dataset-hint')) {
+      const datasetBtn = document.createElement('button');
+      datasetBtn.type = 'button';
+      datasetBtn.className = 'chart-dataset-hint';
+      datasetBtn.setAttribute('aria-label', 'Dataset utilizzati');
+      datasetBtn.innerHTML = `${DATASET_ICON}${formatTooltipMarkup('Dataset utilizzati', datasetNote, 'chart-dataset-tooltip')}`;
+      box.appendChild(datasetBtn);
+    }
+
+    if (helpNote && !box.querySelector('.chart-help-hint')) {
+      const helpBtn = document.createElement('button');
+      helpBtn.type = 'button';
+      helpBtn.className = 'chart-help-hint';
+      helpBtn.setAttribute('aria-label', 'Come leggere il grafico');
+      helpBtn.innerHTML = `<span aria-hidden="true">?</span>${formatTooltipMarkup('Come leggere questo grafico', helpNote, 'chart-help-tooltip')}`;
+      box.appendChild(helpBtn);
+    }
+  });
+}
+
+function applyAdaptiveHintClass(box) {
+  if (!box) return;
+  const w = box.clientWidth || 0;
+  const h = box.clientHeight || 0;
+  box.classList.remove('chart-hints-compact', 'chart-hints-roomy');
+
+  if (w <= 760 || h <= 430) {
+    box.classList.add('chart-hints-compact');
+    return;
+  }
+  if (w >= 1120 && h >= 560) {
+    box.classList.add('chart-hints-roomy');
+  }
+}
+
+function updateAdaptiveHintButtons() {
+  document.querySelectorAll('.chart-box').forEach(applyAdaptiveHintClass);
+}
+
+function initAdaptiveHintButtons() {
+  updateAdaptiveHintButtons();
+
+  if (typeof ResizeObserver === 'undefined') return;
+  const ro = new ResizeObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry?.target?.classList?.contains('chart-box')) {
+        applyAdaptiveHintClass(entry.target);
+      }
+    });
+  });
+
+  document.querySelectorAll('.chart-box').forEach((box) => ro.observe(box));
 }
 
 /* ── Mobile Placeholders ─────────────────────────────────── */
@@ -435,17 +768,19 @@ function initFullscreenModal() {
     container.appendChild(stage);
 
     try {
-      if (chartId === 'chart-1-1') await renderChoroplethMulti(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-1-2') await renderGapminderBubble(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-2-1') await renderMpiBreakdown(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-3-1') await renderEduTreemap(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-3-2') await renderQualityScatter(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-3-3') await renderExclusionChart(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-4-1') await renderChildLaborBubble(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-4-2') await renderMarriageChart(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-4-3') await renderMortalityChart(`#fullscreen-${chartId}`, true);
-      else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
-      // else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
+      await withChartLoading(chartId, async () => {
+        if (chartId === 'chart-1-1') await renderChoroplethMulti(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-1-2') await renderGapminderBubble(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-2-1') await renderMpiBreakdown(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-1') await renderEduTreemap(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-2') await renderQualityScatter(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-3') await renderExclusionChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-1') await renderChildLaborBubble(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-2') await renderMarriageChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-3') await renderMortalityChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
+        // else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
+      }, wrap);
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }
