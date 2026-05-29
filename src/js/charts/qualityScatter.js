@@ -86,8 +86,10 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   if (!tip) {
     tip = document.createElement('div'); tip.id = 'qs-tip';
     Object.assign(tip.style, { position:'fixed', display:'none', pointerEvents:'none',
-      background:'rgba(20,20,40,0.92)', color:'#fff', padding:'7px 12px',
-      borderRadius:'5px', fontSize:'11px', lineHeight:'1.6',
+      background:'rgba(28,31,52,0.97)', color:'#f3f6ff', padding:'10px 14px',
+      borderRadius:'8px', border:'1px solid rgba(255,255,255,0.08)',
+      boxShadow:'0 10px 28px rgba(16,18,34,0.35)',
+      fontSize:'12px', lineHeight:'1.65',
       zIndex:'10000', whiteSpace:'nowrap' });
     document.body.appendChild(tip);
   }
@@ -276,8 +278,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     const gpis  = rows.map(d => d.gpi);
 
     const M  = compact
-      ? { top: 44, right: 18, bottom: 74, left: 40 }
-      : { top: 52, right: 80, bottom: 90, left: 48 };
+      ? { top: 44, right: 20, bottom: 74, left: 44 }
+      : { top: 52, right: 44, bottom: 90, left: 56 };
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 
@@ -336,57 +338,87 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa')
       .text('GPI (indice di parità di genere)');
 
-    /* hit areas: colonna intera invisibile, cattura hover anche sopra/sotto la barra */
-    const showTipFor = (d) => {
-      barSel.attr('opacity', 0.15);
-      barSel.filter(b => b.code === d.code).attr('opacity', 1);
-      const fill = d.gpi < 1 ? COL_GIRLS : COL_BOYS;
-      const oos  = oosMap.get(d.code);
-      tip.innerHTML =
-        `<strong style="color:${fill}">${d.country}</strong><br>` +
-        `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
-        `<em style="color:#aaa">${d.gpi<1?'bambine escluse':'bambini esclusi'}</em>` +
-        (oos != null ? `<br>Fuori scuola: ${d3.format(',.0f')(oos)}` : '') +
-        `<br><span style="color:#aaa">Anno:</span> ${d.year}`;
-      tip.style.display = 'block';
-    };
-
-    g.selectAll('.hit').data(rows).join('rect').attr('class','hit')
-      .attr('x', d => xS(d.code))
-      .attr('y', 0)
-      .attr('width', bw)
-      .attr('height', ih)
-      .attr('fill', 'transparent')
-      .style('cursor','pointer')
-      .on('mouseover', (ev, d) => showTipFor(d))
-      .on('mousemove', moveTip)
-      .on('mouseleave', () => { barSel.attr('opacity', 0.78); hideTip(); });
-
     /* bars */
+    const BASE_BAR_OPACITY = 0.78;
+    const INACTIVE_BAR_OPACITY = 0.22;
     const barSel = g.selectAll('.bar').data(rows).join('rect').attr('class','bar')
       .attr('x', d => xS(d.code))
       .attr('y', d => Math.min(yS(d.gpi), parY))
       .attr('width', bw)
       .attr('height', d => Math.max(1, Math.abs(yS(d.gpi) - parY)))
       .attr('fill', d => d.gpi < 1 ? COL_GIRLS : COL_BOYS)
-      .attr('opacity', 0.78).attr('rx', 1)
-      .style('cursor','pointer')
-      .on('mouseover', (ev, d) => showTipFor(d))
-      .on('mousemove', moveTip)
-      .on('mouseleave', () => { barSel.attr('opacity', 0.78); hideTip(); });
+      .attr('opacity', BASE_BAR_OPACITY).attr('rx', 1)
+      .style('cursor','pointer');
 
     /* labels: tutti i paesi, testo verticale -90° */
     const labelFsz = Math.max(6, Math.min(compact ? 7.5 : 8.5, bw * (compact ? 0.68 : 0.75)));
-    rows.forEach(d => {
-      const cx   = xS(d.code) + bw / 2;
+    const labelSel = g.selectAll('.x-label').data(rows).join('text').attr('class', 'x-label')
+      .attr('transform', d => `translate(${xS(d.code) + bw / 2},${ih + 4}) rotate(-90)`)
+      .attr('text-anchor','end').attr('dominant-baseline','middle')
+      .attr('font-size', labelFsz)
+      .attr('fill', d => d.gpi < 1 ? COL_GIRLS : COL_BOYS)
+      .attr('opacity', 0.9)
+      .style('pointer-events','none')
+      .text(d => d.country.length > 16 ? d.country.slice(0,15)+'…' : d.country);
+
+    /* hit areas: colonna intera invisibile, cattura hover anche sopra/sotto la barra */
+    const hitSel = g.selectAll('.hit').data(rows).join('rect').attr('class','hit')
+      .attr('x', d => xS(d.code))
+      .attr('y', 0)
+      .attr('width', bw)
+      .attr('height', ih)
+      .attr('fill', 'transparent')
+      .style('cursor','pointer');
+
+    let activeCode = null;
+    const highlightCode = (code) => {
+      if (activeCode === code) return;
+      activeCode = code;
+      barSel.interrupt().transition().duration(130)
+        .attr('opacity', d => d.code === code ? 1 : INACTIVE_BAR_OPACITY)
+        .attr('stroke', d => d.code === code ? '#ffffff' : 'none')
+        .attr('stroke-width', d => d.code === code ? 1.2 : 0);
+      labelSel.interrupt().transition().duration(130)
+        .attr('opacity', d => d.code === code ? 1 : 0.62)
+        .attr('font-weight', d => d.code === code ? '700' : null);
+    };
+
+    const clearHighlight = () => {
+      activeCode = null;
+      barSel.interrupt().transition().duration(130)
+        .attr('opacity', BASE_BAR_OPACITY)
+        .attr('stroke', 'none')
+        .attr('stroke-width', 0);
+      labelSel.interrupt().transition().duration(130)
+        .attr('opacity', 0.9)
+        .attr('font-weight', null);
+    };
+
+    const showTipFor = (d) => {
       const fill = d.gpi < 1 ? COL_GIRLS : COL_BOYS;
-      g.append('text')
-        .attr('transform', `translate(${cx},${ih + 4}) rotate(-90)`)
-        .attr('text-anchor','end').attr('dominant-baseline','middle')
-        .attr('font-size', labelFsz).attr('fill', fill)
-        .style('pointer-events','none')
-        .text(d.country.length > 16 ? d.country.slice(0,15)+'…' : d.country);
-    });
+      const oos  = oosMap.get(d.code);
+      tip.innerHTML =
+        `<strong style="color:${fill}">${d.country}</strong><br>` +
+        `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
+        `<em style="color:#c9d0df">${d.gpi<1?'bambine escluse':'bambini esclusi'}</em>` +
+        (oos != null ? `<br>Fuori scuola: ${d3.format(',.0f')(oos)}` : '') +
+        `<br><span style="color:#c9d0df">Anno:</span> ${d.year}`;
+      tip.style.display = 'block';
+    };
+
+    const onHover = (ev, d) => {
+      highlightCode(d.code);
+      showTipFor(d);
+      moveTip(ev);
+    };
+
+    hitSel.on('mouseover', onHover)
+      .on('mousemove', onHover)
+      .on('mouseleave', () => { clearHighlight(); hideTip(); });
+
+    barSel.on('mouseover', onHover)
+      .on('mousemove', onHover)
+      .on('mouseleave', () => { clearHighlight(); hideTip(); });
   }
 
   draw();
