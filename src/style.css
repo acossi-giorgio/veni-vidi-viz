@@ -224,7 +224,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   display: grid;
   grid-template-columns: 2fr 3fr;
   gap: clamp(2rem, 3vw, 3rem);
-  align-items: center;
+  align-items: start;
 }
 
 /* Variant: chart left (3fr) — text right (2fr) */
@@ -269,6 +269,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .chart-viz {
   position: sticky;
   top: calc(var(--offset) + 1.5rem);
+  align-self: start;
 }
 
 .chart-box {
@@ -280,8 +281,33 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   box-shadow: 0 2px 18px rgba(0,0,0,.07);
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
-.chart-box > div {
+.chart-header {
+  padding: 0.85rem 1rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 94%, var(--bg));
+}
+.chart-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.chart-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+.chart-canvas {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+.chart-canvas > div {
   width: 100%;
   height: 100%;
 }
@@ -570,9 +596,9 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .narrative-card {
   cursor: pointer;
   position: relative;
-  padding: 1rem 1.25rem;
-  margin-bottom: 0.9rem;
-  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.1rem;
+  border-radius: 8px;
   border-left: 3px solid transparent;
   opacity: 0.5;
   transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -584,7 +610,11 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   background: rgba(0,0,0,0.03);
   z-index: 30;
 }
-.narrative-card h3 { margin-top: 0; margin-bottom: 0.45rem; }
+.narrative-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: clamp(0.98rem, 1.1vw, 1.15rem);
+}
 
 /* Paragraph always visible inside the card */
 .narrative-card p {
@@ -599,6 +629,8 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   pointer-events: auto;
   transition: none;
   z-index: auto;
+  font-size: clamp(0.84rem, 0.92vw, 0.95rem);
+  line-height: 1.68;
 }
 .narrative-card:hover p {
   opacity: 1;
@@ -870,7 +902,7 @@ section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accen
   }
 
   /* Hide the inline chart visually (but keep it in DOM so APIs still exist) */
-  .chart-box > div[id^="chart-"] {
+  .chart-canvas > div[id^="chart-"] {
     position: absolute;
     inset: 0;
     opacity: 0;

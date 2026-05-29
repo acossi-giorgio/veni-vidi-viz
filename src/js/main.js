@@ -202,8 +202,8 @@ function triggerChartState(chartId, state, targetEl = null) {
 
   if (chartId === 'chart-3-3') {
     if (state === 0 && el._exclusionShowBase) el._exclusionShowBase();
-    else if (state === 1 && el._exclusionOverlayGPI) el._exclusionOverlayGPI();
-    else if (state === 2 && el._exclusionShowTrend) el._exclusionShowTrend();
+    else if (state === 1 && el._exclusionFocusAfrica) el._exclusionFocusAfrica();
+    else if (state === 2 && el._exclusionFocusEurope) el._exclusionFocusEurope();
   }
 
   if (chartId === 'chart-4-1') {

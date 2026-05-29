@@ -173,6 +173,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       const rows  = countries.filter(d => d.continent === cont);
       const color = COL[cont];
       const cy    = i * bandH + bandH / 2;
+      // Center labels in the left gutter (between margin start and plot start)
+      const labelX = (-M.left / 2) + (compact ? 2 : 4);
 
 
       // divider
@@ -209,8 +211,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .on('click', () => { drill = cont; draw(); });
 
       // continent label
-      g.append('text').attr('x',-10).attr('y',cy + 4)
-        .attr('text-anchor','end').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
+      g.append('text').attr('x',labelX).attr('y',cy)
+        .attr('text-anchor','middle').attr('dominant-baseline','middle')
+        .attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
         .style('cursor','pointer').text(cont)
         .on('click',() => { drill = cont; draw(); });
 
@@ -220,31 +223,6 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .attr('x1',xS(mean)).attr('x2',xS(mean))
         .attr('y1',cy - bandH*0.35).attr('y2',cy + bandH*0.35)
         .attr('stroke',color).attr('stroke-width',2).attr('opacity',0.5);
-
-      // missing countries — griglia compatta in basso a sinistra del band
-      const presentCodes = new Set(rows.map(d => d.code));
-      const missing = (ALL_COUNTRIES[cont] || []).filter(d => !presentCodes.has(d.code));
-      if (missing.length) {
-        const cols  = 4, r = 5, gap = 13;
-        const ndRows = Math.ceil(missing.length / cols);
-        const startX = xS(xS.domain()[0]) + 6;
-        const startY = i * bandH + bandH - ndRows * gap - 16;
-
-        missing.forEach((d, mi) => {
-          const col = mi % cols, row = Math.floor(mi / cols);
-          g.append('circle')
-            .attr('cx', startX + col * gap).attr('cy', startY + row * gap)
-            .attr('r', r).attr('fill', '#ccc').attr('opacity', 0.7)
-            .style('cursor', 'default')
-            .on('mouseover', function() {
-              d3.select(this).attr('fill', '#999');
-              tip.innerHTML = `<strong style="color:#888">${d.country}</strong><br><em style="color:#aaa">dato GPI non disponibile</em>`;
-              tip.style.display = 'block';
-            })
-            .on('mousemove', moveTip)
-            .on('mouseleave', function() { d3.select(this).attr('fill', '#ccc'); hideTip(); });
-        });
-      }
 
       // dots with bin jitter
       const binSz = 0.02;
@@ -287,45 +265,6 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       });
     });
 
-    // ── Legenda bottom-right ─────────────────────────────
-    const CONT_LEG = [
-      { col: COL.Africa, label: 'Africa' },
-      { col: COL.Europe, label: 'Europe' },
-      { col: '#ccc',     label: 'dato non disponibile' },
-    ];
-    const pillW  = compact ? 144 : 178;
-    const PAD    = 8;
-    const HDR_H  = 14;
-    const ROW_H  = 16;
-    const pillH  = PAD + HDR_H + 4 + CONT_LEG.length * ROW_H + PAD;
-
-    const legX = iw - 10;
-    const legY = ih - 10;
-    const legG = g.append('g').attr('transform', `translate(${legX},${legY})`);
-
-    legG.append('rect')
-      .attr('x', -pillW).attr('y', -pillH)
-      .attr('width', pillW).attr('height', pillH)
-      .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)')
-      .attr('stroke', '#e0e0e0').attr('stroke-width', 1);
-
-    // header
-    legG.append('text')
-      .attr('x', -pillW + 10).attr('y', -pillH + PAD + 9)
-      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#aaa')
-      .attr('letter-spacing', '0.08em')
-      .style('pointer-events', 'none')
-      .text('CONTINENTE');
-
-    CONT_LEG.forEach((item, li) => {
-      const ly = -pillH + PAD + HDR_H + 4 + li * ROW_H;
-      legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
-        .attr('fill', item.col).attr('opacity', 0.85);
-      legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
-        .attr('font-size', compact ? 8 : 9).attr('fill', '#555')
-        .style('pointer-events', 'none')
-        .text(item.label);
-    });
   }
 
   /* ════════════════════════════════════════════════════════

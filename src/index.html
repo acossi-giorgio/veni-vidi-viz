@@ -70,10 +70,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Reddito, salute e disuguaglianza nel mondo</h3>
+                <p class="chart-subtitle">Mappa multi-metrica per paese (2000–2024)</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-1-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-1-1" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-1-1" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -98,10 +102,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Reddito e aspettativa di vita</h3>
+                <p class="chart-subtitle">Bubble chart globale con timeline (2000–2024)</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-1-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-1-2" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-1-2" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -126,10 +134,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Povertà multidimensionale in Africa</h3>
+                <p class="chart-subtitle">Distribuzione MPI e vista geografica comparata</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-2-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-2-1" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-2-1" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -163,10 +175,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Spesa pubblica e risultati scolastici</h3>
+                <p class="chart-subtitle">Efficienza educativa per paese (anni 2000 vs anni recenti)</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-3-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-3-1" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-3-1" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -177,24 +193,28 @@
         <div class="chart-section-inner layout-reversed">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-3-3" data-state="0">
-              <h3>Sei continenti, sei storie diverse</h3>
-              <p>Ogni pannello mostra le traiettorie di alfabetizzazione dei singoli paesi di un continente dal 2000 ad oggi. L'asse Y è adattato al range interno: il pannello Africa va da 30% a 90%, quello europeo da 95% a 100%. <strong>Clicca su una linea</strong> per isolare un paese.</p>
+              <h3>Africa ed Europa nello stesso grafico</h3>
+              <p>Le due traiettorie continentali sono ora sovrapposte nello stesso spazio: arancione per l'Africa, verde per l'Europa. I toggle in alto cambiano metrica sull'asse X e Y; le card narrative qui a sinistra servono invece a stringere il focus del grafico su Africa o Europa quando serve più leggibilità.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-3" data-state="1">
-              <h3>L'Africa: massima variabilità</h3>
-              <p>Il pannello Africa ha la dispersione più ampia: alcune linee salgono ripidamente, altre rimangono quasi piatte. La variabilità interna è maggiore che in qualsiasi altro continente — la media africana nasconde storie di progresso accanto a storie di stagnazione.</p>
+              <h3>Focus Africa</h3>
+              <p>Entrando in questa sezione il grafico si stringe sul dominio africano, così la traiettoria diventa più leggibile senza perdere il confronto con l'Europa sullo sfondo. Qui emergono meglio gli anni in cui la spesa cresce ma alfabetizzazione e fuori scuola reagiscono più lentamente.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-3" data-state="2">
-              <h3>L'Asia: crescita disomogenea</h3>
-              <p>Il pannello Asia mostra un gruppo di paesi già ad alta alfabetizzazione e un secondo gruppo in forte risalita. Afghanistan, Pakistan e Yemen partono da sotto il 50% e crescono lentamente; Cina, Vietnam e Filippine sono già sopra l'85% e continuano a salire.</p>
+              <h3>Focus Europa</h3>
+              <p>Questa card porta il focus sull'Europa, comprimendo meno la traiettoria verde e rendendo leggibili variazioni che nella vista completa sembrano quasi piatte. Il confronto resta lo stesso, ma il grafico adatta la scala per far vedere meglio la dinamica europea.</p>
             </div>
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Traiettorie istruzione: Africa vs Europa</h3>
+                <p class="chart-subtitle">Confronto multi-metrica su alfabetizzazione e esclusione</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-3-3">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-3-3" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-3-3" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -219,10 +239,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Gap di genere nella scuola secondaria</h3>
+                <p class="chart-subtitle">Indice di parità (GPI) per continente e paesi</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-3-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-3-2" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-3-2" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -256,10 +280,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Reddito e lavoro minorile</h3>
+                <p class="chart-subtitle">Relazione globale con filtri e timeline (5–17 anni)</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Schermo intero" data-target="#chart-4-1">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
               </button>
-              <div id="chart-4-1" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-4-1" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -284,10 +312,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Matrimoni precoci nel mondo</h3>
+                <p class="chart-subtitle">Waffle comparativo per continente e dettaglio paese</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-4-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-4-2" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-4-2" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -312,10 +344,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Mortalità materna e infantile</h3>
+                <p class="chart-subtitle">Confronto 2000 vs ultimo anno disponibile per paese</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-4-3">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-4-3" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-4-3" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>
@@ -378,10 +414,14 @@
           </div>
           <div class="chart-viz">
             <div class="chart-box">
+              <div class="chart-header">
+                <h3 class="chart-title">Migrazione africana e destinazioni</h3>
+                <p class="chart-subtitle">Rete interattiva dei flussi verso i continenti (2000–2020)</p>
+              </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-5-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
-              <div id="chart-5-1" style="width:100%;height:100%"></div>
+              <div class="chart-canvas"><div id="chart-5-1" style="width:100%;height:100%"></div></div>
             </div>
           </div>
         </div>

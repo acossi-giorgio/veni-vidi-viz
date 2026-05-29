@@ -386,7 +386,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const clipId = `mpi-map-clip-${isFullscreen ? 'fs' : 'ed'}`;
 
     svg.attr('height', H).style('height', '100%');
-    svg.style('background', '#eef2f7').style('border-radius', '10px');
+    svg.style('background', '#eef2f7').style('border-radius', '0');
     g.attr('transform', 'translate(0,0)');
 
     if (!geoData || !geoData.objects || !geoData.objects.countries) {

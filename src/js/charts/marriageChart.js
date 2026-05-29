@@ -26,6 +26,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
   const C_BY15  = '#7b2226';
   const C_BY18  = '#e07b6a';
+  const C_EU_BY15 = '#2f5d8a';
+  const C_EU_BY18 = '#7fb3d5';
   const C_EMPTY = '#e8e8e8';
 
   let drillDown = false;
@@ -62,25 +64,17 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   const vizDiv = container.append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden');
 
-  /* ── Back button ────────────────────────────────────────── */
-  const backBtn = container.append('button')
-    .attr('class', 'chart-back-btn chart-back-btn--icon')
-    .attr('aria-label', 'Torna alla panoramica')
-    .attr('title', 'Torna alla panoramica')
-    .style('position', 'absolute').style('top', '8px').style('left', '8px')
-    .style('display', 'none').style('z-index', '20')
-    .html('<span class="chart-back-icon" aria-hidden="true"></span>')
-    .on('click', () => { drillDown = false; dotMode = false; draw(); });
-
   /* ── Waffle helper ──────────────────────────────────────── */
-  function drawWaffle(svg, x0, y0, pct15, pct18, cs, gap, COLS, ROWS) {
+  function drawWaffle(svg, x0, y0, pct15, pct18, cs, gap, COLS, ROWS, colors = {}) {
     const total = COLS * ROWS;
     const n15   = Math.round(Math.min(total, pct15));
     const n18   = Math.round(Math.min(total - n15, Math.max(0, pct18 - pct15)));
+    const by15Color = colors.by15 || C_BY15;
+    const by18Color = colors.by18 || C_BY18;
     for (let row = 0; row < ROWS; row++) {
       for (let col = 0; col < COLS; col++) {
         const idx  = row * COLS + col;
-        const fill = idx < n15 ? C_BY15 : idx < n15 + n18 ? C_BY18 : C_EMPTY;
+        const fill = idx < n15 ? by15Color : idx < n15 + n18 ? by18Color : C_EMPTY;
         svg.append('rect')
           .attr('x', x0 + col * (cs + gap)).attr('y', y0 + row * (cs + gap))
           .attr('width', cs).attr('height', cs).attr('rx', Math.max(1, cs * 0.12))
@@ -109,21 +103,40 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const eu18   = euNTot > 0 ? euN18 / euNTot * 100 : 0;
 
     const PAD  = compact ? { top: 12, bottom: 12, left: 16, right: 14 } : { top: 16, bottom: 16, left: 24, right: 20 };
-    const PW   = compact ? (veryCompact ? 64 : 70) : 80;
-    const PGAP = compact ? (veryCompact ? 16 : 20) : 28;
-    const PP   = compact ? 10 : 14;
-    const leftZoneW = W - PAD.left - PAD.right - PW - PGAP;
-    const avH       = H - PAD.top - PAD.bottom;
+    const PW   = compact ? (veryCompact ? 80 : 92) : 102;
+    const PGAP = compact ? (veryCompact ? 14 : 18) : 24;
+    const WGAP = compact ? 14 : 24;
+    const PP   = compact ? 7 : 8;
+    const avH  = H - PAD.top - PAD.bottom;
 
-    const TITLE_H = 34, HINT_H = 20;
-    const maxWaffle = Math.min(avH - TITLE_H - HINT_H, leftZoneW);
-    const afGap     = 2;
-    const afCS      = Math.max(5, Math.floor((maxWaffle - 9 * afGap) / 10));
-    const afW       = 10 * afCS + 9 * afGap;
-    const blockH    = TITLE_H + afW + HINT_H;
-    const blockY    = PAD.top + (avH - blockH) / 2;
-    const afX       = PAD.left + (leftZoneW - afW) / 2;
-    const afY       = blockY + TITLE_H;
+    const TITLE_H = 34;
+    const HINT_H = 20;
+    const afGap = 2;
+    const euGap = compact ? 1 : 2;
+    const europeRatio = compact ? 0.46 : 0.5;
+    const panelX = PAD.left;
+    const rightZoneX = panelX + PW + PGAP;
+    const rightZoneW = W - rightZoneX - PAD.right;
+    const maxWaffleH = avH - TITLE_H - HINT_H;
+
+    let afCS = Math.max(5, Math.floor((Math.min(maxWaffleH, rightZoneW / (1 + europeRatio)) - 9 * afGap) / 10));
+    let euCS = Math.max(3, Math.floor(afCS * europeRatio));
+    let afW = 10 * afCS + 9 * afGap;
+    let euW = 10 * euCS + 9 * euGap;
+
+    while (afW + WGAP + euW > rightZoneW && afCS > 5) {
+      afCS -= 1;
+      euCS = Math.max(3, Math.floor(afCS * europeRatio));
+      afW = 10 * afCS + 9 * afGap;
+      euW = 10 * euCS + 9 * euGap;
+    }
+
+    const blockH = TITLE_H + afW + HINT_H;
+    const blockY = PAD.top + (avH - blockH) / 2;
+    const afX = rightZoneX + Math.max(0, (rightZoneW - afW - WGAP - euW) / 2);
+    const euX = afX + afW + WGAP;
+    const afY = blockY + TITLE_H;
+    const euY = afY + Math.max(0, (afW - euW) / 2);
 
     const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit');
@@ -136,6 +149,14 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .text(`${n} paesi · ponderato per base donne · ogni cella = 1%`);
 
     drawWaffle(svg, afX, afY, af15, af18, afCS, afGap, 10, 10);
+    drawWaffle(svg, euX, euY, eu15, eu18, euCS, euGap, 10, 10, {
+      by15: C_EU_BY15,
+      by18: C_EU_BY18
+    });
+
+    svg.append('text').attr('x', euX + euW / 2).attr('y', euY - 10)
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 10 : 12).attr('font-weight', '700').attr('fill', '#4a6fa5')
+      .text('Europa');
 
     svg.append('rect').attr('x', afX).attr('y', afY).attr('width', afW).attr('height', afW)
       .attr('fill', 'transparent').style('cursor', 'pointer')
@@ -148,59 +169,79 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .on('mouseleave', hideTip)
       .on('click', () => { drillDown = true; draw(); });
 
+    svg.append('rect').attr('x', euX).attr('y', euY).attr('width', euW).attr('height', euW)
+      .attr('fill', 'transparent')
+      .on('mousemove', e => showTip(e,
+        `<strong style="color:#4a6fa5">Europa</strong><br>` +
+        `<span style="color:${C_EU_BY15}">●</span> Prima dei 15: <strong>${fmt(eu15, '%')}</strong> (${fmtN(euN15)})<br>` +
+        `<span style="color:${C_EU_BY18}">●</span> Prima dei 18: <strong>${fmt(eu18, '%')}</strong> (${fmtN(euN18)})`
+      ))
+      .on('mouseleave', hideTip);
+
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 7 : 8).attr('fill', '#ccc')
       .text('clicca per esplorare i singoli paesi →');
 
-    /* ── Pannello stats destra ──────────────────────────────── */
-    const px0    = afX + afW + PGAP;
-    const panelH = compact ? 220 : 250;
+    /* ── Pannello stats sinistra ────────────────────────────── */
+    const px0    = panelX;
+    const panelH = compact ? 198 : 208;
     const py0    = blockY + (blockH - panelH) / 2;
 
     svg.append('rect').attr('x', px0 - PP).attr('y', py0 - PP)
       .attr('width', PW + PP * 2).attr('height', panelH + PP * 2)
       .attr('rx', 8).attr('fill', '#fafafa').attr('stroke', '#e8e8e8').attr('stroke-width', 1);
 
-    const sections = [
-      { title: 'Africa', titleColor: '#b04a4a', rows: [
-          { label: 'Prima dei 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
-          { label: 'Prima dei 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
-        ]
-      },
-      { title: 'Europa', titleColor: '#4a6fa5', rows: [
-          { label: 'Prima dei 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_BY15 },
-          { label: 'Prima dei 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_BY18 },
-        ]
-      },
+    function drawPanelRows(rows, xLabel, xValue, startY) {
+      let y = startY;
+      rows.forEach(r => {
+        svg.append('circle').attr('cx', xLabel - 9).attr('cy', y + 2).attr('r', 4.5)
+          .attr('fill', r.color).attr('opacity', 0.88);
+        svg.append('text').attr('x', xLabel).attr('y', y + 6)
+          .attr('font-size', compact ? 7 : 8).attr('fill', '#999').text(r.label);
+        y += 16;
+        const pctY = y + 12;
+        const pctText = svg.append('text').attr('x', xValue).attr('y', pctY)
+          .attr('font-size', compact ? 15 : 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
+
+        const pctBox = pctText.node().getBBox();
+        svg.append('text')
+          .attr('x', xValue + pctBox.width + 4)
+          .attr('y', pctY)
+          .attr('font-size', compact ? 5.5 : 6)
+          .attr('font-weight', '500')
+          .attr('fill', '#b7b7b7')
+          .text(`≈ ${r.n}`);
+        y += 20;
+      });
+      return y;
+    }
+
+    const africaRows = [
+      { label: 'Prima dei 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
+      { label: 'Prima dei 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
+    ];
+    const europeRows = [
+      { label: 'Prima dei 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_EU_BY15 },
+      { label: 'Prima dei 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_EU_BY18 },
     ];
 
-    let curY = py0 + 6;
-    sections.forEach((sec, si) => {
-      if (si > 0) {
-        svg.append('line').attr('x1', px0 - PP + 6).attr('x2', px0 + PW + PP - 6)
-          .attr('y1', curY).attr('y2', curY).attr('stroke', '#e8e8e8');
-        curY += 10;
-      }
-      svg.append('text').attr('x', px0).attr('y', curY + 10)
-        .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', sec.titleColor).text(sec.title);
-      curY += 20;
-      sec.rows.forEach(r => {
-        svg.append('circle').attr('cx', px0 + 5).attr('cy', curY + 2).attr('r', 4.5)
-          .attr('fill', r.color).attr('opacity', 0.88);
-        svg.append('text').attr('x', px0 + 14).attr('y', curY + 6)
-          .attr('font-size', compact ? 7 : 8).attr('fill', '#999').text(r.label);
-        curY += 16;
-        svg.append('text').attr('x', px0).attr('y', curY + 12)
-          .attr('font-size', compact ? 15 : 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
-        curY += 16;
-        svg.append('text').attr('x', px0).attr('y', curY + 4)
-          .attr('font-size', compact ? 6.5 : 7.5).attr('fill', '#bbb').text(`≈ ${r.n}`);
-        curY += 18;
-      });
-    });
+    const panelLeft = px0;
+    const panelInnerTop = py0 + 2;
 
-    svg.append('text').attr('x', px0).attr('y', py0 + panelH + PP + 10)
-      .attr('font-size', compact ? 6 : 7).attr('fill', '#ccc').text('Fonte: CMMM/UNICEF 2025');
+    svg.append('text').attr('x', panelLeft).attr('y', panelInnerTop + 10)
+      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', '#b04a4a').text('Africa');
+    const africaEndY = drawPanelRows(africaRows, panelLeft + 14, panelLeft, panelInnerTop + 28);
+
+    const dividerY = africaEndY;
+    svg.append('line').attr('x1', px0 - PP + 6).attr('x2', px0 + PW + PP - 6)
+      .attr('y1', dividerY).attr('y2', dividerY).attr('stroke', '#e8e8e8');
+
+    const europeTitleY = dividerY + 12;
+    svg.append('text').attr('x', panelLeft).attr('y', europeTitleY)
+      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', '#4a6fa5').text('Europa');
+
+    drawPanelRows(europeRows, panelLeft + 14, panelLeft, europeTitleY + 18);
+
   }
 
   /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
@@ -218,7 +259,11 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       }
     });
 
-    const PAD    = compact ? { top: 40, bottom: 60, left: 42, right: 10 } : { top: 44, bottom: 68, left: 52, right: 12 };
+    // Reserve a dedicated header lane for controls so they never overlap bars/axes
+    const CONTROL_LANE_H = compact ? 34 : 38;
+    const PAD    = compact
+      ? { top: 40 + CONTROL_LANE_H, bottom: 60, left: 42, right: 10 }
+      : { top: 44 + CONTROL_LANE_H, bottom: 68, left: 52, right: 12 };
     const chartH = H - PAD.top - PAD.bottom;
     const BAR_G  = 2;
     const availW = W - PAD.left - PAD.right;
@@ -242,13 +287,12 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .style('display', 'flex').style('align-items', 'center').style('gap', compact ? '4px' : '6px')
       .style('z-index', '10');
 
-    controlRow.node().appendChild(backBtn.node());
-    backBtn
-      .style('position', 'static')
-      .style('top', null)
-      .style('left', null)
-      .style('z-index', null)
-      .style('display', 'inline-flex');
+    controlRow.append('button')
+      .attr('class', 'chart-back-btn chart-back-btn--icon')
+      .attr('aria-label', 'Torna alla panoramica')
+      .attr('title', 'Torna alla panoramica')
+      .html('<span class="chart-back-icon" aria-hidden="true"></span>')
+      .on('click', () => { drillDown = false; dotMode = false; draw(); });
 
     const pillBar = controlRow.append('div')
       .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
@@ -287,7 +331,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     yG.selectAll('.tick line').attr('stroke', '#e8e8e8');
     yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', '#888');
 
-    svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 8)
+    svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 12)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#999')
       .text(`Africa · ${data.length} paesi · ordinati per % prima dei 18`);
 
@@ -356,7 +400,6 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   function draw() {
     vizDiv.selectAll('svg,div').remove();
     vizDiv.style('overflow-x', drillDown ? 'auto' : 'hidden').style('overflow-y', 'hidden');
-    backBtn.style('display', drillDown ? 'inline-flex' : 'none');
 
     const cn = vizDiv.node();
     const W  = cn.getBoundingClientRect().width  || 560;

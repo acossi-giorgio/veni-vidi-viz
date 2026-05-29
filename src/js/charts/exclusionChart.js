@@ -79,9 +79,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   });
 
   /* ── State ──────────────────────────────────────────────── */
-  let xMode    = 'absolute'; // 'absolute' | 'pct'
-  let yMode    = 'literacy'; // 'literacy' | 'oos'
-  let contMode = 'Africa';   // 'Africa' | 'Europe'
+  let xMode     = 'absolute'; // 'absolute' | 'pct'
+  let yMode     = 'literacy'; // 'literacy' | 'oos'
+  let focusCont = null;       // null | 'Africa' | 'Europe'
   const compact = isFullscreen && (
     (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
     (container.clientHeight || window.innerHeight * 0.82) < 420
@@ -142,8 +142,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .style('width', '1px').style('background', '#d0d8e8').style('margin', '4px 2px').style('align-self', 'stretch');
   }
 
-  const btnAfr = mkBtn('Africa',  () => { contMode = 'Africa';  updateBtns(); draw(); });
-  const btnEur = mkBtn('Europe',  () => { contMode = 'Europe';  updateBtns(); draw(); });
+  const btnAll = mkBtn('Tutti',            () => { focusCont = null;     updateBtns(); draw(); });
+  const btnAfr = mkBtn('Africa',           () => { focusCont = 'Africa'; updateBtns(); draw(); });
+  const btnEur = mkBtn('Europe',           () => { focusCont = 'Europe'; updateBtns(); draw(); });
   mkSep();
   const btnLit = mkBtn('Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
   const btnOos = mkBtn('Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
@@ -156,8 +157,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .style('background', active ? '#4a6fa5' : 'transparent')
       .style('color',      active ? '#fff'    : '#7a8aaa')
       .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
-    set(btnAfr, contMode === 'Africa');
-    set(btnEur, contMode === 'Europe');
+    set(btnAll, focusCont == null);
+    set(btnAfr, focusCont === 'Africa');
+    set(btnEur, focusCont === 'Europe');
     set(btnLit, yMode === 'literacy');
     set(btnOos, yMode === 'oos');
     set(btnAbs, xMode === 'absolute');
@@ -169,20 +171,6 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   const vizDiv = d3.select(container).append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('min-height', '0');
 
-  /* ── Legend bottom-right ────────────────────────────────── */
-  const legDiv = vizDiv.append('div')
-    .style('position', 'absolute').style('bottom', compact ? '38px' : '48px').style('right', compact ? '8px' : '16px')
-    .style('display', 'flex').style('flex-direction', 'column').style('gap', '4px')
-    .style('background', 'rgba(255,255,255,0.88)').style('border-radius', '6px')
-    .style('padding', compact ? '4px 8px' : '6px 10px').style('pointer-events', 'none')
-    .style('box-shadow', '0 1px 4px rgba(0,0,0,0.08)').style('z-index', '10');
-  CONTS.forEach(c => {
-    const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px');
-    row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%')
-      .style('background', COLORS[c]).style('opacity', '0.85').style('flex-shrink', '0');
-    row.append('span').style('font-size', compact ? '9px' : '11px').style('color', '#555').text(c);
-  });
-
   /* ── Draw ───────────────────────────────────────────────── */
   function draw() {
     vizDiv.html('');
@@ -190,25 +178,23 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     const H = vizDiv.node().clientHeight || 340;
 
     const margin = compact
-      ? { top: 18, right: 18, bottom: 38, left: 46 }
-      : { top: 20, right: 32, bottom: 44, left: 56 };
+      ? { top: 18, right: 68, bottom: 38, left: 58 }
+      : { top: 20, right: 110, bottom: 44, left: 64 };
     const iw = W - margin.left - margin.right;
     const ih = H - margin.top  - margin.bottom;
 
-    const col  = COLORS[contMode];
-    const pts  = points.filter(d => d.continent === contMode).sort((a, b) => a.year - b.year);
-
     const xVal = d => xMode === 'absolute' ? d.spendB : d.eduPct;
     const yVal = d => yMode === 'literacy' ? d.litPct : d.oosM;
+    const scalePts = focusCont ? points.filter(d => d.continent === focusCont) : points;
 
-    /* Tight axes on Africa data */
-    const xExt = d3.extent(pts, xVal);
+    /* Tight axes on selected focus, otherwise both continents together */
+    const xExt = d3.extent(scalePts, xVal);
     const xPad = (xExt[1] - xExt[0]) * 0.06;
     const xScale = d3.scaleLinear()
       .domain([Math.max(0, xExt[0] - xPad), xExt[1] + xPad])
       .range([0, iw]).nice();
 
-    const yExt = d3.extent(pts, yVal);
+    const yExt = d3.extent(scalePts, yVal);
     const yPad = (yExt[1] - yExt[0]) * 0.12;
     const yScale = d3.scaleLinear()
       .domain([Math.max(0, yExt[0] - yPad), yExt[1] + yPad])
@@ -219,12 +205,8 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       : v => v.toFixed(1) + '%';
     const yFmt = yMode === 'literacy' ? v => v.toFixed(0) + '%' : v => v.toFixed(0) + ' M';
 
-    const markerId = `arrow-excl-${contMode}`;
-
     const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit');
-
-    svg.append('defs');
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -250,67 +232,61 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
 
-    /* Trajectory line — animated draw */
-    const line = d3.line().x(d => xScale(xVal(d))).y(d => yScale(yVal(d))).curve(d3.curveCatmullRom.alpha(0.5));
-    const pathEl = g.append('path').datum(pts).attr('d', line)
-      .attr('fill', 'none').attr('stroke', col)
-      .attr('stroke-width', 1.8).attr('opacity', 0.65).node();
-    const totalLen = pathEl.getTotalLength();
-    d3.select(pathEl)
-      .attr('stroke-dasharray', totalLen)
-      .attr('stroke-dashoffset', totalLen)
-      .transition().duration(2800).ease(d3.easeCubicInOut)
-      .attr('stroke-dashoffset', 0);
+    const line = d3.line()
+      .x(d => xScale(xVal(d)))
+      .y(d => yScale(yVal(d)))
+      .curve(d3.curveCatmullRom.alpha(0.5));
 
-    /* Dots */
-    const R = 5;
-    pts.forEach((d, i) => {
-      const cx = xScale(xVal(d)), cy = yScale(yVal(d));
-      const delay = 2700 * (i / pts.length);
-      g.append('circle')
-        .attr('cx', cx).attr('cy', cy).attr('r', R)
-        .attr('fill', col).attr('fill-opacity', 0)
-        .attr('stroke', col).attr('stroke-width', 1.2)
-        .style('cursor', 'default')
-        .on('mousemove', e => showTip(e, d))
-        .on('mouseleave', hideTip)
-        .transition().delay(delay).duration(200)
-        .attr('fill-opacity', 0.75);
-    });
+    CONTS.forEach(cont => {
+      const col = COLORS[cont];
+      const pts = points.filter(d => d.continent === cont).sort((a, b) => a.year - b.year);
+      if (!pts.length) return;
 
-    /* Labels — force simulation for collision avoidance */
-    const labelNodes = pts.map((d, i) => {
-      const cx = xScale(xVal(d)), cy = yScale(yVal(d));
-      const prev = pts[Math.max(0, i - 1)];
-      const next = pts[Math.min(pts.length - 1, i + 1)];
-      const tdx = xScale(xVal(next)) - xScale(xVal(prev));
-      const tdy = yScale(yVal(next)) - yScale(yVal(prev));
-      const tlen = Math.sqrt(tdx * tdx + tdy * tdy) || 1;
-      const side = i % 2 === 0 ? 1 : -1;
-      const LOFF = R + 12;
-      return { d, i, cx, cy,
-        x: cx + (-tdy / tlen) * LOFF * side,
-        y: cy + ( tdx / tlen) * LOFF * side };
-    });
+      const isFocus = !focusCont || focusCont === cont;
+      const lineOpacity = focusCont ? (isFocus ? 0.72 : 0.18) : 0.58;
+      const dotOpacity = focusCont ? (isFocus ? 0.78 : 0.22) : 0.72;
+      const strokeOpacity = focusCont ? (isFocus ? 1 : 0.4) : 1;
 
-    /* Labels — only first and last point */
-    [labelNodes[0], labelNodes[labelNodes.length - 1]].forEach(n => {
-      const isLast = n.i === pts.length - 1;
-      const delay = isLast ? 2750 : 200;
-      g.append('text')
-        .attr('x', n.x).attr('y', n.y + 3)
-        .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9)
-        .attr('fill', col).attr('font-weight', '600')
-        .attr('pointer-events', 'none').attr('opacity', 0)
-        .text(n.d.year)
-        .transition().delay(delay).duration(250)
-        .attr('opacity', 1);
+      const pathEl = g.append('path').datum(pts).attr('d', line)
+        .attr('fill', 'none').attr('stroke', col)
+        .attr('stroke-width', isFocus ? 1.9 : 1.5).attr('opacity', lineOpacity).node();
+      const totalLen = pathEl.getTotalLength();
+      d3.select(pathEl)
+        .attr('stroke-dasharray', totalLen)
+        .attr('stroke-dashoffset', totalLen)
+        .transition().duration(2200).ease(d3.easeCubicInOut)
+        .attr('stroke-dashoffset', 0);
+
+      const R = focusCont ? (isFocus ? 4.2 : 2.8) : 2.9;
+      const hoverR = focusCont ? (isFocus ? 8 : 6) : 8;
+      pts.forEach((d, i) => {
+        const cx = xScale(xVal(d)), cy = yScale(yVal(d));
+        const delay = 2100 * (i / pts.length);
+        g.append('circle')
+          .attr('cx', cx).attr('cy', cy).attr('r', R)
+          .attr('fill', col).attr('fill-opacity', 0)
+          .attr('stroke', col).attr('stroke-opacity', strokeOpacity).attr('stroke-width', 1.2)
+          .style('cursor', 'default')
+          .on('mousemove', e => showTip(e, d))
+          .on('mouseleave', hideTip)
+          .transition().delay(delay).duration(180)
+          .attr('fill-opacity', dotOpacity);
+        g.append('circle')
+          .attr('cx', cx).attr('cy', cy).attr('r', hoverR)
+          .attr('fill', 'transparent')
+          .style('cursor', 'default')
+          .on('mousemove', e => showTip(e, d))
+          .on('mouseleave', hideTip);
+      });
+
     });
   }
 
   draw();
 
-  container._exclusionHighlight  = () => draw();
-  container._exclusionShowGpi    = () => { yMode = 'oos';     updateBtns(); draw(); };
-  container._exclusionShowTrend  = () => { yMode = 'literacy'; updateBtns(); draw(); };
+  container._exclusionShowBase   = () => { focusCont = null;     yMode = 'literacy'; updateBtns(); draw(); };
+  container._exclusionFocusAfrica = () => { focusCont = 'Africa'; updateBtns(); draw(); };
+  container._exclusionFocusEurope = () => { focusCont = 'Europe'; updateBtns(); draw(); };
+  container._exclusionShowGpi    = () => { focusCont = null; yMode = 'oos';      updateBtns(); draw(); };
+  container._exclusionShowTrend  = () => { focusCont = null; yMode = 'literacy'; updateBtns(); draw(); };
 }

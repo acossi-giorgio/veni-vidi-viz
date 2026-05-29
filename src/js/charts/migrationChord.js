@@ -735,7 +735,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     // ── SVG + zoom ───────────────────────────────────────────────
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
-      .style('border-radius', '10px').style('cursor', 'grab');
+      .style('border-radius', '0').style('cursor', 'grab');
 
     const g    = svg.append('g');
     const zoom = d3.zoom().scaleExtent([0.5, 12])

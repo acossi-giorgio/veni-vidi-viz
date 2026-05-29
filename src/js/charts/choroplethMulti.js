@@ -153,7 +153,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const svg = mapDiv.append('svg')
     .attr('width', W).attr('height', H)
     .style('width', '100%').style('height', '100%')
-    .style('background', '#eef2f7').style('display', 'block').style('border-radius', '10px 10px 0 0')
+    .style('background', '#eef2f7').style('display', 'block').style('border-radius', '0')
     .style('cursor', 'grab');
 
   svg.append('defs').append('clipPath').attr('id', `chm-clip-${isFullscreen}`)
