@@ -178,8 +178,8 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     const H = vizDiv.node().clientHeight || 340;
 
     const margin = compact
-      ? { top: 18, right: 68, bottom: 38, left: 58 }
-      : { top: 20, right: 110, bottom: 44, left: 64 };
+      ? { top: 18, right: 12, bottom: 48, left: 58 }
+      : { top: 20, right: 20, bottom: 56, left: 64 };
     const iw = W - margin.left - margin.right;
     const ih = H - margin.top  - margin.bottom;
 
@@ -189,7 +189,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
     /* Tight axes on selected focus, otherwise both continents together */
     const xExt = d3.extent(scalePts, xVal);
-    const xPad = (xExt[1] - xExt[0]) * 0.06;
+    const xPad = (xExt[1] - xExt[0]) * 0.03;
     const xScale = d3.scaleLinear()
       .domain([Math.max(0, xExt[0] - xPad), xExt[1] + xPad])
       .range([0, iw]).nice();
@@ -225,7 +225,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
 
     /* Axis labels */
-    g.append('text').attr('x', iw / 2).attr('y', ih + 36)
+    g.append('text').attr('x', iw / 2).attr('y', ih + 32)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text(xMode === 'absolute' ? 'Spesa pubblica istruzione (USD)' : 'Spesa pubblica istruzione (% PIL)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -42)

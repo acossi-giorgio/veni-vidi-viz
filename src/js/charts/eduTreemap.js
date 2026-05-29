@@ -69,8 +69,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const veryCompact = isFullscreen && (W < 620 || H < 360);
   const CONTROLS_SAFE_H = compact ? 58 : 74;
   const MARGIN = compact
-    ? { top: CONTROLS_SAFE_H, right: veryCompact ? 42 : 60, bottom: 38, left: 44 }
-    : { top: CONTROLS_SAFE_H, right: 112, bottom: 44, left: 62 };
+    ? { top: CONTROLS_SAFE_H, right: veryCompact ? 48 : 56, bottom: 48, left: 54 }
+    : { top: CONTROLS_SAFE_H, right: 88, bottom: 56, left: 72 };
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
@@ -132,7 +132,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('Anno');
+  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('Anno');
   const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa');
 
   // Crosshair

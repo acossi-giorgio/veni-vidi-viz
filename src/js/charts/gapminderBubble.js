@@ -50,7 +50,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   const PLAYER_H = compact ? 64 : BASE_PLAYER_H;
   const W = rawW;
   const H = rawH - PLAYER_H;
-  const MARGIN = compact ? { top: 22, right: 14, bottom: 34, left: 46 } : { top: 28, right: 24, bottom: 44, left: 58 };
+  const MARGIN = compact ? { top: 22, right: 24, bottom: 34, left: 54 } : { top: 28, right: 40, bottom: 44, left: 72 };
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
@@ -86,6 +86,19 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
       .attr('x1', xS(t)).attr('x2', xS(t))
       .attr('y1', 0).attr('y2', ih)
       .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+  });
+
+  // Reference guides requested for quick reading on the X axis.
+  const refG = g.append('g').attr('class', 'gapminder-x-reference');
+  [
+    { x: 0 },
+    { x: xS(200) },
+  ].forEach(ref => {
+    refG.append('line')
+      .attr('x1', ref.x).attr('x2', ref.x)
+      .attr('y1', 0).attr('y2', ih)
+      .attr('stroke', '#f0f0f0')
+      .attr('stroke-width', 1);
   });
 
   // Axes (X rebuilt on scale toggle)

@@ -56,8 +56,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     .sort((a, b) => b.value - a.value);
 
   const africaCodes = new Set(africa.map(d => d.code));
-  const noData = ALL_AFRICA.filter(c => !africaCodes.has(c.code));
-
   const maxValue = d3.max(allLatest, d => d.value) || 0.3;
   const scaleMax = Math.max(0.3, Math.ceil(maxValue * 20) / 20);
   const mpiColor = d3.scaleSequential(d3.interpolateRgbBasis(GRADIENT_STOPS)).domain([0, scaleMax]);
@@ -105,14 +103,13 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   updateToggle();
 
   // ── Layout constants ────────────────────────────────────────
-  const PILL_H = compact ? 42 : 48;
-  const ND_PAD = 20; // padding above no-data section
+  const PILL_H = compact ? 36 : 40;
   const MARGIN_DIST = compact
-    ? { top: 26, right: 14, bottom: 46, left: 42 }
-    : { top: 32, right: 24, bottom: 56, left: 52 };
+    ? { top: 14, right: 24, bottom: 38, left: 52 }
+    : { top: 16, right: 40, bottom: 44, left: 68 };
   const MARGIN_MAP = compact
-    ? { top: 12, right: 14, bottom: 42, left: 14 }
-    : { top: 18, right: 18, bottom: 52, left: 18 };
+    ? { top: 12, right: 24, bottom: 42, left: 24 }
+    : { top: 18, right: 32, bottom: 52, left: 32 };
 
   // Scrollable area
   const scrollWrap = d3.select(container).append('div')
@@ -230,24 +227,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     return { width: totalW + 14, height: totalH + 8 };
   }
 
-  // ── No-data section renderer ────────────────────────────────
-  function appendNoDataDistChips(parent, iw, yStart) {
-    if (!noData.length) return;
-
-    const cols = veryCompact ? 2 : compact ? 3 : 4;
-    const colW = iw / cols;
-    noData.forEach((d, i) => {
-      const col = i % cols;
-      const row = Math.floor(i / cols);
-      const x = col * colW;
-      const y = yStart + 12 + row * 14;
-      parent.append('text')
-        .attr('x', x).attr('y', y)
-        .attr('font-size', compact ? 7 : 8).attr('fill', '#bbb').attr('font-style', 'italic')
-        .text(d.country);
-    });
-  }
-
   function draw() {
     g.selectAll('*').remove();
     tipEl.style.display = 'none';
@@ -270,9 +249,15 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   /* ── Distribuzione (istogramma) ─────────────────────────── */
   function drawDist() {
-    const ndRows = Math.ceil(noData.length / (veryCompact ? 2 : compact ? 3 : 4));
-    const ndH = noData.length ? 12 + ndRows * 14 + 8 : 0;
-    const M = { ...MARGIN_DIST, bottom: MARGIN_DIST.bottom + ndH };
+    const topShift = compact ? 2 : 4;
+    const bottomSpace = compact ? 30 : 48;
+    const M = {
+      ...MARGIN_DIST,
+      top: MARGIN_DIST.top + topShift,
+      // Keep a compact bottom margin so the X label sits close to the card edge
+      // and the plot can use more vertical space.
+      bottom: bottomSpace,
+    };
     const iw = W - M.left - M.right;
     const ih = H - PILL_H - M.top - M.bottom;
 
@@ -285,7 +270,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const binGen = d3.bin().value(d => d.value).domain(xS.domain()).thresholds(xS.ticks(16));
     const africaBins = binGen(africa);
     const yMax = d3.max(africaBins, b => b.length) || 1;
-    const yS = d3.scaleLinear().domain([0, yMax + 1]).range([ih, 0]).nice();
+    const yS = d3.scaleLinear().domain([0, yMax + 0.4]).range([ih, 0]).nice();
 
     yS.ticks(5).forEach(t => {
       g.append('line')
@@ -311,7 +296,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       });
 
     g.append('text')
-      .attr('x', iw / 2).attr('y', ih + (compact ? 32 : 40))
+      .attr('x', iw / 2).attr('y', ih + (compact ? 24 : 28))
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
       .text('Indice di Poverta Multidimensionale (MPI)');
     g.append('text')
@@ -376,7 +361,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     });
 
     // No-data chip grid
-    appendNoDataDistChips(g, iw, ih + M.bottom + 4);
+    // No-data countries are already represented in the legend; avoid extra
+    // labels that would steal vertical space from the histogram.
   }
 
   /* ── Choropleth (world map) ─────────────────────────────── */

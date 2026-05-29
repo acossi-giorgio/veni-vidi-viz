@@ -271,13 +271,13 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     // Reserve a dedicated header lane for controls so they never overlap bars/axes
     const CONTROL_LANE_H = compact ? 34 : 38;
     const PAD    = compact
-      ? { top: 40 + CONTROL_LANE_H, bottom: 60, left: 42, right: 10 }
-      : { top: 44 + CONTROL_LANE_H, bottom: 68, left: 52, right: 12 };
+      ? { top: 40 + CONTROL_LANE_H, bottom: 60, left: 34, right: 6 }
+      : { top: 44 + CONTROL_LANE_H, bottom: 68, left: 42, right: 8 };
     const chartH = H - PAD.top - PAD.bottom;
     const BAR_G  = 2;
     const availW = W - PAD.left - PAD.right;
-    const BAR_W  = Math.max(10, Math.min(28, Math.floor(availW / data.length) - BAR_G));
-    const barsW  = data.length * (BAR_W + BAR_G);
+    const BAR_W  = Math.max(10, Math.min(28, (availW - BAR_G * (data.length - 1)) / data.length));
+    const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
     const totalW = PAD.left + barsW + PAD.right;
 
     /* center bars if they fit within the container */

@@ -82,8 +82,8 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     const veryCompact = isFullscreen && (W < 620 || H < 360);
 
     const MARGIN = compact
-      ? { top: 18, right: 12, bottom: 58, left: 46 }
-      : { top: 24, right: 44, bottom: 72, left: 64 };
+      ? { top: 18, right: 8, bottom: 46, left: 50 }
+      : { top: 24, right: 28, bottom: 56, left: 68 };
     const iw = W - MARGIN.left - MARGIN.right;
     const ih = H - MARGIN.top  - MARGIN.bottom;
 

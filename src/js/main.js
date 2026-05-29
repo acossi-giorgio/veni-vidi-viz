@@ -51,6 +51,75 @@ function isMobilePortraitViewport() {
   return isMobileViewport() && window.innerHeight > window.innerWidth;
 }
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function retriggerAnimationClass(el, className) {
+  if (!el || prefersReducedMotion()) return;
+  el.classList.remove(className);
+  void el.offsetWidth;
+  el.classList.add(className);
+}
+
+function getBaseChartIdFromElement(el) {
+  const chartRoot = el?.closest?.('div[id^="chart-"], div[id^="fullscreen-chart-"]');
+  if (!chartRoot) return null;
+  return chartRoot.id.startsWith('fullscreen-')
+    ? chartRoot.id.slice('fullscreen-'.length)
+    : chartRoot.id;
+}
+
+function animateChartEntrance(chartId, targetEl = null) {
+  if (!chartId) return;
+  const nodes = [];
+  if (targetEl) nodes.push(targetEl);
+  const inlineEl = document.getElementById(chartId);
+  if (inlineEl && inlineEl !== targetEl) nodes.push(inlineEl);
+  const fullscreenEl = document.getElementById(`fullscreen-${chartId}`);
+  if (fullscreenEl && fullscreenEl !== targetEl) nodes.push(fullscreenEl);
+  nodes.forEach(node => retriggerAnimationClass(node, 'chart-anim-enter'));
+}
+
+function animateChartSwitch(chartId, targetEl = null) {
+  if (!chartId) return;
+  const nodes = [];
+  if (targetEl) nodes.push(targetEl);
+  const inlineEl = document.getElementById(chartId);
+  if (inlineEl && inlineEl !== targetEl) nodes.push(inlineEl);
+  const fullscreenEl = document.getElementById(`fullscreen-${chartId}`);
+  if (fullscreenEl && fullscreenEl !== targetEl) nodes.push(fullscreenEl);
+  nodes.forEach(node => retriggerAnimationClass(node, 'chart-anim-switch'));
+}
+
+function initChartInteractionAnimations() {
+  const shouldSkipButton = (btn) =>
+    btn.classList.contains('chart-fullscreen-btn') ||
+    btn.classList.contains('fullscreen-modal-close') ||
+    btn.classList.contains('act-segment');
+
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest('button');
+    if (!btn || shouldSkipButton(btn)) return;
+    const chartId = getBaseChartIdFromElement(btn);
+    if (chartId) animateChartSwitch(chartId);
+  });
+
+  document.addEventListener('change', (event) => {
+    const control = event.target.closest('select, input');
+    if (!control) return;
+    const chartId = getBaseChartIdFromElement(control);
+    if (chartId) animateChartSwitch(chartId);
+  });
+
+  document.addEventListener('pointerup', (event) => {
+    const range = event.target.closest('input[type="range"]');
+    if (!range) return;
+    const chartId = getBaseChartIdFromElement(range);
+    if (chartId) animateChartSwitch(chartId);
+  });
+}
+
 const MOBILE_ROTATED_CHARTS = new Set([
   'chart-1-1', // choropleth + controls
   'chart-4-2', // map / regional trend hybrid
@@ -139,6 +208,7 @@ async function renderInlineChartsIfNeeded() {
       if (!document.getElementById(chartId)) continue;
       try {
         await renderFn();
+        animateChartEntrance(chartId);
       } catch (err) {
         console.error(`Render failed for ${chartId}:`, err);
       }
@@ -155,6 +225,7 @@ async function init() {
   initMobilePlaceholders();
   initFullscreenModal();
   initNarrativeCards();
+  initChartInteractionAnimations();
   window.addEventListener('resize', debounce(() => {
     syncAllMobilePlaceholders();
     renderInlineChartsIfNeeded();
@@ -163,7 +234,7 @@ async function init() {
 }
 
 /* ── Narrative Cards ─────────────────────────────────────── */
-function triggerChartState(chartId, state, targetEl = null) {
+function triggerChartState(chartId, state, targetEl = null, options = {}) {
   window._chartStates = window._chartStates || {};
   window._chartStates[chartId] = state;
 
@@ -230,6 +301,7 @@ function triggerChartState(chartId, state, targetEl = null) {
     else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
   }
 
+  if (!options.skipAnimation) animateChartSwitch(chartId, targetEl);
   syncMobilePlaceholder(chartId);
   updateFullscreenModalMeta(chartId);
 }
@@ -378,10 +450,12 @@ function initFullscreenModal() {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }
 
+    animateChartEntrance(chartId, wrap);
+
     // Apply the last selected narrative state (if any) to the fullscreen chart
     const savedState = window._chartStates?.[chartId] ?? 0;
     const fsEl = document.getElementById(`fullscreen-${chartId}`);
-    if (fsEl) triggerChartState(chartId, savedState, fsEl);
+    if (fsEl) triggerChartState(chartId, savedState, fsEl, { skipAnimation: true });
   }
 
   // Event delegation: handles both inline fullscreen buttons and mobile placeholders
