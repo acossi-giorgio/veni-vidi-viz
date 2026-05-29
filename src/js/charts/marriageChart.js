@@ -32,6 +32,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
   let drillDown = false;
   let dotMode   = false;
+  let selectedContinent = 'Africa';
 
   function fmt(v, suffix = '') { return v == null ? '—' : v.toFixed(1) + suffix; }
   function fmtN(v) {
@@ -104,7 +105,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     const PAD  = compact ? { top: 12, bottom: 12, left: 16, right: 14 } : { top: 16, bottom: 16, left: 24, right: 20 };
     const PW   = compact ? (veryCompact ? 80 : 92) : 102;
-    const PGAP = compact ? (veryCompact ? 14 : 18) : 24;
+    const PGAP = compact ? (veryCompact ? 8 : 12) : 14;
     const WGAP = compact ? 14 : 24;
     const PP   = compact ? 7 : 8;
     const avH  = H - PAD.top - PAD.bottom;
@@ -114,7 +115,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const afGap = 2;
     const euGap = compact ? 1 : 2;
     const europeRatio = compact ? 0.46 : 0.5;
-    const panelX = PAD.left;
+    const panelX = PAD.left + 50;
     const rightZoneX = panelX + PW + PGAP;
     const rightZoneW = W - rightZoneX - PAD.right;
     const maxWaffleH = avH - TITLE_H - HINT_H;
@@ -167,7 +168,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         `<em style="opacity:.5;font-size:9px">clicca per i singoli paesi →</em>`
       ))
       .on('mouseleave', hideTip)
-      .on('click', () => { drillDown = true; draw(); });
+      .on('click', () => { selectedContinent = 'Africa'; drillDown = true; draw(); });
 
     svg.append('rect').attr('x', euX).attr('y', euY).attr('width', euW).attr('height', euW)
       .attr('fill', 'transparent')
@@ -176,7 +177,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         `<span style="color:${C_EU_BY15}">●</span> Prima dei 15: <strong>${fmt(eu15, '%')}</strong> (${fmtN(euN15)})<br>` +
         `<span style="color:${C_EU_BY18}">●</span> Prima dei 18: <strong>${fmt(eu18, '%')}</strong> (${fmtN(euN18)})`
       ))
-      .on('mouseleave', hideTip);
+      .on('mouseleave', hideTip)
+      .style('cursor', 'pointer')
+      .on('click', () => { selectedContinent = 'Europe'; drillDown = true; draw(); });
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 7 : 8).attr('fill', '#ccc')
@@ -247,8 +250,14 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
   function drawDrillDown(W, H) {
     const data = raw
-      .filter(d => d.continent === 'Africa' && d.by18_pct != null)
+      .filter(d => d.continent === selectedContinent && d.by18_pct != null)
       .sort((a, b) => b.by18_pct - a.by18_pct);
+
+    const isEurope = selectedContinent === 'Europe';
+    const colorBy15 = isEurope ? C_EU_BY15 : C_BY15;
+    const colorBy18 = isEurope ? C_EU_BY18 : C_BY18;
+    const titleColor = isEurope ? '#4a6fa5' : '#b04a4a';
+    const continentLabel = isEurope ? 'Europa' : 'Africa';
 
     data.forEach(d => {
       if (d.by18_pct > 0 && d.by18_n != null) {
@@ -332,8 +341,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', '#888');
 
     svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 12)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#999')
-      .text(`Africa · ${data.length} paesi · ordinati per % prima dei 18`);
+      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', titleColor)
+      .text(`${continentLabel} · ${data.length} paesi · ordinati per % prima dei 18`);
 
     data.forEach((d, i) => {
       const bx = axisX + i * (BAR_W + BAR_G);
@@ -350,9 +359,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
       const barBottom = PAD.top + chartH;
       if (h18 > 0) svg.append('rect').attr('x', bx).attr('y', barBottom - h15 - h18)
-        .attr('width', BAR_W).attr('height', h18).attr('fill', C_BY18).attr('opacity', 0.88);
+        .attr('width', BAR_W).attr('height', h18).attr('fill', colorBy18).attr('opacity', 0.88);
       if (h15 > 0) svg.append('rect').attr('x', bx).attr('y', barBottom - h15)
-        .attr('width', BAR_W).attr('height', h15).attr('fill', C_BY15).attr('opacity', 0.9);
+        .attr('width', BAR_W).attr('height', h15).attr('fill', colorBy15).attr('opacity', 0.9);
 
       const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
       svg.append('text')
@@ -364,9 +373,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         .on('mousemove', e => showTip(e,
           `<strong>${d.country}</strong> · ${d.year ?? '—'}<br>` +
           (d.source ? `<em style="opacity:.6;font-size:9px">${d.source}</em><br>` : '') +
-          `<span style="color:${C_BY15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
+          `<span style="color:${colorBy15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
           (d.by15_n != null ? `  (${fmtN(d.by15_n)})` : '') + '<br>' +
-          `<span style="color:${C_BY18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
+          `<span style="color:${colorBy18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
           (d.by18_n != null ? `  (${fmtN(d.by18_n)})` : '')
         ))
         .on('mouseleave', hideTip);
@@ -374,8 +383,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     /* ── Legenda top-right ──────────────────────────────────── */
     const LEG_ITEMS = [
-      { color: C_BY15, label: 'Prima dei 15 anni' },
-      { color: C_BY18, label: 'Tra 15 e 18 anni'  },
+      { color: colorBy15, label: 'Prima dei 15 anni' },
+      { color: colorBy18, label: 'Tra 15 e 18 anni'  },
     ];
     const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
     const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
@@ -412,7 +421,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
   /* ── API triggerChartState ──────────────────────────────── */
   const el = container.node();
-  el._marriageReset     = () => { drillDown = false; dotMode = false; draw(); };
-  el._marriageHighlight = () => { drillDown = false; draw(); };
-  el._marriageShowTrend = () => { drillDown = true;  draw(); };
+  el._marriageReset     = () => { selectedContinent = 'Africa'; drillDown = false; dotMode = false; draw(); };
+  el._marriageHighlight = (continent = 'Africa') => { selectedContinent = continent; drillDown = false; draw(); };
+  el._marriageShowTrend = (continent = 'Africa') => { selectedContinent = continent; drillDown = true;  draw(); };
 }

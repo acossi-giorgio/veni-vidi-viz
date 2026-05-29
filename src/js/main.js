@@ -236,7 +236,6 @@ function triggerChartState(chartId, state, targetEl = null) {
 
 function initNarrativeCards() {
   const cards = document.querySelectorAll('.narrative-card');
-  const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const activate = (card) => {
     const chartId = card.dataset.chart;
     const state = parseInt(card.dataset.state, 10);
@@ -248,7 +247,6 @@ function initNarrativeCards() {
   cards.forEach(card => {
     card.setAttribute('role', 'button');
     if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
-    if (supportsHover) card.addEventListener('mouseenter', () => activate(card));
     card.addEventListener('click', () => activate(card));
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {

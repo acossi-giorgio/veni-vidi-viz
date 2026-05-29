@@ -284,6 +284,41 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   display: flex;
   flex-direction: column;
 }
+
+/* Temporarily disabled chart (review state) */
+.chart-box.is-under-review .chart-canvas {
+  filter: blur(7px) saturate(0.75);
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+}
+
+.chart-box.is-under-review .chart-fullscreen-btn {
+  display: none;
+}
+
+.chart-review-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  background: rgba(247, 247, 245, 0.26);
+  backdrop-filter: blur(2px);
+}
+
+.chart-review-overlay span {
+  font-size: clamp(1.05rem, 1.35vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #6f5a5a;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e1d6d6;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+}
 .chart-header {
   padding: 0.85rem 1rem 0.7rem;
   border-bottom: 1px solid var(--border);
@@ -604,7 +639,11 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   z-index: 1;
 }
-.narrative-card:hover,
+.narrative-card:hover {
+  opacity: 0.85;
+  background: rgba(0,0,0,0.02);
+  z-index: 10;
+}
 .narrative-card.is-active {
   opacity: 1;
   background: rgba(0,0,0,0.03);
@@ -637,13 +676,9 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   /* pointer-events stays none — text visible but mouse passes through */
 }
 
-section[data-act="1"] .narrative-card:hover,
 section[data-act="1"] .narrative-card.is-active { border-left-color: var(--accent-1); }
-section[data-act="2"] .narrative-card:hover,
 section[data-act="2"] .narrative-card.is-active { border-left-color: var(--accent-2); }
-section[data-act="3"] .narrative-card:hover,
 section[data-act="3"] .narrative-card.is-active { border-left-color: var(--accent-3); }
-section[data-act="4"] .narrative-card:hover,
 section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accent-4); }
 
 /* ── SECONDARY PAGES (about, datasets) ──────────────────── */

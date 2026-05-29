@@ -58,6 +58,11 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   incomeRaw.forEach(d => { if (d.code && d.continent) codeToContinent[d.code] = d.continent; });
   lifeRaw.forEach(d => { if (d.code && d.continent && !codeToContinent[d.code]) codeToContinent[d.code] = d.continent; });
   povertyRaw.forEach(d => { if (d.code && d.continent && !codeToContinent[d.code]) codeToContinent[d.code] = d.continent; });
+  const mappableCodes = new Set(
+    countries
+      .map(f => numericToAlpha3[+f.id] || '')
+      .filter(code => code && INTERACTIVE_CONTINENTS.has(codeToContinent[code]))
+  );
 
   function buildMap(raw) {
     const m = {};
@@ -153,7 +158,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const svg = mapDiv.append('svg')
     .attr('width', W).attr('height', H)
     .style('width', '100%').style('height', '100%')
-    .style('background', '#eef2f7').style('display', 'block').style('border-radius', '0')
+    .style('background', '#edf1f6').style('display', 'block').style('border-radius', '0')
     .style('cursor', 'grab');
 
   svg.append('defs').append('clipPath').attr('id', `chm-clip-${isFullscreen}`)
@@ -187,14 +192,45 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     document.body.appendChild(tipEl);
   }
 
-  const vals = Object.values(incomeMap).flatMap(y => Object.values(y)).filter(v => v > 0);
-  const [vLo, vHi] = d3.extent(vals);
-  const colorScale = d3.scaleSequential(d3.interpolateRgb('#fff8b8', '#b8860b')).domain([vLo, vHi]);
+  const MAP_BASE_FILL = '#cfd6e0';
+  const MAP_NODATA_FILL = '#bcc5d1';
+  const CHORO_COLORS = [
+    '#f6f8fc',
+    '#e8eef7',
+    '#d4e1f1',
+    '#bdd2e9',
+    '#9fbde0',
+    '#7ea5d1',
+    '#5f8dc1'
+  ];
+  const colorScale = d3.scaleQuantile().range(CHORO_COLORS);
 
   function getYearData(year) {
     const ys = incomeYears;
     const best = ys.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
     return incomeMap[best] || {};
+  }
+
+  function getYearDomain(data) {
+    const yearVals = Object.entries(data)
+      .filter(([code, v]) => mappableCodes.has(code) && v != null && v > 0)
+      .map(([, v]) => v);
+    const [lo, hi] = d3.extent(yearVals);
+    if (lo == null || hi == null) return [0, 1];
+    if (lo === hi) return [Math.max(0, lo - 1), hi + 1];
+    return [lo, hi];
+  }
+
+  function getYearValues(data) {
+    return Object.entries(data)
+      .filter(([code, v]) => mappableCodes.has(code) && v != null && v > 0)
+      .map(([, v]) => v);
+  }
+
+  function fmtLegendValue(v) {
+    if (v >= 1e6) return `$${(v / 1e6).toFixed(1)}M`;
+    if (v >= 1e3) return `$${Math.round(v / 1e3)}k`;
+    return `$${Math.round(v)}`;
   }
 
   function isInteractiveCountry(code) {
@@ -203,12 +239,14 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   function updateColors(transition = true) {
     const data = getYearData(currentYear);
+    const vals = getYearValues(data);
+    colorScale.domain(vals.length ? vals : [0, 1]);
     const upd  = transition ? paths.transition().duration(300) : paths;
     upd.attr('fill', d => {
       const code = numericToAlpha3[+d.id] || '';
-      if (!isInteractiveCountry(code)) return '#d8dce4';
+      if (!isInteractiveCountry(code)) return MAP_BASE_FILL;
       const v = data[code];
-      return v != null ? colorScale(v) : '#c8cdd4';
+      return v != null ? colorScale(v) : MAP_NODATA_FILL;
     })
     .attr('pointer-events', d => {
       const code = numericToAlpha3[+d.id] || '';
@@ -228,8 +266,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const legG = svg.append('g').attr('class', 'chm-legend');
   function updateLegend() {
     legG.selectAll('*').remove();
+    const data = getYearData(currentYear);
+    const vals = getYearValues(data).sort((a, b) => a - b);
+    if (!vals.length) return;
+    colorScale.domain(vals.length ? vals : [0, 1]);
 
-    const STEPS = 5;
+    const STEPS = CHORO_COLORS.length;
     const SW = compact ? 12 : 14, SH = compact ? 12 : 14, GAP = compact ? 3 : 4, LABEL_X = SW + (compact ? 5 : 7);
     const rowH = SH + GAP;
     const extraRows = 2; // separator + no-data
@@ -250,22 +292,25 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#888')
       .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE');
 
-    // Build linearly spaced thresholds
-    const thresholds = d3.range(STEPS).map(i => {
-      const t = 1 - i / (STEPS - 1);
-      return vLo + t * (vHi - vLo);
-    });
+    const q = colorScale.quantiles(); // ascending cut points, length STEPS-1
+    const bins = [];
+    for (let i = 0; i < STEPS; i++) {
+      const lo = i === 0 ? vals[0] : q[i - 1];
+      const hi = i === STEPS - 1 ? vals[vals.length - 1] : q[i];
+      bins.push({ lo, hi, color: CHORO_COLORS[i] });
+    }
+    bins.reverse(); // high -> low in legend
 
-    thresholds.forEach((v, i) => {
+    bins.forEach((b, i) => {
       const cy = py + 18 + i * rowH;
       legG.append('rect')
         .attr('x', px).attr('y', cy)
         .attr('width', SW).attr('height', SH).attr('rx', 3)
-        .attr('fill', colorScale(v));
+        .attr('fill', b.color);
       legG.append('text')
         .attr('x', px + LABEL_X).attr('y', cy + SH / 2 + 4)
         .attr('font-size', compact ? 8 : 9).attr('fill', '#444')
-        .text(`$${d3.format('.2s')(v)}`);
+        .text(i === 0 ? `≥ ${fmtLegendValue(b.lo)}` : fmtLegendValue(b.lo));
     });
 
     // No Data
@@ -273,7 +318,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     legG.append('rect')
       .attr('x', px).attr('y', ndY)
       .attr('width', SW).attr('height', SH).attr('rx', 3)
-      .attr('fill', '#c8cdd4');
+      .attr('fill', MAP_NODATA_FILL);
     legG.append('text')
       .attr('x', px + LABEL_X).attr('y', ndY + SH / 2 + 4)
       .attr('font-size', compact ? 8 : 9).attr('fill', '#888').text('No data');
