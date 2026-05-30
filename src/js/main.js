@@ -33,6 +33,157 @@ function formatNumber(n, d = 0) {
   return new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 }
 
+function getCssToken(name, fallback = '') {
+  const token = getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim();
+  return token || fallback;
+}
+
+function resolveChartColor(ref, fallback = '') {
+  if (!ref) return fallback;
+  if (typeof ref !== 'string') return fallback;
+  if (ref.startsWith('--')) return getCssToken(ref.slice(2), fallback);
+  return ref;
+}
+
+function hexToRgbComponents(hex) {
+  const normalized = resolveChartColor(hex, hex).replace('#', '').trim();
+  if (!normalized) return null;
+  const full = normalized.length === 3
+    ? normalized.split('').map(ch => ch + ch).join('')
+    : normalized;
+  if (full.length !== 6 || /[^0-9a-f]/i.test(full)) return null;
+  return {
+    r: Number.parseInt(full.slice(0, 2), 16),
+    g: Number.parseInt(full.slice(2, 4), 16),
+    b: Number.parseInt(full.slice(4, 6), 16),
+  };
+}
+
+function colorToRgba(ref, alpha, fallback = '#000000') {
+  const rgb = hexToRgbComponents(ref || fallback) || hexToRgbComponents(fallback);
+  if (!rgb) return `rgba(0,0,0,${alpha})`;
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
+
+function mixColors(a, b, t = 0.5) {
+  const c1 = hexToRgbComponents(a);
+  const c2 = hexToRgbComponents(b);
+  if (!c1 || !c2) return resolveChartColor(a, b);
+  const clamp = Math.max(0, Math.min(1, t));
+  const r = Math.round(c1.r + (c2.r - c1.r) * clamp);
+  const g = Math.round(c1.g + (c2.g - c1.g) * clamp);
+  const bCh = Math.round(c1.b + (c2.b - c1.b) * clamp);
+  return `#${[r, g, bCh].map(v => v.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function tintColor(ref, amount = 0.3) {
+  return mixColors(resolveChartColor(ref, ref), '#ffffff', amount);
+}
+
+function shadeColor(ref, amount = 0.25) {
+  return mixColors(resolveChartColor(ref, ref), '#111111', amount);
+}
+
+const CONTINENT_TOKEN_MAP = {
+  'Africa': 'continent-africa',
+  'Asia': 'continent-asia',
+  'Europe': 'continent-europe',
+  'North America': 'continent-north-america',
+  'South America': 'continent-south-america',
+  'Oceania': 'continent-oceania',
+};
+
+const METRIC_TOKEN_MAP = {
+  income: ['metric-income-0', 'metric-income-1', 'metric-income-2', 'metric-income-3', 'metric-income-4'],
+  education: ['metric-education-0', 'metric-education-1', 'metric-education-2', 'metric-education-3', 'metric-education-4'],
+  risk: ['metric-risk-0', 'metric-risk-1', 'metric-risk-2', 'metric-risk-3', 'metric-risk-4'],
+  migration: ['metric-migration-0', 'metric-migration-1', 'metric-migration-2', 'metric-migration-3', 'metric-migration-4'],
+};
+
+function getContinentColor(continent, fallback = '#888888') {
+  const token = CONTINENT_TOKEN_MAP[continent];
+  return token ? getCssToken(token, fallback) : fallback;
+}
+
+function getMetricStops(metric, fallback = []) {
+  const tokens = METRIC_TOKEN_MAP[metric];
+  if (!tokens) return fallback;
+  const stops = tokens.map(token => getCssToken(token)).filter(Boolean);
+  return stops.length ? stops : fallback;
+}
+
+function getUiColor(key, fallback = '') {
+  const tokenMap = {
+    controlActive: 'control-active',
+    controlActiveStrong: 'control-active-strong',
+    controlMuted: 'control-muted',
+    controlMutedBorder: 'control-muted-border',
+    controlMutedInk: 'control-muted-ink',
+    chartWater: 'chart-water',
+    chartBaseFill: 'chart-base-fill',
+    chartNoDataFill: 'chart-nodata-fill',
+    chartNoDataStripe: 'chart-nodata-stripe',
+    chartGrid: 'chart-grid',
+    chartAxis: 'chart-axis',
+    chartLabel: 'chart-label',
+    chartPanel: 'chart-panel',
+    chartTooltipBg: 'chart-tooltip-bg',
+    chartTooltipInk: 'chart-tooltip-ink',
+    genderGirls: 'gender-girls',
+    genderBoys: 'gender-boys',
+  };
+  const token = tokenMap[key];
+  return token ? getCssToken(token, fallback) : fallback;
+}
+
+function ensureNoDataPattern(svg, patternId, options = {}) {
+  if (!svg || typeof svg.select !== 'function' || !patternId) return '';
+  const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs');
+  defs.select(`#${patternId}`).remove();
+
+  const background = options.background || getUiColor('chartNoDataFill', '#c3baad');
+  const stripe = options.stripe || getUiColor('chartNoDataStripe', shadeColor(background, 0.24));
+  const size = options.size || 6;
+  const strokeWidth = options.strokeWidth || 1.15;
+  const opacity = options.opacity == null ? 0.85 : options.opacity;
+
+  const pattern = defs.append('pattern')
+    .attr('id', patternId)
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('width', size)
+    .attr('height', size);
+
+  pattern.append('rect')
+    .attr('width', size)
+    .attr('height', size)
+    .attr('fill', background);
+
+  pattern.append('path')
+    .attr('d', [
+      `M-${size * 0.5},${size * 0.5} l${size},-${size}`,
+      `M0,${size} l${size},-${size}`,
+      `M${size * 0.5},${size * 1.5} l${size},-${size}`,
+    ].join(' '))
+    .attr('fill', 'none')
+    .attr('stroke', stripe)
+    .attr('stroke-width', strokeWidth)
+    .attr('stroke-linecap', 'square')
+    .attr('opacity', opacity);
+
+  return `url(#${patternId})`;
+}
+
+window.getCssToken = getCssToken;
+window.resolveChartColor = resolveChartColor;
+window.colorToRgba = colorToRgba;
+window.mixColors = mixColors;
+window.tintColor = tintColor;
+window.shadeColor = shadeColor;
+window.getContinentColor = getContinentColor;
+window.getMetricStops = getMetricStops;
+window.getUiColor = getUiColor;
+window.ensureNoDataPattern = ensureNoDataPattern;
+
 function getNarrativeCards(chartId) {
   return Array.from(document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`));
 }

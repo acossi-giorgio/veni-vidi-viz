@@ -8,7 +8,20 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
+  const CONT_COLOR = {
+    'Africa': getContinentColor('Africa', '#c96a3d'),
+    'Europe': getContinentColor('Europe', '#5169b2'),
+  };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const BASE_PLAYER_H = 72;
 
   const [incomeRaw, lifeRaw, popRaw] = await Promise.all([
@@ -72,20 +85,20 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   const svg = chartDiv.append('svg')
     .attr('width', W).attr('height', H)
     .style('width', '100%').style('height', '100%').style('display', 'block')
-    .style('background', '#fff').style('border-radius', '10px 10px 0 0')
+    .style('background', getCssToken('surface-raised', '#ffffff')).style('border-radius', '10px 10px 0 0')
     .style('font-family', 'Roboto Slab, serif');
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
   // Gridlines
   const gridG = g.append('g');
-  yS.ticks(6).forEach(t => gridG.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+  yS.ticks(6).forEach(t => gridG.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', CHART_GRID).attr('stroke-width', 1));
   xTicks.forEach(t => {
     if (t < incomeDomain[0] || t > incomeDomain[1]) return;
     gridG.append('line')
       .attr('x1', xS(t)).attr('x2', xS(t))
       .attr('y1', 0).attr('y2', ih)
-      .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+      .attr('stroke', CHART_GRID).attr('stroke-width', 1);
   });
 
   // Reference guides requested for quick reading on the X axis.
@@ -97,15 +110,15 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     refG.append('line')
       .attr('x1', ref.x).attr('x2', ref.x)
       .attr('y1', 0).attr('y2', ih)
-      .attr('stroke', '#f0f0f0')
+      .attr('stroke', CHART_GRID)
       .attr('stroke-width', 1);
   });
 
   // Axes (X rebuilt on scale toggle)
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
-  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#888');
+  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
   g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
+  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Aspettativa di vita (anni)');
 
   xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
@@ -117,27 +130,27 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     .style('position', 'absolute')
     .style('bottom', (PLAYER_H + (compact ? 6 : 10)) + 'px').style('right', compact ? '8px' : '12px')
     .style('width', LEG_W + 'px').style('background', 'rgba(255,255,255,0.94)')
-    .style('border', '1px solid #d8dce8').style('border-radius', '8px')
+    .style('border', `1px solid ${UI_MUTED_BORDER}`).style('border-radius', '8px')
     .style('padding', compact ? '8px 9px' : '10px 12px').style('z-index', '15')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
 
-  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', compact ? '4px' : '6px').text('Continente');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', compact ? '4px' : '6px').text('Continente');
 
   ['Africa', 'Europe'].forEach(cont => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
     row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', CONT_COLOR[cont]).style('flex-shrink', '0').style('opacity', '0.8');
-    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', '#444').text(cont);
+    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', CHART_LABEL).text(cont);
   });
 
-  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', '#aaa').style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
 
   (compact ? [5e6, 50e6] : [5e6, 50e6, 200e6]).forEach(p => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
     const r = rS(p);
     const sz = Math.round(r * 2);
     row.append('div').style('width', sz + 'px').style('height', sz + 'px').style('border-radius', '50%')
-      .style('border', '1.5px solid #bbb').style('flex-shrink', '0').style('box-sizing', 'border-box');
-    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', '#777').text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
+      .style('border', `1.5px solid ${CHART_AXIS}`).style('flex-shrink', '0').style('box-sizing', 'border-box');
+    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', UI_MUTED_INK).text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
   });
 
   const bubblesG = g.append('g');
@@ -146,7 +159,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   let tipEl = document.getElementById('gapminder-tip');
   if (!tipEl) {
     tipEl = document.createElement('div'); tipEl.id = 'gapminder-tip';
-    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: 'rgba(20,20,40,0.88)', color: '#fff', padding: '7px 11px', borderRadius: '5px', fontSize: '12px', lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap' });
+    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: TOOLTIP_BG, color: TOOLTIP_INK, padding: '7px 11px', borderRadius: '5px', fontSize: '12px', lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap' });
     document.body.appendChild(tipEl);
   }
 
@@ -200,8 +213,8 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   // ── Player bar ────────────────────────────────────────────
   const playerBar = d3.select(container).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
-    .style('height', PLAYER_H + 'px').style('background', '#fff')
-    .style('border-radius', '0 0 10px 10px').style('border-top', '1px solid #e8eef7')
+    .style('height', PLAYER_H + 'px').style('background', getCssToken('surface-raised', '#ffffff'))
+    .style('border-radius', '0 0 10px 10px').style('border-top', `1px solid ${CHART_GRID}`)
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', compact ? '0 10px' : '0 16px').style('gap', compact ? '10px' : '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
@@ -211,9 +224,9 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   function mkCtrlBtn(inner, title) {
     return ctrlWrap.append('button').attr('title', title)
       .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', UI_MUTED)
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('color', '#4a6fa5')
+      .style('justify-content', 'center').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
       .html(inner);
   }
@@ -226,7 +239,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   const btnPlay = ctrlWrap.append('button')
     .style('width', compact ? '32px' : '36px').style('height', compact ? '32px' : '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
     .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
@@ -240,7 +253,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   function startPlay() {
     playing = true;
-    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
     playTimer = setInterval(() => {
       currentYear = currentYear < YEAR_MAX ? incomeYears[incomeYears.indexOf(currentYear) + 1] : YEAR_MIN;
       draw(true);
@@ -249,21 +262,21 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   function stopPlay() {
     playing = false; clearInterval(playTimer); playTimer = null;
-    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
   }
 
   const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');
-  const labelRow = timelineWrap.append('div').style('display', 'flex').style('justify-content', 'space-between').style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px').style('pointer-events', 'none');
+  const labelRow = timelineWrap.append('div').style('display', 'flex').style('justify-content', 'space-between').style('font-size', '8.5px').style('color', CHART_AXIS).style('margin-bottom', '2px').style('pointer-events', 'none');
   incomeYears.filter((y, i) => i % 5 === 0 || i === incomeYears.length - 1).forEach(y => labelRow.append('span').text(y));
 
   const sliderEl = timelineWrap.append('input').attr('type', 'range')
     .attr('min', YEAR_MIN).attr('max', YEAR_MAX).attr('step', 1).attr('value', currentYear)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
     .on('input', function() { stopPlay(); currentYear = +this.value; draw(false); });
 
   const yearDisplay = playerBar.append('div')
-    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
     .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 

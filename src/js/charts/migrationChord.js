@@ -44,38 +44,54 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const migRaw = await d3.csv('datasets/processed/migration.csv', d3.autoType);
 
-  const DATA_YEARS = [2000, 2005, 2010, 2015, 2020];
+  const DATA_YEARS = [...new Set(migRaw.map(d => d.year))].sort((a, b) => a - b);
+  const MIN_YEAR = DATA_YEARS[0];
+  const MAX_YEAR = DATA_YEARS[DATA_YEARS.length - 1];
 
-  // Linear interpolation between 5-year data points → annual granularity
   function getYearData(year) {
-    const clamped = Math.max(2000, Math.min(2020, year));
-    if (DATA_YEARS.includes(clamped)) return migRaw.filter(d => d.year === clamped);
-    let i = 0;
-    while (i < DATA_YEARS.length - 1 && DATA_YEARS[i + 1] < clamped) i++;
-    const y0 = DATA_YEARS[i], y1 = DATA_YEARS[i + 1];
-    const t = (clamped - y0) / (y1 - y0);
-    const rows0 = migRaw.filter(d => d.year === y0);
-    const map1 = new Map();
-    migRaw.filter(d => d.year === y1).forEach(d => map1.set(`${d.origin_code}|${d.dest_code}`, d.stock));
-    return rows0.map(d => {
-      const s1 = map1.get(`${d.origin_code}|${d.dest_code}`) ?? 0;
-      return { ...d, year: clamped, stock: Math.round(d.stock + t * (s1 - d.stock)) };
-    }).filter(d => d.stock > 0);
+    return migRaw.filter(d => d.year === year);
+  }
+
+  function clampYearToAvailable(year) {
+    let closest = DATA_YEARS[0];
+    let minDiff = Math.abs(year - closest);
+    for (const candidate of DATA_YEARS) {
+      const diff = Math.abs(year - candidate);
+      if (diff < minDiff) {
+        closest = candidate;
+        minDiff = diff;
+      }
+    }
+    return closest;
+  }
+
+  function yearToIndex(year) {
+    return Math.max(0, DATA_YEARS.indexOf(clampYearToAvailable(year)));
   }
 
   const CONT_COLOR = {
-    'Africa':        '#e07b39',
-    'Asia':          '#2980b9',
-    'Europe':        '#5aab6e',
-    'North America': '#8e44ad',
-    'South America': '#d35400',
-    'Oceania':       '#16a085',
+    'Africa': getContinentColor('Africa', '#c96a3d'),
+    'Asia': getContinentColor('Asia', '#4f97c8'),
+    'Europe': getContinentColor('Europe', '#5169b2'),
+    'North America': getContinentColor('North America', '#9a68c7'),
+    'South America': getContinentColor('South America', '#5f9c63'),
+    'Oceania': getContinentColor('Oceania', '#d39b3d'),
   };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const CHART_WATER = getUiColor('chartWater', '#ece8e0');
+  const CHART_BASE_FILL = getUiColor('chartBaseFill', '#d6d0c5');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
 
   d3.select('body').selectAll('.tooltip-chord').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-chord')
-    .style('position', 'absolute').style('background', 'rgba(0,0,0,0.88)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '10px 14px')
+    .style('position', 'absolute').style('background', TOOLTIP_BG)
+    .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '10px 14px')
     .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.6')
     .style('z-index', '10000').style('display', 'none').style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)');
 
@@ -90,7 +106,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   function hideTip() { tooltip.style('display', 'none'); }
 
   const containerNode = container.node();
-  let currentYear = 2020;
+  let currentYear = MAX_YEAR;
   let mode = 'sankey';
   let animTimer = null;
   let sankeyDrillContinents = new Set(); // expanded dest continents
@@ -106,7 +122,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const pillBar = header.append('div')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+    .style('border-radius', '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
     .style('padding', '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)')
     .style('position', 'relative').style('z-index', '20');
@@ -124,9 +140,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   function updateModeBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#4a6fa5' : 'transparent')
-      .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      .style('background', active ? UI_ACTIVE : 'transparent')
+      .style('color',      active ? '#fff'    : UI_MUTED_INK)
+      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     set(btnSankey, mode === 'sankey');
     set(btnMap,    mode === 'map');
   }
@@ -157,32 +173,36 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     return ctrlWrap.append('button')
       .attr('title', title)
       .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', UI_MUTED)
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
+      .style('justify-content', 'center').style('font-size', '13px').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s')
       .style('padding', '0').style('line-height', '1')
       .html(inner);
   }
 
+  function syncYearUi() {
+    slider.property('value', yearToIndex(currentYear));
+    yearLabel.text(currentYear);
+  }
+
   const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => {
     stopAnim();
-    currentYear = 2000;
-    slider.property('value', 0);
-    yearLabel.text(currentYear);
+    currentYear = MIN_YEAR;
+    syncYearUi();
     draw();
   });
   const btnPrev = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
     stopAnim();
-    currentYear = Math.max(2000, currentYear - 1);
-    slider.property('value', currentYear - 2000);
-    yearLabel.text(currentYear);
+    const idx = yearToIndex(currentYear);
+    currentYear = DATA_YEARS[Math.max(0, idx - 1)];
+    syncYearUi();
     draw();
   });
 
   const playBtn = ctrlWrap.append('button')
     .style('width', '36px').style('height', '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
     .style('padding', '0').style('line-height', '1')
@@ -190,15 +210,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
     .on('click', () => {
       if (animTimer) { stopAnim(); return; }
-      let y = currentYear >= 2020 ? 2000 : currentYear;
-      playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+      let idx = currentYear >= MAX_YEAR ? 0 : yearToIndex(currentYear);
+      playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
       function step() {
-        currentYear = y;
-        slider.property('value', y - 2000);
-        yearLabel.text(y);
+        currentYear = DATA_YEARS[idx];
+        syncYearUi();
         draw();
-        y++;
-        if (y <= 2020) animTimer = setTimeout(step, 1200);
+        idx++;
+        if (idx < DATA_YEARS.length) animTimer = setTimeout(step, 1200);
         else stopAnim();
       }
       step();
@@ -206,9 +225,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
     stopAnim();
-    currentYear = Math.min(2020, currentYear + 1);
-    slider.property('value', currentYear - 2000);
-    yearLabel.text(currentYear);
+    const idx = yearToIndex(currentYear);
+    currentYear = DATA_YEARS[Math.min(DATA_YEARS.length - 1, idx + 1)];
+    syncYearUi();
     draw();
   });
 
@@ -218,31 +237,31 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   const labelRow = timelineWrap.append('div')
     .style('display', 'flex').style('justify-content', 'space-between')
-    .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
+    .style('font-size', '8.5px').style('color', UI_MUTED_INK).style('margin-bottom', '2px')
     .style('pointer-events', 'none');
   DATA_YEARS.forEach(y => labelRow.append('span').text(y));
 
   const slider = timelineWrap.append('input')
     .attr('type', 'range')
-    .attr('min', 0).attr('max', 20).attr('step', 1).attr('value', 20)
+    .attr('min', 0).attr('max', DATA_YEARS.length - 1).attr('step', 1).attr('value', DATA_YEARS.length - 1)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
     .on('input', function() {
       stopAnim();
-      currentYear = 2000 + +this.value;
-      yearLabel.text(currentYear);
+      currentYear = DATA_YEARS[+this.value];
+      syncYearUi();
       draw();
     });
 
   // Year display — bottom-right of player bar
   const yearLabel = footer.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('font-size', '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
     .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 
   function stopAnim() {
     if (animTimer) { clearTimeout(animTimer); animTimer = null; }
-    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
   }
 
   const HEADER_H = 44; // approximate height of the top pill-bar header
@@ -344,7 +363,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const rDst     = d3.scaleSqrt().domain([0, d3.max(dstNodes, n => n.total)||1]).range([10, 26]);
 
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
-      .style('display','block').style('font-family','inherit').style('background','#fff');
+      .style('display','block').style('font-family','inherit').style('background', getCssToken('surface-raised', '#ffffff'));
     const g = svg.append('g');
     const zoom = d3.zoom().scaleExtent([0.1, 4]).on('zoom', e => g.attr('transform', e.transform));
     svg.call(zoom).on('dblclick.zoom', null);
@@ -357,18 +376,18 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
      ['⌂',  () => svg.transition().duration(280).call(zoom.transform, d3.zoomIdentity)],
     ].forEach(([lbl, fn]) => ctrl.append('button').text(lbl)
       .style('width','26px').style('height','26px').style('font-size','14px').style('line-height','1')
-      .style('border','1px solid #ddd').style('border-radius','5px').style('background','#fff')
-      .style('cursor','pointer').style('color','#555').on('click', fn));
+      .style('border',`1px solid ${UI_MUTED_BORDER}`).style('border-radius','5px').style('background',getCssToken('surface-raised', '#ffffff'))
+      .style('cursor','pointer').style('color',UI_MUTED_INK).on('click', fn));
 
     const linkLayer  = g.append('g');
     const nodeLayer  = g.append('g');
     const labelLayer = g.append('g');
 
     const linkEls = linkLayer.selectAll('line').data(links).join('line')
-      .attr('stroke','#cccccc').attr('stroke-linecap','round')
+      .attr('stroke',CHART_BASE_FILL).attr('stroke-linecap','round')
       .attr('stroke-width', d => wScale(d.value)).attr('opacity', 0.55)
       .on('mousemove', (e, d) => showTip(e,
-        `<strong style="color:#e07b39">${d.source.name}</strong> → <strong style="color:${CONT_COLOR[d.target.continent]||'#333'}">${d.target.name}</strong><br>` +
+        `<strong style="color:${CONT_COLOR.Africa}">${d.source.name}</strong> → <strong style="color:${CONT_COLOR[d.target.continent]||getCssToken('ink', '#1f1d1a')}">${d.target.name}</strong><br>` +
         `Stock: <strong>${d3.format(',.0f')(d.value)}</strong>`
       )).on('mouseleave', hideTip);
 
@@ -399,9 +418,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       })
       .on('mouseover', (e, d) => {
         linkEls
-          .attr('stroke', l => (l.source===d||l.target===d) ? (d.type==='src' ? '#e07b39' : CONT_COLOR[d.continent]||'#2980b9') : '#f0f0f0')
+          .attr('stroke', l => (l.source===d||l.target===d) ? (d.type==='src' ? CONT_COLOR.Africa : CONT_COLOR[d.continent]||CONT_COLOR.Asia) : CHART_GRID)
           .attr('opacity', l => (l.source===d||l.target===d) ? 0.9 : 0.08);
-        const col  = d.type==='src' ? '#e07b39' : (CONT_COLOR[d.continent]||'#2980b9');
+        const col  = d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia);
         const hint = d.expandable ? ' <span style="opacity:.5;font-size:9px">· espandi</span>'
                    : d.collapsible ? ' <span style="opacity:.5;font-size:9px">· comprimi</span>' : '';
         showTip(e,
@@ -410,17 +429,17 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
           `<strong>${d3.format(',.0f')(d.total)}</strong>`
         );
       })
-      .on('mouseleave', () => { linkEls.attr('stroke','#cccccc').attr('opacity',0.55); hideTip(); });
+      .on('mouseleave', () => { linkEls.attr('stroke',CHART_BASE_FILL).attr('opacity',0.55); hideTip(); });
 
     nodeEls.append('circle')
       .attr('r', d => d.type==='src' ? rSrc(d.total) : rDst(d.total))
-      .attr('fill', d => d.type==='src' ? '#e07b39' : (CONT_COLOR[d.continent]||'#2980b9'))
+      .attr('fill', d => d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia))
       .attr('stroke','#fff').attr('stroke-width', 2);
 
     nodeEls.filter(d => d.expandable || d.collapsible).append('circle')
       .attr('r', d => (d.type==='src' ? rSrc(d.total) : rDst(d.total)) + 4)
       .attr('fill','none')
-      .attr('stroke', d => d.type==='src' ? '#e07b39' : (CONT_COLOR[d.continent]||'#2980b9'))
+      .attr('stroke', d => d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia))
       .attr('stroke-width', 1.5)
       .attr('stroke-dasharray', d => d.expandable ? '4,3' : '2,2')
       .attr('opacity', 0.45);
@@ -432,7 +451,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .data(allNodes.filter(d => d.type==='dst' || topSrcSet.has(d.code))).join('text')
       .attr('font-size', d => (!d.collapsible && d.type==='dst') ? 11 : 9)
       .attr('font-weight', d => (!d.collapsible && d.type==='dst') || d.code==='AFRICA' ? '700' : '400')
-      .attr('fill', d => d.type==='src' ? '#e07b39' : '#333')
+      .attr('fill', d => d.type==='src' ? CONT_COLOR.Africa : getCssToken('ink', '#1f1d1a'))
       .style('pointer-events','none')
       .text(d => d.name.length > 14 ? d.name.slice(0,13)+'…' : d.name);
 
@@ -474,7 +493,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const nodePadding = isVeryCompact ? 7 : (isCompact ? 8 : 10);
 
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
-      .style('display', 'block').style('background', '#fff').style('font-family', 'inherit');
+      .style('display', 'block').style('background', getCssToken('surface-raised', '#ffffff')).style('font-family', 'inherit');
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
     // ── Build nodes & links ─────────────────────────────────────
@@ -484,7 +503,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     let nodes = [], links = [];
 
     // Always show all continents at layer 1
-    const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: '#e07b39' };
+    const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: CONT_COLOR.Africa };
     nodes = [srcNode];
     destConts.forEach(cont => {
       nodes.push({ id: cont, name: cont, layer: 1, col: CONT_COLOR[cont] || '#888' });
@@ -729,7 +748,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     function origFill(a3) {
       const stock = origStockMap.get(a3);
       if (!stock) return null;
-      return hexToRgba('#e07b39', origOpScale(stock));
+      return hexToRgba(CONT_COLOR.Africa, origOpScale(stock));
     }
 
     // ── SVG + zoom ───────────────────────────────────────────────
@@ -785,7 +804,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       if (activeSrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;
         const rows  = bySrc.get(a3) || [];
-        let html = `<strong style="color:#e07b39">${origNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
+        let html = `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
         html += `Totale emigrati: <strong>${fmt(total)}</strong>`;
         if (rows.length) {
           html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PRINCIPALI DESTINAZIONI</span>`;
@@ -868,8 +887,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   draw();
 
   containerNode._migrationShowYear = function(year) {
-    stopAnim(); mode = 'network'; currentYear = Math.max(2000, Math.min(2020, year));
-    slider.property('value', currentYear - 2000); yearLabel.text(currentYear);
+    stopAnim(); mode = 'network'; currentYear = clampYearToAvailable(year);
+    syncYearUi();
     header.selectAll('.chord-mode-btn')
       .style('background', d => d === 'network' ? '#333' : '#fff')
       .style('color', d => d === 'network' ? '#fff' : '#333');
@@ -894,6 +913,18 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   if (!containerEl) return;
   containerEl.innerHTML = '';
   containerEl.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
+
+  const CONT_COLOR = {
+    Africa: getContinentColor('Africa', '#c96a3d'),
+  };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_BASE_FILL = getUiColor('chartBaseFill', '#d6d0c5');
+  const CHART_NODATA_FILL = getUiColor('chartNoDataFill', '#c3baad');
 
   const [remRaw, incomeRaw, popRaw, worldData] = await Promise.all([
     d3.csv('datasets/processed/remittances.csv', d3.autoType),
@@ -944,7 +975,6 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   /* ── Color scales ───────────────────────────────────────── */
   const COLORS        = ['#edf5e1', '#c5e1a5', '#81c784', '#4caf50', '#2e7d32', '#1b5e20'];
-  const NO_DATA_COLOR = '#cccccc';
   // pct scale: thresholds in %
   const PCT_THRESHOLDS = [1, 3, 7, 12, 20];
   const PCT_SCALE      = d3.scaleThreshold().domain(PCT_THRESHOLDS).range(COLORS);
@@ -953,8 +983,8 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   const ABS_SCALE      = d3.scaleThreshold().domain(ABS_THRESHOLDS).range(COLORS);
 
   function colorScale(d) {
-    if (metricMode === 'pct') return d.value != null ? PCT_SCALE(d.value) : NO_DATA_COLOR;
-    return d.absUSD != null ? ABS_SCALE(d.absUSD) : NO_DATA_COLOR;
+    if (metricMode === 'pct') return d.value != null ? PCT_SCALE(d.value) : null;
+    return d.absUSD != null ? ABS_SCALE(d.absUSD) : null;
   }
   function displayVal(d) {
     if (metricMode === 'pct') return d.value != null ? d.value.toFixed(1) + '% PIL' : 'N/D';
@@ -1007,9 +1037,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   const playerBar = d3.select(containerEl).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px')
-    .style('background', '#fff')
+    .style('background', getCssToken('surface-raised', '#ffffff'))
     .style('border-radius', '0 0 10px 10px')
-    .style('border-top', '1px solid #e8eef7')
+    .style('border-top', `1px solid ${CHART_GRID}`)
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
@@ -1021,9 +1051,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     return ctrlWrap.append('button')
       .attr('title', title)
       .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', UI_MUTED)
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
+      .style('justify-content', 'center').style('font-size', '13px').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s')
       .style('padding', '0').style('line-height', '1')
       .html(inner);
@@ -1044,7 +1074,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   const playBtn = ctrlWrap.append('button')
     .style('width', '36px').style('height', '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
     .style('padding', '0').style('line-height', '1')
@@ -1063,7 +1093,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   const labelRow = timelineWrap.append('div')
     .style('display', 'flex').style('justify-content', 'space-between')
-    .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
+    .style('font-size', '8.5px').style('color', UI_MUTED_INK).style('margin-bottom', '2px')
     .style('pointer-events', 'none');
   [years[0], years[Math.floor(years.length / 2)], years[years.length - 1]]
     .filter((y, i, a) => a.indexOf(y) === i)
@@ -1073,25 +1103,25 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     .attr('min', 0).attr('max', years.length - 1)
     .attr('value', years.length - 1).attr('step', 1)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block');
+    .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block');
 
   /* Year display */
   const yearLabel = playerBar.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('font-size', '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
     .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(curYear);
 
   function stopPlay() {
     playing = false;
     if (playTimer) { clearTimeout(playTimer); playTimer = null; }
-    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
   }
 
   /* ── Pill buttons — top bar (in-flow, above chart) ───────── */
   const pillBar = d3.select(containerEl).append('div')
     .style('position', 'absolute').style('top', '8px').style('left', '8px')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', '9px').style('border', '1px solid #d0d8e8')
+    .style('border-radius', '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
     .style('padding', '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)').style('z-index', '10');
 
@@ -1106,7 +1136,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   const btnMap  = mkBtn('Mappa',   'map');
 
   // Separator
-  pillBar.append('div').style('width', '1px').style('background', '#d0d8e8').style('margin', '4px 2px');
+  pillBar.append('div').style('width', '1px').style('background', UI_MUTED_BORDER).style('margin', '4px 2px');
 
   function mkMetricBtn(label, val) {
     return pillBar.append('button')
@@ -1120,9 +1150,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   function updateBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#4a6fa5' : 'transparent')
-      .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      .style('background', active ? UI_ACTIVE : 'transparent')
+      .style('color',      active ? '#fff'    : UI_MUTED_INK)
+      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     set(btnTree, viewMode === 'treemap');
     set(btnMap,  viewMode === 'map');
     set(btnPct,  metricMode === 'pct');
@@ -1132,6 +1162,10 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
   /* ── Legend — discrete swatches, bottom-right ──────────── */
   function drawLegend(svg, W, H) {
+    const noDataPattern = ensureNoDataPattern(svg, `rem-nodata-${isFullscreen ? 'fs' : 'ed'}-${metricMode}`, {
+      background: CHART_NODATA_FILL,
+      stripe: getUiColor('chartNoDataStripe', shadeColor(CHART_NODATA_FILL, 0.24)),
+    });
     const SW = 14, SH = 14, GAP = 4, TW = 72;
     const rowH   = SH + GAP;
     const labels = metricMode === 'pct' ? [
@@ -1141,7 +1175,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       { color: COLORS[2], text: '3 – 7%'   },
       { color: COLORS[1], text: '1 – 3%'   },
       { color: COLORS[0], text: '< 1%'     },
-      ...(viewMode !== 'treemap' ? [{ color: NO_DATA_COLOR, text: 'No data' }] : []),
+      ...(viewMode !== 'treemap' ? [{ fill: noDataPattern, stroke: UI_MUTED_BORDER, text: 'No data' }] : []),
     ] : [
       { color: COLORS[5], text: '> 10 Mld' },
       { color: COLORS[4], text: '5 – 10 Mld' },
@@ -1149,7 +1183,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       { color: COLORS[2], text: '500M – 1Mld' },
       { color: COLORS[1], text: '100 – 500M' },
       { color: COLORS[0], text: '< 100M'   },
-      ...(viewMode !== 'treemap' ? [{ color: NO_DATA_COLOR, text: 'No data' }] : []),
+      ...(viewMode !== 'treemap' ? [{ fill: noDataPattern, stroke: UI_MUTED_BORDER, text: 'No data' }] : []),
     ];
     const boxW = SW + 8 + TW + 10;
     const boxH = 14 + labels.length * rowH + 8;
@@ -1168,7 +1202,9 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       const y = 14 + i * rowH + GAP / 2;
       legG.append('rect').attr('x', 8).attr('y', y)
         .attr('width', SW).attr('height', SH).attr('rx', 2)
-        .attr('fill', item.color).attr('stroke', '#ddd').attr('stroke-width', 0.5);
+        .attr('fill', item.fill || item.color)
+        .attr('stroke', item.stroke || '#ddd')
+        .attr('stroke-width', 0.5);
       legG.append('text').attr('x', 8 + SW + 6).attr('y', y + SH - 3)
         .attr('font-size', 9).attr('fill', '#444').text(item.text);
     });
@@ -1249,16 +1285,21 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
 
     const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit');
+    const noDataPattern = ensureNoDataPattern(svg, `rem-map-nodata-${isFullscreen ? 'fs' : 'ed'}-${metricMode}`, {
+      background: CHART_NODATA_FILL,
+      stripe: getUiColor('chartNoDataStripe', shadeColor(CHART_NODATA_FILL, 0.24)),
+    });
     const g = svg.append('g').attr('transform', `translate(${PAD},${PAD})`);
 
     g.selectAll('.bg-cty').data(allFeatures).join('path').attr('class', 'bg-cty')
-      .attr('d', path).attr('fill', '#e8e8e8').attr('stroke', '#fff').attr('stroke-width', 0.4);
+      .attr('d', path).attr('fill', CHART_BASE_FILL).attr('stroke', '#fff').attr('stroke-width', 0.4);
 
     g.selectAll('.af-cty').data(africaFeatures).join('path').attr('class', 'af-cty')
       .attr('d', path)
       .attr('fill', f => {
         const rec = dataByCode.get(_MIG_NUM_TO_A3[+f.id]);
-        return rec ? colorScale(rec) : NO_DATA_COLOR;
+        const fill = rec ? colorScale(rec) : null;
+        return fill || noDataPattern;
       })
       .attr('stroke', '#fff').attr('stroke-width', 0.8)
       .on('mousemove', (e, f) => {
@@ -1294,7 +1335,7 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
   playBtn.on('click', () => {
     if (playing) { stopPlay(); return; }
     playing = true;
-    playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+    playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
     let idx = years.indexOf(curYear);
     if (idx >= years.length - 1) idx = -1;
     function step() {

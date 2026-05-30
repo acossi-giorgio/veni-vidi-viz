@@ -5,15 +5,68 @@
 
 /* ── DESIGN TOKENS ───────────────────────────────────────── */
 :root {
-  --accent-1: #4a6fa5;
-  --accent-2: #c97c3e;
-  --accent-3: #b04a4a;
-  --accent-4: #5a8a6e;
-  --bg:       #f7f7f5;
-  --surface:  #ffffff;
-  --ink:      #1a1a1a;
-  --ink-muted:#5a5a5a;
-  --border:   #e0e0e0;
+  --accent-1: #5169b2;
+  --accent-2: #b97b38;
+  --accent-3: #a44742;
+  --accent-4: #5f816c;
+  --bg:       #f6f2ec;
+  --surface:  #fffdf9;
+  --ink:      #1f1d1a;
+  --ink-muted:#625b53;
+  --border:   #ddd4c8;
+
+  --surface-raised: #ffffff;
+  --surface-soft: #f1ebe3;
+
+  --continent-africa: #c96a3d;
+  --continent-asia: #4f97c8;
+  --continent-europe: #5169b2;
+  --continent-north-america: #9a68c7;
+  --continent-south-america: #5f9c63;
+  --continent-oceania: #d39b3d;
+
+  --metric-income-0: #eef3f7;
+  --metric-income-1: #d7e2ea;
+  --metric-income-2: #afc1cf;
+  --metric-income-3: #7f9ab2;
+  --metric-income-4: #455f7f;
+
+  --metric-education-0: #f7ecdf;
+  --metric-education-1: #e4bc87;
+  --metric-education-2: #c98643;
+  --metric-education-3: #955924;
+  --metric-education-4: #693913;
+
+  --metric-risk-0: #f4e3de;
+  --metric-risk-1: #e5aea4;
+  --metric-risk-2: #cf7669;
+  --metric-risk-3: #aa4943;
+  --metric-risk-4: #782826;
+
+  --metric-migration-0: #e8f0ea;
+  --metric-migration-1: #bfd0c2;
+  --metric-migration-2: #86a78f;
+  --metric-migration-3: #5d7f68;
+  --metric-migration-4: #3f5947;
+
+  --gender-girls: #b05058;
+  --gender-boys: #5a7fbe;
+
+  --chart-water: #ece8e0;
+  --chart-base-fill: #d6d0c5;
+  --chart-nodata-fill: #c3baad;
+  --chart-nodata-stripe: #8b7f71;
+  --chart-grid: #e8e1d7;
+  --chart-axis: #a49788;
+  --chart-label: #73675c;
+  --chart-panel: rgba(255, 253, 249, 0.94);
+  --chart-tooltip-bg: rgba(28, 25, 23, 0.94);
+  --chart-tooltip-ink: #fffdf8;
+  --control-active: #5169b2;
+  --control-active-strong: #314685;
+  --control-muted: #f4efe7;
+  --control-muted-border: #d9d0c3;
+  --control-muted-ink: #75695d;
 
   --navbar-h: 60px;
   --bar-h:    4px;
@@ -112,7 +165,9 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: var(--surface);
+  background:
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--accent-1) 18%, transparent) 0%, transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-1) 5%, var(--surface)) 0%, var(--surface) 58%);
   border-bottom: 1px solid var(--border);
 }
 .hero-inner {
@@ -216,6 +271,21 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 .chart-section-alt { background: var(--bg); }
 
+.chart-section[data-act="1"] { --section-accent: var(--accent-1); }
+.chart-section[data-act="2"] { --section-accent: var(--accent-2); }
+.chart-section[data-act="3"] { --section-accent: var(--accent-3); }
+.chart-section[data-act="4"] { --section-accent: var(--accent-4); }
+
+.chart-section[data-act] {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--section-accent) 5%, var(--surface)) 0%, var(--surface) 18%, var(--surface) 100%);
+}
+
+.chart-section.chart-section-alt[data-act] {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--section-accent) 4%, var(--bg)) 0%, var(--bg) 18%, var(--bg) 100%);
+}
+
 /* Default layout: text left (2fr) — chart right (3fr) */
 .chart-section-inner {
   max-width: var(--page-max);
@@ -285,7 +355,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   --hint-tooltip-max-w: 420px;
   width: 100%;
   height: clamp(400px, 62vh, 720px);
-  background: var(--surface);
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 2px 18px rgba(0,0,0,.07);
@@ -293,6 +363,16 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   position: relative;
   display: flex;
   flex-direction: column;
+}
+
+.chart-box::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--section-accent, var(--accent-1)) 0%, color-mix(in srgb, var(--section-accent, var(--accent-1)) 42%, white) 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .chart-box.chart-hints-compact {
@@ -359,7 +439,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .chart-header {
   padding: 0.85rem 1rem 0.7rem;
   border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface) 94%, var(--bg));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--section-accent, var(--accent-1)) 6%, var(--surface-raised)) 0%, color-mix(in srgb, var(--surface-raised) 96%, var(--bg)) 100%);
 }
 .chart-title {
   margin: 0;
@@ -684,6 +764,11 @@ div[id^="fullscreen-chart-"] {
   padding-left: 1.05rem;
 }
 
+.chart-dataset-tooltip-list {
+  list-style: none;
+  padding-left: 0;
+}
+
 .missing-data-tooltip-list li,
 .chart-dataset-tooltip-list li,
 .chart-help-tooltip-list li {
@@ -986,12 +1071,12 @@ div[id^="fullscreen-chart-"] {
 }
 .narrative-card:hover {
   opacity: 0.85;
-  background: rgba(0,0,0,0.02);
+  background: color-mix(in srgb, var(--section-accent, var(--accent-1)) 5%, transparent);
   z-index: 10;
 }
 .narrative-card.is-active {
   opacity: 1;
-  background: rgba(0,0,0,0.03);
+  background: color-mix(in srgb, var(--section-accent, var(--accent-1)) 8%, transparent);
   z-index: 30;
 }
 .narrative-card h3 {

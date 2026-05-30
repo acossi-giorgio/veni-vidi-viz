@@ -9,9 +9,15 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   container.style.position = 'relative';
 
   const WORLD_ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
-  const GRADIENT_STOPS = ['#fff4e8', '#f6cfaa', '#ec9d64', '#e07b39', '#a54622'];
-  const COL_AFRICA = '#e07b39';
-  const COL_GREY = '#d7dbe2';
+  const GRADIENT_STOPS = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826']);
+  const COL_AFRICA = getContinentColor('Africa', '#c96a3d');
+  const COL_GREY = getUiColor('chartBaseFill', '#d6d0c5');
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
 
   // Reuse the shared global mapping when available.
   const numericToAlpha3 = typeof _MIG_NUM_TO_A3 !== 'undefined' ? _MIG_NUM_TO_A3 : {};
@@ -95,9 +101,9 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   function updateToggle() {
     [[btnDist, 'dist'], [btnMap, 'map']].forEach(([btn, val]) => {
       const active = viewType === val;
-      btn.style('background', active ? '#4a6fa5' : 'transparent')
-        .style('color', active ? '#fff' : '#7a8aaa')
-        .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      btn.style('background', active ? UI_ACTIVE : 'transparent')
+        .style('color', active ? '#fff' : UI_MUTED_INK)
+        .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     });
   }
   updateToggle();
@@ -123,6 +129,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   const defs = svg.append('defs');
   const gradientId = `mpi-ramp-${isFullscreen ? 'fs' : 'ed'}`;
+  const noDataFill = getUiColor('chartNoDataFill', '#c3baad');
+  const noDataPattern = ensureNoDataPattern(svg, `mpi-nodata-${isFullscreen ? 'fs' : 'ed'}`, {
+    background: noDataFill,
+    stripe: getUiColor('chartNoDataStripe', shadeColor(noDataFill, 0.24)),
+  });
   const grad = defs.append('linearGradient')
     .attr('id', gradientId)
     .attr('x1', '0%').attr('y1', '0%')
@@ -187,14 +198,14 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('width', totalW + 14).attr('height', totalH + 8)
       .attr('rx', 8)
       .attr('fill', 'rgba(255,255,255,0.92)')
-      .attr('stroke', '#d8dce8')
+      .attr('stroke', UI_MUTED_BORDER)
       .attr('stroke-width', 1);
 
     lg.append('text')
       .attr('x', 0).attr('y', 10)
       .attr('font-size', compact ? 7 : 8)
       .attr('font-weight', '700')
-      .attr('fill', '#888')
+      .attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.07em')
       .text(title.toUpperCase());
 
@@ -208,7 +219,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       lg.append('text')
         .attr('x', LABEL_X).attr('y', cy + SH / 2 + 4)
         .attr('font-size', compact ? 8 : 9)
-        .attr('fill', '#444')
+        .attr('fill', CHART_LABEL)
         .text(row.label);
     });
 
@@ -217,11 +228,13 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('x', 0).attr('y', ndY)
       .attr('width', SW).attr('height', SH)
       .attr('rx', 3)
-      .attr('fill', '#c8cdd4');
+      .attr('fill', noDataPattern)
+      .attr('stroke', UI_MUTED_BORDER)
+      .attr('stroke-width', 0.5);
     lg.append('text')
       .attr('x', LABEL_X).attr('y', ndY + SH / 2 + 4)
       .attr('font-size', compact ? 8 : 9)
-      .attr('fill', '#888')
+      .attr('fill', CHART_AXIS)
       .text('No data');
 
     return { width: totalW + 14, height: totalH + 8 };
@@ -276,33 +289,33 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       g.append('line')
         .attr('x1', 0).attr('x2', iw)
         .attr('y1', yS(t)).attr('y2', yS(t))
-        .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+        .attr('stroke', CHART_GRID).attr('stroke-width', 1);
     });
 
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xS).ticks(compact ? 7 : 10).tickFormat(d3.format('.2f')))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa');
-        ax.selectAll('.tick line').attr('stroke', '#dde3ef');
+        ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS);
+        ax.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
       });
 
     g.append('g')
       .call(d3.axisLeft(yS).ticks(5).tickFormat(d => Math.round(d)))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa');
+        ax.selectAll('.tick text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS);
         ax.selectAll('.tick line').remove();
       });
 
     g.append('text')
       .attr('x', iw / 2).attr('y', ih + (compact ? 24 : 28))
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('Indice di Poverta Multidimensionale (MPI)');
     g.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('x', -ih / 2).attr('y', compact ? -30 : -40)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('N° paesi');
 
     drawLegendCard(
@@ -316,10 +329,10 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       g.append('line')
         .attr('x1', xS(severeCut)).attr('x2', xS(severeCut))
         .attr('y1', 0).attr('y2', ih)
-        .attr('stroke', '#b04a4a').attr('stroke-width', 1.5).attr('stroke-dasharray', '5,3');
+        .attr('stroke', getUiColor('genderGirls', '#b05058')).attr('stroke-width', 1.5).attr('stroke-dasharray', '5,3');
       g.append('text')
         .attr('x', xS(severeCut) + 4).attr('y', 14)
-        .attr('font-size', 9).attr('fill', '#b04a4a')
+        .attr('font-size', 9).attr('fill', getUiColor('genderGirls', '#b05058'))
         .text('soglia grave ->');
     }
 
@@ -372,16 +385,16 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const clipId = `mpi-map-clip-${isFullscreen ? 'fs' : 'ed'}`;
 
     svg.attr('height', H).style('height', '100%');
-    svg.style('background', '#eef2f7').style('border-radius', '0');
+    svg.style('background', getUiColor('chartWater', '#ece8e0')).style('border-radius', '0');
     g.attr('transform', 'translate(0,0)');
 
     if (!geoData || !geoData.objects || !geoData.objects.countries) {
       g.append('rect')
         .attr('x', 0).attr('y', 0).attr('width', iw).attr('height', ih)
-        .attr('rx', 10).attr('fill', '#eef2f7').attr('stroke', '#dde3ef');
+        .attr('rx', 10).attr('fill', getUiColor('chartWater', '#ece8e0')).attr('stroke', UI_MUTED_BORDER);
       g.append('text')
         .attr('x', 18).attr('y', 28)
-        .attr('font-size', compact ? 11 : 13).attr('fill', '#7d8491')
+        .attr('font-size', compact ? 11 : 13).attr('fill', UI_MUTED_INK)
         .text('Mappa non disponibile: errore nel caricamento del world atlas.');
       return;
     }
@@ -410,9 +423,9 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('stroke-width', 0.35)
       .attr('fill', d => {
         const code = numericToAlpha3[+d.id] || '';
-        if (!AFRICA_CODES.has(code)) return '#d8dce4';
+        if (!AFRICA_CODES.has(code)) return getUiColor('chartBaseFill', '#d6d0c5');
         const rec = latestMap.get(code);
-        return rec && rec.value != null ? mpiColor(rec.value) : '#c8cdd4';
+        return rec && rec.value != null ? mpiColor(rec.value) : noDataPattern;
       })
       .attr('pointer-events', d => {
         const code = numericToAlpha3[+d.id] || '';

@@ -8,7 +8,17 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
 
-  const COLORS = { Africa: '#e07b39', Europe: '#5aab6e' };
+  const COLORS = {
+    Africa: getContinentColor('Africa', '#c96a3d'),
+    Europe: getContinentColor('Europe', '#5169b2'),
+  };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
 
   const [maternalRaw, childRaw] = await Promise.all([
     d3.csv('datasets/processed/maternal_mortality.csv', d3.autoType),
@@ -44,7 +54,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   const tip = d3.select('body').selectAll('.mortality-tip').data([0]).join('div')
     .attr('class', 'mortality-tip')
     .style('position', 'fixed').style('pointer-events', 'none')
-    .style('background', 'rgba(20,20,40,0.92)').style('color', '#fff')
+    .style('background', TOOLTIP_BG).style('color', TOOLTIP_INK)
     .style('border-radius', '6px').style('padding', '7px 11px')
     .style('font-size', '11px').style('line-height', '1.6')
     .style('z-index', '10000').style('display', 'none');
@@ -55,7 +65,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
 
   const pillBar = topBar.append('div')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+    .style('border-radius', compact ? '8px' : '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
     .style('padding', compact ? '2px' : '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
@@ -72,9 +82,9 @@ async function renderMortalityChart(selector, isFullscreen = false) {
 
   function updateBtns() {
     const style = (btn, active) => btn
-      .style('background', active ? '#4a6fa5' : 'transparent')
-      .style('color', active ? '#fff' : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      .style('background', active ? UI_ACTIVE : 'transparent')
+      .style('color', active ? '#fff' : UI_MUTED_INK)
+      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     style(btnM, metric === 'maternal');
     style(btnC, metric === 'child');
   }
@@ -93,7 +103,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   ['Africa', 'Europe'].forEach(c => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px');
     row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', COLORS[c]);
-    row.append('span').style('font-size', compact ? '9px' : '11px').style('color', '#555').text(c);
+    row.append('span').style('font-size', compact ? '9px' : '11px').style('color', UI_MUTED_INK).text(c);
   });
 
   function draw() {
@@ -122,26 +132,26 @@ async function renderMortalityChart(selector, isFullscreen = false) {
 
     y.ticks(6).forEach(t => {
       g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(t)).attr('y2', y(t))
-        .attr('stroke', '#ececec').attr('stroke-width', 1);
+        .attr('stroke', CHART_GRID).attr('stroke-width', 1);
     });
 
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(x).tickValues(xTicks).tickSize(3))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa');
+        ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS);
         ax.selectAll('.tick line').remove();
       });
 
     g.append('g').call(d3.axisLeft(y).ticks(6))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#aaa');
+        ax.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS);
         ax.selectAll('.tick line').remove();
       });
 
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text(unitLabel);
 
     const line = cont => d3.line()
@@ -172,7 +182,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
               `<strong>${d.year}</strong><br>` +
               `<span style="color:${COLORS.Africa}">● Africa</span>: <strong>${d.africa.toFixed(1)}</strong><br>` +
               `<span style="color:${COLORS.Europe}">● Europe</span>: <strong>${d.europe.toFixed(1)}</strong><br>` +
-              `<span style="color:#aaa;font-size:10px">${unitLabel}</span><br>` +
+              `<span style="color:${CHART_AXIS};font-size:10px">${unitLabel}</span><br>` +
               `Rapporto: <strong>×${d.ratio.toFixed(1)}</strong>`
             )
             .style('left', `${e.clientX + 14}px`)

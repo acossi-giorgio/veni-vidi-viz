@@ -11,9 +11,17 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const COL = { Africa: '#e07b39', Europe: '#5aab6e' };
-  const COL_GIRLS = '#b04a4a';   // GPI < 1
-  const COL_BOYS  = '#4a6fa5';   // GPI > 1
+  const COL = {
+    Africa: getContinentColor('Africa', '#c96a3d'),
+    Europe: getContinentColor('Europe', '#5169b2'),
+  };
+  const COL_GIRLS = getUiColor('genderGirls', '#b05058');   // GPI < 1
+  const COL_BOYS  = getUiColor('genderBoys', '#5a7fbe');    // GPI > 1
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Africa', 'Europe'];
 
   const ALL_COUNTRIES = {
@@ -86,7 +94,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   if (!tip) {
     tip = document.createElement('div'); tip.id = 'qs-tip';
     Object.assign(tip.style, { position:'fixed', display:'none', pointerEvents:'none',
-      background:'rgba(28,31,52,0.97)', color:'#f3f6ff', padding:'10px 14px',
+      background:TOOLTIP_BG, color:TOOLTIP_INK, padding:'10px 14px',
       borderRadius:'8px', border:'1px solid rgba(255,255,255,0.08)',
       boxShadow:'0 10px 28px rgba(16,18,34,0.35)',
       fontSize:'12px', lineHeight:'1.65',
@@ -103,7 +111,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   const svg = d3.select(container).append('svg')
     .attr('width', W).attr('height', H)
     .style('width','100%').style('height','100%').style('display','block')
-    .style('background','#fff');
+      .style('background', getCssToken('surface-raised', '#ffffff'));
   const root = svg.append('g');
 
   let drill = null; // null = overview, string = continent name
@@ -151,14 +159,14 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     xS.ticks(8).forEach(t => {
       if (Math.abs(t) < 1e-9) return;
       g.append('line').attr('x1',xS(t)).attr('x2',xS(t)).attr('y1',0).attr('y2',ih)
-        .attr('stroke','rgba(0,0,0,0.06)').attr('stroke-width',1);
+        .attr('stroke',colorToRgba(getCssToken('ink', '#1f1d1a'), 0.08)).attr('stroke-width',1);
     });
 
     // parity dashed line + label
     g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
-      .attr('stroke','#bbb').attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
+      .attr('stroke',CHART_AXIS).attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
     g.append('text').attr('x',parX).attr('y',-10)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa').text('parità');
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS).text('parità');
 
     // x axis
     g.append('g').attr('transform',`translate(0,${ih})`)
@@ -166,8 +174,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
         .tickFormat(d => d === 0 ? '0' : d > 0 ? `+${d.toFixed(2)}` : d.toFixed(2)))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size',compact ? 8.5 : 10).attr('fill','#aaa');
-        ax.selectAll('.tick line').attr('stroke','#dde3ef');
+        ax.selectAll('.tick text').attr('font-size',compact ? 8.5 : 10).attr('fill',CHART_AXIS);
+        ax.selectAll('.tick line').attr('stroke',UI_MUTED_BORDER);
       });
 
     // bands
@@ -181,7 +189,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
       // divider
       if (i > 0) g.append('line').attr('x1',-M.left+8).attr('x2',iw)
-        .attr('y1',i*bandH).attr('y2',i*bandH).attr('stroke','#e8e8e8');
+        .attr('y1',i*bandH).attr('y2',i*bandH).attr('stroke',CHART_GRID);
 
       // stats per tooltip
       const gpis   = rows.map(d => d.gpi).sort(d3.ascending);
@@ -194,11 +202,11 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
       const showContTip = () => {
         tip.innerHTML =
-          `<strong style="color:${color}">${cont}</strong>&ensp;<span style="color:#aaa">${rows.length} paesi</span><br>` +
-          `<span style="color:#aaa">Media:</span> <strong>${cMean.toFixed(3)}</strong>&ensp;` +
-          `<span style="color:#aaa">Mediana:</span> <strong>${cMed.toFixed(3)}</strong><br>` +
-          `<span style="color:#aaa">Min:</span> ${cMin.toFixed(3)}&ensp;` +
-          `<span style="color:#aaa">Max:</span> ${cMax.toFixed(3)}<br>` +
+          `<strong style="color:${color}">${cont}</strong>&ensp;<span style="color:${CHART_AXIS}">${rows.length} paesi</span><br>` +
+          `<span style="color:${CHART_AXIS}">Media:</span> <strong>${cMean.toFixed(3)}</strong>&ensp;` +
+          `<span style="color:${CHART_AXIS}">Mediana:</span> <strong>${cMed.toFixed(3)}</strong><br>` +
+          `<span style="color:${CHART_AXIS}">Min:</span> ${cMin.toFixed(3)}&ensp;` +
+          `<span style="color:${CHART_AXIS}">Max:</span> ${cMax.toFixed(3)}<br>` +
           `<span style="color:${COL_GIRLS}">▼ bambine escluse (GPI&lt;1):</span> ${nBelow}&ensp;` +
           `<span style="color:${COL_BOYS}">▲ bambini esclusi (GPI&gt;1):</span> ${nAbove}`;
         tip.style.display = 'block';
@@ -255,8 +263,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
             tip.innerHTML =
               `<strong style="color:${color}">${d.country}</strong><br>` +
               `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
-              `<em style="color:#aaa">${dev<0?'bambine escluse':'bambini esclusi'}</em><br>` +
-              `<span style="color:#aaa">Anno:</span> ${d.year}`;
+              `<em style="color:${CHART_AXIS}">${dev<0?'bambine escluse':'bambini esclusi'}</em><br>` +
+              `<span style="color:${CHART_AXIS}">Anno:</span> ${d.year}`;
             tip.style.display = 'block';
           })
           .on('mousemove', moveTip)
@@ -310,32 +318,32 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       .attr('text-anchor','middle').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
       .text(cont);
     root.append('text').attr('x',W/2).attr('y',40)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa')
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
       .text('GPI < 1 → barra sotto (bambine escluse)   ·   GPI > 1 → barra sopra (bambini esclusi)');
 
     /* horizontal gridlines */
     yS.ticks(6).forEach(t => {
       const isPar = Math.abs(t - 1.0) < 1e-9;
       g.append('line').attr('x1',0).attr('x2',iw).attr('y1',yS(t)).attr('y2',yS(t))
-        .attr('stroke', isPar ? '#999' : '#f0f0f0')
+        .attr('stroke', isPar ? CHART_AXIS : CHART_GRID)
         .attr('stroke-width', isPar ? 1.5 : 1)
         .attr('stroke-dasharray', isPar ? '6,3' : null);
     });
 
     /* parity label */
     g.append('text').attr('x', iw + 5).attr('y', parY + 4)
-      .attr('font-size',compact ? 7.5 : 8.5).attr('fill','#999').text('1 (parità)');
+      .attr('font-size',compact ? 7.5 : 8.5).attr('fill',CHART_AXIS).text('1 (parità)');
 
     /* Y axis */
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(d3.format('.2f')))
       .call(ax => {
         ax.select('.domain').remove();
-        ax.selectAll('.tick text').attr('font-size',8).attr('fill','#aaa');
-        ax.selectAll('.tick line').attr('stroke','#dde3ef');
+        ax.selectAll('.tick text').attr('font-size',8).attr('fill',CHART_AXIS);
+        ax.selectAll('.tick line').attr('stroke',UI_MUTED_BORDER);
       });
     g.append('text').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill','#aaa')
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
       .text('GPI (indice di parità di genere)');
 
     /* bars */
@@ -400,9 +408,9 @@ async function renderQualityScatter(selector, isFullscreen = false) {
       tip.innerHTML =
         `<strong style="color:${fill}">${d.country}</strong><br>` +
         `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
-        `<em style="color:#c9d0df">${d.gpi<1?'bambine escluse':'bambini esclusi'}</em>` +
+        `<em style="color:${CHART_AXIS}">${d.gpi<1?'bambine escluse':'bambini esclusi'}</em>` +
         (oos != null ? `<br>Fuori scuola: ${d3.format(',.0f')(oos)}` : '') +
-        `<br><span style="color:#c9d0df">Anno:</span> ${d.year}`;
+        `<br><span style="color:${CHART_AXIS}">Anno:</span> ${d.year}`;
       tip.style.display = 'block';
     };
 

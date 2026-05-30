@@ -14,6 +14,17 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     d3.csv('datasets/processed/child_labor.csv', d3.autoType),
   ]);
 
+  const AFRICA = getContinentColor('Africa', '#c96a3d');
+  const RISK_HIGH = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826'])[4];
+  const RISK_MID = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826'])[2];
+  const SAFE_COLOR = getMetricStops('migration', ['#e8f0ea', '#bfd0c2', '#86a78f', '#5d7f68', '#3f5947'])[2];
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
+
   const clMap = new Map();
   clRaw.forEach(d => {
     if (!d.code || d.value == null) return;
@@ -38,10 +49,10 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
   // label all countries with data
 
   const QUADRANT = [
-    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: '#cc1a1a', anchor: 'start'  },
-    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco · alto lavoro minorile',  color: '#8e44ad', anchor: 'end'    },
-    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: '#2471a3', anchor: 'start'  },
-    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: '#1abc9c', anchor: 'end'    },
+    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: RISK_HIGH, anchor: 'start'  },
+    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco · alto lavoro minorile',  color: RISK_MID, anchor: 'end'    },
+    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: AFRICA, anchor: 'start'  },
+    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: SAFE_COLOR, anchor: 'end'    },
   ];
 
   function getQuadrant(d) {
@@ -52,8 +63,8 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
   d3.select('body').selectAll('.tooltip-bubble').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-bubble')
-    .style('position', 'absolute').style('background', 'rgba(20,20,40,0.92)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 12px')
+    .style('position', 'absolute').style('background', TOOLTIP_BG)
+    .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '8px 12px')
     .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.6')
     .style('z-index', '10000').style('display', 'none');
 
@@ -115,14 +126,14 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
     // Median lines
     g.append('line').attr('x1', mx).attr('x2', mx).attr('y1', 0).attr('y2', ih)
-      .attr('stroke', '#999').attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
+      .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
     g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', my).attr('y2', my)
-      .attr('stroke', '#999').attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
+      .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
 
     // Median labels
-    g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 8).attr('fill', '#999')
+    g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 8).attr('fill', CHART_AXIS)
       .text(`mediana $${d3.format(',.0f')(medIncome)}`);
-    g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 8).attr('fill', '#999')
+    g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 8).attr('fill', CHART_AXIS)
       .text(`mediana ${medLabor.toFixed(1)}%`);
 
     // Quadrant labels (corner)
@@ -137,7 +148,7 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
     // Gridlines (light, behind dots)
     g.append('g').call(d3.axisLeft(yS).tickSize(-iw).tickFormat(''))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke', '#f0f0f0'); });
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke', CHART_GRID); });
 
     // Quadrant background rects with hover tooltip
     qBg.forEach(({ x, y, w, h, q }) => {
@@ -180,16 +191,16 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
       .filter(v => v >= xS.domain()[0] * 0.9 && v <= xS.domain()[1] * 1.1);
     g.append('g').attr('transform', `translate(0,${ih})`).call(
       d3.axisBottom(xS).tickValues(xTicks).tickFormat(d => `$${d3.format(',.0f')(d)}`)
-    ).call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', compact ? 8 : 9); });
+    ).call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9); });
 
     g.append('g').call(d3.axisLeft(yS).ticks(5).tickFormat(d => `${d}%`))
-      .call(ax => { ax.select('.domain').attr('stroke', '#ccc'); ax.selectAll('.tick text').attr('fill', '#888').attr('font-size', compact ? 8 : 9); });
+      .call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9); });
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL)
       .text(compact ? 'Reddito pro capite (USD, log)' : 'Reddito pro capite (USD, scala logaritmica) — Africa');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL)
       .text('Lavoro minorile 5-17 anni (%)');
 
     // Count per quadrant (corners, below the quadrant label)
@@ -212,10 +223,10 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     const legG = g.append('g').attr('transform', `translate(${LEG_X},${LEG_Y})`);
     legG.append('rect').attr('x', -pillW).attr('y', 0)
       .attr('width', pillW).attr('height', pillH)
-      .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)').attr('stroke', '#e0e0e0').attr('stroke-width', 1);
+      .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
     legG.append('text')
       .attr('x', -pillW + 10).attr('y', PAD + 9)
-      .attr('font-size', 8).attr('font-weight', '700').attr('fill', '#aaa')
+      .attr('font-size', 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.08em').style('pointer-events', 'none')
       .text('SEZIONE');
     QUADRANT.forEach((q, i) => {
@@ -223,7 +234,7 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
       legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
         .attr('fill', q.color).attr('opacity', 0.85);
       legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
-        .attr('font-size', compact ? 8 : 9).attr('fill', '#555').style('pointer-events', 'none')
+        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).style('pointer-events', 'none')
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 
@@ -236,16 +247,16 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
     if (missingNames.length) {
       const mY = ih + 50;
       g.append('text').attr('x', 0).attr('y', mY - 10)
-        .attr('font-size', 8).attr('fill', '#bbb').attr('font-style', 'italic')
+        .attr('font-size', 8).attr('fill', CHART_AXIS).attr('font-style', 'italic')
         .text(`Paesi senza dati reddito (${missingNames.length}):`);
       const DOT_GAP = 14, dotsPerRow = Math.floor(iw / DOT_GAP);
       missingNames.forEach((name, mi) => {
         const cx = (mi % dotsPerRow) * DOT_GAP + 6;
         const cy = mY + Math.floor(mi / dotsPerRow) * 14;
         g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 4)
-          .attr('fill', '#ccc').attr('opacity', 0.7)
+          .attr('fill', UI_MUTED_BORDER).attr('opacity', 0.7)
           .on('mouseover', function(ev) {
-            tooltip.style('display','block').html(`<strong style="color:#aaa">${name}</strong><br><em style="color:#aaa">reddito non disponibile</em>`);
+            tooltip.style('display','block').html(`<strong style="color:${CHART_AXIS}">${name}</strong><br><em style="color:${CHART_AXIS}">reddito non disponibile</em>`);
             tooltip.style('left', (ev.pageX+12)+'px').style('top', (ev.pageY+8)+'px');
           })
           .on('mousemove', function(ev) { tooltip.style('left', (ev.pageX+12)+'px').style('top', (ev.pageY+8)+'px'); })

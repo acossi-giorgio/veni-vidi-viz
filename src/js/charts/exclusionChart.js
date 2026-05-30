@@ -11,7 +11,18 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
 
   const CONTS  = ['Africa', 'Europe'];
-  const COLORS = { Africa: '#e07b39', Europe: '#5aab6e' };
+  const COLORS = {
+    Africa: getContinentColor('Africa', '#c96a3d'),
+    Europe: getContinentColor('Europe', '#5169b2'),
+  };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const LABEL_YEARS = [2000, 2005, 2010, 2015, 2020];
 
   /* ── Load data ──────────────────────────────────────────── */
@@ -90,8 +101,8 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-excl').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-excl')
-    .style('position', 'absolute').style('background', 'rgba(20,20,40,0.93)')
-    .style('color', '#fff').style('border-radius', '6px').style('padding', '8px 13px')
+    .style('position', 'absolute').style('background', TOOLTIP_BG)
+    .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '8px 13px')
     .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.7')
     .style('z-index', '10000').style('display', 'none').style('max-width', '200px');
 
@@ -126,7 +137,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     .style('display', 'flex').style('align-items', 'center')
     .style('flex-wrap', compact ? 'wrap' : 'nowrap')
     .style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+    .style('border-radius', compact ? '8px' : '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
     .style('padding', compact ? '2px' : '3px').style('gap', '2px')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
@@ -139,7 +150,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   }
   function mkSep() {
     pillBar.append('div')
-      .style('width', '1px').style('background', '#d0d8e8').style('margin', '4px 2px').style('align-self', 'stretch');
+      .style('width', '1px').style('background', UI_MUTED_BORDER).style('margin', '4px 2px').style('align-self', 'stretch');
   }
 
   const btnAll = mkBtn('Tutti',            () => { focusCont = null;     updateBtns(); draw(); });
@@ -154,9 +165,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
   function updateBtns() {
     const set = (btn, active) => btn
-      .style('background', active ? '#4a6fa5' : 'transparent')
-      .style('color',      active ? '#fff'    : '#7a8aaa')
-      .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      .style('background', active ? UI_ACTIVE : 'transparent')
+      .style('color',      active ? '#fff'    : UI_MUTED_INK)
+      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     set(btnAll, focusCont == null);
     set(btnAfr, focusCont === 'Africa');
     set(btnEur, focusCont === 'Europe');
@@ -212,24 +223,24 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
     /* Grid */
     g.append('g').call(d3.axisLeft(yScale).ticks(5).tickSize(-iw).tickFormat(''))
-      .call(a => { a.select('.domain').remove(); a.selectAll('line').attr('stroke', '#ececec'); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('line').attr('stroke', CHART_GRID); });
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xScale).ticks(5).tickSize(-ih).tickFormat(''))
-      .call(a => { a.select('.domain').remove(); a.selectAll('line').attr('stroke', '#ececec'); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('line').attr('stroke', CHART_GRID); });
 
     /* Axes */
     g.append('g').call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt))
-      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS); a.selectAll('.tick line').remove(); });
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xScale).ticks(5).tickFormat(xFmt))
-      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', '#888'); a.selectAll('.tick line').remove(); });
+      .call(a => { a.select('.domain').remove(); a.selectAll('text').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS); a.selectAll('.tick line').remove(); });
 
     /* Axis labels */
     g.append('text').attr('x', iw / 2).attr('y', ih + 32)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text(xMode === 'absolute' ? 'Spesa pubblica istruzione (USD)' : 'Spesa pubblica istruzione (% PIL)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -42)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
 
     const line = d3.line()

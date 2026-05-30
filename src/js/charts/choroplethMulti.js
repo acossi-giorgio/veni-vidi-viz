@@ -40,8 +40,23 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   };
 
   const CONT_COLOR = {
-    'Africa': '#e07b39', 'Europe': '#5aab6e',
+    'Africa': getContinentColor('Africa', '#c96a3d'),
+    'Europe': getContinentColor('Europe', '#5169b2'),
   };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_WATER = getUiColor('chartWater', '#ece8e0');
+  const CHART_BASE_FILL = getUiColor('chartBaseFill', '#d6d0c5');
+  const CHART_NODATA_FILL = getUiColor('chartNoDataFill', '#c3baad');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
+  const CHART_PANEL = getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
+  const CHORO_COLORS = getMetricStops('income', ['#f4eadc', '#e6cb98', '#c99a55', '#a36b30', '#6f4518']);
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
 
@@ -143,9 +158,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   function updateViewToggle() {
     [{ btn: btnMap, val: 'map' }, { btn: btnTrend, val: 'trend' }].forEach(({ btn, val }) => {
       const active = viewType === val;
-      btn.style('background', active ? '#4a6fa5' : 'transparent')
-         .style('color', active ? '#fff' : '#7a8aaa')
-         .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+      btn.style('background', active ? UI_ACTIVE : 'transparent')
+         .style('color', active ? '#fff' : UI_MUTED_INK)
+         .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     });
   }
   updateViewToggle();
@@ -158,13 +173,17 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const svg = mapDiv.append('svg')
     .attr('width', W).attr('height', H)
     .style('width', '100%').style('height', '100%')
-    .style('background', '#edf1f6').style('display', 'block').style('border-radius', '0')
+    .style('background', CHART_WATER).style('display', 'block').style('border-radius', '0')
     .style('cursor', 'grab');
 
   svg.append('defs').append('clipPath').attr('id', `chm-clip-${isFullscreen}`)
     .append('rect').attr('width', W).attr('height', H);
 
   const mapGroup = svg.append('g').attr('clip-path', `url(#chm-clip-${isFullscreen})`);
+  const NO_DATA_PATTERN = ensureNoDataPattern(svg, `chm-nodata-${isFullscreen ? 'fs' : 'ed'}`, {
+    background: CHART_NODATA_FILL,
+    stripe: getUiColor('chartNoDataStripe', shadeColor(CHART_NODATA_FILL, 0.24)),
+  });
 
   const projection = d3.geoNaturalEarth1()
     .fitExtent([[4, 16], [W - 4, H - 16]], { type: 'FeatureCollection', features: countries });
@@ -184,7 +203,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     tipEl = document.createElement('div'); tipEl.id = 'chm-tooltip';
     Object.assign(tipEl.style, {
       position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: 'rgba(20,20,40,0.88)', color: '#fff',
+      background: TOOLTIP_BG, color: TOOLTIP_INK,
       padding: '8px 12px', borderRadius: '5px', fontSize: '12px',
       lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap',
       boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
@@ -192,17 +211,6 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     document.body.appendChild(tipEl);
   }
 
-  const MAP_BASE_FILL = '#cfd6e0';
-  const MAP_NODATA_FILL = '#bcc5d1';
-  const CHORO_COLORS = [
-    '#f6f8fc',
-    '#e8eef7',
-    '#d4e1f1',
-    '#bdd2e9',
-    '#9fbde0',
-    '#7ea5d1',
-    '#5f8dc1'
-  ];
   const colorScale = d3.scaleQuantile().range(CHORO_COLORS);
 
   function getYearData(year) {
@@ -244,9 +252,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     const upd  = transition ? paths.transition().duration(300) : paths;
     upd.attr('fill', d => {
       const code = numericToAlpha3[+d.id] || '';
-      if (!isInteractiveCountry(code)) return MAP_BASE_FILL;
+      if (!isInteractiveCountry(code)) return CHART_BASE_FILL;
       const v = data[code];
-      return v != null ? colorScale(v) : MAP_NODATA_FILL;
+      return v != null ? colorScale(v) : NO_DATA_PATTERN;
     })
     .attr('pointer-events', d => {
       const code = numericToAlpha3[+d.id] || '';
@@ -284,12 +292,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .attr('x', px - 10).attr('y', py - 6)
       .attr('width', totalW + 14).attr('height', totalH + 8)
       .attr('rx', 8).attr('fill', 'rgba(255,255,255,0.92)')
-      .attr('stroke', '#d8dce8').attr('stroke-width', 1);
+      .attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
 
     // Title
     legG.append('text')
       .attr('x', px).attr('y', py + 10)
-      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#888')
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE');
 
     const q = colorScale.quantiles(); // ascending cut points, length STEPS-1
@@ -309,7 +317,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
         .attr('fill', b.color);
       legG.append('text')
         .attr('x', px + LABEL_X).attr('y', cy + SH / 2 + 4)
-        .attr('font-size', compact ? 8 : 9).attr('fill', '#444')
+        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
         .text(i === 0 ? `≥ ${fmtLegendValue(b.lo)}` : fmtLegendValue(b.lo));
     });
 
@@ -318,10 +326,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     legG.append('rect')
       .attr('x', px).attr('y', ndY)
       .attr('width', SW).attr('height', SH).attr('rx', 3)
-      .attr('fill', MAP_NODATA_FILL);
+      .attr('fill', NO_DATA_PATTERN)
+      .attr('stroke', UI_MUTED_BORDER)
+      .attr('stroke-width', 0.5);
     legG.append('text')
       .attr('x', px + LABEL_X).attr('y', ndY + SH / 2 + 4)
-      .attr('font-size', compact ? 8 : 9).attr('fill', '#888').text('No data');
+      .attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS).text('No data');
   }
 
   // Country detail panel — floats near click position, reactive to year slider
@@ -329,7 +339,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const panel = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', PANEL_W + 'px').style('background', 'rgba(255,255,255,0.97)')
-    .style('border', '1px solid #c8d4e8').style('border-radius', '10px')
+    .style('border', `1px solid ${UI_MUTED_BORDER}`).style('border-radius', '10px')
     .style('padding', '12px 14px').style('display', 'none').style('z-index', '30')
     .style('box-shadow', '0 4px 18px rgba(0,0,0,0.16)').style('pointer-events', 'auto');
 
@@ -372,14 +382,14 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     if (event) positionPanel(event);
 
     const hdr = panel.append('div').style('display', 'flex').style('align-items', 'flex-start').style('justify-content', 'space-between').style('margin-bottom', '4px');
-    hdr.append('div').style('font-weight', '700').style('font-size', '14px').style('color', '#1a1a1a').style('line-height', '1.3').text(s ? s.country : code);
+    hdr.append('div').style('font-weight', '700').style('font-size', '14px').style('color', getCssToken('ink', '#1f1d1a')).style('line-height', '1.3').text(s ? s.country : code);
     hdr.append('button')
       .style('background', 'none').style('border', 'none').style('cursor', 'pointer')
-      .style('font-size', '18px').style('color', '#bbb').style('line-height', '1').style('padding', '0 0 0 8px')
+      .style('font-size', '18px').style('color', CHART_AXIS).style('line-height', '1').style('padding', '0 0 0 8px')
       .style('flex-shrink', '0').text('×').on('click', closePanel);
 
     if (!s) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
-    panel.append('div').style('font-size', '10px').style('color', '#888').style('margin-bottom', '10px').text('PIL pro capite (USD PPP)');
+    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite (USD PPP)');
 
     const pw = PANEL_W - 28, ph = 170, pm = { top: 8, right: 8, bottom: 24, left: 48 };
     const iw = pw - pm.left - pm.right, ih = ph - pm.top - pm.bottom;
@@ -394,18 +404,18 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     const yS = d3.scaleLinear().domain([yExt[0] * 0.9, yExt[1] * 1.05]).range([ih, 0]);
 
     // Gridlines
-    yS.ticks(4).forEach(t => pg.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', '#f0f0f0').attr('stroke-width', 1));
+    yS.ticks(4).forEach(t => pg.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', CHART_GRID).attr('stroke-width', 1));
 
     pg.append('g').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(xS).ticks(5).tickFormat(d3.format('d'))).attr('font-size', 8).call(ax => ax.select('.domain').remove());
     pg.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(v => `$${d3.format('.2s')(v)}`)).attr('font-size', 8).call(ax => ax.select('.domain').remove());
 
     // Area fill
     pg.append('path').datum(pts)
-      .attr('fill', '#4a6fa5').attr('fill-opacity', 0.08)
+      .attr('fill', UI_ACTIVE).attr('fill-opacity', 0.08)
       .attr('d', d3.area().x(p => xS(p.year)).y0(ih).y1(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
 
     pg.append('path').datum(pts)
-      .attr('fill', 'none').attr('stroke', '#4a6fa5').attr('stroke-width', 2)
+      .attr('fill', 'none').attr('stroke', UI_ACTIVE).attr('stroke-width', 2)
       .attr('d', d3.line().x(p => xS(p.year)).y(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
 
     const near = pts.reduce((a, b) => Math.abs(b.year - currentYear) < Math.abs(a.year - currentYear) ? b : a);
@@ -413,15 +423,15 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     // Vertical year line (reactive)
     panelLine = pg.append('line')
       .attr('x1', xS(near.year)).attr('x2', xS(near.year)).attr('y1', 0).attr('y2', ih)
-      .attr('stroke', '#e07b39').attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0.7);
+      .attr('stroke', CONT_COLOR.Africa).attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0.7);
 
     // Dot (reactive)
     panelDot = pg.append('circle')
       .attr('cx', xS(near.year)).attr('cy', yS(near.value))
-      .attr('r', 5).attr('fill', '#e07b39').attr('stroke', '#fff').attr('stroke-width', 1.5);
+      .attr('r', 5).attr('fill', CONT_COLOR.Africa).attr('stroke', '#fff').attr('stroke-width', 1.5);
 
     panelVal = panel.append('div')
-      .style('font-size', '12px').style('color', '#444').style('margin-top', '6px').style('font-weight', '600')
+      .style('font-size', '12px').style('color', CHART_LABEL).style('margin-top', '6px').style('font-weight', '600')
       .text(`${near.year}: $${d3.format(',.0f')(near.value)}`);
 
     // Save refs for live updates
@@ -491,7 +501,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     trendTip = document.createElement('div'); trendTip.id = 'chm-trend-tip';
     Object.assign(trendTip.style, {
       position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: 'rgba(20,20,40,0.9)', color: '#fff',
+      background: TOOLTIP_BG, color: TOOLTIP_INK,
       padding: '5px 10px', borderRadius: '5px', fontSize: '11px',
       lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap',
     });
@@ -532,16 +542,16 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
     yS.ticks(6).forEach(t => {
       g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t))
-        .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+        .attr('stroke', CHART_GRID).attr('stroke-width', 1);
     });
     g.append('g').attr('transform', `translate(0,${ih})`)
       .call(d3.axisBottom(xS).ticks(6).tickFormat(d3.format('d')))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').attr('stroke', '#eee'); });
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').attr('stroke', CHART_GRID); });
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', '#aaa'); ax.selectAll('.tick line').remove(); });
-    g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666').text('Anno');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#666').text('PIL pro capite (USD PPP)');
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').remove(); });
+    g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite (USD PPP)');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
 
@@ -624,9 +634,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const playerBar = d3.select(container).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px')
-    .style('background', '#fff')
+    .style('background', getCssToken('surface-raised', '#ffffff'))
     .style('border-radius', '0 0 10px 10px')
-    .style('border-top', '1px solid #e8eef7')
+    .style('border-top', `1px solid ${CHART_GRID}`)
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', compact ? '0 10px' : '0 16px').style('gap', compact ? '10px' : '14px').style('z-index', '20')
     .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
@@ -639,9 +649,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     return ctrlWrap.append('button')
       .attr('title', title)
       .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
-      .style('border', '1px solid #dde3ef').style('background', '#f5f7fb')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', getUiColor('controlMuted', '#f4efe7'))
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('font-size', '13px').style('color', '#4a6fa5')
+      .style('justify-content', 'center').style('font-size', '13px').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s')
       .style('padding', '0').style('line-height', '1')
       .html(inner);
@@ -656,7 +666,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   const btnPlay = ctrlWrap.append('button')
     .style('width', compact ? '32px' : '36px').style('height', compact ? '32px' : '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', '#4a6fa5').style('cursor', 'pointer')
+    .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
     .style('padding', '0').style('line-height', '1')
@@ -672,7 +682,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   function startPlay() {
     playing = true;
-    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', '#e07b39');
+    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
     animTimer = setInterval(() => {
       const i = incomeYears.indexOf(currentYear);
       if (i >= incomeYears.length - 1) { stopPlay(); return; }
@@ -684,7 +694,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   function stopPlay() {
     playing = false;
     clearInterval(animTimer);
-    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', '#4a6fa5');
+    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
   }
 
   // Timeline
@@ -706,12 +716,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     .attr('min', incomeYears[0]).attr('max', incomeYears[incomeYears.length - 1])
     .attr('step', 1).attr('value', currentYear)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', '#4a6fa5').style('outline', 'none').style('display', 'block')
+    .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
     .on('input', function () { stopPlay(); currentYear = +this.value; updateColors(); });
 
   // Year display
   const yearDisplay = playerBar.append('div')
-    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', '#1a3a6a')
+    .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
     .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 

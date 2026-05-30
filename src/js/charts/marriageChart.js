@@ -24,11 +24,20 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
   const raw = await d3.csv('datasets/processed/child_marriage_cmmm.csv', d3.autoType);
 
-  const C_BY15  = '#7b2226';
-  const C_BY18  = '#e07b6a';
-  const C_EU_BY15 = '#2f5d8a';
-  const C_EU_BY18 = '#7fb3d5';
-  const C_EMPTY = '#e8e8e8';
+  const AFRICA = getContinentColor('Africa', '#c96a3d');
+  const EUROPE = getContinentColor('Europe', '#5169b2');
+  const C_BY15  = shadeColor(AFRICA, 0.38);
+  const C_BY18  = tintColor(AFRICA, 0.24);
+  const C_EU_BY15 = shadeColor(EUROPE, 0.22);
+  const C_EU_BY18 = tintColor(EUROPE, 0.28);
+  const C_EMPTY = getUiColor('chartBaseFill', '#d6d0c5');
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
 
   let drillDown = false;
   let dotMode   = false;
@@ -46,8 +55,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-marriage').remove();
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-marriage')
-    .style('position', 'absolute').style('background', 'rgba(28,31,52,0.97)')
-    .style('color', '#f3f6ff').style('border-radius', '8px').style('padding', '10px 14px')
+    .style('position', 'absolute').style('background', TOOLTIP_BG)
+    .style('color', TOOLTIP_INK).style('border-radius', '8px').style('padding', '10px 14px')
     .style('border', '1px solid rgba(255,255,255,0.08)')
     .style('box-shadow', '0 10px 28px rgba(16,18,34,0.35)')
     .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.65')
@@ -145,10 +154,10 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .style('display', 'block').style('font-family', 'inherit');
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 14)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 12 : 14).attr('font-weight', '700').attr('fill', '#b04a4a')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 12 : 14).attr('font-weight', '700').attr('fill', AFRICA)
       .text('Africa');
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 28)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 7.5 : 8.5).attr('fill', '#bbb')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 7.5 : 8.5).attr('fill', CHART_AXIS)
       .text(`${n} paesi · ponderato per base donne · ogni cella = 1%`);
 
     drawWaffle(svg, afX, afY, af15, af18, afCS, afGap, 10, 10);
@@ -158,13 +167,13 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     });
 
     svg.append('text').attr('x', euX + euW / 2).attr('y', euY - 10)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 10 : 12).attr('font-weight', '700').attr('fill', '#4a6fa5')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 10 : 12).attr('font-weight', '700').attr('fill', EUROPE)
       .text('Europa');
 
     svg.append('rect').attr('x', afX).attr('y', afY).attr('width', afW).attr('height', afW)
       .attr('fill', 'transparent').style('cursor', 'pointer')
       .on('mousemove', e => showTip(e,
-        `<strong style="color:#b04a4a">Africa</strong><br>` +
+        `<strong style="color:${AFRICA}">Africa</strong><br>` +
         `<span style="color:${C_BY15}">●</span> Prima dei 15: <strong>${fmt(af15, '%')}</strong> (${fmtN(afN15)})<br>` +
         `<span style="color:${C_BY18}">●</span> Prima dei 18: <strong>${fmt(af18, '%')}</strong> (${fmtN(afN18)})<br>` +
         `<em style="opacity:.5;font-size:9px">clicca per i singoli paesi →</em>`
@@ -175,7 +184,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     svg.append('rect').attr('x', euX).attr('y', euY).attr('width', euW).attr('height', euW)
       .attr('fill', 'transparent')
       .on('mousemove', e => showTip(e,
-        `<strong style="color:#4a6fa5">Europa</strong><br>` +
+        `<strong style="color:${EUROPE}">Europa</strong><br>` +
         `<span style="color:${C_EU_BY15}">●</span> Prima dei 15: <strong>${fmt(eu15, '%')}</strong> (${fmtN(euN15)})<br>` +
         `<span style="color:${C_EU_BY18}">●</span> Prima dei 18: <strong>${fmt(eu18, '%')}</strong> (${fmtN(euN18)})`
       ))
@@ -184,7 +193,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       .on('click', () => { selectedContinent = 'Europe'; drillDown = true; draw(); });
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 7 : 8).attr('fill', '#ccc')
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS)
       .text('clicca per esplorare i singoli paesi →');
 
     /* ── Pannello stats sinistra ────────────────────────────── */
@@ -194,7 +203,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     svg.append('rect').attr('x', px0 - PP).attr('y', py0 - PP)
       .attr('width', PW + PP * 2).attr('height', panelH + PP * 2)
-      .attr('rx', 8).attr('fill', '#fafafa').attr('stroke', '#e8e8e8').attr('stroke-width', 1);
+      .attr('rx', 8).attr('fill', getCssToken('surface-raised', '#ffffff')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
 
     function drawPanelRows(rows, xLabel, xValue, startY) {
       let y = startY;
@@ -202,7 +211,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         svg.append('circle').attr('cx', xLabel - 9).attr('cy', y + 2).attr('r', 4.5)
           .attr('fill', r.color).attr('opacity', 0.88);
         svg.append('text').attr('x', xLabel).attr('y', y + 6)
-          .attr('font-size', compact ? 7 : 8).attr('fill', '#999').text(r.label);
+          .attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS).text(r.label);
         y += 16;
         const pctY = y + 12;
         const pctText = svg.append('text').attr('x', xValue).attr('y', pctY)
@@ -214,7 +223,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
           .attr('y', pctY)
           .attr('font-size', compact ? 5.5 : 6)
           .attr('font-weight', '500')
-          .attr('fill', '#b7b7b7')
+          .attr('fill', CHART_AXIS)
           .text(`≈ ${r.n}`);
         y += 20;
       });
@@ -234,16 +243,16 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const panelInnerTop = py0 + 2;
 
     svg.append('text').attr('x', panelLeft).attr('y', panelInnerTop + 10)
-      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', '#b04a4a').text('Africa');
+      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', AFRICA).text('Africa');
     const africaEndY = drawPanelRows(africaRows, panelLeft + 14, panelLeft, panelInnerTop + 28);
 
     const dividerY = africaEndY;
     svg.append('line').attr('x1', px0 - PP + 6).attr('x2', px0 + PW + PP - 6)
-      .attr('y1', dividerY).attr('y2', dividerY).attr('stroke', '#e8e8e8');
+      .attr('y1', dividerY).attr('y2', dividerY).attr('stroke', UI_MUTED_BORDER);
 
     const europeTitleY = dividerY + 12;
     svg.append('text').attr('x', panelLeft).attr('y', europeTitleY)
-      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', '#4a6fa5').text('Europa');
+      .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', EUROPE).text('Europa');
 
     drawPanelRows(europeRows, panelLeft + 14, panelLeft, europeTitleY + 18);
 
@@ -258,7 +267,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const isEurope = selectedContinent === 'Europe';
     const colorBy15 = isEurope ? C_EU_BY15 : C_BY15;
     const colorBy18 = isEurope ? C_EU_BY18 : C_BY18;
-    const titleColor = isEurope ? '#4a6fa5' : '#b04a4a';
+    const titleColor = isEurope ? EUROPE : AFRICA;
     const continentLabel = isEurope ? 'Europa' : 'Africa';
 
     data.forEach(d => {
@@ -307,7 +316,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
     const pillBar = controlRow.append('div')
       .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
-      .style('border-radius', compact ? '8px' : '9px').style('border', '1px solid #d0d8e8')
+      .style('border-radius', compact ? '8px' : '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
       .style('padding', compact ? '2px' : '3px').style('gap', '2px')
       .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
 
@@ -316,9 +325,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 10px' : '5px 14px').style('border-radius', compact ? '5px' : '6px')
         .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
         .style('transition', 'all 0.15s')
-        .style('background', active ? '#4a6fa5' : 'transparent')
-        .style('color',      active ? '#fff'    : '#7a8aaa')
-        .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none')
+        .style('background', active ? UI_ACTIVE : 'transparent')
+        .style('color',      active ? '#fff'    : UI_MUTED_INK)
+        .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none')
         .text(label);
     }
 
@@ -339,8 +348,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const yG = svg.append('g').attr('transform', `translate(${axisX},${PAD.top})`)
       .call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt).tickSize(-barsW));
     yG.select('.domain').remove();
-    yG.selectAll('.tick line').attr('stroke', '#e8e8e8');
-    yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', '#888');
+    yG.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
+    yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS);
 
     svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 12)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', titleColor)
@@ -349,8 +358,8 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const BASE_OPACITY_BY15 = 0.9;
     const BASE_OPACITY_BY18 = 0.88;
     const INACTIVE_FADE = 0.28;
-    const HOVER_BY15 = isEurope ? '#1f4f7f' : '#b13539';
-    const HOVER_BY18 = isEurope ? '#77b2d4' : '#f09a8c';
+    const HOVER_BY15 = isEurope ? shadeColor(EUROPE, 0.34) : shadeColor(AFRICA, 0.5);
+    const HOVER_BY18 = isEurope ? tintColor(EUROPE, 0.4) : tintColor(AFRICA, 0.4);
     const columns = [];
     let activeColumnIndex = -1;
 
@@ -376,7 +385,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       }
 
       c.label.interrupt().transition().duration(140)
-        .attr('fill', active ? '#233d61' : '#666')
+        .attr('fill', active ? shadeColor(titleColor, 0.4) : CHART_LABEL)
         .attr('opacity', active ? 1 : (dimmed ? 0.68 : 0.92))
         .attr('font-weight', active ? '700' : null);
 
@@ -427,7 +436,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
       const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
       const label = svg.append('text')
         .attr('transform', `translate(${bx + BAR_W / 2},${PAD.top + chartH + 4}) rotate(-55)`)
-        .attr('text-anchor', 'end').attr('font-size', compact ? 6.5 : 7.5).attr('fill', '#666').text(name);
+        .attr('text-anchor', 'end').attr('font-size', compact ? 6.5 : 7.5).attr('fill', CHART_LABEL).text(name);
 
       const hit = svg.append('rect').attr('x', bx).attr('y', PAD.top).attr('width', BAR_W).attr('height', chartH)
         .attr('rx', 3)
@@ -467,16 +476,16 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     const LY = PAD.top + 4;
     const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
     legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)
-      .attr('rx', 6).attr('fill', 'rgba(255,255,255,0.92)').attr('stroke', '#e0e0e0').attr('stroke-width', 1);
+      .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
     legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
-      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', '#aaa').attr('letter-spacing', '0.08em')
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS).attr('letter-spacing', '0.08em')
       .text('FASCIA');
     LEG_ITEMS.forEach((item, i) => {
       const ly = LP + LHH + 4 + i * LRH;
       legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)
         .attr('fill', item.color).attr('opacity', 0.85);
       legG.append('text').attr('x', -LW + 23).attr('y', ly + 9)
-        .attr('font-size', compact ? 8 : 9).attr('fill', '#555').text(item.label);
+        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).text(item.label);
     });
   }
 

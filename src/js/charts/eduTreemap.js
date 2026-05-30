@@ -8,7 +8,17 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const CONT_COLOR = { 'Africa': '#e07b39', 'Europe': '#5aab6e' };
+  const CONT_COLOR = {
+    'Africa': getContinentColor('Africa', '#c96a3d'),
+    'Europe': getContinentColor('Europe', '#5169b2'),
+  };
+  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
+  const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
+  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
+  const CHART_AXIS = getUiColor('chartAxis', '#a49788');
+  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
+  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Africa', 'Europe'];
   const MAX_YEAR = 2022;
 
@@ -97,9 +107,9 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   }
 
   function setPillActive(btn, active) {
-    btn.style('background', active ? '#4a6fa5' : 'transparent')
-       .style('color', active ? '#fff' : '#7a8aaa')
-       .style('box-shadow', active ? '0 1px 4px rgba(74,111,165,0.3)' : 'none');
+    btn.style('background', active ? UI_ACTIVE : 'transparent')
+       .style('color', active ? '#fff' : UI_MUTED_INK)
+       .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
   }
 
   // Metric pills
@@ -132,8 +142,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa').text('Anno');
-  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', '#aaa');
+  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Anno');
+  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
 
   // Crosshair
   const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)
@@ -146,7 +156,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   let tipEl = document.getElementById('edu-ml-tip');
   if (!tipEl) {
     tipEl = document.createElement('div'); tipEl.id = 'edu-ml-tip';
-    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: 'rgba(20,20,40,0.9)', color: '#fff', padding: '6px 11px', borderRadius: '5px', fontSize: '11px', lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap' });
+    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: TOOLTIP_BG, color: TOOLTIP_INK, padding: '6px 11px', borderRadius: '5px', fontSize: '11px', lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap' });
     document.body.appendChild(tipEl);
   }
 
@@ -177,7 +187,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     currentYS.ticks(5).forEach(t => {
       gridG.append('line').attr('class', 'h-grid')
         .attr('x1', 0).attr('x2', iw).attr('y1', currentYS(t)).attr('y2', currentYS(t))
-        .attr('stroke', '#f0f0f0').attr('stroke-width', 1);
+        .attr('stroke', CHART_GRID).attr('stroke-width', 1);
     });
 
     // Rebuild axes
@@ -187,8 +197,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     )
     .call(ax => {
       ax.select('.domain').remove();
-      ax.selectAll('.tick line').attr('stroke', '#dde3ef');
-      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', compact ? 8 : 9);
+      ax.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
+      ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9);
     });
 
     yAxisG.call(
@@ -196,8 +206,8 @@ async function renderEduTreemap(selector, isFullscreen = false) {
     )
     .call(ax => {
       ax.select('.domain').remove();
-      ax.selectAll('.tick line').attr('stroke', '#dde3ef');
-      ax.selectAll('.tick text').attr('fill', '#aaa').attr('font-size', compact ? 8 : 9);
+      ax.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
+      ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9);
     });
 
     yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
@@ -259,7 +269,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
         else dot.attr('opacity', 0);
       });
 
-      let html = `<strong style="color:#aaa">${nearYear}</strong>`;
+      let html = `<strong style="color:${CHART_AXIS}">${nearYear}</strong>`;
       CONTS.forEach(cont => {
         const v = meanByContYear.get(nearYear)?.[cont];
         const col = CONT_COLOR[cont];
