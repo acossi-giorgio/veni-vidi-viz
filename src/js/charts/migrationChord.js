@@ -634,7 +634,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         if (nodes[d.index]?.layer === 0) return isCompact ? 10 : 11;
         return isVeryCompact ? 8 : 9;
       })
-      .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '700' : '500')
+      .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '400' : '500')
       .attr('fill', d => nodes[d.index]?.col || '#555')
       .attr('opacity', 0)
       .style('pointer-events', 'none')

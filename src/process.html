@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Processo — Veni Vidi Viz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <nav class="navbar">
+      <div class="navbar-inner">
+        <a class="navbar-brand" href="index.html">Veni Vidi Viz</a>
+        <span class="navbar-tagline">Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto.</span>
+      </div>
+    </nav>
+
+    <main>
+
+      <section class="page-hero">
+        <div class="page-hero-inner page-hero-inner--narrow">
+          <span class="page-eyebrow">Metodo</span>
+          <h1>Processo e Lavoro</h1>
+          <p>Questa pagina spiega come abbiamo costruito il progetto: selezione delle fonti, processo ETL, armonizzazione dei dati e scelte tecniche usate per trasformare dataset eterogenei in una visualizzazione coerente.</p>
+        </div>
+      </section>
+
+      <div class="page-body page-body--narrow">
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Impostazione del progetto</h2>
+          <div class="section-prose">
+            <p class="editorial-lead">Il lavoro e' partito da una domanda narrativa: come mostrare in modo chiaro il legame tra vulnerabilita' economica, fallimento scolastico, costo umano e migrazione.</p>
+            <p>Da qui abbiamo selezionato un set limitato di indicatori globali, sufficientemente comparabili tra paesi e leggibili dentro una struttura in quattro atti. L'obiettivo non era accumulare il maggior numero possibile di variabili, ma costruire un sistema di dati solido e interpretabile.</p>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Processo ETL</h2>
+          <p class="page-section-intro">L'ETL e' stato il cuore del lavoro sui dati: ogni fonte e' stata raccolta, pulita e trasformata in una struttura comune per poter alimentare grafici diversi senza cambiare logica di base.</p>
+          <div class="methodology-flow">
+            <article class="method-step">
+              <span class="method-step-index">01</span>
+              <div class="method-step-copy">
+                <h3>Extract</h3>
+                <p>Abbiamo raccolto dataset da World Bank, UNICEF, ILO, UNESCO UIS, WHO, UN DESA e Our World in Data. Le fonti originali arrivavano in formati diversi, tra cui CSV, XLSX e tabelle derivate da repository pubblici.</p>
+              </div>
+            </article>
+
+            <article class="method-step">
+              <span class="method-step-index">02</span>
+              <div class="method-step-copy">
+                <h3>Transform</h3>
+                <p>I dati sono stati ripuliti, uniformati nei codici paese, ricondotti a una struttura coerente e controllati rispetto alla copertura temporale. Dove necessario, gli indicatori sono stati aggregati per continente o riallineati all'ultimo anno disponibile.</p>
+                <p>Il mapping ISO3 verso continente e macro-regione si basa su <a href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes" target="_blank" rel="noopener">ISO-3166 Countries with Regional Codes</a>.</p>
+              </div>
+            </article>
+
+            <article class="method-step">
+              <span class="method-step-index">03</span>
+              <div class="method-step-copy">
+                <h3>Load</h3>
+                <p>I dataset finali sono stati preparati in una forma semplice e leggibile per il frontend, cosi' da poter essere caricati direttamente dai grafici D3 senza build complessi o trasformazioni ulteriori lato client.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Scelte di lavoro</h2>
+          <p class="page-section-intro">Accanto al dato, abbiamo definito anche un metodo di progettazione: pochi strumenti, regole chiare, struttura narrativa costante e una separazione netta tra contenuto, interazione e visualizzazione.</p>
+          <div class="methodology-flow">
+            <article class="method-step">
+              <span class="method-step-index">04</span>
+              <div class="method-step-copy">
+                <h3>Selezione degli indicatori</h3>
+                <p>Abbiamo privilegiato indicatori riconosciuti a livello internazionale, con copertura ampia e leggibili in una progressione narrativa unica: reddito, scuola, infanzia, migrazione.</p>
+              </div>
+            </article>
+
+            <article class="method-step">
+              <span class="method-step-index">05</span>
+              <div class="method-step-copy">
+                <h3>Gestione dei valori mancanti</h3>
+                <p>Non abbiamo usato imputazioni statistiche. Quando un dato mancava, il limite restava visibile nel grafico oppure veniva usato l'ultimo anno disponibile, sempre esplicitato nella lettura.</p>
+              </div>
+            </article>
+
+            <article class="method-step">
+              <span class="method-step-index">06</span>
+              <div class="method-step-copy">
+                <h3>Integrazione con il frontend</h3>
+                <p>I grafici sono stati costruiti in HTML, CSS, JavaScript vanilla e D3.js, mantenendo una base tecnica leggera. Questo ha permesso di controllare direttamente interazione, narrativa e stile senza introdurre dipendenze superflue.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Stack tecnico</h2>
+          <p class="page-section-intro">L'implementazione segue la stessa filosofia del progetto: un'infrastruttura semplice, leggibile e sufficiente per gestire sia la parte dati sia la parte visuale.</p>
+          <ul class="editorial-list">
+            <li><strong>Visualizzazione:</strong> <strong>D3.js v7</strong> per tutti i grafici interattivi e <strong>TopoJSON</strong> per la mappa mondiale. Dove necessario, sono stati usati plugin D3 dedicati come <strong>d3-sankey</strong>.</li>
+            <li><strong>Frontend:</strong> <strong>HTML5</strong>, <strong>CSS3</strong> e <strong>JavaScript ES6+</strong> vanilla. Nessun framework JS e nessun framework CSS: il sito resta statico, portabile e facilmente distribuibile.</li>
+            <li><strong>Data processing:</strong> <strong>Python</strong> con librerie come pandas e openpyxl per estrazione, pulizia e armonizzazione delle fonti grezze prima dell'uso nei grafici.</li>
+          </ul>
+        </section>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>&copy; 2026 Veni Vidi Viz — Un progetto di visualizzazione dati.</p>
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="datasets.html">Dataset</a>
+          <a href="process.html">Processo</a>
+          <a href="about.html">Chi Siamo</a>
+        </nav>
+      </div>
+    </footer>
+
+  </body>
+</html>

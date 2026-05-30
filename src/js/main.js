@@ -333,6 +333,58 @@ function initChartInteractionAnimations() {
   });
 }
 
+function initHeroCarousel() {
+  const carousel = document.querySelector('.hero-carousel');
+  if (!carousel) return;
+
+  const slides = Array.from(carousel.querySelectorAll('.hero-carousel-slide'));
+  const dots = Array.from(carousel.querySelectorAll('.hero-carousel-dot'));
+  if (!slides.length) return;
+
+  let activeIndex = Math.max(0, slides.findIndex(slide => slide.classList.contains('is-active')));
+  let timerId = null;
+
+  const setActiveSlide = (nextIndex) => {
+    activeIndex = (nextIndex + slides.length) % slides.length;
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('is-active', index === activeIndex);
+      slide.setAttribute('aria-hidden', index === activeIndex ? 'false' : 'true');
+    });
+    dots.forEach((dot, index) => {
+      const isActive = index === activeIndex;
+      dot.classList.toggle('is-active', isActive);
+      dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  };
+
+  const stopAutoRotate = () => {
+    if (timerId) {
+      window.clearInterval(timerId);
+      timerId = null;
+    }
+  };
+
+  const startAutoRotate = () => {
+    stopAutoRotate();
+    if (prefersReducedMotion()) return;
+    timerId = window.setInterval(() => {
+      setActiveSlide(activeIndex + 1);
+    }, 5500);
+  };
+
+  carousel.addEventListener('mouseenter', stopAutoRotate);
+  carousel.addEventListener('mouseleave', startAutoRotate);
+  carousel.addEventListener('focusin', stopAutoRotate);
+  carousel.addEventListener('focusout', () => {
+    window.setTimeout(() => {
+      if (!carousel.contains(document.activeElement)) startAutoRotate();
+    }, 0);
+  });
+
+  setActiveSlide(activeIndex);
+  startAutoRotate();
+}
+
 const MOBILE_ROTATED_CHARTS = new Set([
   'chart-1-1', // choropleth + controls
   'chart-4-2', // map / regional trend hybrid
@@ -616,6 +668,7 @@ async function renderInlineChartsIfNeeded() {
 /* ── Init ────────────────────────────────────────────────── */
 async function init() {
   initProgressBar();
+  initHeroCarousel();
   initMobilePlaceholders();
   initFullscreenModal();
   initNarrativeCards();
