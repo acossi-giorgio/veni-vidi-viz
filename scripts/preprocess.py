@@ -143,6 +143,12 @@ AFRICA_TOPIC_CODES = [
     "TZA","TGO","TUN","UGA","ZMB","ZWE",
 ]
 
+FGM_COUNTRY_ALIASES = {
+    "cote d'ivoire": "CIV",
+    "cote d’ivoire": "CIV",
+    "united republic of tanzania": "TZA",
+}
+
 
 # ── Mappings ──────────────────────────────────────────────────────────────────
 def simplify_official_country_name(name):
@@ -366,6 +372,7 @@ def make_missing_data_registry():
         maternal = pd.read_csv(os.path.join(OUT, "maternal_mortality.csv"))
         child_mort = pd.read_csv(os.path.join(OUT, "child_mortality.csv"))
         migration = pd.read_csv(os.path.join(OUT, "migration.csv"))
+        fgm = pd.read_csv(os.path.join(OUT, "fgm_quintile_prevalence.csv"))
 
         # income.csv
         nd, inc = _coverage_no_data_and_incomplete(income, ae_codes, list(range(2000, 2025)))
@@ -438,6 +445,11 @@ def make_missing_data_registry():
         nd, inc = _migration_origin_coverage(migration, AFRICA_TOPIC_CODES, [2000, 2005, 2010, 2015, 2020])
         _append_missing_rows(rows, "migration.csv", "no_data", nd)
         _append_missing_rows(rows, "migration.csv", "incomplete", inc)
+
+        # fgm_quintile_prevalence.csv (snapshot)
+        nd = _coverage_snapshot_no_data(fgm, af_codes, value_col="quintile_mean")
+        _append_missing_rows(rows, "fgm_quintile_prevalence.csv", "no_data", nd)
+        _append_missing_rows(rows, "fgm_quintile_prevalence.csv", "incomplete", [])
 
         registry = pd.DataFrame(
             rows,
@@ -611,6 +623,79 @@ def make_child_marriage():
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
         report("child_marriage.csv", pd.DataFrame(), str(e))
+
+
+# ── fgm_quintile_prevalence.csv ───────────────────────────────────────────────
+# Quota di ragazze (0-14) con FGM per quintile di ricchezza (snapshot UNICEF)
+# Fonte: UNICEF Global Databases (XLS_FGM-Girls-prevalence.xlsx)
+def make_fgm_quintile_prevalence():
+    try:
+        path = os.path.join(RAW, "XLS_FGM-Girls-prevalence.xlsx")
+        df = pd.read_excel(path, sheet_name="Daughters FGM", header=6)
+
+        # Layout fixed by UNICEF workbook structure.
+        keep_idx = [0, 7, 9, 11, 13, 15, 17]
+        out = df.iloc[:, keep_idx].copy()
+        out.columns = [
+            "country",
+            "poorest",
+            "second",
+            "middle",
+            "fourth",
+            "richest",
+            "reference_year",
+        ]
+
+        out["country"] = out["country"].astype(str).str.strip()
+        quintile_cols = ["poorest", "second", "middle", "fourth", "richest"]
+        for col in quintile_cols:
+            out[col] = pd.to_numeric(out[col], errors="coerce")
+
+        # Keep only rows with numeric values for all requested quintiles.
+        out = out[out[quintile_cols].notna().all(axis=1)].copy()
+
+        def _country_to_code(name):
+            key = normalise(name)
+            code = NAME_CODE.get(key)
+            if not code:
+                code = FGM_COUNTRY_ALIASES.get(key)
+            return code
+
+        out["code"] = out["country"].map(_country_to_code)
+        out["continent"] = out["code"].map(CODE_CONTINENT)
+
+        # Scope requested for this story: African target countries only.
+        out = out[out["continent"] == "Africa"].copy()
+        out = out[out["code"].isin(AFRICA_TOPIC_CODES)].copy()
+
+        out["reference_year"] = (
+            out["reference_year"]
+            .fillna("")
+            .astype(str)
+            .str.strip()
+            .str.replace(r"\.0$", "", regex=True)
+        )
+        out[quintile_cols] = out[quintile_cols].round(1)
+        out["quintile_mean"] = out[quintile_cols].mean(axis=1).round(2)
+
+        out = out[
+            [
+                "code",
+                "country",
+                "continent",
+                "reference_year",
+                "poorest",
+                "second",
+                "middle",
+                "fourth",
+                "richest",
+                "quintile_mean",
+            ]
+        ].sort_values(["quintile_mean", "country"], ascending=[False, True])
+
+        save("fgm_quintile_prevalence.csv", out)
+    except Exception as e:
+        report("fgm_quintile_prevalence.csv", pd.DataFrame(), str(e))
 
 
 # ── out_of_school.csv ────────────────────────────────────────────────────────
@@ -892,6 +977,7 @@ if __name__ == "__main__":
     make_population()
     make_child_labor()
     make_child_marriage()
+    make_fgm_quintile_prevalence()
     make_out_of_school()
     make_poverty()
     make_gini()

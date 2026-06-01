@@ -488,10 +488,8 @@ let MISSING_DATA_NOTES = {
     'Paesi con serie incompleta — Matrimoni precoci by18 (2000-2024, Africa+Europa): Albania; Algeria; Angola; Belarus; Belgium; Benin; Bosnia and Herzegovina; Burkina Faso; Burundi; Cameroon; Cape Verde; Central African Republic; Chad; Comoros; Congo; Cote d\'Ivoire; Denmark; Djibouti; DR Congo; Egypt; Equatorial Guinea; Eritrea; Eswatini; Ethiopia; Finland; Gabon; Gambia; Ghana; Guinea; Guinea-Bissau; Kenya; Kosovo; Lesotho; Liberia; Lithuania; Madagascar; Malawi; Mali; Mauritania; Moldova; Montenegro; Morocco; Mozambique; Namibia; Niger; Nigeria; North Macedonia; Norway; Romania; Russia; Rwanda; Sao Tome and Principe; Senegal; Serbia; Sierra Leone; Somalia; South Africa; South Sudan; Sudan; Tanzania; Togo; Tunisia; Uganda; Ukraine; United Kingdom; Zambia; Zimbabwe.',
   ].join('\n'),
   'chart-4-3': [
-    'Paesi senza alcun dato — Mortalità materna (2000-2023, Africa+Europa): Faroe Islands; Gibraltar; Guernsey; Holy See; Isle of Man; Jersey; Liechtenstein; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Mortalità materna (2000-2023, Africa+Europa): nessuno.',
-    'Paesi senza alcun dato — Mortalità infantile (2000-2023, Africa+Europa): Faroe Islands; Gibraltar; Guernsey; Holy See; Isle of Man; Jersey; Liechtenstein; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Mortalità infantile (2000-2023, Africa+Europa): nessuno.',
+    'Paesi senza alcun dato - FGM quintili (ultimo valore disponibile, Africa): in caricamento dal registro automatico.',
+    'Paesi con serie incompleta: non applicabile (dataset snapshot per paese).',
   ].join('\n'),
   'chart-5-1': [
     'Paesi africani senza alcun flusso verso destinazioni non africane (anni disponibili 2000, 2005, 2010, 2015, 2020): Cape Verde; Comoros; Mauritius; Sao Tome and Principe; Seychelles.',
@@ -600,7 +598,9 @@ const DATASET_NOTES = {
     'Dataset principale: datasets/processed/child_marriage_cmmm.csv'
   ].join('\n'),
   'chart-4-3': [
-    'Dataset principali: datasets/processed/maternal_mortality.csv, datasets/processed/child_mortality.csv'
+    'Dataset principale: datasets/processed/fgm_quintile_prevalence.csv',
+    'Dataset raw di origine: datasets/raw/XLS_FGM-Girls-prevalence.xlsx',
+    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
   ].join('\n'),
   'chart-5-1': [
     'Dataset principale: datasets/processed/migration.csv',
@@ -617,13 +617,14 @@ const CHART_MISSING_DATASETS = {
   'chart-3-3': ['edu_spending.csv', 'literacy.csv', 'out_of_school.csv', 'income.csv', 'population.csv'],
   'chart-4-1': ['child_labor.csv', 'income.csv'],
   'chart-4-2': ['child_marriage_cmmm.csv'],
-  'chart-4-3': ['maternal_mortality.csv', 'child_mortality.csv'],
+  'chart-4-3': ['fgm_quintile_prevalence.csv'],
   'chart-5-1': ['migration.csv'],
 };
 const CHART_LATEST_VALUE_MISSING_NOTE = new Set([
   'chart-2-1',
   'chart-4-1',
   'chart-4-2',
+  'chart-4-3',
 ]);
 
 async function loadMissingDataNotesFromCsv() {
@@ -764,13 +765,13 @@ const CHART_HELP_BUILDERS = {
   }),
   'chart-3-3': ({ chart }) => {
     const outcome = chart.yMode === 'oos' ? 'bambini fuori scuola' : 'alfabetizzazione';
-    const xLabel = chart.xMode === 'pct' ? 'spesa in istruzione come % del PIL' : 'spesa in istruzione in USD';
+    const xLabel = 'spesa in istruzione in USD assoluti';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto confronti la traiettoria annuale di Africa ed Europa; in basso leggi un indice che riassume come cambia ${outcome} rispetto alla variazione della spesa.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto confronti la traiettoria annuale di Africa ed Europa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto alla variazione della spesa.`,
         },
         {
           label: 'Grafico sopra',
@@ -782,7 +783,7 @@ const CHART_HELP_BUILDERS = {
         },
         {
           label: 'Interazioni possibili',
-          text: 'Puoi cambiare continente, metrica e unità di spesa con i toggle in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, delta e indice calcolato.',
+          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, delta e indice calcolato.',
         },
       ],
     };
@@ -804,13 +805,18 @@ const CHART_HELP_BUILDERS = {
       : 'Passa sulla griglia per leggere percentuali e volumi. Clicca su Africa o Europa per aprire il dettaglio per paese.',
   }),
   'chart-4-3': ({ chart }) => {
-    const maternal = chart.metric !== 'child';
+    const isMap = chart.mode === 'map';
+    const selected = chart.selectedCountry ? `Paese selezionato: ${chart.selectedCountry}.` : '';
     return {
-      description: maternal
-        ? 'La vista attuale confronta Africa ed Europa sulla mortalità materna nel tempo.'
-        : 'La vista attuale confronta Africa ed Europa sulla mortalità infantile nel tempo.',
-      reading: 'Asse X = anno. Asse Y = ' + (maternal ? 'decessi materni per 100 mila nati vivi.' : 'decessi infantili per 1.000 nati vivi.') + ' Le due linee mostrano l\'andamento medio di Africa ed Europa.',
-      interactions: 'Usa il toggle in alto per passare da mortalità materna a infantile. Hover sui punti per leggere i valori annuali e il rapporto tra i due continenti.',
+      description: isMap
+        ? 'La vista attuale mostra una mappa coropletica dell\'Africa con intensita colore basata sulla media dei quintili FGM per paese.'
+        : 'La vista attuale mostra uno spider con la media africana per quintile di ricchezza sul fenomeno FGM tra ragazze 0-14 anni.',
+      reading: isMap
+        ? 'La mappa non usa assi cartesiani: il colore sintetizza la media dei cinque quintili (Poorest->Richest). Cliccando un paese, il popup mostra lo spider locale con la distribuzione interna per quintile.'
+        : 'Lo spider ha cinque assi (Poorest, Second, Middle, Fourth, Richest). Piu lontano dal centro significa prevalenza percentuale piu alta in quel quintile.',
+      interactions: isMap
+        ? `Clicca un paese per aggiornare lo spider locale. ${selected}Usa hover per leggere media e anno di riferimento.`
+        : 'Usa il toggle in alto per passare alla mappa. In entrambi i casi, hover sui punti dello spider per vedere i valori puntuali.',
     };
   },
   'chart-5-1': ({ chart }) => {

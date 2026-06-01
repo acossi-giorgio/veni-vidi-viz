@@ -579,11 +579,6 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       const stats = incomeStats.get(continent) || [];
       if (!stats.length) return;
       const color = CONT_COLOR[continent] || '#888';
-      const trendStats = movingAverage(stats, TREND_WINDOW);
-      g.append('path').datum(trendStats)
-        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', 3)
-        .attr('stroke-linecap', 'round').attr('stroke-dasharray', '7,5').attr('opacity', 0.45)
-        .attr('d', lineFn).style('pointer-events', 'none');
       const path = g.append('path').datum(stats)
         .attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2).attr('opacity', 0.9)
         .attr('d', lineFn).style('pointer-events', 'none');

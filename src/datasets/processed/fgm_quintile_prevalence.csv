@@ -1,0 +1,25 @@
+code,country,continent,reference_year,poorest,second,middle,fourth,richest,quintile_mean
+MLI,Mali,Africa,2018,70.5,69.7,69.1,78.3,76.2,72.76
+SOM,Somalia,Africa,2006,49.1,44.0,43.7,45.7,48.0,46.1
+GMB,Gambia,Africa,2019-20,42.1,46.6,52.3,48.8,38.5,45.66
+MRT,Mauritania,Africa,2019-21,68.1,60.6,42.7,22.6,14.5,41.7
+GIN,Guinea,Africa,2018,40.0,38.3,41.3,39.7,35.0,38.86
+ERI,Eritrea,Africa,2010,40.8,38.5,33.3,28.7,21.5,32.56
+SDN,Sudan,Africa,2014,28.9,27.6,30.2,34.8,29.8,30.26
+GNB,Guinea-Bissau,Africa,2018-19,25.2,38.0,39.4,27.5,12.3,28.48
+ETH,Ethiopia,Africa,2016,16.1,15.7,16.0,18.6,10.2,15.32
+EGY,Egypt,Africa,2015,22.8,16.3,12.9,11.3,5.4,13.74
+SEN,Senegal,Africa,2023,27.6,15.1,9.1,4.6,2.5,11.78
+BFA,Burkina Faso,Africa,2021,12.1,9.5,9.9,9.4,4.7,9.12
+NGA,Nigeria,Africa,2021,8.3,7.3,9.2,10.4,5.8,8.2
+SLE,Sierra Leone,Africa,2019,8.4,8.9,9.1,7.1,4.8,7.66
+TCD,Chad,Africa,2019,9.9,7.4,6.8,4.9,5.7,6.94
+KEN,Kenya,Africa,2022,4.3,0.9,1.0,1.2,0.2,1.52
+CAF,Central African Republic,Africa,2018-19,1.7,1.6,2.0,1.1,0.5,1.38
+UGA,Uganda,Africa,2011,1.7,1.8,0.4,1.5,1.1,1.3
+NER,Niger,Africa,2006,0.6,0.9,0.4,1.9,0.6,0.88
+CMR,Cameroon,Africa,2004,0.2,1.5,0.5,0.9,0.9,0.8
+TZA,Tanzania,Africa,2022,1.8,0.2,0.4,0.0,0.0,0.48
+TGO,Togo,Africa,2017,0.7,0.2,0.0,0.1,0.3,0.26
+BEN,Benin,Africa,2014,0.5,0.1,0.1,0.1,0.2,0.2
+GHA,Ghana,Africa,2017-18,0.5,0.0,0.0,0.1,0.0,0.12

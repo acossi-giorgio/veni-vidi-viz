@@ -232,7 +232,7 @@
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-3-3" data-state="0">
               <h3>Africa ed Europa nello stesso grafico</h3>
-              <p>Le due traiettorie continentali sono ora sovrapposte nello stesso spazio: arancione per l'Africa, verde per l'Europa. I toggle in alto cambiano metrica sull'asse X e Y; le card narrative qui a sinistra servono invece a stringere il focus del grafico su Africa o Europa quando serve più leggibilità.</p>
+              <p>Le due traiettorie continentali sono ora sovrapposte nello stesso spazio: arancione per l'Africa, verde per l'Europa. La spesa sull'asse X resta fissata in USD assoluti; i pulsanti in alto cambiano solo la metrica sull'asse Y. Le card narrative qui a sinistra servono invece a stringere il focus del grafico su Africa o Europa quando serve più leggibilità.</p>
             </div>
             <div class="narrative-card" data-chart="chart-3-3" data-state="1">
               <h3>Focus Africa</h3>
@@ -247,7 +247,7 @@
             <div class="chart-box">
               <div class="chart-header">
                 <h3 class="chart-title">Traiettorie istruzione: Africa vs Europa</h3>
-                <p class="chart-subtitle">Confronto multi-metrica su alfabetizzazione e esclusione + rendimento marginale triennale</p>
+                <p class="chart-subtitle">Confronto su alfabetizzazione ed esclusione con spesa in USD assoluti e rendimento marginale triennale</p>
               </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-3-3">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
@@ -374,31 +374,28 @@
         <div class="chart-section-inner">
           <div class="chart-text">
             <div class="narrative-card is-active" data-chart="chart-4-3" data-state="0">
-              <h3>Vent'anni di progresso — ma non ovunque</h3>
-              <p>Ogni linea è un paese. A sinistra il valore intorno al 2000, a destra il dato più recente. Le linee che scendono indicano miglioramento — e la maggior parte scende. Ma alcune restano dove erano, o scendono appena. La scala è logaritmica: la distanza tra Sierra Leone e Norvegia è abissale.</p>
+              <h3>FGM e disuguaglianza economica</h3>
+              <p>La prima vista mostra uno spider con la media africana per quintile di ricchezza. Ogni asse è un quintile: dal più povero al più ricco. Se il poligono resta più alto nei quintili poveri, la pratica colpisce in modo più intenso i gruppi più vulnerabili.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-3" data-state="1">
-              <h3>La catena: matrimonio precoce → morte materna</h3>
-              <p>Evidenziando i paesi con tassi di matrimonio precoce superiori al 30%, emerge una sovrapposizione quasi perfetta con l'alta mortalità materna. Le ragazze-spose diventano madri adolescenti, con gravidanze ad alto rischio e accesso ridotto alle cure. Non è una coincidenza — è una catena.</p>
+              <h3>Mappa coropletica africana</h3>
+              <p>Passa alla mappa per vedere la media dei quintili per ogni stato: più il colore è intenso, più alta è la prevalenza media della mutilazione genitale femminile tra le ragazze 0-14 anni.</p>
             </div>
             <div class="narrative-card" data-chart="chart-4-3" data-state="2">
-              <h3>Mortalità infantile: stesso pattern</h3>
-              <p>Passando alla mortalità sotto i 5 anni, il quadro si ripete. I paesi che non riescono a proteggere le madri non riescono a proteggere nemmeno i neonati. Nigeria, Ciad, Somalia, Repubblica Centrafricana: nomi che tornano in ogni grafico di questo atto. Non è una coincidenza geografica — è sistemica.</p>
+              <h3>Click sul paese per il dettaglio locale</h3>
+              <p>Clicca uno stato nella mappa per aprire lo spider locale: puoi confrontare subito il profilo per quintile del paese con la forma media complessiva.</p>
             </div>
           </div>
           <div class="chart-viz">
-            <div class="chart-box is-under-review">
+            <div class="chart-box">
               <div class="chart-header">
-                <h3 class="chart-title">Mortalità materna e infantile</h3>
-                <p class="chart-subtitle">Confronto 2000 vs ultimo anno disponibile per paese</p>
+                <h3 class="chart-title">FGM tra ragazze 0-14 anni per quintile di ricchezza</h3>
+                <p class="chart-subtitle">Spider medio africano + mappa coropletica con drill-down locale</p>
               </div>
               <button class="chart-fullscreen-btn" aria-label="Fullscreen" data-target="#chart-4-3">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               </button>
               <div class="chart-canvas"><div id="chart-4-3" style="width:100%;height:100%"></div></div>
-              <div class="chart-review-overlay" aria-label="Grafico da rivedere" role="note">
-                <span>Da rivedere</span>
-              </div>
             </div>
           </div>
         </div>

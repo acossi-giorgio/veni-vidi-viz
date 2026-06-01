@@ -414,6 +414,40 @@ edu_spending.csv,no_data,SHN,Saint Helena
 edu_spending.csv,no_data,SJM,Svalbard & Jan Mayen Islands
 edu_spending.csv,no_data,ESH,Western Sahara
 edu_spending.csv,no_data,ALA,Åland Islands
+fgm_quintile_prevalence.csv,no_data,DZA,Algeria
+fgm_quintile_prevalence.csv,no_data,AGO,Angola
+fgm_quintile_prevalence.csv,no_data,BWA,Botswana
+fgm_quintile_prevalence.csv,no_data,BDI,Burundi
+fgm_quintile_prevalence.csv,no_data,CPV,Cape Verde
+fgm_quintile_prevalence.csv,no_data,COM,Comoros
+fgm_quintile_prevalence.csv,no_data,COG,Congo
+fgm_quintile_prevalence.csv,no_data,CIV,Cote d'Ivoire
+fgm_quintile_prevalence.csv,no_data,COD,DR Congo
+fgm_quintile_prevalence.csv,no_data,DJI,Djibouti
+fgm_quintile_prevalence.csv,no_data,GNQ,Equatorial Guinea
+fgm_quintile_prevalence.csv,no_data,SWZ,Eswatini
+fgm_quintile_prevalence.csv,no_data,GAB,Gabon
+fgm_quintile_prevalence.csv,no_data,LSO,Lesotho
+fgm_quintile_prevalence.csv,no_data,LBR,Liberia
+fgm_quintile_prevalence.csv,no_data,LBY,Libyan Arab Jamahiriya
+fgm_quintile_prevalence.csv,no_data,MDG,Madagascar
+fgm_quintile_prevalence.csv,no_data,MWI,Malawi
+fgm_quintile_prevalence.csv,no_data,MUS,Mauritius
+fgm_quintile_prevalence.csv,no_data,MYT,Mayotte
+fgm_quintile_prevalence.csv,no_data,MAR,Morocco
+fgm_quintile_prevalence.csv,no_data,MOZ,Mozambique
+fgm_quintile_prevalence.csv,no_data,NAM,Namibia
+fgm_quintile_prevalence.csv,no_data,REU,Reunion
+fgm_quintile_prevalence.csv,no_data,RWA,Rwanda
+fgm_quintile_prevalence.csv,no_data,SHN,Saint Helena
+fgm_quintile_prevalence.csv,no_data,STP,Sao Tome and Principe
+fgm_quintile_prevalence.csv,no_data,SYC,Seychelles
+fgm_quintile_prevalence.csv,no_data,ZAF,South Africa
+fgm_quintile_prevalence.csv,no_data,SSD,South Sudan
+fgm_quintile_prevalence.csv,no_data,TUN,Tunisia
+fgm_quintile_prevalence.csv,no_data,ESH,Western Sahara
+fgm_quintile_prevalence.csv,no_data,ZMB,Zambia
+fgm_quintile_prevalence.csv,no_data,ZWE,Zimbabwe
 gpi_secondary.csv,no_data,HRV,Croatia
 gpi_secondary.csv,no_data,COD,DR Congo
 gpi_secondary.csv,no_data,DJI,Djibouti

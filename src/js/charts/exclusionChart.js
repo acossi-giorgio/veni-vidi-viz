@@ -1,7 +1,7 @@
 /* ============================================================
    Grafico 3-3 (Atto II) — Scatter: spesa × alfabetizzazione / fuori scuola
    Africa (corallo) / Europa (teal)  ·  2000–2023
-   X = spesa istruzione (B USD o % PIL)
+   X = spesa istruzione (USD assoluti)
    Y = alfabetizzazione % OR bambini fuori scuola (M)
    Pannello sotto: rendimento marginale su finestra mobile triennale
    ============================================================ */
@@ -94,7 +94,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   const keyYearSet = new Set([...LABEL_YEARS, yearExtent[0], yearExtent[1]]);
 
   /* ── State ──────────────────────────────────────────────── */
-  let xMode     = 'absolute'; // 'absolute' | 'pct'
+  const xMode   = 'absolute'; // fixed: absolute USD only
   let yMode     = 'literacy'; // 'literacy' | 'oos'
   let focusCont = null;       // null | 'Africa' | 'Europe'
   const compact = isFullscreen && (
@@ -127,7 +127,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
 
-  /* ── Top bar: toggles left ──────────────────────────────── */
+  /* ── Top bar: continent / outcome controls ──────────────── */
   const topBar = d3.select(container).append('div')
     .style('display', 'flex').style('align-items', 'center')
     .style('justify-content', 'flex-start')
@@ -159,9 +159,6 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   mkSep();
   const btnLit = mkBtn('Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
   const btnOos = mkBtn('Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
-  mkSep();
-  const btnAbs = mkBtn('Assoluto (USD)',   () => { xMode = 'absolute'; updateBtns(); draw(); });
-  const btnPct = mkBtn('% PIL',             () => { xMode = 'pct';     updateBtns(); draw(); });
 
   function updateBtns() {
     const set = (btn, active) => btn
@@ -173,8 +170,6 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     set(btnEur, focusCont === 'Europe');
     set(btnLit, yMode === 'literacy');
     set(btnOos, yMode === 'oos');
-    set(btnAbs, xMode === 'absolute');
-    set(btnPct, xMode === 'pct');
   }
   updateBtns();
 
@@ -201,7 +196,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     const botIw = W - bottomMargin.left - bottomMargin.right;
     const botIh = bottomPanelH - bottomMargin.top - bottomMargin.bottom;
 
-    const xVal = d => xMode === 'absolute' ? d.spendB : d.eduPct;
+    const xVal = d => d.spendB;
     const yVal = d => yMode === 'literacy' ? d.litPct : d.oosM;
     const scalePts = focusCont ? points.filter(d => d.continent === focusCont) : points;
 
@@ -218,13 +213,11 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       .domain([Math.max(0, yExt[0] - yPad), yExt[1] + yPad])
       .range([topIh, 0]).nice();
 
-    const xFmt = xMode === 'absolute'
-      ? v => v >= 1000 ? (v/1000).toFixed(0)+'T$' : v >= 1 ? v.toFixed(0)+'B$' : (v*1000).toFixed(0)+'M$'
-      : v => v.toFixed(1) + '%';
+    const xFmt = v => v >= 1000 ? (v / 1000).toFixed(0) + 'T$' : v >= 1 ? v.toFixed(0) + 'B$' : (v * 1000).toFixed(0) + 'M$';
     const yFmt = yMode === 'literacy' ? v => v.toFixed(0) + '%' : v => v.toFixed(0) + ' M';
-    const fmtXVal = v => (xMode === 'absolute' ? fmtSpend(v) : `${v.toFixed(2)}% PIL`);
+    const fmtXVal = v => fmtSpend(v);
     const fmtYVal = v => (yMode === 'literacy' ? `${v.toFixed(2)}%` : `${v.toFixed(2)} M`);
-    const xLabel = xMode === 'absolute' ? 'Spesa istruzione' : 'Spesa istruzione';
+    const xLabel = 'Spesa pubblica istruzione (USD)';
     const yLabel = yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola';
 
     const byContYear = new Map(points.map(d => [`${d.continent}|${d.year}`, d]));
@@ -302,7 +295,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     /* Axis labels */
     g.append('text').attr('x', topIw / 2).attr('y', topIh + 32)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
-      .text(xMode === 'absolute' ? 'Spesa pubblica istruzione (USD)' : 'Spesa pubblica istruzione (% PIL)');
+      .text('Spesa pubblica istruzione (USD)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -topIh / 2).attr('y', -42)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
@@ -368,7 +361,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
               `${yLabel}: <strong>${fmtYVal(yVal(d))}</strong><br>` +
               `${secondaryLine}` +
               (dx != null && dy != null
-                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)}${xMode === 'absolute' ? ' B$' : ' pp %PIL'}</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
+                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)} B$</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
                 : '')
             );
           })
@@ -393,7 +386,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
               `${yLabel}: <strong>${fmtYVal(yVal(d))}</strong><br>` +
               `${secondaryLine}` +
               (dx != null && dy != null
-                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)}${xMode === 'absolute' ? ' B$' : ' pp %PIL'}</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
+                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)} B$</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
                 : '')
             );
           })
@@ -427,7 +420,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     const metricUnit = yMode === 'literacy' ? 'pp' : 'M';
     const outcomeDirection = yMode === 'literacy' ? 1 : -1; // for out_of_school, a decrease is positive
     const MARGINAL_WINDOW_YEARS = 1;
-    const minDeltaSpend = xMode === 'absolute' ? 0.01 : 0.005;
+    const minDeltaSpend = 0.01;
 
     function buildMarginalSeries(cont) {
       const pts = points.filter(d => d.continent === cont).sort((a, b) => a.year - b.year);
@@ -568,7 +561,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
         .style('cursor', 'default')
         .on('mouseenter', (e, d) => setLinkedHover(`${d.continent}|${d.year}`))
         .on('mousemove', (e, d) => {
-          const spendUnit = xMode === 'absolute' ? 'B$' : 'pp %PIL';
+          const spendUnit = 'B$';
           showTipHtml(e,
             `<strong style="color:${col}">${d.continent}</strong> · ${d.year}<br>` +
             `Δ ${metricLabel} (${d.windowYears} anni): <strong>${d3.format('+.2f')(d.dMetric)} ${metricUnit}</strong><br>` +

@@ -339,7 +339,10 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const barW = africaBins[0] ? xS(africaBins[0].x1) - xS(africaBins[0].x0) : 20;
     africaBins.forEach(bin => {
       if (!bin.length) return;
-      const fill = mpiColor((bin.x0 + bin.x1) / 2);
+      const isBeforeSevereCut = severeCut != null && bin.x1 <= severeCut;
+      const fill = isBeforeSevereCut
+        ? getUiColor('chartBaseFill', '#ddd8cf')
+        : mpiColor((bin.x0 + bin.x1) / 2);
       const opa = severeCut ? 0.9 : 0.82;
 
       g.append('rect')
@@ -368,7 +371,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         g.append('text')
           .attr('x', xS(bin.x0) + barW / 2).attr('y', yS(bin.length) - 3)
           .attr('text-anchor', 'middle').attr('font-size', 8.5)
-          .attr('fill', fill).attr('opacity', opa + 0.1).style('pointer-events', 'none')
+          .attr('fill', isBeforeSevereCut ? CHART_AXIS : fill).attr('opacity', opa + 0.1).style('pointer-events', 'none')
           .text(bin.length);
       }
     });
@@ -442,7 +445,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         if (!rec || rec.value == null) {
           tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: <em>No data</em>`;
         } else {
-          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: ${rec.value.toFixed(3)}<br>Anno: ${rec.year}<br><span style="opacity:.65">${rec.continent || ''}</span>`;
+          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: ${rec.value.toFixed(3)}<br>Anno: ${rec.year}`;
         }
         tipEl.style.display = 'block';
       })
