@@ -1206,11 +1206,25 @@ div[id^="fullscreen-chart-"] {
   box-shadow: 0 1px 3px rgba(57,90,137,0.24);
 }
 
+.player-control-btn,
+.player-control-btn:hover,
+.player-control-btn:focus,
+.player-control-btn:focus-visible,
+.player-control-btn:active {
+  transform: none !important;
+  -webkit-transform: none !important;
+  outline: none !important;
+}
+
+.player-control-btn:active {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ── FOOTER ──────────────────────────────────────────────── */
 .site-footer {
   background: #151412;
   color: rgba(255,255,255,0.74);
-  padding: 2.55rem var(--page-pad) 2.25rem;
+  padding: 2.55rem var(--page-pad) 1.35rem;
   margin-top: auto;
   flex-shrink: 0;
 }
@@ -1221,7 +1235,7 @@ div[id^="fullscreen-chart-"] {
   grid-template-columns: 1fr;
   grid-template-rows: auto auto;
   align-items: start;
-  gap: 1.35rem;
+  gap: 2rem;
 }
 .footer-nav {
   grid-row: 1;
@@ -1876,7 +1890,7 @@ section[data-act="4"] .narrative-card.is-active { border-left-color: var(--accen
     height: 48px;
   }
   .footer-inner {
-    gap: 1.15rem;
+    gap: 1.6rem;
   }
   .footer-nav {
     justify-content: center;

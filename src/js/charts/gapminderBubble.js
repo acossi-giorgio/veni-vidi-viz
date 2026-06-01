@@ -222,13 +222,26 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
   const ctrlWrap = playerBar.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
-    return ctrlWrap.append('button').attr('title', title)
+    const btn = ctrlWrap.append('div').attr('title', title)
+      .attr('role', 'button')
+      .attr('tabindex', '0')
+      .attr('class', 'player-control-btn')
       .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
       .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', UI_MUTED)
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
       .style('justify-content', 'center').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
+      .style('-webkit-appearance', 'none').style('appearance', 'none')
+      .style('transform', 'none').style('outline', 'none')
+      .style('-webkit-tap-highlight-color', 'transparent')
       .html(inner);
+    btn.on('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        btn.dispatch('click');
+      }
+    });
+    return btn;
   }
 
   mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = YEAR_MIN; draw(false); });

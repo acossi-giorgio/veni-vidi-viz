@@ -128,6 +128,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     .style('position', 'absolute').style('background', TOOLTIP_BG)
     .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '10px 14px')
     .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.6')
+    .style('max-width', 'min(72vw, 620px)')
     .style('z-index', '10000').style('display', 'none').style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)');
 
   function showTip(e, html) {
@@ -139,11 +140,21 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
   function hideTip() { tooltip.style('display', 'none'); }
+  function detailRowsToHtml(detailRows = []) {
+    if (!detailRows.length) return '';
+    const rows = detailRows.map(r => `<div><span style="opacity:.82">${r.name}</span>: ${d3.format(',.0f')(r.val)}</div>`);
+    const cols = rows.length > 26 ? 3 : (rows.length > 12 ? 2 : 1);
+    return [
+      '<br><span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi</span>',
+      `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(${cols}, minmax(150px, 1fr));column-gap:14px;row-gap:2px;max-height:46vh;overflow:auto;">${rows.join('')}</div>`,
+    ].join('');
+  }
 
   const containerNode = container.node();
   let currentYear = MAX_YEAR;
   let mode = 'sankey';
   let animTimer = null;
+  let sankeyDrillAfrica = false;
   let sankeyDrillContinents = new Set(); // expanded dest continents
 
   const wrap = container.append('div')
@@ -167,7 +178,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
       .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
-      .on('click', () => { mode = m; stopAnim(); sankeyDrillContinents.clear(); updateModeBtns(); draw(); });
+      .on('click', () => {
+        mode = m;
+        stopAnim();
+        sankeyDrillAfrica = false;
+        sankeyDrillContinents.clear();
+        updateModeBtns();
+        draw();
+      });
   }
 
   const btnSankey = mkModeBtn('sankey', 'Sankey');
@@ -536,12 +554,51 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const destConts = [...destContStock.keys()].sort((a, b) => destContStock.get(b) - destContStock.get(a));
 
     let nodes = [], links = [];
+    const africaTotal = d3.sum(destContStock.values());
 
-    // Always show all continents at layer 1
-    const srcNode = { id: 'AFRICA', name: 'Africa', layer: 0, col: CONT_COLOR.Africa };
-    nodes = [srcNode];
+    // Africa stays visible; on click, origins open on the left (mirrored drill-down).
+    nodes.push({
+      id: 'AFRICA',
+      name: 'Africa',
+      layer: 0,
+      col: CONT_COLOR.Africa,
+      role: 'africa',
+      total: africaTotal,
+    });
+
+    // Optional source breakdown (left side), with same 1% aggregation logic.
+    if (sankeyDrillAfrica) {
+      const sourceStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.origin_code);
+      const sortedSrc = [...sourceStock.entries()].sort((a, b) => b[1] - a[1]);
+      const srcThreshold = africaTotal * 0.01;
+      const srcVisible = sortedSrc.filter(([, v]) => v >= srcThreshold);
+      const srcHidden = sortedSrc.filter(([, v]) => v < srcThreshold);
+
+      srcVisible.forEach(([code, val]) => {
+        const name = yearData.find(d => d.origin_code === code)?.origin_country || code;
+        nodes.push({ id: `SRC_${code}`, name, layer: 0, col: CONT_COLOR.Africa, role: 'src-country' });
+        links.push({ source: `SRC_${code}`, target: 'AFRICA', value: val });
+      });
+
+      if (srcHidden.length > 0) {
+        const detail = srcHidden.map(([code, val]) => {
+          const name = yearData.find(d => d.origin_code === code)?.origin_country || code;
+          return { name, val };
+        });
+        const srcOthersVal = d3.sum(srcHidden, d => d[1]);
+        nodes.push({ id: 'SRC_OTHERS', name: 'Altri', layer: 0, col: CONT_COLOR.Africa, role: 'src-country', detail });
+        links.push({ source: 'SRC_OTHERS', target: 'AFRICA', value: srcOthersVal });
+      }
+    }
+
     destConts.forEach(cont => {
-      nodes.push({ id: cont, name: cont, layer: 1, col: CONT_COLOR[cont] || '#888' });
+      nodes.push({
+        id: cont,
+        name: cont,
+        layer: 1,
+        col: CONT_COLOR[cont] || '#888',
+        role: 'dest-cont',
+      });
       links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
     });
 
@@ -569,9 +626,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail });
       }
     });
-    pendingCountries.sort((a, b) => b.value - a.value);
+    pendingCountries.sort((a, b) => {
+      const aOther = String(a.id).startsWith('__others_');
+      const bOther = String(b.id).startsWith('__others_');
+      if (aOther !== bOther) return aOther ? 1 : -1;
+      return b.value - a.value;
+    });
     pendingCountries.forEach(c => {
-      nodes.push({ id: c.id, name: c.name, layer: 2, col: c.col, detail: c.detail });
+      nodes.push({ id: c.id, name: c.name, layer: 2, col: c.col, role: 'dest-country', detail: c.detail });
       links.push({ source: c.source, target: c.id, value: c.value });
     });
 
@@ -631,12 +693,21 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .attr('rx', 3).attr('opacity', 0)
       .call(s => s.transition().duration(500).ease(d3.easeCubicOut)
         .delay((_, i) => i * 30).attr('opacity', 0.85))
-      .style('cursor', d => nodes[d.index]?.layer === 1 ? 'pointer' : 'default')
+      .style('cursor', d => {
+        const nd = nodes[d.index];
+        return nd?.role === 'africa' || nd?.role === 'dest-cont' ? 'pointer' : 'default';
+      })
       .on('click', (e, d) => {
         const nd = nodes[d.index];
-        if (!nd || nd.layer !== 1) return;
-        if (sankeyDrillContinents.has(nd.id)) sankeyDrillContinents.delete(nd.id);
-        else sankeyDrillContinents.add(nd.id);
+        if (!nd) return;
+        if (nd.role === 'africa') {
+          sankeyDrillAfrica = !sankeyDrillAfrica;
+        } else if (nd.role === 'dest-cont') {
+          if (sankeyDrillContinents.has(nd.id)) sankeyDrillContinents.delete(nd.id);
+          else sankeyDrillContinents.add(nd.id);
+        } else {
+          return;
+        }
         draw();
       })
       .on('mousemove', (e, d) => {
@@ -644,17 +715,16 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         if (!nd || !nd.name) return;
         let html = `<strong style="color:${nd.col||'#fff'}">${nd.name}</strong><br>` +
           `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>`;
-        if (nd.layer === 1) {
+        if (nd.role === 'africa') {
+          html += sankeyDrillAfrica
+            ? '<br><em style="opacity:.6;font-size:10px">Clicca per chiudere ↩</em>'
+            : '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio ←</em>';
+        } else if (nd.role === 'dest-cont') {
           html += sankeyDrillContinents.has(nd.id)
             ? '<br><em style="opacity:.6;font-size:10px">Clicca per chiudere ↩</em>'
             : '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio →</em>';
         }
-        if (nd.detail) {
-          html += '<br><span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi</span>';
-          nd.detail.forEach(r => {
-            html += `<br><span style="opacity:.8">${r.name}</span>: ${d3.format(',.0f')(r.val)}`;
-          });
-        }
+        if (nd.detail) html += detailRowsToHtml(nd.detail);
         showTip(e, html);
       })
       .on('mouseleave', hideTip);

@@ -672,18 +672,31 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
-    return ctrlWrap.append('button')
+    const btn = ctrlWrap.append('div')
       .attr('title', title)
+      .attr('role', 'button')
+      .attr('tabindex', '0')
+      .attr('class', 'player-control-btn')
       .style('width', compact ? '28px' : '30px').style('height', compact ? '28px' : '30px').style('border-radius', '50%')
       .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', getUiColor('controlMuted', '#f4efe7'))
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
       .style('justify-content', 'center').style('font-size', '13px').style('color', UI_ACTIVE)
       .style('flex-shrink', '0').style('transition', 'all 0.15s')
       .style('padding', '0').style('line-height', '1')
+      .style('-webkit-appearance', 'none').style('appearance', 'none')
+      .style('transform', 'none').style('outline', 'none')
+      .style('-webkit-tap-highlight-color', 'transparent')
       .html(inner);
+    btn.on('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        btn.dispatch('click');
+      }
+    });
+    return btn;
   }
 
-  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = incomeYears[0]; updateColors(); });
+  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = incomeYears[0]; updateColors(false); });
   const btnPrev  = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = incomeYears.indexOf(currentYear);
@@ -788,6 +801,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     paths.attr('opacity', 1).attr('stroke-width', 0.35);
     panel.style('display', 'none');
     svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
+    updateColors(false);
     updateViewToggle();
     renderView();
   };

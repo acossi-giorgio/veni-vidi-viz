@@ -135,11 +135,10 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
     document.body.appendChild(tipEl);
   }
 
-  function draw() {
+  function draw(animate = true) {
     const pts = getPoints(currentYear);
     yearLabel.text(currentYear);
-
-    bubbleLayer.selectAll('circle').data(pts, d => d.code).join(
+    const updateSel = animate ? bubbleLayer.selectAll('circle').data(pts, d => d.code).join(
       enter => enter.append('circle')
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop))
         .attr('fill', d => CONT_COLOR[d.continent] || '#888')
@@ -148,7 +147,18 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
       update => update.transition().duration(500).ease(d3.easeLinear)
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop)),
       exit => exit.remove()
-    )
+    ) : bubbleLayer.selectAll('circle').data(pts, d => d.code).join(
+      enter => enter.append('circle')
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop))
+        .attr('fill', d => CONT_COLOR[d.continent] || '#888')
+        .attr('fill-opacity', 0.65).attr('stroke', '#fff').attr('stroke-width', 0.8)
+        .style('cursor', 'pointer'),
+      update => update
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.life)).attr('r', d => rS(d.pop)),
+      exit => exit.remove()
+    );
+
+    updateSel
     .on('mouseover', function(event, d) {
       d3.select(this).attr('fill-opacity', 0.95).attr('stroke', '#333').attr('stroke-width', 1.5);
       tipEl.innerHTML =
@@ -180,22 +190,35 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
     .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
-    return ctrlWrap.append('button').attr('title', title)
+    const btn = ctrlWrap.append('div').attr('title', title)
+      .attr('role', 'button')
+      .attr('tabindex', '0')
+      .attr('class', 'player-control-btn')
       .style('width', '30px').style('height', '30px').style('border-radius', '50%')
       .style('border', '1px solid #d0d9e8').style('background', '#fff')
       .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
       .style('justify-content', 'center').style('color', '#8096b0')
       .style('flex-shrink', '0').style('transition', 'all 0.15s').style('padding', '0').style('line-height', '1')
+      .style('-webkit-appearance', 'none').style('appearance', 'none')
+      .style('transform', 'none').style('outline', 'none')
+      .style('-webkit-tap-highlight-color', 'transparent')
       .html(inner);
+    btn.on('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        btn.dispatch('click');
+      }
+    });
+    return btn;
   }
 
   function syncSlider() { yearDisplay.text(currentYear); sliderEl.property('value', currentYear); }
 
-  mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = allYears[0]; draw(); syncSlider(); });
+  mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = allYears[0]; draw(false); syncSlider(); });
   mkCtrlBtn('&#8249;', 'Precedente').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = allYears.indexOf(currentYear);
-    if (i > 0) { currentYear = allYears[i - 1]; draw(); syncSlider(); }
+    if (i > 0) { currentYear = allYears[i - 1]; draw(true); syncSlider(); }
   });
 
   const btnPlay = ctrlWrap.append('button')
@@ -210,7 +233,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
   mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = allYears.indexOf(currentYear);
-    if (i < allYears.length - 1) { currentYear = allYears[i + 1]; draw(); syncSlider(); }
+    if (i < allYears.length - 1) { currentYear = allYears[i + 1]; draw(true); syncSlider(); }
   });
 
   function startPlay() {
@@ -220,7 +243,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
       const i = allYears.indexOf(currentYear);
       if (i >= allYears.length - 1) { stopPlay(); return; }
       currentYear = allYears[i + 1];
-      draw(); syncSlider();
+      draw(true); syncSlider();
     }, 600);
   }
 
@@ -242,7 +265,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
     .style('-webkit-appearance', 'none').style('appearance', 'none')
     .style('background', 'rgba(0,0,0,0.25)').style('border-radius', '2px')
     .style('outline', 'none').style('display', 'block')
-    .on('input', function() { stopPlay(); currentYear = +this.value; draw(); yearDisplay.text(currentYear); });
+    .on('input', function() { stopPlay(); currentYear = +this.value; draw(false); yearDisplay.text(currentYear); });
 
   if (!document.getElementById('db-gapminder-slider-style')) {
     const st = document.createElement('style');
@@ -268,6 +291,6 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
 
   // ── DOM API ───────────────────────────────────────────────
   const node = containerEl;
-  node._dumbbellShowOverview = () => { stopPlay(); currentYear = allYears[allYears.length - 1]; draw(); syncSlider(); };
-  node._dumbbellDrillDown    = () => { stopPlay(); currentYear = allYears[0]; draw(); syncSlider(); startPlay(); };
+  node._dumbbellShowOverview = () => { stopPlay(); currentYear = allYears[allYears.length - 1]; draw(false); syncSlider(); };
+  node._dumbbellDrillDown    = () => { stopPlay(); currentYear = allYears[0]; draw(false); syncSlider(); startPlay(); };
 }
