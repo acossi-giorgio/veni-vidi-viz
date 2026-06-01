@@ -749,26 +749,26 @@ CMR,Cameroon,Africa,2021,0.9555179
 CMR,Cameroon,Africa,2022,1.2687626
 CMR,Cameroon,Africa,2023,1.6113254
 CMR,Cameroon,Africa,2024,1.2949265
-COD,Democratic Republic of Congo,Africa,2005,0.07058042
-COD,Democratic Republic of Congo,Africa,2006,0.08266574
-COD,Democratic Republic of Congo,Africa,2007,0.047891658
-COD,Democratic Republic of Congo,Africa,2008,0.06469077
-COD,Democratic Republic of Congo,Africa,2009,0.10479781
-COD,Democratic Republic of Congo,Africa,2010,0.064979024
-COD,Democratic Republic of Congo,Africa,2011,4.2720666
-COD,Democratic Republic of Congo,Africa,2012,2.8500538
-COD,Democratic Republic of Congo,Africa,2013,2.8699458
-COD,Democratic Republic of Congo,Africa,2014,1.9722337
-COD,Democratic Republic of Congo,Africa,2015,2.903386
-COD,Democratic Republic of Congo,Africa,2016,1.5375048
-COD,Democratic Republic of Congo,Africa,2017,2.867251
-COD,Democratic Republic of Congo,Africa,2018,3.9063609
-COD,Democratic Republic of Congo,Africa,2019,4.4322295
-COD,Democratic Republic of Congo,Africa,2020,2.56157
-COD,Democratic Republic of Congo,Africa,2021,2.281939
-COD,Democratic Republic of Congo,Africa,2022,4.631878
-COD,Democratic Republic of Congo,Africa,2023,4.7223544
-COD,Democratic Republic of Congo,Africa,2024,2.81944
+COD,DR Congo,Africa,2005,0.07058042
+COD,DR Congo,Africa,2006,0.08266574
+COD,DR Congo,Africa,2007,0.047891658
+COD,DR Congo,Africa,2008,0.06469077
+COD,DR Congo,Africa,2009,0.10479781
+COD,DR Congo,Africa,2010,0.064979024
+COD,DR Congo,Africa,2011,4.2720666
+COD,DR Congo,Africa,2012,2.8500538
+COD,DR Congo,Africa,2013,2.8699458
+COD,DR Congo,Africa,2014,1.9722337
+COD,DR Congo,Africa,2015,2.903386
+COD,DR Congo,Africa,2016,1.5375048
+COD,DR Congo,Africa,2017,2.867251
+COD,DR Congo,Africa,2018,3.9063609
+COD,DR Congo,Africa,2019,4.4322295
+COD,DR Congo,Africa,2020,2.56157
+COD,DR Congo,Africa,2021,2.281939
+COD,DR Congo,Africa,2022,4.631878
+COD,DR Congo,Africa,2023,4.7223544
+COD,DR Congo,Africa,2024,2.81944
 COG,Congo,Africa,2000,0.32072815
 COG,Congo,Africa,2001,0.43334636
 COG,Congo,Africa,2002,0.03877367
@@ -888,20 +888,20 @@ CRI,Costa Rica,North America,2021,0.91459984
 CRI,Costa Rica,North America,2022,0.89584494
 CRI,Costa Rica,North America,2023,0.76545674
 CRI,Costa Rica,North America,2024,0.7601393
-CUW,Curacao,North America,2011,5.123678
-CUW,Curacao,North America,2012,4.5129066
-CUW,Curacao,North America,2013,4.386117
-CUW,Curacao,North America,2014,4.683969
-CUW,Curacao,North America,2015,4.654612
-CUW,Curacao,North America,2016,4.9069157
-CUW,Curacao,North America,2017,5.2797084
-CUW,Curacao,North America,2018,5.0991454
-CUW,Curacao,North America,2019,5.8272104
-CUW,Curacao,North America,2020,5.2198377
-CUW,Curacao,North America,2021,5.180271
-CUW,Curacao,North America,2022,5.1562815
-CUW,Curacao,North America,2023,5.3820515
-CUW,Curacao,North America,2024,3.261578
+CUW,Curaçao,North America,2011,5.123678
+CUW,Curaçao,North America,2012,4.5129066
+CUW,Curaçao,North America,2013,4.386117
+CUW,Curaçao,North America,2014,4.683969
+CUW,Curaçao,North America,2015,4.654612
+CUW,Curaçao,North America,2016,4.9069157
+CUW,Curaçao,North America,2017,5.2797084
+CUW,Curaçao,North America,2018,5.0991454
+CUW,Curaçao,North America,2019,5.8272104
+CUW,Curaçao,North America,2020,5.2198377
+CUW,Curaçao,North America,2021,5.180271
+CUW,Curaçao,North America,2022,5.1562815
+CUW,Curaçao,North America,2023,5.3820515
+CUW,Curaçao,North America,2024,3.261578
 CYM,Cayman Islands,North America,2016,0.2751428
 CYM,Cayman Islands,North America,2017,0.30166113
 CYM,Cayman Islands,North America,2018,0.25779065
@@ -1323,22 +1323,22 @@ FRO,Faroe Islands,Europe,2008,5.485001
 FRO,Faroe Islands,Europe,2009,6.042574
 FRO,Faroe Islands,Europe,2010,6.2781124
 FRO,Faroe Islands,Europe,2011,6.3219533
-FSM,Micronesia (country),Oceania,2009,6.3168793
-FSM,Micronesia (country),Oceania,2010,6.2162027
-FSM,Micronesia (country),Oceania,2011,6.332477
-FSM,Micronesia (country),Oceania,2012,6.4438806
-FSM,Micronesia (country),Oceania,2013,7.0479527
-FSM,Micronesia (country),Oceania,2014,7.4328485
-FSM,Micronesia (country),Oceania,2015,7.524364
-FSM,Micronesia (country),Oceania,2016,7.1811385
-FSM,Micronesia (country),Oceania,2017,6.5010304
-FSM,Micronesia (country),Oceania,2018,5.95375
-FSM,Micronesia (country),Oceania,2019,5.9235277
-FSM,Micronesia (country),Oceania,2020,6.258657
-FSM,Micronesia (country),Oceania,2021,5.9598026
-FSM,Micronesia (country),Oceania,2022,5.6108456
-FSM,Micronesia (country),Oceania,2023,5.2865953
-FSM,Micronesia (country),Oceania,2024,4.95067
+FSM,Micronesia,Oceania,2009,6.3168793
+FSM,Micronesia,Oceania,2010,6.2162027
+FSM,Micronesia,Oceania,2011,6.332477
+FSM,Micronesia,Oceania,2012,6.4438806
+FSM,Micronesia,Oceania,2013,7.0479527
+FSM,Micronesia,Oceania,2014,7.4328485
+FSM,Micronesia,Oceania,2015,7.524364
+FSM,Micronesia,Oceania,2016,7.1811385
+FSM,Micronesia,Oceania,2017,6.5010304
+FSM,Micronesia,Oceania,2018,5.95375
+FSM,Micronesia,Oceania,2019,5.9235277
+FSM,Micronesia,Oceania,2020,6.258657
+FSM,Micronesia,Oceania,2021,5.9598026
+FSM,Micronesia,Oceania,2022,5.6108456
+FSM,Micronesia,Oceania,2023,5.2865953
+FSM,Micronesia,Oceania,2024,4.95067
 GAB,Gabon,Africa,2000,0.11909818
 GAB,Gabon,Africa,2001,0.10678262
 GAB,Gabon,Africa,2002,0.053351313
@@ -2026,31 +2026,31 @@ KEN,Kenya,Africa,2021,3.4366124
 KEN,Kenya,Africa,2022,3.547179
 KEN,Kenya,Africa,2023,3.9326296
 KEN,Kenya,Africa,2024,4.154769
-KGZ,Kyrgyzstan,Asia,2000,0.16381207
-KGZ,Kyrgyzstan,Asia,2001,0.29728413
-KGZ,Kyrgyzstan,Asia,2002,1.8866707
-KGZ,Kyrgyzstan,Asia,2003,3.6647987
-KGZ,Kyrgyzstan,Asia,2004,8.096524
-KGZ,Kyrgyzstan,Asia,2005,12.732473
-KGZ,Kyrgyzstan,Asia,2006,16.691734
-KGZ,Kyrgyzstan,Asia,2007,18.513914
-KGZ,Kyrgyzstan,Asia,2008,23.799269
-KGZ,Kyrgyzstan,Asia,2009,20.937124
-KGZ,Kyrgyzstan,Asia,2010,26.410093
-KGZ,Kyrgyzstan,Asia,2011,27.569515
-KGZ,Kyrgyzstan,Asia,2012,30.754433
-KGZ,Kyrgyzstan,Asia,2013,31.05641
-KGZ,Kyrgyzstan,Asia,2014,30.032091
-KGZ,Kyrgyzstan,Asia,2015,25.271894
-KGZ,Kyrgyzstan,Asia,2016,29.27609
-KGZ,Kyrgyzstan,Asia,2017,32.270515
-KGZ,Kyrgyzstan,Asia,2018,32.50557
-KGZ,Kyrgyzstan,Asia,2019,28.785906
-KGZ,Kyrgyzstan,Asia,2020,31.806982
-KGZ,Kyrgyzstan,Asia,2021,32.563534
-KGZ,Kyrgyzstan,Asia,2022,26.57756
-KGZ,Kyrgyzstan,Asia,2023,18.773663
-KGZ,Kyrgyzstan,Asia,2024,17.73632
+KGZ,Kyrgyz Republic,Asia,2000,0.16381207
+KGZ,Kyrgyz Republic,Asia,2001,0.29728413
+KGZ,Kyrgyz Republic,Asia,2002,1.8866707
+KGZ,Kyrgyz Republic,Asia,2003,3.6647987
+KGZ,Kyrgyz Republic,Asia,2004,8.096524
+KGZ,Kyrgyz Republic,Asia,2005,12.732473
+KGZ,Kyrgyz Republic,Asia,2006,16.691734
+KGZ,Kyrgyz Republic,Asia,2007,18.513914
+KGZ,Kyrgyz Republic,Asia,2008,23.799269
+KGZ,Kyrgyz Republic,Asia,2009,20.937124
+KGZ,Kyrgyz Republic,Asia,2010,26.410093
+KGZ,Kyrgyz Republic,Asia,2011,27.569515
+KGZ,Kyrgyz Republic,Asia,2012,30.754433
+KGZ,Kyrgyz Republic,Asia,2013,31.05641
+KGZ,Kyrgyz Republic,Asia,2014,30.032091
+KGZ,Kyrgyz Republic,Asia,2015,25.271894
+KGZ,Kyrgyz Republic,Asia,2016,29.27609
+KGZ,Kyrgyz Republic,Asia,2017,32.270515
+KGZ,Kyrgyz Republic,Asia,2018,32.50557
+KGZ,Kyrgyz Republic,Asia,2019,28.785906
+KGZ,Kyrgyz Republic,Asia,2020,31.806982
+KGZ,Kyrgyz Republic,Asia,2021,32.563534
+KGZ,Kyrgyz Republic,Asia,2022,26.57756
+KGZ,Kyrgyz Republic,Asia,2023,18.773663
+KGZ,Kyrgyz Republic,Asia,2024,17.73632
 KHM,Cambodia,Asia,2000,2.77735
 KHM,Cambodia,Asia,2001,2.720914
 KHM,Cambodia,Asia,2002,2.7325878
@@ -2228,13 +2228,13 @@ LBR,Liberia,Africa,2021,24.621357
 LBR,Liberia,Africa,2022,21.911528
 LBR,Liberia,Africa,2023,21.644762
 LBR,Liberia,Africa,2024,21.275839
-LBY,Libya,Africa,2000,0.023516528
-LBY,Libya,Africa,2001,0.029315116
-LBY,Libya,Africa,2002,0.034176532
-LBY,Libya,Africa,2003,0.030458061
-LBY,Libya,Africa,2004,0.030191133
-LBY,Libya,Africa,2005,0.03168923
-LBY,Libya,Africa,2006,0.02662485
+LBY,Libyan Arab Jamahiriya,Africa,2000,0.023516528
+LBY,Libyan Arab Jamahiriya,Africa,2001,0.029315116
+LBY,Libyan Arab Jamahiriya,Africa,2002,0.034176532
+LBY,Libyan Arab Jamahiriya,Africa,2003,0.030458061
+LBY,Libyan Arab Jamahiriya,Africa,2004,0.030191133
+LBY,Libyan Arab Jamahiriya,Africa,2005,0.03168923
+LBY,Libyan Arab Jamahiriya,Africa,2006,0.02662485
 LCA,Saint Lucia,North America,2000,2.5552025
 LCA,Saint Lucia,North America,2001,2.7037344
 LCA,Saint Lucia,North America,2002,2.729079
@@ -3288,31 +3288,31 @@ PRY,Paraguay,South America,2021,2.065037
 PRY,Paraguay,South America,2022,2.0705209
 PRY,Paraguay,South America,2023,2.1588247
 PRY,Paraguay,South America,2024,2.5562432
-PSE,Palestine,Asia,2000,20.025227
-PSE,Palestine,Asia,2001,20.124947
-PSE,Palestine,Asia,2002,21.704683
-PSE,Palestine,Asia,2003,7.814465
-PSE,Palestine,Asia,2004,8.658478
-PSE,Palestine,Asia,2005,7.3811817
-PSE,Palestine,Asia,2006,8.676707
-PSE,Palestine,Asia,2007,10.291855
-PSE,Palestine,Asia,2008,10.132474
-PSE,Palestine,Asia,2009,9.34039
-PSE,Palestine,Asia,2010,9.576403
-PSE,Palestine,Asia,2011,10.206533
-PSE,Palestine,Asia,2012,14.228314
-PSE,Palestine,Asia,2013,11.019465
-PSE,Palestine,Asia,2014,12.899079
-PSE,Palestine,Asia,2015,13.007157
-PSE,Palestine,Asia,2016,13.544447
-PSE,Palestine,Asia,2017,14.750269
-PSE,Palestine,Asia,2018,17.410963
-PSE,Palestine,Asia,2019,18.401726
-PSE,Palestine,Asia,2020,16.480236
-PSE,Palestine,Asia,2021,20.765709
-PSE,Palestine,Asia,2022,23.976967
-PSE,Palestine,Asia,2023,18.177197
-PSE,Palestine,Asia,2024,5.3650527
+PSE,Palestinian Territory,Asia,2000,20.025227
+PSE,Palestinian Territory,Asia,2001,20.124947
+PSE,Palestinian Territory,Asia,2002,21.704683
+PSE,Palestinian Territory,Asia,2003,7.814465
+PSE,Palestinian Territory,Asia,2004,8.658478
+PSE,Palestinian Territory,Asia,2005,7.3811817
+PSE,Palestinian Territory,Asia,2006,8.676707
+PSE,Palestinian Territory,Asia,2007,10.291855
+PSE,Palestinian Territory,Asia,2008,10.132474
+PSE,Palestinian Territory,Asia,2009,9.34039
+PSE,Palestinian Territory,Asia,2010,9.576403
+PSE,Palestinian Territory,Asia,2011,10.206533
+PSE,Palestinian Territory,Asia,2012,14.228314
+PSE,Palestinian Territory,Asia,2013,11.019465
+PSE,Palestinian Territory,Asia,2014,12.899079
+PSE,Palestinian Territory,Asia,2015,13.007157
+PSE,Palestinian Territory,Asia,2016,13.544447
+PSE,Palestinian Territory,Asia,2017,14.750269
+PSE,Palestinian Territory,Asia,2018,17.410963
+PSE,Palestinian Territory,Asia,2019,18.401726
+PSE,Palestinian Territory,Asia,2020,16.480236
+PSE,Palestinian Territory,Asia,2021,20.765709
+PSE,Palestinian Territory,Asia,2022,23.976967
+PSE,Palestinian Territory,Asia,2023,18.177197
+PSE,Palestinian Territory,Asia,2024,5.3650527
 PYF,French Polynesia,Oceania,2002,10.288427
 PYF,French Polynesia,Oceania,2003,10.319488
 PYF,French Polynesia,Oceania,2004,10.753971
@@ -3750,20 +3750,20 @@ SWZ,Eswatini,Africa,2021,2.7494555
 SWZ,Eswatini,Africa,2022,2.6646652
 SWZ,Eswatini,Africa,2023,1.7299666
 SWZ,Eswatini,Africa,2024,0.68629086
-SXM,Sint Maarten (Dutch part),North America,2011,5.7776318
-SXM,Sint Maarten (Dutch part),North America,2012,5.6462855
-SXM,Sint Maarten (Dutch part),North America,2013,7.0922995
-SXM,Sint Maarten (Dutch part),North America,2014,4.5650663
-SXM,Sint Maarten (Dutch part),North America,2015,3.887281
-SXM,Sint Maarten (Dutch part),North America,2016,4.267604
-SXM,Sint Maarten (Dutch part),North America,2017,4.068532
-SXM,Sint Maarten (Dutch part),North America,2018,4.0469313
-SXM,Sint Maarten (Dutch part),North America,2019,3.4517205
-SXM,Sint Maarten (Dutch part),North America,2020,3.1288714
-SXM,Sint Maarten (Dutch part),North America,2021,3.4352996
-SXM,Sint Maarten (Dutch part),North America,2022,3.0451608
-SXM,Sint Maarten (Dutch part),North America,2023,2.847424
-SXM,Sint Maarten (Dutch part),North America,2024,2.6931238
+SXM,Sint Maarten,North America,2011,5.7776318
+SXM,Sint Maarten,North America,2012,5.6462855
+SXM,Sint Maarten,North America,2013,7.0922995
+SXM,Sint Maarten,North America,2014,4.5650663
+SXM,Sint Maarten,North America,2015,3.887281
+SXM,Sint Maarten,North America,2016,4.267604
+SXM,Sint Maarten,North America,2017,4.068532
+SXM,Sint Maarten,North America,2018,4.0469313
+SXM,Sint Maarten,North America,2019,3.4517205
+SXM,Sint Maarten,North America,2020,3.1288714
+SXM,Sint Maarten,North America,2021,3.4352996
+SXM,Sint Maarten,North America,2022,3.0451608
+SXM,Sint Maarten,North America,2023,2.847424
+SXM,Sint Maarten,North America,2024,2.6931238
 SYC,Seychelles,Africa,2000,0.48287213
 SYC,Seychelles,Africa,2001,0.27049547
 SYC,Seychelles,Africa,2002,0.26678643
@@ -3874,25 +3874,25 @@ TJK,Tajikistan,Asia,2021,32.68938
 TJK,Tajikistan,Asia,2022,49.895313
 TJK,Tajikistan,Asia,2023,37.844578
 TJK,Tajikistan,Asia,2024,47.885212
-TLS,East Timor,Asia,2006,0.8026406
-TLS,East Timor,Asia,2007,1.9242752
-TLS,East Timor,Asia,2008,2.7224116
-TLS,East Timor,Asia,2009,15.59251
-TLS,East Timor,Asia,2010,15.549891
-TLS,East Timor,Asia,2011,13.131075
-TLS,East Timor,Asia,2012,10.327801
-TLS,East Timor,Asia,2013,2.410911
-TLS,East Timor,Asia,2014,3.017536
-TLS,East Timor,Asia,2015,3.8726518
-TLS,East Timor,Asia,2016,4.8873105
-TLS,East Timor,Asia,2017,5.4921885
-TLS,East Timor,Asia,2018,6.1903367
-TLS,East Timor,Asia,2019,3.724918
-TLS,East Timor,Asia,2020,4.432136
-TLS,East Timor,Asia,2021,4.1390433
-TLS,East Timor,Asia,2022,4.5494823
-TLS,East Timor,Asia,2023,9.279286
-TLS,East Timor,Asia,2024,11.769243
+TLS,Timor-Leste,Asia,2006,0.8026406
+TLS,Timor-Leste,Asia,2007,1.9242752
+TLS,Timor-Leste,Asia,2008,2.7224116
+TLS,Timor-Leste,Asia,2009,15.59251
+TLS,Timor-Leste,Asia,2010,15.549891
+TLS,Timor-Leste,Asia,2011,13.131075
+TLS,Timor-Leste,Asia,2012,10.327801
+TLS,Timor-Leste,Asia,2013,2.410911
+TLS,Timor-Leste,Asia,2014,3.017536
+TLS,Timor-Leste,Asia,2015,3.8726518
+TLS,Timor-Leste,Asia,2016,4.8873105
+TLS,Timor-Leste,Asia,2017,5.4921885
+TLS,Timor-Leste,Asia,2018,6.1903367
+TLS,Timor-Leste,Asia,2019,3.724918
+TLS,Timor-Leste,Asia,2020,4.432136
+TLS,Timor-Leste,Asia,2021,4.1390433
+TLS,Timor-Leste,Asia,2022,4.5494823
+TLS,Timor-Leste,Asia,2023,9.279286
+TLS,Timor-Leste,Asia,2024,11.769243
 TON,Tonga,Oceania,2001,29.157854
 TON,Tonga,Oceania,2002,34.03412
 TON,Tonga,Oceania,2003,28.966475

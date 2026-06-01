@@ -47,9 +47,9 @@ CIV,Cote d'Ivoire,Africa,2021,25.8
 CMR,Cameroon,Africa,2004,47.2
 CMR,Cameroon,Africa,2011,38.4
 CMR,Cameroon,Africa,2018,29.8
-COD,Democratic Republic of Congo,Africa,2007,39.1
-COD,Democratic Republic of Congo,Africa,2014,37.3
-COD,Democratic Republic of Congo,Africa,2018,29.1
+COD,DR Congo,Africa,2007,39.1
+COD,DR Congo,Africa,2014,37.3
+COD,DR Congo,Africa,2018,29.1
 COG,Congo,Africa,2005,30.8
 COG,Congo,Africa,2009,33.3
 COG,Congo,Africa,2012,32.6
@@ -132,8 +132,8 @@ KEN,Kenya,Africa,2003,24.6
 KEN,Kenya,Africa,2009,26.4
 KEN,Kenya,Africa,2014,22.9
 KEN,Kenya,Africa,2022,12.5
-KGZ,Kyrgyzstan,Asia,2012,7.8
-KGZ,Kyrgyzstan,Asia,2018,12.9
+KGZ,Kyrgyz Republic,Asia,2012,7.8
+KGZ,Kyrgyz Republic,Asia,2018,12.9
 KHM,Cambodia,Asia,2000,24.8
 KHM,Cambodia,Asia,2005,23.3
 KHM,Cambodia,Asia,2010,18.4
@@ -223,7 +223,7 @@ PHL,Philippines,Asia,2022,9.4
 PNG,Papua New Guinea,Oceania,2018,27.3
 PRK,North Korea,Asia,2017,0.1
 PRY,Paraguay,South America,2016,21.6
-PSE,Palestine,Asia,2020,13.4
+PSE,Palestinian Territory,Asia,2020,13.4
 QAT,Qatar,Asia,2012,4.2
 ROU,Romania,Europe,2021,6.9
 RUS,Russia,Asia,2017,6.2
@@ -268,8 +268,8 @@ TJK,Tajikistan,Asia,2012,11.6
 TJK,Tajikistan,Asia,2017,8.7
 TKM,Turkmenistan,Asia,2000,9.1
 TKM,Turkmenistan,Asia,2019,6.1
-TLS,East Timor,Asia,2010,18.9
-TLS,East Timor,Asia,2016,14.9
+TLS,Timor-Leste,Asia,2010,18.9
+TLS,Timor-Leste,Asia,2016,14.9
 TON,Tonga,Oceania,2019,10.1
 TTO,Trinidad and Tobago,North America,2022,4.2
 TUN,Tunisia,Africa,2018,1.5

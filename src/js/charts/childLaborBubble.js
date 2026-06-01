@@ -269,4 +269,5 @@ async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = fa
 
   containerNode._bubbleReset             = () => draw();
   containerNode._bubbleHighlightContinent = () => draw();
+  containerNode._getHelpContext = () => ({});
 }

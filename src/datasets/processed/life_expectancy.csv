@@ -407,30 +407,30 @@ BEN,Benin,Africa,2020,60.154
 BEN,Benin,Africa,2021,59.6103
 BEN,Benin,Africa,2022,60.4751
 BEN,Benin,Africa,2023,60.7738
-BES,Bonaire Sint Eustatius and Saba,North America,2000,76.088
-BES,Bonaire Sint Eustatius and Saba,North America,2001,75.5183
-BES,Bonaire Sint Eustatius and Saba,North America,2002,75.8828
-BES,Bonaire Sint Eustatius and Saba,North America,2003,75.7147
-BES,Bonaire Sint Eustatius and Saba,North America,2004,75.538
-BES,Bonaire Sint Eustatius and Saba,North America,2005,75.868
-BES,Bonaire Sint Eustatius and Saba,North America,2006,76.0728
-BES,Bonaire Sint Eustatius and Saba,North America,2007,76.1089
-BES,Bonaire Sint Eustatius and Saba,North America,2008,76.5511
-BES,Bonaire Sint Eustatius and Saba,North America,2009,76.5394
-BES,Bonaire Sint Eustatius and Saba,North America,2010,76.7429
-BES,Bonaire Sint Eustatius and Saba,North America,2011,76.3668
-BES,Bonaire Sint Eustatius and Saba,North America,2012,76.1875
-BES,Bonaire Sint Eustatius and Saba,North America,2013,76.1863
-BES,Bonaire Sint Eustatius and Saba,North America,2014,76.9465
-BES,Bonaire Sint Eustatius and Saba,North America,2015,77.7542
-BES,Bonaire Sint Eustatius and Saba,North America,2016,77.3659
-BES,Bonaire Sint Eustatius and Saba,North America,2017,77.6048
-BES,Bonaire Sint Eustatius and Saba,North America,2018,77.1027
-BES,Bonaire Sint Eustatius and Saba,North America,2019,77.2373
-BES,Bonaire Sint Eustatius and Saba,North America,2020,77.213
-BES,Bonaire Sint Eustatius and Saba,North America,2021,77.8843
-BES,Bonaire Sint Eustatius and Saba,North America,2022,78.1545
-BES,Bonaire Sint Eustatius and Saba,North America,2023,77.4355
+BES,Bonaire,North America,2000,76.088
+BES,Bonaire,North America,2001,75.5183
+BES,Bonaire,North America,2002,75.8828
+BES,Bonaire,North America,2003,75.7147
+BES,Bonaire,North America,2004,75.538
+BES,Bonaire,North America,2005,75.868
+BES,Bonaire,North America,2006,76.0728
+BES,Bonaire,North America,2007,76.1089
+BES,Bonaire,North America,2008,76.5511
+BES,Bonaire,North America,2009,76.5394
+BES,Bonaire,North America,2010,76.7429
+BES,Bonaire,North America,2011,76.3668
+BES,Bonaire,North America,2012,76.1875
+BES,Bonaire,North America,2013,76.1863
+BES,Bonaire,North America,2014,76.9465
+BES,Bonaire,North America,2015,77.7542
+BES,Bonaire,North America,2016,77.3659
+BES,Bonaire,North America,2017,77.6048
+BES,Bonaire,North America,2018,77.1027
+BES,Bonaire,North America,2019,77.2373
+BES,Bonaire,North America,2020,77.213
+BES,Bonaire,North America,2021,77.8843
+BES,Bonaire,North America,2022,78.1545
+BES,Bonaire,North America,2023,77.4355
 BFA,Burkina Faso,Africa,2000,50.8081
 BFA,Burkina Faso,Africa,2001,51.1884
 BFA,Burkina Faso,Africa,2002,51.4475
@@ -983,30 +983,30 @@ CMR,Cameroon,Africa,2020,61.6738
 CMR,Cameroon,Africa,2021,61.1463
 CMR,Cameroon,Africa,2022,62.4428
 CMR,Cameroon,Africa,2023,63.6996
-COD,Democratic Republic of Congo,Africa,2000,51.8871
-COD,Democratic Republic of Congo,Africa,2001,52.2054
-COD,Democratic Republic of Congo,Africa,2002,52.3712
-COD,Democratic Republic of Congo,Africa,2003,52.9519
-COD,Democratic Republic of Congo,Africa,2004,53.5341
-COD,Democratic Republic of Congo,Africa,2005,54.0014
-COD,Democratic Republic of Congo,Africa,2006,54.4977
-COD,Democratic Republic of Congo,Africa,2007,54.9543
-COD,Democratic Republic of Congo,Africa,2008,55.3884
-COD,Democratic Republic of Congo,Africa,2009,55.7981
-COD,Democratic Republic of Congo,Africa,2010,56.4111
-COD,Democratic Republic of Congo,Africa,2011,56.9106
-COD,Democratic Republic of Congo,Africa,2012,57.3502
-COD,Democratic Republic of Congo,Africa,2013,57.7953
-COD,Democratic Republic of Congo,Africa,2014,58.2355
-COD,Democratic Republic of Congo,Africa,2015,58.6576
-COD,Democratic Republic of Congo,Africa,2016,59.0814
-COD,Democratic Republic of Congo,Africa,2017,59.4952
-COD,Democratic Republic of Congo,Africa,2018,59.9265
-COD,Democratic Republic of Congo,Africa,2019,60.2425
-COD,Democratic Republic of Congo,Africa,2020,60.4283
-COD,Democratic Republic of Congo,Africa,2021,60.0444
-COD,Democratic Republic of Congo,Africa,2022,60.9789
-COD,Democratic Republic of Congo,Africa,2023,61.895
+COD,DR Congo,Africa,2000,51.8871
+COD,DR Congo,Africa,2001,52.2054
+COD,DR Congo,Africa,2002,52.3712
+COD,DR Congo,Africa,2003,52.9519
+COD,DR Congo,Africa,2004,53.5341
+COD,DR Congo,Africa,2005,54.0014
+COD,DR Congo,Africa,2006,54.4977
+COD,DR Congo,Africa,2007,54.9543
+COD,DR Congo,Africa,2008,55.3884
+COD,DR Congo,Africa,2009,55.7981
+COD,DR Congo,Africa,2010,56.4111
+COD,DR Congo,Africa,2011,56.9106
+COD,DR Congo,Africa,2012,57.3502
+COD,DR Congo,Africa,2013,57.7953
+COD,DR Congo,Africa,2014,58.2355
+COD,DR Congo,Africa,2015,58.6576
+COD,DR Congo,Africa,2016,59.0814
+COD,DR Congo,Africa,2017,59.4952
+COD,DR Congo,Africa,2018,59.9265
+COD,DR Congo,Africa,2019,60.2425
+COD,DR Congo,Africa,2020,60.4283
+COD,DR Congo,Africa,2021,60.0444
+COD,DR Congo,Africa,2022,60.9789
+COD,DR Congo,Africa,2023,61.895
 COG,Congo,Africa,2000,55.3706
 COG,Congo,Africa,2001,55.8849
 COG,Congo,Africa,2002,56.414
@@ -1175,30 +1175,30 @@ CUB,Cuba,North America,2020,77.4075
 CUB,Cuba,North America,2021,73.2006
 CUB,Cuba,North America,2022,77.6291
 CUB,Cuba,North America,2023,78.0855
-CUW,Curacao,North America,2000,73.2829
-CUW,Curacao,North America,2001,73.3602
-CUW,Curacao,North America,2002,73.4722
-CUW,Curacao,North America,2003,73.6031
-CUW,Curacao,North America,2004,73.7354
-CUW,Curacao,North America,2005,73.8731
-CUW,Curacao,North America,2006,73.9777
-CUW,Curacao,North America,2007,74.1368
-CUW,Curacao,North America,2008,74.3137
-CUW,Curacao,North America,2009,74.4853
-CUW,Curacao,North America,2010,75.1167
-CUW,Curacao,North America,2011,75.5757
-CUW,Curacao,North America,2012,75.9604
-CUW,Curacao,North America,2013,76.2386
-CUW,Curacao,North America,2014,76.3837
-CUW,Curacao,North America,2015,76.4823
-CUW,Curacao,North America,2016,76.3222
-CUW,Curacao,North America,2017,76.4226
-CUW,Curacao,North America,2018,76.4929
-CUW,Curacao,North America,2019,76.4917
-CUW,Curacao,North America,2020,76.5011
-CUW,Curacao,North America,2021,75.6857
-CUW,Curacao,North America,2022,76.7287
-CUW,Curacao,North America,2023,76.7996
+CUW,Curaçao,North America,2000,73.2829
+CUW,Curaçao,North America,2001,73.3602
+CUW,Curaçao,North America,2002,73.4722
+CUW,Curaçao,North America,2003,73.6031
+CUW,Curaçao,North America,2004,73.7354
+CUW,Curaçao,North America,2005,73.8731
+CUW,Curaçao,North America,2006,73.9777
+CUW,Curaçao,North America,2007,74.1368
+CUW,Curaçao,North America,2008,74.3137
+CUW,Curaçao,North America,2009,74.4853
+CUW,Curaçao,North America,2010,75.1167
+CUW,Curaçao,North America,2011,75.5757
+CUW,Curaçao,North America,2012,75.9604
+CUW,Curaçao,North America,2013,76.2386
+CUW,Curaçao,North America,2014,76.3837
+CUW,Curaçao,North America,2015,76.4823
+CUW,Curaçao,North America,2016,76.3222
+CUW,Curaçao,North America,2017,76.4226
+CUW,Curaçao,North America,2018,76.4929
+CUW,Curaçao,North America,2019,76.4917
+CUW,Curaçao,North America,2020,76.5011
+CUW,Curaçao,North America,2021,75.6857
+CUW,Curaçao,North America,2022,76.7287
+CUW,Curaçao,North America,2023,76.7996
 CYM,Cayman Islands,North America,2000,74.3779
 CYM,Cayman Islands,North America,2001,74.5295
 CYM,Cayman Islands,North America,2002,74.6095
@@ -1703,30 +1703,30 @@ FRO,Faroe Islands,Europe,2020,79.9822
 FRO,Faroe Islands,Europe,2021,79.7923
 FRO,Faroe Islands,Europe,2022,79.2637
 FRO,Faroe Islands,Europe,2023,80.1792
-FSM,Micronesia (country),Oceania,2000,64.3173
-FSM,Micronesia (country),Oceania,2001,64.8013
-FSM,Micronesia (country),Oceania,2002,63.9075
-FSM,Micronesia (country),Oceania,2003,64.9148
-FSM,Micronesia (country),Oceania,2004,64.8985
-FSM,Micronesia (country),Oceania,2005,64.9065
-FSM,Micronesia (country),Oceania,2006,64.8588
-FSM,Micronesia (country),Oceania,2007,64.8437
-FSM,Micronesia (country),Oceania,2008,64.8489
-FSM,Micronesia (country),Oceania,2009,64.8652
-FSM,Micronesia (country),Oceania,2010,64.8919
-FSM,Micronesia (country),Oceania,2011,64.9685
-FSM,Micronesia (country),Oceania,2012,65.0802
-FSM,Micronesia (country),Oceania,2013,65.1786
-FSM,Micronesia (country),Oceania,2014,65.294
-FSM,Micronesia (country),Oceania,2015,65.3065
-FSM,Micronesia (country),Oceania,2016,65.5757
-FSM,Micronesia (country),Oceania,2017,65.7612
-FSM,Micronesia (country),Oceania,2018,65.9427
-FSM,Micronesia (country),Oceania,2019,66.1957
-FSM,Micronesia (country),Oceania,2020,65.8776
-FSM,Micronesia (country),Oceania,2021,66.1516
-FSM,Micronesia (country),Oceania,2022,66.9606
-FSM,Micronesia (country),Oceania,2023,67.1983
+FSM,Micronesia,Oceania,2000,64.3173
+FSM,Micronesia,Oceania,2001,64.8013
+FSM,Micronesia,Oceania,2002,63.9075
+FSM,Micronesia,Oceania,2003,64.9148
+FSM,Micronesia,Oceania,2004,64.8985
+FSM,Micronesia,Oceania,2005,64.9065
+FSM,Micronesia,Oceania,2006,64.8588
+FSM,Micronesia,Oceania,2007,64.8437
+FSM,Micronesia,Oceania,2008,64.8489
+FSM,Micronesia,Oceania,2009,64.8652
+FSM,Micronesia,Oceania,2010,64.8919
+FSM,Micronesia,Oceania,2011,64.9685
+FSM,Micronesia,Oceania,2012,65.0802
+FSM,Micronesia,Oceania,2013,65.1786
+FSM,Micronesia,Oceania,2014,65.294
+FSM,Micronesia,Oceania,2015,65.3065
+FSM,Micronesia,Oceania,2016,65.5757
+FSM,Micronesia,Oceania,2017,65.7612
+FSM,Micronesia,Oceania,2018,65.9427
+FSM,Micronesia,Oceania,2019,66.1957
+FSM,Micronesia,Oceania,2020,65.8776
+FSM,Micronesia,Oceania,2021,66.1516
+FSM,Micronesia,Oceania,2022,66.9606
+FSM,Micronesia,Oceania,2023,67.1983
 GAB,Gabon,Africa,2000,61.8098
 GAB,Gabon,Africa,2001,61.9818
 GAB,Gabon,Africa,2002,62.1752
@@ -2639,30 +2639,30 @@ KEN,Kenya,Africa,2020,61.5958
 KEN,Kenya,Africa,2021,61.2253
 KEN,Kenya,Africa,2022,63.5491
 KEN,Kenya,Africa,2023,63.6459
-KGZ,Kyrgyzstan,Asia,2000,65.2419
-KGZ,Kyrgyzstan,Asia,2001,65.3191
-KGZ,Kyrgyzstan,Asia,2002,65.3418
-KGZ,Kyrgyzstan,Asia,2003,65.4485
-KGZ,Kyrgyzstan,Asia,2004,65.6494
-KGZ,Kyrgyzstan,Asia,2005,65.7894
-KGZ,Kyrgyzstan,Asia,2006,65.7816
-KGZ,Kyrgyzstan,Asia,2007,66.0466
-KGZ,Kyrgyzstan,Asia,2008,66.6158
-KGZ,Kyrgyzstan,Asia,2009,67.1401
-KGZ,Kyrgyzstan,Asia,2010,67.5214
-KGZ,Kyrgyzstan,Asia,2011,67.7481
-KGZ,Kyrgyzstan,Asia,2012,68.1419
-KGZ,Kyrgyzstan,Asia,2013,68.4623
-KGZ,Kyrgyzstan,Asia,2014,68.8293
-KGZ,Kyrgyzstan,Asia,2015,69.3094
-KGZ,Kyrgyzstan,Asia,2016,69.9095
-KGZ,Kyrgyzstan,Asia,2017,70.5031
-KGZ,Kyrgyzstan,Asia,2018,70.6678
-KGZ,Kyrgyzstan,Asia,2019,70.8907
-KGZ,Kyrgyzstan,Asia,2020,69.136
-KGZ,Kyrgyzstan,Asia,2021,69.2904
-KGZ,Kyrgyzstan,Asia,2022,71.487
-KGZ,Kyrgyzstan,Asia,2023,71.677
+KGZ,Kyrgyz Republic,Asia,2000,65.2419
+KGZ,Kyrgyz Republic,Asia,2001,65.3191
+KGZ,Kyrgyz Republic,Asia,2002,65.3418
+KGZ,Kyrgyz Republic,Asia,2003,65.4485
+KGZ,Kyrgyz Republic,Asia,2004,65.6494
+KGZ,Kyrgyz Republic,Asia,2005,65.7894
+KGZ,Kyrgyz Republic,Asia,2006,65.7816
+KGZ,Kyrgyz Republic,Asia,2007,66.0466
+KGZ,Kyrgyz Republic,Asia,2008,66.6158
+KGZ,Kyrgyz Republic,Asia,2009,67.1401
+KGZ,Kyrgyz Republic,Asia,2010,67.5214
+KGZ,Kyrgyz Republic,Asia,2011,67.7481
+KGZ,Kyrgyz Republic,Asia,2012,68.1419
+KGZ,Kyrgyz Republic,Asia,2013,68.4623
+KGZ,Kyrgyz Republic,Asia,2014,68.8293
+KGZ,Kyrgyz Republic,Asia,2015,69.3094
+KGZ,Kyrgyz Republic,Asia,2016,69.9095
+KGZ,Kyrgyz Republic,Asia,2017,70.5031
+KGZ,Kyrgyz Republic,Asia,2018,70.6678
+KGZ,Kyrgyz Republic,Asia,2019,70.8907
+KGZ,Kyrgyz Republic,Asia,2020,69.136
+KGZ,Kyrgyz Republic,Asia,2021,69.2904
+KGZ,Kyrgyz Republic,Asia,2022,71.487
+KGZ,Kyrgyz Republic,Asia,2023,71.677
 KHM,Cambodia,Asia,2000,59.4914
 KHM,Cambodia,Asia,2001,60.4566
 KHM,Cambodia,Asia,2002,61.3945
@@ -2855,30 +2855,30 @@ LBR,Liberia,Africa,2020,61.2672
 LBR,Liberia,Africa,2021,61.1658
 LBR,Liberia,Africa,2022,61.9342
 LBR,Liberia,Africa,2023,62.1625
-LBY,Libya,Africa,2000,70.5421
-LBY,Libya,Africa,2001,70.6533
-LBY,Libya,Africa,2002,70.7883
-LBY,Libya,Africa,2003,70.996
-LBY,Libya,Africa,2004,71.2096
-LBY,Libya,Africa,2005,71.4386
-LBY,Libya,Africa,2006,71.6324
-LBY,Libya,Africa,2007,71.7876
-LBY,Libya,Africa,2008,71.9361
-LBY,Libya,Africa,2009,72.0706
-LBY,Libya,Africa,2010,72.1963
-LBY,Libya,Africa,2011,69.9496
-LBY,Libya,Africa,2012,72.1882
-LBY,Libya,Africa,2013,72.3387
-LBY,Libya,Africa,2014,71.2996
-LBY,Libya,Africa,2015,71.644
-LBY,Libya,Africa,2016,71.7987
-LBY,Libya,Africa,2017,72.721
-LBY,Libya,Africa,2018,73.1508
-LBY,Libya,Africa,2019,72.9412
-LBY,Libya,Africa,2020,72.3882
-LBY,Libya,Africa,2021,72.0617
-LBY,Libya,Africa,2022,74.4615
-LBY,Libya,Africa,2023,69.3389
+LBY,Libyan Arab Jamahiriya,Africa,2000,70.5421
+LBY,Libyan Arab Jamahiriya,Africa,2001,70.6533
+LBY,Libyan Arab Jamahiriya,Africa,2002,70.7883
+LBY,Libyan Arab Jamahiriya,Africa,2003,70.996
+LBY,Libyan Arab Jamahiriya,Africa,2004,71.2096
+LBY,Libyan Arab Jamahiriya,Africa,2005,71.4386
+LBY,Libyan Arab Jamahiriya,Africa,2006,71.6324
+LBY,Libyan Arab Jamahiriya,Africa,2007,71.7876
+LBY,Libyan Arab Jamahiriya,Africa,2008,71.9361
+LBY,Libyan Arab Jamahiriya,Africa,2009,72.0706
+LBY,Libyan Arab Jamahiriya,Africa,2010,72.1963
+LBY,Libyan Arab Jamahiriya,Africa,2011,69.9496
+LBY,Libyan Arab Jamahiriya,Africa,2012,72.1882
+LBY,Libyan Arab Jamahiriya,Africa,2013,72.3387
+LBY,Libyan Arab Jamahiriya,Africa,2014,71.2996
+LBY,Libyan Arab Jamahiriya,Africa,2015,71.644
+LBY,Libyan Arab Jamahiriya,Africa,2016,71.7987
+LBY,Libyan Arab Jamahiriya,Africa,2017,72.721
+LBY,Libyan Arab Jamahiriya,Africa,2018,73.1508
+LBY,Libyan Arab Jamahiriya,Africa,2019,72.9412
+LBY,Libyan Arab Jamahiriya,Africa,2020,72.3882
+LBY,Libyan Arab Jamahiriya,Africa,2021,72.0617
+LBY,Libyan Arab Jamahiriya,Africa,2022,74.4615
+LBY,Libyan Arab Jamahiriya,Africa,2023,69.3389
 LCA,Saint Lucia,North America,2000,70.7791
 LCA,Saint Lucia,North America,2001,71.3671
 LCA,Saint Lucia,North America,2002,71.7065
@@ -3071,30 +3071,30 @@ MAC,Macao,Asia,2020,84.61
 MAC,Macao,Asia,2021,83.8179
 MAC,Macao,Asia,2022,82.1025
 MAC,Macao,Asia,2023,83.0749
-MAF,Saint Martin (French part),North America,2000,76.7932
-MAF,Saint Martin (French part),North America,2001,77.0093
-MAF,Saint Martin (French part),North America,2002,77.2189
-MAF,Saint Martin (French part),North America,2003,77.4194
-MAF,Saint Martin (French part),North America,2004,77.6122
-MAF,Saint Martin (French part),North America,2005,77.8018
-MAF,Saint Martin (French part),North America,2006,77.9885
-MAF,Saint Martin (French part),North America,2007,78.1596
-MAF,Saint Martin (French part),North America,2008,78.3263
-MAF,Saint Martin (French part),North America,2009,78.5132
-MAF,Saint Martin (French part),North America,2010,78.7523
-MAF,Saint Martin (French part),North America,2011,79.0164
-MAF,Saint Martin (French part),North America,2012,79.3023
-MAF,Saint Martin (French part),North America,2013,79.5281
-MAF,Saint Martin (French part),North America,2014,79.7269
-MAF,Saint Martin (French part),North America,2015,79.8295
-MAF,Saint Martin (French part),North America,2016,79.8852
-MAF,Saint Martin (French part),North America,2017,78.7621
-MAF,Saint Martin (French part),North America,2018,80.029
-MAF,Saint Martin (French part),North America,2019,80.0784
-MAF,Saint Martin (French part),North America,2020,80.0848
-MAF,Saint Martin (French part),North America,2021,80.206
-MAF,Saint Martin (French part),North America,2022,80.2355
-MAF,Saint Martin (French part),North America,2023,80.2238
+MAF,Saint Martin,North America,2000,76.7932
+MAF,Saint Martin,North America,2001,77.0093
+MAF,Saint Martin,North America,2002,77.2189
+MAF,Saint Martin,North America,2003,77.4194
+MAF,Saint Martin,North America,2004,77.6122
+MAF,Saint Martin,North America,2005,77.8018
+MAF,Saint Martin,North America,2006,77.9885
+MAF,Saint Martin,North America,2007,78.1596
+MAF,Saint Martin,North America,2008,78.3263
+MAF,Saint Martin,North America,2009,78.5132
+MAF,Saint Martin,North America,2010,78.7523
+MAF,Saint Martin,North America,2011,79.0164
+MAF,Saint Martin,North America,2012,79.3023
+MAF,Saint Martin,North America,2013,79.5281
+MAF,Saint Martin,North America,2014,79.7269
+MAF,Saint Martin,North America,2015,79.8295
+MAF,Saint Martin,North America,2016,79.8852
+MAF,Saint Martin,North America,2017,78.7621
+MAF,Saint Martin,North America,2018,80.029
+MAF,Saint Martin,North America,2019,80.0784
+MAF,Saint Martin,North America,2020,80.0848
+MAF,Saint Martin,North America,2021,80.206
+MAF,Saint Martin,North America,2022,80.2355
+MAF,Saint Martin,North America,2023,80.2238
 MAR,Morocco,Africa,2000,66.7937
 MAR,Morocco,Africa,2001,67.1996
 MAR,Morocco,Africa,2002,67.5817
@@ -4175,30 +4175,30 @@ PRY,Paraguay,South America,2020,72.7197
 PRY,Paraguay,South America,2021,68.1081
 PRY,Paraguay,South America,2022,72.3185
 PRY,Paraguay,South America,2023,73.8443
-PSE,Palestine,Asia,2000,70.2984
-PSE,Palestine,Asia,2001,69.75
-PSE,Palestine,Asia,2002,70.8805
-PSE,Palestine,Asia,2003,70.9672
-PSE,Palestine,Asia,2004,71.0943
-PSE,Palestine,Asia,2005,72.0041
-PSE,Palestine,Asia,2006,71.8306
-PSE,Palestine,Asia,2007,72.0636
-PSE,Palestine,Asia,2008,72.2045
-PSE,Palestine,Asia,2009,72.306
-PSE,Palestine,Asia,2010,73.3018
-PSE,Palestine,Asia,2011,73.5572
-PSE,Palestine,Asia,2012,73.7218
-PSE,Palestine,Asia,2013,74.1404
-PSE,Palestine,Asia,2014,72.7814
-PSE,Palestine,Asia,2015,74.5773
-PSE,Palestine,Asia,2016,74.9168
-PSE,Palestine,Asia,2017,75.2159
-PSE,Palestine,Asia,2018,75.3798
-PSE,Palestine,Asia,2019,75.8114
-PSE,Palestine,Asia,2020,74.9978
-PSE,Palestine,Asia,2021,73.8896
-PSE,Palestine,Asia,2022,76.6624
-PSE,Palestine,Asia,2023,65.1703
+PSE,Palestinian Territory,Asia,2000,70.2984
+PSE,Palestinian Territory,Asia,2001,69.75
+PSE,Palestinian Territory,Asia,2002,70.8805
+PSE,Palestinian Territory,Asia,2003,70.9672
+PSE,Palestinian Territory,Asia,2004,71.0943
+PSE,Palestinian Territory,Asia,2005,72.0041
+PSE,Palestinian Territory,Asia,2006,71.8306
+PSE,Palestinian Territory,Asia,2007,72.0636
+PSE,Palestinian Territory,Asia,2008,72.2045
+PSE,Palestinian Territory,Asia,2009,72.306
+PSE,Palestinian Territory,Asia,2010,73.3018
+PSE,Palestinian Territory,Asia,2011,73.5572
+PSE,Palestinian Territory,Asia,2012,73.7218
+PSE,Palestinian Territory,Asia,2013,74.1404
+PSE,Palestinian Territory,Asia,2014,72.7814
+PSE,Palestinian Territory,Asia,2015,74.5773
+PSE,Palestinian Territory,Asia,2016,74.9168
+PSE,Palestinian Territory,Asia,2017,75.2159
+PSE,Palestinian Territory,Asia,2018,75.3798
+PSE,Palestinian Territory,Asia,2019,75.8114
+PSE,Palestinian Territory,Asia,2020,74.9978
+PSE,Palestinian Territory,Asia,2021,73.8896
+PSE,Palestinian Territory,Asia,2022,76.6624
+PSE,Palestinian Territory,Asia,2023,65.1703
 PYF,French Polynesia,Oceania,2000,79.0001
 PYF,French Polynesia,Oceania,2001,79.3158
 PYF,French Polynesia,Oceania,2002,79.5438
@@ -4799,30 +4799,30 @@ SWZ,Eswatini,Africa,2020,59.8618
 SWZ,Eswatini,Africa,2021,58.2284
 SWZ,Eswatini,Africa,2022,63.0283
 SWZ,Eswatini,Africa,2023,64.1227
-SXM,Sint Maarten (Dutch part),North America,2000,74.4091
-SXM,Sint Maarten (Dutch part),North America,2001,74.5246
-SXM,Sint Maarten (Dutch part),North America,2002,74.5847
-SXM,Sint Maarten (Dutch part),North America,2003,74.5879
-SXM,Sint Maarten (Dutch part),North America,2004,74.6175
-SXM,Sint Maarten (Dutch part),North America,2005,74.6812
-SXM,Sint Maarten (Dutch part),North America,2006,74.7786
-SXM,Sint Maarten (Dutch part),North America,2007,74.8123
-SXM,Sint Maarten (Dutch part),North America,2008,74.8522
-SXM,Sint Maarten (Dutch part),North America,2009,74.7963
-SXM,Sint Maarten (Dutch part),North America,2010,74.8212
-SXM,Sint Maarten (Dutch part),North America,2011,74.8684
-SXM,Sint Maarten (Dutch part),North America,2012,75.1253
-SXM,Sint Maarten (Dutch part),North America,2013,75.3913
-SXM,Sint Maarten (Dutch part),North America,2014,75.7346
-SXM,Sint Maarten (Dutch part),North America,2015,75.8992
-SXM,Sint Maarten (Dutch part),North America,2016,75.9518
-SXM,Sint Maarten (Dutch part),North America,2017,75.4551
-SXM,Sint Maarten (Dutch part),North America,2018,75.6932
-SXM,Sint Maarten (Dutch part),North America,2019,75.6796
-SXM,Sint Maarten (Dutch part),North America,2020,75.0023
-SXM,Sint Maarten (Dutch part),North America,2021,74.5049
-SXM,Sint Maarten (Dutch part),North America,2022,76.1804
-SXM,Sint Maarten (Dutch part),North America,2023,76.371
+SXM,Sint Maarten,North America,2000,74.4091
+SXM,Sint Maarten,North America,2001,74.5246
+SXM,Sint Maarten,North America,2002,74.5847
+SXM,Sint Maarten,North America,2003,74.5879
+SXM,Sint Maarten,North America,2004,74.6175
+SXM,Sint Maarten,North America,2005,74.6812
+SXM,Sint Maarten,North America,2006,74.7786
+SXM,Sint Maarten,North America,2007,74.8123
+SXM,Sint Maarten,North America,2008,74.8522
+SXM,Sint Maarten,North America,2009,74.7963
+SXM,Sint Maarten,North America,2010,74.8212
+SXM,Sint Maarten,North America,2011,74.8684
+SXM,Sint Maarten,North America,2012,75.1253
+SXM,Sint Maarten,North America,2013,75.3913
+SXM,Sint Maarten,North America,2014,75.7346
+SXM,Sint Maarten,North America,2015,75.8992
+SXM,Sint Maarten,North America,2016,75.9518
+SXM,Sint Maarten,North America,2017,75.4551
+SXM,Sint Maarten,North America,2018,75.6932
+SXM,Sint Maarten,North America,2019,75.6796
+SXM,Sint Maarten,North America,2020,75.0023
+SXM,Sint Maarten,North America,2021,74.5049
+SXM,Sint Maarten,North America,2022,76.1804
+SXM,Sint Maarten,North America,2023,76.371
 SYC,Seychelles,Africa,2000,71.3127
 SYC,Seychelles,Africa,2001,71.4292
 SYC,Seychelles,Africa,2002,71.5458
@@ -5039,30 +5039,30 @@ TKM,Turkmenistan,Asia,2020,68.8457
 TKM,Turkmenistan,Asia,2021,69.3525
 TKM,Turkmenistan,Asia,2022,69.9133
 TKM,Turkmenistan,Asia,2023,70.0727
-TLS,East Timor,Asia,2000,58.0969
-TLS,East Timor,Asia,2001,58.7722
-TLS,East Timor,Asia,2002,59.4766
-TLS,East Timor,Asia,2003,60.1304
-TLS,East Timor,Asia,2004,60.7428
-TLS,East Timor,Asia,2005,61.2717
-TLS,East Timor,Asia,2006,61.8807
-TLS,East Timor,Asia,2007,62.3957
-TLS,East Timor,Asia,2008,62.8575
-TLS,East Timor,Asia,2009,63.2652
-TLS,East Timor,Asia,2010,63.6599
-TLS,East Timor,Asia,2011,64.0223
-TLS,East Timor,Asia,2012,64.3844
-TLS,East Timor,Asia,2013,64.7189
-TLS,East Timor,Asia,2014,65.0268
-TLS,East Timor,Asia,2015,65.3262
-TLS,East Timor,Asia,2016,65.6099
-TLS,East Timor,Asia,2017,65.8982
-TLS,East Timor,Asia,2018,66.2039
-TLS,East Timor,Asia,2019,66.4964
-TLS,East Timor,Asia,2020,66.9191
-TLS,East Timor,Asia,2021,66.1993
-TLS,East Timor,Asia,2022,67.3684
-TLS,East Timor,Asia,2023,67.6894
+TLS,Timor-Leste,Asia,2000,58.0969
+TLS,Timor-Leste,Asia,2001,58.7722
+TLS,Timor-Leste,Asia,2002,59.4766
+TLS,Timor-Leste,Asia,2003,60.1304
+TLS,Timor-Leste,Asia,2004,60.7428
+TLS,Timor-Leste,Asia,2005,61.2717
+TLS,Timor-Leste,Asia,2006,61.8807
+TLS,Timor-Leste,Asia,2007,62.3957
+TLS,Timor-Leste,Asia,2008,62.8575
+TLS,Timor-Leste,Asia,2009,63.2652
+TLS,Timor-Leste,Asia,2010,63.6599
+TLS,Timor-Leste,Asia,2011,64.0223
+TLS,Timor-Leste,Asia,2012,64.3844
+TLS,Timor-Leste,Asia,2013,64.7189
+TLS,Timor-Leste,Asia,2014,65.0268
+TLS,Timor-Leste,Asia,2015,65.3262
+TLS,Timor-Leste,Asia,2016,65.6099
+TLS,Timor-Leste,Asia,2017,65.8982
+TLS,Timor-Leste,Asia,2018,66.2039
+TLS,Timor-Leste,Asia,2019,66.4964
+TLS,Timor-Leste,Asia,2020,66.9191
+TLS,Timor-Leste,Asia,2021,66.1993
+TLS,Timor-Leste,Asia,2022,67.3684
+TLS,Timor-Leste,Asia,2023,67.6894
 TON,Tonga,Oceania,2000,69.6349
 TON,Tonga,Oceania,2001,69.7998
 TON,Tonga,Oceania,2002,70.0301
@@ -5351,30 +5351,30 @@ UZB,Uzbekistan,Asia,2020,71.4613
 UZB,Uzbekistan,Asia,2021,71.6808
 UZB,Uzbekistan,Asia,2022,72.1465
 UZB,Uzbekistan,Asia,2023,72.3884
-VAT,Vatican,Europe,2000,79.3373
-VAT,Vatican,Europe,2001,79.8502
-VAT,Vatican,Europe,2002,79.9531
-VAT,Vatican,Europe,2003,79.8455
-VAT,Vatican,Europe,2004,80.1907
-VAT,Vatican,Europe,2005,80.6475
-VAT,Vatican,Europe,2006,81.2237
-VAT,Vatican,Europe,2007,81.2977
-VAT,Vatican,Europe,2008,81.3727
-VAT,Vatican,Europe,2009,81.3006
-VAT,Vatican,Europe,2010,81.5413
-VAT,Vatican,Europe,2011,81.7071
-VAT,Vatican,Europe,2012,81.9805
-VAT,Vatican,Europe,2013,82.4736
-VAT,Vatican,Europe,2014,82.6278
-VAT,Vatican,Europe,2015,82.4639
-VAT,Vatican,Europe,2016,82.8758
-VAT,Vatican,Europe,2017,82.7189
-VAT,Vatican,Europe,2018,83.3126
-VAT,Vatican,Europe,2019,83.6243
-VAT,Vatican,Europe,2020,82.986
-VAT,Vatican,Europe,2021,82.946
-VAT,Vatican,Europe,2022,83.3354
-VAT,Vatican,Europe,2023,82.9848
+VAT,Holy See,Europe,2000,79.3373
+VAT,Holy See,Europe,2001,79.8502
+VAT,Holy See,Europe,2002,79.9531
+VAT,Holy See,Europe,2003,79.8455
+VAT,Holy See,Europe,2004,80.1907
+VAT,Holy See,Europe,2005,80.6475
+VAT,Holy See,Europe,2006,81.2237
+VAT,Holy See,Europe,2007,81.2977
+VAT,Holy See,Europe,2008,81.3727
+VAT,Holy See,Europe,2009,81.3006
+VAT,Holy See,Europe,2010,81.5413
+VAT,Holy See,Europe,2011,81.7071
+VAT,Holy See,Europe,2012,81.9805
+VAT,Holy See,Europe,2013,82.4736
+VAT,Holy See,Europe,2014,82.6278
+VAT,Holy See,Europe,2015,82.4639
+VAT,Holy See,Europe,2016,82.8758
+VAT,Holy See,Europe,2017,82.7189
+VAT,Holy See,Europe,2018,83.3126
+VAT,Holy See,Europe,2019,83.6243
+VAT,Holy See,Europe,2020,82.986
+VAT,Holy See,Europe,2021,82.946
+VAT,Holy See,Europe,2022,83.3354
+VAT,Holy See,Europe,2023,82.9848
 VCT,Saint Vincent and the Grenadines,North America,2000,70.3498
 VCT,Saint Vincent and the Grenadines,North America,2001,70.3817
 VCT,Saint Vincent and the Grenadines,North America,2002,70.6579

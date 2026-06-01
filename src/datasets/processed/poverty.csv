@@ -271,9 +271,9 @@ CMR,Cameroon,Africa,2001,25.694448
 CMR,Cameroon,Africa,2007,31.42313
 CMR,Cameroon,Africa,2014,25.657516
 CMR,Cameroon,Africa,2021,22.99222
-COD,Democratic Republic of Congo,Africa,2004,91.4673
-COD,Democratic Republic of Congo,Africa,2012,69.68845
-COD,Democratic Republic of Congo,Africa,2020,78.94202
+COD,DR Congo,Africa,2004,91.4673
+COD,DR Congo,Africa,2012,69.68845
+COD,DR Congo,Africa,2020,78.94202
 COG,Congo,Africa,2005,49.5537
 COG,Congo,Africa,2011,35.357456
 COL,Colombia,South America,2000,17.496916
@@ -549,8 +549,8 @@ FRA,France,Europe,2018,0.021168053
 FRA,France,Europe,2019,0.051448993
 FRA,France,Europe,2020,0.11489582
 FRA,France,Europe,2021,0.056357384
-FSM,Micronesia (country),Oceania,2005,8.559808
-FSM,Micronesia (country),Oceania,2013,16.028437
+FSM,Micronesia,Oceania,2005,8.559808
+FSM,Micronesia,Oceania,2013,16.028437
 GAB,Gabon,Africa,2005,5.483823
 GAB,Gabon,Africa,2017,2.468642
 GBR,United Kingdom,Europe,2000,0.2488854
@@ -854,29 +854,29 @@ KEN,Kenya,Africa,2005,36.67384
 KEN,Kenya,Africa,2015,29.365105
 KEN,Kenya,Africa,2020,35.03161
 KEN,Kenya,Africa,2021,36.146057
-KGZ,Kyrgyzstan,Asia,2000,38.18244
-KGZ,Kyrgyzstan,Asia,2001,33.356903
-KGZ,Kyrgyzstan,Asia,2002,31.149364
-KGZ,Kyrgyzstan,Asia,2003,25.70318
-KGZ,Kyrgyzstan,Asia,2004,11.575469
-KGZ,Kyrgyzstan,Asia,2005,13.574837
-KGZ,Kyrgyzstan,Asia,2006,8.371434
-KGZ,Kyrgyzstan,Asia,2007,8.752659
-KGZ,Kyrgyzstan,Asia,2008,3.3092885
-KGZ,Kyrgyzstan,Asia,2009,1.5469307
-KGZ,Kyrgyzstan,Asia,2010,3.5214179
-KGZ,Kyrgyzstan,Asia,2011,1.2577704
-KGZ,Kyrgyzstan,Asia,2012,2.6298146
-KGZ,Kyrgyzstan,Asia,2013,2.6200042
-KGZ,Kyrgyzstan,Asia,2014,1.0484436
-KGZ,Kyrgyzstan,Asia,2015,2.1805964
-KGZ,Kyrgyzstan,Asia,2016,1.1435105
-KGZ,Kyrgyzstan,Asia,2017,1.2685745
-KGZ,Kyrgyzstan,Asia,2018,0.73589146
-KGZ,Kyrgyzstan,Asia,2019,0.65906364
-KGZ,Kyrgyzstan,Asia,2020,1.3309736
-KGZ,Kyrgyzstan,Asia,2021,0.71577924
-KGZ,Kyrgyzstan,Asia,2022,0.31051716
+KGZ,Kyrgyz Republic,Asia,2000,38.18244
+KGZ,Kyrgyz Republic,Asia,2001,33.356903
+KGZ,Kyrgyz Republic,Asia,2002,31.149364
+KGZ,Kyrgyz Republic,Asia,2003,25.70318
+KGZ,Kyrgyz Republic,Asia,2004,11.575469
+KGZ,Kyrgyz Republic,Asia,2005,13.574837
+KGZ,Kyrgyz Republic,Asia,2006,8.371434
+KGZ,Kyrgyz Republic,Asia,2007,8.752659
+KGZ,Kyrgyz Republic,Asia,2008,3.3092885
+KGZ,Kyrgyz Republic,Asia,2009,1.5469307
+KGZ,Kyrgyz Republic,Asia,2010,3.5214179
+KGZ,Kyrgyz Republic,Asia,2011,1.2577704
+KGZ,Kyrgyz Republic,Asia,2012,2.6298146
+KGZ,Kyrgyz Republic,Asia,2013,2.6200042
+KGZ,Kyrgyz Republic,Asia,2014,1.0484436
+KGZ,Kyrgyz Republic,Asia,2015,2.1805964
+KGZ,Kyrgyz Republic,Asia,2016,1.1435105
+KGZ,Kyrgyz Republic,Asia,2017,1.2685745
+KGZ,Kyrgyz Republic,Asia,2018,0.73589146
+KGZ,Kyrgyz Republic,Asia,2019,0.65906364
+KGZ,Kyrgyz Republic,Asia,2020,1.3309736
+KGZ,Kyrgyz Republic,Asia,2021,0.71577924
+KGZ,Kyrgyz Republic,Asia,2022,0.31051716
 KIR,Kiribati,Oceania,2006,14.027153
 KIR,Kiribati,Oceania,2019,1.6780767
 KOR,South Korea,Asia,2006,0.24944234
@@ -1267,14 +1267,14 @@ PRY,Paraguay,South America,2019,1.0115106
 PRY,Paraguay,South America,2020,0.81328356
 PRY,Paraguay,South America,2021,0.6891791
 PRY,Paraguay,South America,2022,1.3295585
-PSE,Palestine,Asia,2004,0.5896262
-PSE,Palestine,Asia,2005,0.20256646
-PSE,Palestine,Asia,2006,0.31365532
-PSE,Palestine,Asia,2007,1.3573977
-PSE,Palestine,Asia,2009,0.2651386
-PSE,Palestine,Asia,2010,0.04360255
-PSE,Palestine,Asia,2011,0.18903968
-PSE,Palestine,Asia,2016,0.5027174
+PSE,Palestinian Territory,Asia,2004,0.5896262
+PSE,Palestinian Territory,Asia,2005,0.20256646
+PSE,Palestinian Territory,Asia,2006,0.31365532
+PSE,Palestinian Territory,Asia,2007,1.3573977
+PSE,Palestinian Territory,Asia,2009,0.2651386
+PSE,Palestinian Territory,Asia,2010,0.04360255
+PSE,Palestinian Territory,Asia,2011,0.18903968
+PSE,Palestinian Territory,Asia,2016,0.5027174
 QAT,Qatar,Asia,2017,0.0
 ROU,Romania,Europe,2006,7.355783
 ROU,Romania,Europe,2007,5.310613
@@ -1469,9 +1469,9 @@ TJK,Tajikistan,Asia,2004,21.35816
 TJK,Tajikistan,Asia,2007,12.797472
 TJK,Tajikistan,Asia,2009,6.792115
 TJK,Tajikistan,Asia,2015,6.114529
-TLS,East Timor,Asia,2001,40.91249
-TLS,East Timor,Asia,2007,40.878075
-TLS,East Timor,Asia,2014,24.443077
+TLS,Timor-Leste,Asia,2001,40.91249
+TLS,Timor-Leste,Asia,2007,40.878075
+TLS,Timor-Leste,Asia,2014,24.443077
 TON,Tonga,Oceania,2000,3.0948093
 TON,Tonga,Oceania,2009,1.2616102
 TON,Tonga,Oceania,2015,1.7910179

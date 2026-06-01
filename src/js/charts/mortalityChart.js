@@ -197,4 +197,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   container._mortalityScatter = () => { metric = 'maternal'; updateBtns(); draw(); };
   container._mortalityHighlightMarriage = () => { metric = 'maternal'; updateBtns(); draw(); };
   container._mortalitySlope = () => { metric = 'child'; updateBtns(); draw(); };
+  container._getHelpContext = () => ({
+    metric,
+  });
 }

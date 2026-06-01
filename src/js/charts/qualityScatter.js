@@ -116,10 +116,22 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   let drill = null; // null = overview, string = continent name
 
-  function draw() {
+  function renderCurrentView() {
     root.selectAll('*').remove();
     d3.select(container).selectAll('button.qs-back').remove();
     drill ? drawDrill(drill) : drawOverview();
+  }
+
+  function draw() {
+    if (window.runChartViewTransition) {
+      window.runChartViewTransition(container, renderCurrentView, {
+        duration: 170,
+        enterDuration: 300,
+        offsetY: 8
+      });
+      return;
+    }
+    renderCurrentView();
   }
 
   /* ════════════════════════════════════════════════════════
@@ -434,4 +446,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   container._bumpReset           = () => { drill = null;     draw(); };
   container._bumpHighlightAfrica = () => { drill = 'Africa'; draw(); };
   container._bumpHighlightEurope = () => { drill = 'Europe'; draw(); };
+  container._getHelpContext = () => ({
+    drill,
+  });
 }

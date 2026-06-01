@@ -429,28 +429,28 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       })
       .attr('pointer-events', d => {
         const code = numericToAlpha3[+d.id] || '';
-        return AFRICA_CODES.has(code) && latestMap.has(code) ? 'all' : 'none';
+        return AFRICA_CODES.has(code) ? 'all' : 'none';
       })
       .style('cursor', d => {
         const code = numericToAlpha3[+d.id] || '';
-        return AFRICA_CODES.has(code) && latestMap.has(code) ? 'pointer' : 'default';
+        return AFRICA_CODES.has(code) ? 'pointer' : 'default';
       })
       .on('mouseover', function (ev, d) {
         const code = numericToAlpha3[+d.id] || '';
         const rec = latestMap.get(code);
-        if (!rec || rec.value == null) return;
-        tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${rec.country}</strong><br>MPI: ${rec.value.toFixed(3)}<br>Anno: ${rec.year}<br><span style="opacity:.65">${rec.continent || ''}</span>`;
+        const name = rec?.country || ALL_AFRICA.find(x => x.code === code)?.country || code || '?';
+        if (!rec || rec.value == null) {
+          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: <em>No data</em>`;
+        } else {
+          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: ${rec.value.toFixed(3)}<br>Anno: ${rec.year}<br><span style="opacity:.65">${rec.continent || ''}</span>`;
+        }
         tipEl.style.display = 'block';
       })
       .on('mousemove', ev => {
         tipEl.style.left = (ev.clientX + 14) + 'px';
         tipEl.style.top = (ev.clientY - 28) + 'px';
       })
-      .on('mouseleave', function (ev, d) {
-        const code = numericToAlpha3[+d.id] || '';
-        const rec = latestMap.get(code);
-        if (rec && rec.value != null) tipEl.style.display = 'none';
-      });
+      .on('mouseleave', () => { tipEl.style.display = 'none'; });
 
     const africaFeatures = countries.filter(d => {
       const code = numericToAlpha3[+d.id] || '';
@@ -523,4 +523,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     updateToggle();
     draw();
   };
+  container._getHelpContext = () => ({
+    viewType,
+    mode,
+  });
 }

@@ -35,6 +35,26 @@ const _MIG_NUM_TO_A3 = {
 };
 
 let _migWorldData = null; // world atlas cache
+const _MIG_AFRICA_TOPIC_COUNTRIES = [
+  { code: 'DZA', name: 'Algeria' }, { code: 'AGO', name: 'Angola' }, { code: 'BEN', name: 'Benin' },
+  { code: 'BWA', name: 'Botswana' }, { code: 'BFA', name: 'Burkina Faso' }, { code: 'BDI', name: 'Burundi' },
+  { code: 'CPV', name: 'Cape Verde' }, { code: 'CMR', name: 'Cameroon' }, { code: 'CAF', name: 'Central African Republic' },
+  { code: 'TCD', name: 'Chad' }, { code: 'COM', name: 'Comoros' }, { code: 'COG', name: 'Congo' },
+  { code: 'COD', name: 'DR Congo' }, { code: 'DJI', name: 'Djibouti' }, { code: 'EGY', name: 'Egypt' },
+  { code: 'GNQ', name: 'Equatorial Guinea' }, { code: 'ERI', name: 'Eritrea' }, { code: 'SWZ', name: 'Eswatini' },
+  { code: 'ETH', name: 'Ethiopia' }, { code: 'GAB', name: 'Gabon' }, { code: 'GMB', name: 'Gambia' },
+  { code: 'GHA', name: 'Ghana' }, { code: 'GIN', name: 'Guinea' }, { code: 'GNB', name: 'Guinea-Bissau' },
+  { code: 'CIV', name: 'Cote d\'Ivoire' }, { code: 'KEN', name: 'Kenya' }, { code: 'LSO', name: 'Lesotho' },
+  { code: 'LBR', name: 'Liberia' }, { code: 'LBY', name: 'Libya' }, { code: 'MDG', name: 'Madagascar' },
+  { code: 'MWI', name: 'Malawi' }, { code: 'MLI', name: 'Mali' }, { code: 'MRT', name: 'Mauritania' },
+  { code: 'MUS', name: 'Mauritius' }, { code: 'MAR', name: 'Morocco' }, { code: 'MOZ', name: 'Mozambique' },
+  { code: 'NAM', name: 'Namibia' }, { code: 'NER', name: 'Niger' }, { code: 'NGA', name: 'Nigeria' },
+  { code: 'RWA', name: 'Rwanda' }, { code: 'STP', name: 'Sao Tome and Principe' }, { code: 'SEN', name: 'Senegal' },
+  { code: 'SYC', name: 'Seychelles' }, { code: 'SLE', name: 'Sierra Leone' }, { code: 'SOM', name: 'Somalia' },
+  { code: 'ZAF', name: 'South Africa' }, { code: 'SSD', name: 'South Sudan' }, { code: 'SDN', name: 'Sudan' },
+  { code: 'TZA', name: 'Tanzania' }, { code: 'TGO', name: 'Togo' }, { code: 'TUN', name: 'Tunisia' },
+  { code: 'UGA', name: 'Uganda' }, { code: 'ZMB', name: 'Zambia' }, { code: 'ZWE', name: 'Zimbabwe' },
+];
 
 async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = false) {
   const container = d3.select(selector);
@@ -47,6 +67,21 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   const DATA_YEARS = [...new Set(migRaw.map(d => d.year))].sort((a, b) => a - b);
   const MIN_YEAR = DATA_YEARS[0];
   const MAX_YEAR = DATA_YEARS[DATA_YEARS.length - 1];
+  const MIG_TOPIC_ALL = migRaw.filter(d =>
+    d.origin_continent === 'Africa' &&
+    d.dest_continent !== 'Africa' &&
+    d.stock > 0
+  );
+  const TOPIC_SRC_CODES_ALL_YEARS = new Set(MIG_TOPIC_ALL.map(d => d.origin_code));
+  const TOPIC_DST_CODES_ALL_YEARS = new Set(MIG_TOPIC_ALL.map(d => d.dest_code));
+  const TOPIC_NAME_BY_CODE = new Map();
+  MIG_TOPIC_ALL.forEach(d => {
+    if (d.origin_code && d.origin_country) TOPIC_NAME_BY_CODE.set(d.origin_code, d.origin_country);
+    if (d.dest_code && d.dest_country) TOPIC_NAME_BY_CODE.set(d.dest_code, d.dest_country);
+  });
+  _MIG_AFRICA_TOPIC_COUNTRIES.forEach(d => {
+    if (!TOPIC_NAME_BY_CODE.has(d.code)) TOPIC_NAME_BY_CODE.set(d.code, d.name);
+  });
 
   function getYearData(year) {
     return migRaw.filter(d => d.year === year);
@@ -662,7 +697,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     );
 
     const stockByDest  = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_code);
-    const africaCodes  = new Set(yearData.map(d => d.origin_code));
+    const topicAfricaCodes = new Set(_MIG_AFRICA_TOPIC_COUNTRIES.map(d => d.code));
+    const topicSrcCodes = new Set([...topicAfricaCodes, ...TOPIC_SRC_CODES_ALL_YEARS]);
+    const topicDstCodes = TOPIC_DST_CODES_ALL_YEARS;
     const destNameMap  = new Map();
     yearData.forEach(d => destNameMap.set(d.dest_code, d.dest_country));
     const origNameMap  = new Map();
@@ -706,13 +743,40 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
     const maxPair = d3.max(pairs, d => d.stock) || 1;
     const threshold = maxPair * 0.005;
-    const visiblePairs = pairs.filter(p => p.stock >= threshold);
-    const activeSrcCodes = new Set(visiblePairs.map(p => p.srcCode));
-    const activeDstCodes = new Set(visiblePairs.map(p => p.dstCode));
+    // Countries with any valid flow in the selected year (for map coloring/tooltip).
+    const countrySrcCodes = new Set(yearData.map(d => d.origin_code));
+    const countryDstCodes = new Set(yearData.map(d => d.dest_code));
+    // Keep low-volume origins/destinations clickable: force top links per source and per destination.
+    const topPairsBySource = new Set();
+    d3.group(pairs, p => p.srcCode).forEach(srcPairs => {
+      srcPairs
+        .filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
+        .sort((a, b) => b.stock - a.stock)
+        .slice(0, 2)
+        .forEach(p => topPairsBySource.add(`${p.srcCode}||${p.dstCode}`));
+    });
+    const topPairsByDestination = new Set();
+    d3.group(pairs, p => p.dstCode).forEach(dstPairs => {
+      dstPairs
+        .filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
+        .sort((a, b) => b.stock - a.stock)
+        .slice(0, 2)
+        .forEach(p => topPairsByDestination.add(`${p.srcCode}||${p.dstCode}`));
+    });
+    const renderPairs = pairs.filter(p =>
+      (
+        p.stock >= threshold ||
+        topPairsBySource.has(`${p.srcCode}||${p.dstCode}`) ||
+        topPairsByDestination.has(`${p.srcCode}||${p.dstCode}`)
+      ) &&
+      centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode)
+    );
+    const arcSrcCodes = new Set(renderPairs.map(p => p.srcCode));
+    const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
 
     // breakdown: destCode → [{srcName, stock}] sorted desc
     const byDest = new Map();
-    visiblePairs.forEach(p => {
+    renderPairs.forEach(p => {
       if (!byDest.has(p.dstCode)) byDest.set(p.dstCode, []);
       byDest.get(p.dstCode).push({ srcName: p.srcName, stock: p.stock });
     });
@@ -720,7 +784,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     // breakdown: srcCode → [{dstName, stock}] sorted desc
     const bySrc = new Map();
-    visiblePairs.forEach(p => {
+    renderPairs.forEach(p => {
       if (!bySrc.has(p.srcCode)) bySrc.set(p.srcCode, []);
       bySrc.get(p.srcCode).push({ dstName: p.dstName, stock: p.stock });
     });
@@ -733,7 +797,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const maxDest = d3.max(stockByDest.values()) || 1;
     const maxOrig = d3.max(origStockMap.values()) || 1;
     const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.18, 0.88]);
-    const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.22, 1.00]);
+    // Keep low-stock origins visibly distinguishable from true no-data countries.
+    const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.38, 1.00]);
 
     function hexToRgba(hex, op) {
       const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
@@ -755,33 +820,34 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
       .style('border-radius', '0').style('cursor', 'grab');
-
     const g    = svg.append('g');
     const zoom = d3.zoom().scaleExtent([0.5, 12])
       .on('zoom', e => { g.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
       .on('end',  () => svg.style('cursor', 'grab'));
     svg.call(zoom).on('dblclick.zoom', null);
 
-    // Countries — choropleth for destinations, orange for Africa origins, grey otherwise
+    // Countries — destinations by destination color, African origins in orange.
+    // Distinguish true no-flow African origins via no-data pattern.
     g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
-      .attr('stroke', '#fff').attr('stroke-width', 0.35)
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 0.35)
       .attr('fill', f => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return '#ccd8df';
-        if (activeSrcCodes.has(a3)) return origFill(a3) || '#ccd8df';
-        if (activeDstCodes.has(a3)) return destFill(a3) || '#ccd8df';
+        if (topicSrcCodes.has(a3)) return countrySrcCodes.has(a3) ? (origFill(a3) || '#ccd8df') : '#ccd8df';
+        if (topicDstCodes.has(a3)) return countryDstCodes.has(a3) ? (destFill(a3) || '#ccd8df') : '#ccd8df';
         return '#ccd8df';
       })
       .style('cursor', f => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
-        return (a3 && (activeSrcCodes.has(a3) || activeDstCodes.has(a3))) ? 'pointer' : 'default';
+        return (a3 && (topicSrcCodes.has(a3) || topicDstCodes.has(a3))) ? 'pointer' : 'default';
       })
       .on('mousemove', (e, f) => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
-        if (activeSrcCodes.has(a3) || activeDstCodes.has(a3))
+        if (topicSrcCodes.has(a3) || topicDstCodes.has(a3))
           showTip(e, arcTipHtml(a3));
       })
       .on('mouseleave', hideTip)
@@ -790,7 +856,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         if (!a3) return;
         if (a3 === arcHoverA3) { clearArcHover(); return; } // click again → hide
         clearArcHover();
-        if (activeSrcCodes.has(a3) || activeDstCodes.has(a3)) {
+        if (arcSrcCodes.has(a3) || arcDstCodes.has(a3)) {
           arcHoverA3 = a3;
           revealArcs(a3);
         }
@@ -801,10 +867,17 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     function arcTipHtml(a3) {
       const fmt = d3.format(',.0f');
-      if (activeSrcCodes.has(a3)) {
+      const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
+      if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
+        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em> (${currentYear})`;
+      }
+      if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
+        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em> (${currentYear})`;
+      }
+      if (countrySrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;
         const rows  = bySrc.get(a3) || [];
-        let html = `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
+        let html = `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
         html += `Totale emigrati: <strong>${fmt(total)}</strong>`;
         if (rows.length) {
           html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PRINCIPALI DESTINAZIONI</span>`;
@@ -820,7 +893,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       const rows  = byDest.get(a3) || [];
       const cont  = destContMap.get(a3);
       const col   = CONT_COLOR[cont] || '#607d8b';
-      let html = `<strong style="color:${col}">${destNameMap.get(a3)||a3}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>`;
+      let html = `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>`;
       html += `Totale migranti africani: <strong>${fmt(total)}</strong>`;
       if (rows.length) {
         html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PER PAESE DI ORIGINE</span>`;
@@ -833,7 +906,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       return html;
     }
     function revealArcs(a3) {
-      const sel = activeSrcCodes.has(a3)
+      const sel = arcSrcCodes.has(a3)
         ? g.selectAll(`.mig-arc[data-src="${a3}"]`)
         : g.selectAll(`.mig-arc[data-dest="${a3}"]`);
       sel.raise().each(function() {
@@ -860,11 +933,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       return pathGen({ type: 'LineString', coordinates: [srcGeo, dstGeo] }) || `M${src[0]},${src[1]}`;
     }
 
-    const arcWScale = d3.scaleSqrt().domain([threshold, maxPair]).range([0.7, 5]);
+    const arcWScale = d3.scaleSqrt().domain([0, maxPair]).range([0.6, 5]).clamp(true);
 
     // draw small arcs first so large ones render on top
-    pairs
-      .filter(p => p.stock >= threshold && centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
+    renderPairs
       .sort((a, b) => a.stock - b.stock)
       .forEach(p => {
         const src  = centroidByA3.get(p.srcCode);
@@ -902,6 +974,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       .style('color', d => d === 'map' ? '#fff' : '#333');
     draw();
   };
+  containerNode._getHelpContext = () => ({
+    mode,
+    currentYear,
+  });
 }
 
 /* ============================================================
@@ -960,6 +1036,14 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
     const prev = latestByCode.get(d.code);
     if (!prev || d.year > prev.year) latestByCode.set(d.code, d);
   });
+  const remCountryNameByCode = new Map();
+  africaRaw.forEach(d => {
+    if (d.code && d.country) remCountryNameByCode.set(d.code, d.country);
+  });
+  _MIG_AFRICA_TOPIC_COUNTRIES.forEach(d => {
+    if (!remCountryNameByCode.has(d.code)) remCountryNameByCode.set(d.code, d.name);
+  });
+  if (!remCountryNameByCode.has('ESH')) remCountryNameByCode.set('ESH', 'Western Sahara');
 
   const allFeatures = topojson.feature(worldData, worldData.objects.countries).features;
   const AFRICA_CODES = new Set([
@@ -1015,6 +1099,19 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
       `Rimesse: <strong>${displayVal(d)}</strong><br>` +
       (metricMode === 'abs' && d.value != null ? `<em style="opacity:.6;font-size:10px">${d.value.toFixed(1)}% del PIL</em><br>` : '') +
       `<em style="opacity:.5;font-size:9px">Anno: ${d.year}</em>`
+    );
+    const r = tooltip.node().getBoundingClientRect();
+    let tx = e.pageX + 14, ty = e.pageY + 10;
+    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 14;
+    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 10;
+    tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+  }
+  function showNoDataTip(e, code) {
+    const country = remCountryNameByCode.get(code) || code;
+    tooltip.style('display', 'block').html(
+      `<strong style="color:#81c784">${country}</strong><br>` +
+      `Rimesse: <em>No data</em><br>` +
+      `<em style="opacity:.5;font-size:9px">Anno: ${curYear}</em>`
     );
     const r = tooltip.node().getBoundingClientRect();
     let tx = e.pageX + 14, ty = e.pageY + 10;
@@ -1302,9 +1399,13 @@ async function renderRemittancesChart(selector = '#chart-5-2', isFullscreen = fa
         return fill || noDataPattern;
       })
       .attr('stroke', '#fff').attr('stroke-width', 0.8)
+      .style('cursor', 'pointer')
       .on('mousemove', (e, f) => {
-        const rec = dataByCode.get(_MIG_NUM_TO_A3[+f.id]);
+        const code = _MIG_NUM_TO_A3[+f.id];
+        if (!code) return;
+        const rec = dataByCode.get(code);
         if (rec) showTip(e, rec);
+        else showNoDataTip(e, code);
       })
       .on('mouseleave', hideTip);
 

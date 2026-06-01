@@ -100,7 +100,7 @@ async function renderDumbbellChart(selector = '#chart-2-1', isFullscreen = false
     .call(d3.axisLeft(yS).ticks(6))
     .call(ax => ax.select('.domain').remove()).attr('font-size', 9);
 
-  g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('PIL pro capite (USD PPP, scala log)');
+  g.append('text').attr('x', iw / 2).attr('y', ih + 36).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('PIL pro capite');
   g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -40).attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#888').text('Aspettativa di vita (anni)');
 
   // Year watermark

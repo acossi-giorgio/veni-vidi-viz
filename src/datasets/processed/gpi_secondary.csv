@@ -684,16 +684,16 @@ FRA,France,Europe,2018,1.00002
 FRA,France,Europe,2019,0.99922
 FRA,France,Europe,2020,1.0007
 FRA,France,Europe,2022,1.00228
-FSM,Micronesia (country),Oceania,2014,1.0438
-FSM,Micronesia (country),Oceania,2016,0.97801125
-FSM,Micronesia (country),Oceania,2017,1.004162
-FSM,Micronesia (country),Oceania,2018,0.769865
-FSM,Micronesia (country),Oceania,2019,0.875927
-FSM,Micronesia (country),Oceania,2020,0.9888759
-FSM,Micronesia (country),Oceania,2021,0.99813485
-FSM,Micronesia (country),Oceania,2022,1.0174135
-FSM,Micronesia (country),Oceania,2023,1.02006
-FSM,Micronesia (country),Oceania,2024,1.0193413
+FSM,Micronesia,Oceania,2014,1.0438
+FSM,Micronesia,Oceania,2016,0.97801125
+FSM,Micronesia,Oceania,2017,1.004162
+FSM,Micronesia,Oceania,2018,0.769865
+FSM,Micronesia,Oceania,2019,0.875927
+FSM,Micronesia,Oceania,2020,0.9888759
+FSM,Micronesia,Oceania,2021,0.99813485
+FSM,Micronesia,Oceania,2022,1.0174135
+FSM,Micronesia,Oceania,2023,1.02006
+FSM,Micronesia,Oceania,2024,1.0193413
 GAB,Gabon,Africa,2019,1.0322037
 GBR,United Kingdom,Europe,2000,1.00093
 GBR,United Kingdom,Europe,2001,1.00437
@@ -1007,26 +1007,26 @@ KEN,Kenya,Africa,2003,0.93874
 KEN,Kenya,Africa,2004,0.9347
 KEN,Kenya,Africa,2005,0.96044
 KEN,Kenya,Africa,2006,0.97615
-KGZ,Kyrgyzstan,Asia,2004,0.92047
-KGZ,Kyrgyzstan,Asia,2005,0.91339
-KGZ,Kyrgyzstan,Asia,2006,0.92069
-KGZ,Kyrgyzstan,Asia,2007,0.95175
-KGZ,Kyrgyzstan,Asia,2008,0.96986
-KGZ,Kyrgyzstan,Asia,2010,0.99326634
-KGZ,Kyrgyzstan,Asia,2011,0.9972865
-KGZ,Kyrgyzstan,Asia,2012,0.99062175
-KGZ,Kyrgyzstan,Asia,2013,0.9931517
-KGZ,Kyrgyzstan,Asia,2014,0.9968789
-KGZ,Kyrgyzstan,Asia,2015,0.995292
-KGZ,Kyrgyzstan,Asia,2016,0.9930735
-KGZ,Kyrgyzstan,Asia,2017,0.99222416
-KGZ,Kyrgyzstan,Asia,2018,0.99259907
-KGZ,Kyrgyzstan,Asia,2019,0.99039334
-KGZ,Kyrgyzstan,Asia,2020,1.0001816
-KGZ,Kyrgyzstan,Asia,2021,1.0141674
-KGZ,Kyrgyzstan,Asia,2022,1.0154366
-KGZ,Kyrgyzstan,Asia,2023,1.0138574
-KGZ,Kyrgyzstan,Asia,2024,1.011974
+KGZ,Kyrgyz Republic,Asia,2004,0.92047
+KGZ,Kyrgyz Republic,Asia,2005,0.91339
+KGZ,Kyrgyz Republic,Asia,2006,0.92069
+KGZ,Kyrgyz Republic,Asia,2007,0.95175
+KGZ,Kyrgyz Republic,Asia,2008,0.96986
+KGZ,Kyrgyz Republic,Asia,2010,0.99326634
+KGZ,Kyrgyz Republic,Asia,2011,0.9972865
+KGZ,Kyrgyz Republic,Asia,2012,0.99062175
+KGZ,Kyrgyz Republic,Asia,2013,0.9931517
+KGZ,Kyrgyz Republic,Asia,2014,0.9968789
+KGZ,Kyrgyz Republic,Asia,2015,0.995292
+KGZ,Kyrgyz Republic,Asia,2016,0.9930735
+KGZ,Kyrgyz Republic,Asia,2017,0.99222416
+KGZ,Kyrgyz Republic,Asia,2018,0.99259907
+KGZ,Kyrgyz Republic,Asia,2019,0.99039334
+KGZ,Kyrgyz Republic,Asia,2020,1.0001816
+KGZ,Kyrgyz Republic,Asia,2021,1.0141674
+KGZ,Kyrgyz Republic,Asia,2022,1.0154366
+KGZ,Kyrgyz Republic,Asia,2023,1.0138574
+KGZ,Kyrgyz Republic,Asia,2024,1.011974
 KHM,Cambodia,Asia,2000,0.69237
 KHM,Cambodia,Asia,2001,0.71057
 KHM,Cambodia,Asia,2002,0.76007
@@ -1657,30 +1657,30 @@ PRY,Paraguay,South America,2020,1.00654
 PRY,Paraguay,South America,2021,1.01956
 PRY,Paraguay,South America,2022,1.01041
 PRY,Paraguay,South America,2023,1.0094
-PSE,Palestine,Asia,2000,1.02787
-PSE,Palestine,Asia,2001,1.04756
-PSE,Palestine,Asia,2002,1.02121
-PSE,Palestine,Asia,2003,1.01589
-PSE,Palestine,Asia,2004,1.00296
-PSE,Palestine,Asia,2005,1.00088
-PSE,Palestine,Asia,2006,1.01306
-PSE,Palestine,Asia,2007,0.9998
-PSE,Palestine,Asia,2008,0.99191
-PSE,Palestine,Asia,2009,0.98666
-PSE,Palestine,Asia,2010,0.98577
-PSE,Palestine,Asia,2011,1.00543
-PSE,Palestine,Asia,2012,0.99382
-PSE,Palestine,Asia,2013,0.98913
-PSE,Palestine,Asia,2014,0.98548
-PSE,Palestine,Asia,2015,0.98164
-PSE,Palestine,Asia,2016,0.98378
-PSE,Palestine,Asia,2017,0.98984
-PSE,Palestine,Asia,2018,0.98304
-PSE,Palestine,Asia,2019,0.98991
-PSE,Palestine,Asia,2020,0.99703
-PSE,Palestine,Asia,2021,0.9956
-PSE,Palestine,Asia,2022,1.00841
-PSE,Palestine,Asia,2023,1.01473
+PSE,Palestinian Territory,Asia,2000,1.02787
+PSE,Palestinian Territory,Asia,2001,1.04756
+PSE,Palestinian Territory,Asia,2002,1.02121
+PSE,Palestinian Territory,Asia,2003,1.01589
+PSE,Palestinian Territory,Asia,2004,1.00296
+PSE,Palestinian Territory,Asia,2005,1.00088
+PSE,Palestinian Territory,Asia,2006,1.01306
+PSE,Palestinian Territory,Asia,2007,0.9998
+PSE,Palestinian Territory,Asia,2008,0.99191
+PSE,Palestinian Territory,Asia,2009,0.98666
+PSE,Palestinian Territory,Asia,2010,0.98577
+PSE,Palestinian Territory,Asia,2011,1.00543
+PSE,Palestinian Territory,Asia,2012,0.99382
+PSE,Palestinian Territory,Asia,2013,0.98913
+PSE,Palestinian Territory,Asia,2014,0.98548
+PSE,Palestinian Territory,Asia,2015,0.98164
+PSE,Palestinian Territory,Asia,2016,0.98378
+PSE,Palestinian Territory,Asia,2017,0.98984
+PSE,Palestinian Territory,Asia,2018,0.98304
+PSE,Palestinian Territory,Asia,2019,0.98991
+PSE,Palestinian Territory,Asia,2020,0.99703
+PSE,Palestinian Territory,Asia,2021,0.9956
+PSE,Palestinian Territory,Asia,2022,1.00841
+PSE,Palestinian Territory,Asia,2023,1.01473
 QAT,Qatar,Asia,2001,1.19558
 QAT,Qatar,Asia,2002,1.20956
 QAT,Qatar,Asia,2006,1.11889
@@ -1957,19 +1957,19 @@ TKL,Tokelau,Oceania,2020,1.10916
 TKL,Tokelau,Oceania,2021,1.08192
 TKL,Tokelau,Oceania,2023,1.01779
 TKM,Turkmenistan,Asia,2022,1.00718
-TLS,East Timor,Asia,2008,0.99541
-TLS,East Timor,Asia,2009,1.00235
-TLS,East Timor,Asia,2010,1.004196
-TLS,East Timor,Asia,2011,1.0167556
-TLS,East Timor,Asia,2012,1.0022587
-TLS,East Timor,Asia,2013,1.0081077
-TLS,East Timor,Asia,2014,1.0107459
-TLS,East Timor,Asia,2015,1.0170966
-TLS,East Timor,Asia,2016,1.0303253
-TLS,East Timor,Asia,2017,1.0321313
-TLS,East Timor,Asia,2018,1.0455143
-TLS,East Timor,Asia,2019,1.0508525
-TLS,East Timor,Asia,2020,1.059519
+TLS,Timor-Leste,Asia,2008,0.99541
+TLS,Timor-Leste,Asia,2009,1.00235
+TLS,Timor-Leste,Asia,2010,1.004196
+TLS,Timor-Leste,Asia,2011,1.0167556
+TLS,Timor-Leste,Asia,2012,1.0022587
+TLS,Timor-Leste,Asia,2013,1.0081077
+TLS,Timor-Leste,Asia,2014,1.0107459
+TLS,Timor-Leste,Asia,2015,1.0170966
+TLS,Timor-Leste,Asia,2016,1.0303253
+TLS,Timor-Leste,Asia,2017,1.0321313
+TLS,Timor-Leste,Asia,2018,1.0455143
+TLS,Timor-Leste,Asia,2019,1.0508525
+TLS,Timor-Leste,Asia,2020,1.059519
 TON,Tonga,Oceania,2001,0.98052
 TON,Tonga,Oceania,2013,1.0789156
 TON,Tonga,Oceania,2019,1.07848

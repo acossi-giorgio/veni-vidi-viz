@@ -60,10 +60,8 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
 
-  const [incomeRaw, lifeRaw, povertyRaw, geoData] = await Promise.all([
+  const [incomeRaw, geoData] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
-    d3.csv('datasets/processed/life_expectancy.csv', d3.autoType),
-    d3.csv('datasets/processed/poverty.csv', d3.autoType),
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
   ]);
 
@@ -71,8 +69,6 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   const codeToContinent = {};
   incomeRaw.forEach(d => { if (d.code && d.continent) codeToContinent[d.code] = d.continent; });
-  lifeRaw.forEach(d => { if (d.code && d.continent && !codeToContinent[d.code]) codeToContinent[d.code] = d.continent; });
-  povertyRaw.forEach(d => { if (d.code && d.continent && !codeToContinent[d.code]) codeToContinent[d.code] = d.continent; });
   const mappableCodes = new Set(
     countries
       .map(f => numericToAlpha3[+f.id] || '')
@@ -240,6 +236,12 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     if (v >= 1e3) return `$${Math.round(v / 1e3)}k`;
     return `$${Math.round(v)}`;
   }
+  function fmtRatio(v) {
+    if (!isFinite(v) || v <= 0) return 'x-';
+    if (v >= 100) return `x${Math.round(v)}`;
+    if (v >= 10) return `x${v.toFixed(1)}`;
+    return `x${v.toFixed(2)}`;
+  }
 
   function isInteractiveCountry(code) {
     return INTERACTIVE_CONTINENTS.has(codeToContinent[code]);
@@ -283,7 +285,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     const SW = compact ? 12 : 14, SH = compact ? 12 : 14, GAP = compact ? 3 : 4, LABEL_X = SW + (compact ? 5 : 7);
     const rowH = SH + GAP;
     const extraRows = 2; // separator + no-data
-    const totalH = STEPS * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 8 : 10);
+    const totalH = STEPS * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 20 : 24);
     const totalW = compact ? 88 : 110;
     const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
 
@@ -322,7 +324,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     });
 
     // No Data
-    const ndY = py + 18 + STEPS * rowH + 6;
+    const ndY = py + 18 + STEPS * rowH + (compact ? 8 : 12);
     legG.append('rect')
       .attr('x', px).attr('y', ndY)
       .attr('width', SW).attr('height', SH).attr('rx', 3)
@@ -389,7 +391,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .style('flex-shrink', '0').text('×').on('click', closePanel);
 
     if (!s) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
-    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite (USD PPP)');
+    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite');
 
     const pw = PANEL_W - 28, ph = 170, pm = { top: 8, right: 8, bottom: 24, left: 48 };
     const iw = pw - pm.left - pm.right, ih = ph - pm.top - pm.bottom;
@@ -459,16 +461,21 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
 
   paths
     .on('mouseover', function (event, d) {
+      if (selectedCode) {
+        tipEl.style.display = 'none';
+        return;
+      }
       const code = numericToAlpha3[+d.id] || '';
       if (!isInteractiveCountry(code)) return;
       const data = getYearData(currentYear);
       const v    = data[code];
       const name = incomeSeries[code]?.country || code || '?';
-      const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'N/D';
+      const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'No data';
       tipEl.innerHTML = `<strong>${name}</strong><br>PIL pro capite: ${fv}`;
       tipEl.style.display = 'block';
     })
     .on('mousemove', event => {
+      if (selectedCode) return;
       let x = event.clientX + 14, y = event.clientY - 28;
       const r = tipEl.getBoundingClientRect();
       if (x + r.width > window.innerWidth - 8) x = event.clientX - r.width - 14;
@@ -480,6 +487,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     .on('click', function (event, d) {
       const code = numericToAlpha3[+d.id] || '';
       if (!isInteractiveCountry(code)) return;
+      tipEl.style.display = 'none';
       if (selectedCode === code) {
         closePanel();
       } else {
@@ -551,14 +559,31 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
       .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').remove(); });
     g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite (USD PPP)');
+    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
+    const TREND_WINDOW = 5;
+    function movingAverage(series, windowSize = TREND_WINDOW) {
+      const half = Math.floor(windowSize / 2);
+      return series.map((d, i) => {
+        const start = Math.max(0, i - half);
+        const end = Math.min(series.length - 1, i + half);
+        const avgVals = series.slice(start, end + 1)
+          .map(p => p.mean)
+          .filter(v => v != null && isFinite(v) && v > 0);
+        return { year: d.year, mean: avgVals.length ? d3.mean(avgVals) : null };
+      });
+    }
 
     CONT_ORDER.forEach((continent, ci) => {
       const stats = incomeStats.get(continent) || [];
       if (!stats.length) return;
       const color = CONT_COLOR[continent] || '#888';
+      const trendStats = movingAverage(stats, TREND_WINDOW);
+      g.append('path').datum(trendStats)
+        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', 3)
+        .attr('stroke-linecap', 'round').attr('stroke-dasharray', '7,5').attr('opacity', 0.45)
+        .attr('d', lineFn).style('pointer-events', 'none');
       const path = g.append('path').datum(stats)
         .attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2).attr('opacity', 0.9)
         .attr('d', lineFn).style('pointer-events', 'none');
@@ -616,6 +641,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
           const col = CONT_COLOR[cont] || '#888';
           html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
         });
+
         trendTip.innerHTML = html;
         trendTip.style.display = 'block';
         let tx = event.clientX + 14, ty = event.clientY - 28;
@@ -765,4 +791,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     updateViewToggle();
     renderView();
   };
+  container._getHelpContext = () => ({
+    viewType,
+    currentYear,
+    selectedCode,
+  });
 }

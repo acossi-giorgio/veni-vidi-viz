@@ -331,8 +331,16 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
         .text(label);
     }
 
-    mkToggleBtn('%',        !dotMode).on('click', () => { dotMode = false; vizDiv.selectAll('*').remove(); drawDrillDown(W, H); });
-    mkToggleBtn('Assoluto',  dotMode).on('click', () => { dotMode = true;  vizDiv.selectAll('*').remove(); drawDrillDown(W, H); });
+    mkToggleBtn('%', !dotMode).on('click', () => {
+      if (!dotMode) return;
+      dotMode = false;
+      draw();
+    });
+    mkToggleBtn('Assoluto', dotMode).on('click', () => {
+      if (dotMode) return;
+      dotMode = true;
+      draw();
+    });
 
     /* ── Scale Y ──────────────────────────────────────────── */
     const yScale = dotMode
@@ -490,7 +498,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   }
 
   /* ── Draw dispatcher ────────────────────────────────────── */
-  function draw() {
+  function renderCurrentView() {
     vizDiv.selectAll('svg,div').remove();
     vizDiv.style('overflow-x', drillDown ? 'auto' : 'hidden').style('overflow-y', 'hidden');
 
@@ -501,6 +509,19 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     drillDown ? drawDrillDown(W, H) : drawOverview(W, H);
   }
 
+  function draw() {
+    const host = vizDiv.node();
+    if (window.runChartViewTransition && host) {
+      window.runChartViewTransition(host, renderCurrentView, {
+        duration: 185,
+        enterDuration: 315,
+        offsetY: 10
+      });
+      return;
+    }
+    renderCurrentView();
+  }
+
   draw();
 
   /* ── API triggerChartState ──────────────────────────────── */
@@ -508,4 +529,9 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   el._marriageReset     = () => { selectedContinent = 'Africa'; drillDown = false; dotMode = false; draw(); };
   el._marriageHighlight = (continent = 'Africa') => { selectedContinent = continent; drillDown = false; draw(); };
   el._marriageShowTrend = (continent = 'Africa') => { selectedContinent = continent; drillDown = true;  draw(); };
+  el._getHelpContext = () => ({
+    drillDown,
+    dotMode,
+    selectedContinent,
+  });
 }

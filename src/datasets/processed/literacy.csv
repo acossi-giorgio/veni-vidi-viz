@@ -127,10 +127,10 @@ CMR,Cameroon,Africa,2000,68.0
 CMR,Cameroon,Africa,2007,71.0
 CMR,Cameroon,Africa,2010,71.0
 CMR,Cameroon,Africa,2018,72.54713
-COD,Democratic Republic of Congo,Africa,2001,67.0
-COD,Democratic Republic of Congo,Africa,2012,75.0
-COD,Democratic Republic of Congo,Africa,2016,77.0
-COD,Democratic Republic of Congo,Africa,2018,73.55303
+COD,DR Congo,Africa,2001,67.0
+COD,DR Congo,Africa,2012,75.0
+COD,DR Congo,Africa,2016,77.0
+COD,DR Congo,Africa,2018,73.55303
 COG,Congo,Africa,2005,76.0
 COL,Colombia,South America,2004,93.0
 COL,Colombia,South America,2005,93.0
@@ -301,7 +301,7 @@ JOR,Jordan,Asia,2018,95.43145
 JOR,Jordan,Asia,2023,95.0
 KAZ,Kazakhstan,Asia,2009,100.0
 KEN,Kenya,Africa,2000,82.0
-KGZ,Kyrgyzstan,Asia,2009,99.0
+KGZ,Kyrgyz Republic,Asia,2009,99.0
 KHM,Cambodia,Asia,2004,74.0
 KHM,Cambodia,Asia,2008,77.0
 KHM,Cambodia,Asia,2009,76.0
@@ -516,23 +516,23 @@ PRY,Paraguay,South America,2016,95.0
 PRY,Paraguay,South America,2018,94.0
 PRY,Paraguay,South America,2019,93.0
 PRY,Paraguay,South America,2020,95.0
-PSE,Palestine,Asia,2004,92.0
-PSE,Palestine,Asia,2006,93.0
-PSE,Palestine,Asia,2007,94.0
-PSE,Palestine,Asia,2008,94.0
-PSE,Palestine,Asia,2009,94.0
-PSE,Palestine,Asia,2010,95.0
-PSE,Palestine,Asia,2011,95.0
-PSE,Palestine,Asia,2012,96.0
-PSE,Palestine,Asia,2013,96.0
-PSE,Palestine,Asia,2014,96.0
-PSE,Palestine,Asia,2015,96.0
-PSE,Palestine,Asia,2016,97.0
-PSE,Palestine,Asia,2017,97.0
-PSE,Palestine,Asia,2018,97.0
-PSE,Palestine,Asia,2019,97.0
-PSE,Palestine,Asia,2020,98.0
-PSE,Palestine,Asia,2022,98.0
+PSE,Palestinian Territory,Asia,2004,92.0
+PSE,Palestinian Territory,Asia,2006,93.0
+PSE,Palestinian Territory,Asia,2007,94.0
+PSE,Palestinian Territory,Asia,2008,94.0
+PSE,Palestinian Territory,Asia,2009,94.0
+PSE,Palestinian Territory,Asia,2010,95.0
+PSE,Palestinian Territory,Asia,2011,95.0
+PSE,Palestinian Territory,Asia,2012,96.0
+PSE,Palestinian Territory,Asia,2013,96.0
+PSE,Palestinian Territory,Asia,2014,96.0
+PSE,Palestinian Territory,Asia,2015,96.0
+PSE,Palestinian Territory,Asia,2016,97.0
+PSE,Palestinian Territory,Asia,2017,97.0
+PSE,Palestinian Territory,Asia,2018,97.0
+PSE,Palestinian Territory,Asia,2019,97.0
+PSE,Palestinian Territory,Asia,2020,98.0
+PSE,Palestinian Territory,Asia,2022,98.0
 QAT,Qatar,Asia,2004,89.0
 QAT,Qatar,Asia,2007,93.0
 QAT,Qatar,Asia,2008,94.0
@@ -644,10 +644,10 @@ THA,Thailand,Asia,2018,94.0
 THA,Thailand,Asia,2019,91.26915
 THA,Thailand,Asia,2022,91.09987
 TJK,Tajikistan,Asia,2000,99.0
-TLS,East Timor,Asia,2001,38.0
-TLS,East Timor,Asia,2007,51.0
-TLS,East Timor,Asia,2010,58.0
-TLS,East Timor,Asia,2016,65.77913
+TLS,Timor-Leste,Asia,2001,38.0
+TLS,Timor-Leste,Asia,2007,51.0
+TLS,Timor-Leste,Asia,2010,58.0
+TLS,Timor-Leste,Asia,2016,65.77913
 TON,Tonga,Oceania,2006,99.0
 TON,Tonga,Oceania,2011,99.0
 TON,Tonga,Oceania,2016,97.0

@@ -696,8 +696,8 @@ CUB,Cuba,North America,2020,9828.0
 CUB,Cuba,North America,2021,9490.0
 CUB,Cuba,North America,2022,25107.0
 CUB,Cuba,North America,2023,25033.0
-CUW,Curacao,North America,2020,47.0
-CUW,Curacao,North America,2023,366.0
+CUW,Curaçao,North America,2020,47.0
+CUW,Curaçao,North America,2023,366.0
 CYM,Cayman Islands,North America,2000,45.0
 CYM,Cayman Islands,North America,2001,63.0
 CYM,Cayman Islands,North America,2002,39.0
@@ -1055,17 +1055,17 @@ FRA,France,Europe,2019,4882.0
 FRA,France,Europe,2020,768.0
 FRA,France,Europe,2021,2925.0
 FRA,France,Europe,2022,603.0
-FSM,Micronesia (country),Oceania,2014,1910.0
-FSM,Micronesia (country),Oceania,2015,2591.0
-FSM,Micronesia (country),Oceania,2016,1703.0
-FSM,Micronesia (country),Oceania,2017,1892.0
-FSM,Micronesia (country),Oceania,2018,899.0
-FSM,Micronesia (country),Oceania,2019,1581.0
-FSM,Micronesia (country),Oceania,2020,2792.0
-FSM,Micronesia (country),Oceania,2021,2787.0
-FSM,Micronesia (country),Oceania,2022,2905.0
-FSM,Micronesia (country),Oceania,2023,3446.0
-FSM,Micronesia (country),Oceania,2024,3299.0
+FSM,Micronesia,Oceania,2014,1910.0
+FSM,Micronesia,Oceania,2015,2591.0
+FSM,Micronesia,Oceania,2016,1703.0
+FSM,Micronesia,Oceania,2017,1892.0
+FSM,Micronesia,Oceania,2018,899.0
+FSM,Micronesia,Oceania,2019,1581.0
+FSM,Micronesia,Oceania,2020,2792.0
+FSM,Micronesia,Oceania,2021,2787.0
+FSM,Micronesia,Oceania,2022,2905.0
+FSM,Micronesia,Oceania,2023,3446.0
+FSM,Micronesia,Oceania,2024,3299.0
 GAB,Gabon,Africa,2019,77448.0
 GBR,United Kingdom,Europe,2000,2385.0
 GBR,United Kingdom,Europe,2001,2186.0
@@ -1566,30 +1566,30 @@ KEN,Kenya,Africa,2007,311609.0
 KEN,Kenya,Africa,2008,601767.0
 KEN,Kenya,Africa,2009,505601.0
 KEN,Kenya,Africa,2012,1249057.0
-KGZ,Kyrgyzstan,Asia,2000,39256.0
-KGZ,Kyrgyzstan,Asia,2001,38112.0
-KGZ,Kyrgyzstan,Asia,2002,40255.0
-KGZ,Kyrgyzstan,Asia,2003,43918.0
-KGZ,Kyrgyzstan,Asia,2004,21705.0
-KGZ,Kyrgyzstan,Asia,2005,33015.0
-KGZ,Kyrgyzstan,Asia,2006,26008.0
-KGZ,Kyrgyzstan,Asia,2007,28752.0
-KGZ,Kyrgyzstan,Asia,2008,28506.0
-KGZ,Kyrgyzstan,Asia,2009,26580.0
-KGZ,Kyrgyzstan,Asia,2010,21192.0
-KGZ,Kyrgyzstan,Asia,2011,24136.0
-KGZ,Kyrgyzstan,Asia,2012,23777.0
-KGZ,Kyrgyzstan,Asia,2013,23592.0
-KGZ,Kyrgyzstan,Asia,2014,20258.0
-KGZ,Kyrgyzstan,Asia,2015,22796.0
-KGZ,Kyrgyzstan,Asia,2016,12987.0
-KGZ,Kyrgyzstan,Asia,2017,13463.0
-KGZ,Kyrgyzstan,Asia,2018,12165.0
-KGZ,Kyrgyzstan,Asia,2019,15475.0
-KGZ,Kyrgyzstan,Asia,2020,30936.0
-KGZ,Kyrgyzstan,Asia,2021,25931.0
-KGZ,Kyrgyzstan,Asia,2022,21412.0
-KGZ,Kyrgyzstan,Asia,2024,18748.0
+KGZ,Kyrgyz Republic,Asia,2000,39256.0
+KGZ,Kyrgyz Republic,Asia,2001,38112.0
+KGZ,Kyrgyz Republic,Asia,2002,40255.0
+KGZ,Kyrgyz Republic,Asia,2003,43918.0
+KGZ,Kyrgyz Republic,Asia,2004,21705.0
+KGZ,Kyrgyz Republic,Asia,2005,33015.0
+KGZ,Kyrgyz Republic,Asia,2006,26008.0
+KGZ,Kyrgyz Republic,Asia,2007,28752.0
+KGZ,Kyrgyz Republic,Asia,2008,28506.0
+KGZ,Kyrgyz Republic,Asia,2009,26580.0
+KGZ,Kyrgyz Republic,Asia,2010,21192.0
+KGZ,Kyrgyz Republic,Asia,2011,24136.0
+KGZ,Kyrgyz Republic,Asia,2012,23777.0
+KGZ,Kyrgyz Republic,Asia,2013,23592.0
+KGZ,Kyrgyz Republic,Asia,2014,20258.0
+KGZ,Kyrgyz Republic,Asia,2015,22796.0
+KGZ,Kyrgyz Republic,Asia,2016,12987.0
+KGZ,Kyrgyz Republic,Asia,2017,13463.0
+KGZ,Kyrgyz Republic,Asia,2018,12165.0
+KGZ,Kyrgyz Republic,Asia,2019,15475.0
+KGZ,Kyrgyz Republic,Asia,2020,30936.0
+KGZ,Kyrgyz Republic,Asia,2021,25931.0
+KGZ,Kyrgyz Republic,Asia,2022,21412.0
+KGZ,Kyrgyz Republic,Asia,2024,18748.0
 KHM,Cambodia,Asia,2000,227015.0
 KHM,Cambodia,Asia,2003,89285.0
 KHM,Cambodia,Asia,2006,103853.0
@@ -2449,30 +2449,30 @@ PRY,Paraguay,South America,2020,89739.0
 PRY,Paraguay,South America,2021,93002.0
 PRY,Paraguay,South America,2022,93829.0
 PRY,Paraguay,South America,2023,99708.0
-PSE,Palestine,Asia,2000,30037.0
-PSE,Palestine,Asia,2001,32623.0
-PSE,Palestine,Asia,2002,27903.0
-PSE,Palestine,Asia,2003,27650.0
-PSE,Palestine,Asia,2004,29594.0
-PSE,Palestine,Asia,2005,41192.0
-PSE,Palestine,Asia,2006,47080.0
-PSE,Palestine,Asia,2007,51885.0
-PSE,Palestine,Asia,2008,45526.0
-PSE,Palestine,Asia,2009,40965.0
-PSE,Palestine,Asia,2010,37435.0
-PSE,Palestine,Asia,2011,37547.0
-PSE,Palestine,Asia,2012,28659.0
-PSE,Palestine,Asia,2013,29864.0
-PSE,Palestine,Asia,2014,25322.0
-PSE,Palestine,Asia,2015,24957.0
-PSE,Palestine,Asia,2016,23310.0
-PSE,Palestine,Asia,2017,18834.0
-PSE,Palestine,Asia,2018,23505.0
-PSE,Palestine,Asia,2019,28806.0
-PSE,Palestine,Asia,2020,34346.0
-PSE,Palestine,Asia,2021,44449.0
-PSE,Palestine,Asia,2022,52382.0
-PSE,Palestine,Asia,2023,53793.0
+PSE,Palestinian Territory,Asia,2000,30037.0
+PSE,Palestinian Territory,Asia,2001,32623.0
+PSE,Palestinian Territory,Asia,2002,27903.0
+PSE,Palestinian Territory,Asia,2003,27650.0
+PSE,Palestinian Territory,Asia,2004,29594.0
+PSE,Palestinian Territory,Asia,2005,41192.0
+PSE,Palestinian Territory,Asia,2006,47080.0
+PSE,Palestinian Territory,Asia,2007,51885.0
+PSE,Palestinian Territory,Asia,2008,45526.0
+PSE,Palestinian Territory,Asia,2009,40965.0
+PSE,Palestinian Territory,Asia,2010,37435.0
+PSE,Palestinian Territory,Asia,2011,37547.0
+PSE,Palestinian Territory,Asia,2012,28659.0
+PSE,Palestinian Territory,Asia,2013,29864.0
+PSE,Palestinian Territory,Asia,2014,25322.0
+PSE,Palestinian Territory,Asia,2015,24957.0
+PSE,Palestinian Territory,Asia,2016,23310.0
+PSE,Palestinian Territory,Asia,2017,18834.0
+PSE,Palestinian Territory,Asia,2018,23505.0
+PSE,Palestinian Territory,Asia,2019,28806.0
+PSE,Palestinian Territory,Asia,2020,34346.0
+PSE,Palestinian Territory,Asia,2021,44449.0
+PSE,Palestinian Territory,Asia,2022,52382.0
+PSE,Palestinian Territory,Asia,2023,53793.0
 QAT,Qatar,Asia,2001,6952.0
 QAT,Qatar,Asia,2002,6666.0
 QAT,Qatar,Asia,2003,8743.0
@@ -2760,7 +2760,7 @@ SWZ,Eswatini,Africa,2016,20327.0
 SWZ,Eswatini,Africa,2017,21509.0
 SWZ,Eswatini,Africa,2018,18425.0
 SWZ,Eswatini,Africa,2019,16153.0
-SXM,Sint Maarten (Dutch part),North America,2023,196.0
+SXM,Sint Maarten,North America,2023,196.0
 SYC,Seychelles,Africa,2001,52.0
 SYC,Seychelles,Africa,2002,118.0
 SYC,Seychelles,Africa,2003,80.0
@@ -2865,19 +2865,19 @@ TKL,Tokelau,Oceania,2021,49.0
 TKL,Tokelau,Oceania,2023,80.0
 TKM,Turkmenistan,Asia,2022,13628.0
 TKM,Turkmenistan,Asia,2023,17294.0
-TLS,East Timor,Asia,2008,19567.0
-TLS,East Timor,Asia,2009,12577.0
-TLS,East Timor,Asia,2010,10663.0
-TLS,East Timor,Asia,2011,7462.0
-TLS,East Timor,Asia,2012,12197.0
-TLS,East Timor,Asia,2013,12354.0
-TLS,East Timor,Asia,2014,13015.0
-TLS,East Timor,Asia,2015,12810.0
-TLS,East Timor,Asia,2016,13840.0
-TLS,East Timor,Asia,2017,9195.0
-TLS,East Timor,Asia,2018,10475.0
-TLS,East Timor,Asia,2019,10554.0
-TLS,East Timor,Asia,2020,9477.0
+TLS,Timor-Leste,Asia,2008,19567.0
+TLS,Timor-Leste,Asia,2009,12577.0
+TLS,Timor-Leste,Asia,2010,10663.0
+TLS,Timor-Leste,Asia,2011,7462.0
+TLS,Timor-Leste,Asia,2012,12197.0
+TLS,Timor-Leste,Asia,2013,12354.0
+TLS,Timor-Leste,Asia,2014,13015.0
+TLS,Timor-Leste,Asia,2015,12810.0
+TLS,Timor-Leste,Asia,2016,13840.0
+TLS,Timor-Leste,Asia,2017,9195.0
+TLS,Timor-Leste,Asia,2018,10475.0
+TLS,Timor-Leste,Asia,2019,10554.0
+TLS,Timor-Leste,Asia,2020,9477.0
 TON,Tonga,Oceania,2004,59.0
 TON,Tonga,Oceania,2005,10.0
 TON,Tonga,Oceania,2012,477.9047

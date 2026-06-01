@@ -293,4 +293,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   // ── DOM API ───────────────────────────────────────────────
   container._treemapReset     = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
   container._treemapHighlight = () => redraw();
+  container._getHelpContext = () => ({
+    viewMetric,
+  });
 }

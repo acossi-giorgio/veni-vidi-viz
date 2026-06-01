@@ -122,7 +122,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  xLabelEl.text('PIL pro capite (USD PPP, scala log)');
+  xLabelEl.text('PIL pro capite');
 
   // ── Legend (bottom-right above player, choropleth style) ─
   const LEG_W = compact ? 96 : 120, LEG_H = compact ? 84 : 106;
@@ -144,7 +144,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
   legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
 
-  (compact ? [5e6, 50e6] : [5e6, 50e6, 200e6]).forEach(p => {
+  (compact ? [5e6, 50e6] : [5e6, 50e6, 100e6]).forEach(p => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
     const r = rS(p);
     const sz = Math.round(r * 2);
@@ -199,7 +199,7 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
 
     bubblesG.selectAll('circle')
       .on('mouseover', function(event, d) {
-        tipEl.innerHTML = `<strong>${d.country}</strong> (${d.continent})<br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni`;
+        tipEl.innerHTML = `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`;
         tipEl.style.display = 'block';
         d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
       })
@@ -292,4 +292,9 @@ async function renderGapminderBubble(selector, isFullscreen = false) {
     bubblesG.selectAll('circle').attr('opacity', d => c ? (d.continent === c ? 0.82 : 0.07) : 0.65);
   };
   container._gapminderSwitchY = () => {};
+  container._getHelpContext = () => ({
+    currentYear,
+    playing,
+    highlightContinent,
+  });
 }
