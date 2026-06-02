@@ -673,6 +673,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       const revealDelay = Math.max(0, flowDuration - settleDelay);
       const labelRevealDelay = action.type === 'collapse' ? Math.max(0, flowDuration - 90) : revealDelay;
       const enteringNodeIds = new Set(visNodes.filter(d => !lastNodePos.has(d.id)).map(d => d.id));
+      const pinnedInitialNodeIds = new Set(action.type === 'initial' ? ['AFRICA'] : []);
       const nodeOrder = new Map(visNodes.map((d, index) => [d.id, index]));
       const densityFactor = Math.max(0.45, Math.min(1, 10 / Math.max(10, visNodes.length)));
       const nodeStagger = (action.type === 'initial' ? 14 : 10) * densityFactor;
@@ -739,18 +740,18 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         .append('g')
         .attr('class', 'sk-node')
         .attr('transform', d => `translate(${d.x0},${d.y0})`)
-        .attr('opacity', 0);
+        .attr('opacity', d => pinnedInitialNodeIds.has(d.id) ? 1 : 0);
 
       nodeEnter.append('rect')
         .attr('width', d => d.x1 - d.x0)
         .attr('height', d => Math.max(1, d.y1 - d.y0))
         .attr('fill', d => d.col || '#888')
         .attr('rx', 3)
-        .attr('opacity', 0);
+        .attr('opacity', d => pinnedInitialNodeIds.has(d.id) ? 0.85 : 0);
 
       nodeEnter.append('text')
         .attr('dominant-baseline', 'middle')
-        .attr('opacity', 0)
+        .attr('opacity', d => pinnedInitialNodeIds.has(d.id) ? 1 : 0)
         .style('pointer-events', 'none');
 
       const nodeMerged = nodeSel.merge(nodeEnter)
@@ -775,14 +776,14 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         .on('mouseleave', hideTip);
 
       nodeMerged.transition()
-        .delay(d => (enteringNodeIds.has(d.id) ? revealDelay : 0) + (nodeOrder.get(d.id) || 0) * nodeStagger)
+        .delay(d => (pinnedInitialNodeIds.has(d.id) ? 0 : (enteringNodeIds.has(d.id) ? revealDelay : 0)) + (pinnedInitialNodeIds.has(d.id) ? 0 : (nodeOrder.get(d.id) || 0) * nodeStagger))
         .duration(nodeFadeDuration)
         .ease(d3.easeSinOut)
         .attr('transform', d => `translate(${d.x0},${d.y0})`)
         .attr('opacity', 1);
 
       nodeMerged.select('rect').transition()
-        .delay(d => (enteringNodeIds.has(d.id) ? revealDelay : 0) + (nodeOrder.get(d.id) || 0) * nodeStagger)
+        .delay(d => (pinnedInitialNodeIds.has(d.id) ? 0 : (enteringNodeIds.has(d.id) ? revealDelay : 0)) + (pinnedInitialNodeIds.has(d.id) ? 0 : (nodeOrder.get(d.id) || 0) * nodeStagger))
         .duration(nodeFadeDuration)
         .ease(d3.easeSinOut)
         .attr('width', d => d.x1 - d.x0)
@@ -800,7 +801,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         })
         .attr('font-weight', d => d.layer === 0 ? '400' : '500')
         .attr('fill', d => d.col || '#555')
-        .attr('opacity', d => action.type === 'collapse' ? 0 : (enteringNodeIds.has(d.id) ? 0 : 1))
+        .attr('opacity', d => {
+          if (pinnedInitialNodeIds.has(d.id)) return 1;
+          return action.type === 'collapse' ? 0 : (enteringNodeIds.has(d.id) ? 0 : 1);
+        })
         .text(d => {
           if (!d || !d.name) return '';
           const maxChars = isVeryCompact ? 9 : (isCompact ? 12 : 16);
@@ -808,7 +812,10 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
           return isVeryCompact ? label : `${label}  ${d3.format('.2~s')(d.value)}`;
         })
         .transition()
-        .delay(d => (action.type === 'collapse' ? labelRevealDelay : (enteringNodeIds.has(d.id) ? revealDelay : 0)) + (nodeOrder.get(d.id) || 0) * nodeStagger + 70)
+        .delay(d => {
+          if (pinnedInitialNodeIds.has(d.id)) return 0;
+          return (action.type === 'collapse' ? labelRevealDelay : (enteringNodeIds.has(d.id) ? revealDelay : 0)) + (nodeOrder.get(d.id) || 0) * nodeStagger + 70;
+        })
         .duration(labelFadeDuration)
         .ease(d3.easeSinOut)
         .attr('opacity', 1);
