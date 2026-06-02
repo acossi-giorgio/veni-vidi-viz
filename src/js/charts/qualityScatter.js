@@ -88,6 +88,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
   const veryCompact = isFullscreen && (W < 620 || H < 360);
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   /* ── tooltip ────────────────────────────────────────────── */
   let tip = document.getElementById('qs-tip');
@@ -116,22 +117,30 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   let drill = null; // null = overview, string = continent name
 
-  function renderCurrentView() {
+  function centerOutDelay(dev, maxAbsDev, duration = 760) {
+    if (prefersReducedMotion || !Number.isFinite(dev) || !Number.isFinite(maxAbsDev) || maxAbsDev <= 0) return 0;
+    const normalized = Math.min(1, Math.abs(dev) / maxAbsDev);
+    return Math.log1p(normalized * 9) / Math.log1p(9) * duration;
+  }
+
+  function renderCurrentView(options = {}) {
+    const { animateDrillBars = true } = options;
     root.selectAll('*').remove();
     d3.select(container).selectAll('button.qs-back').remove();
-    drill ? drawDrill(drill) : drawOverview();
+    drill ? drawDrill(drill, { animateBars: animateDrillBars }) : drawOverview();
   }
 
   function draw() {
-    if (window.runChartViewTransition) {
-      window.runChartViewTransition(container, renderCurrentView, {
+    const animateDrillBars = true;
+    if (window.runChartViewTransition && !drill) {
+      window.runChartViewTransition(container, () => renderCurrentView({ animateDrillBars }), {
         duration: 170,
         enterDuration: 300,
         offsetY: 8
       });
       return;
     }
-    renderCurrentView();
+    renderCurrentView({ animateDrillBars });
   }
 
   /* ════════════════════════════════════════════════════════
@@ -147,6 +156,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     const devs = countries.map(d => d.gpi - 1);
     const [dMin, dMax] = d3.extent(devs);
+    const maxAbsDev = d3.max(devs, d => Math.abs(d)) || 1;
     const xS = d3.scaleLinear()
       .domain([Math.min(dMin - 0.04, -0.55), Math.max(dMax + 0.04, 0.24)])
       .range([0, iw]);
@@ -282,7 +292,10 @@ async function renderQualityScatter(selector, isFullscreen = false) {
           .on('mousemove', moveTip)
           .on('mouseleave', function() { d3.select(this).attr('opacity',0.68).attr('r', DOT_R); hideTip(); })
           .on('click', () => { drill = cont; draw(); })
-          .transition().duration(500).ease(d3.easeCubicOut)
+          .transition()
+          .delay(centerOutDelay(dev, maxAbsDev))
+          .duration(prefersReducedMotion ? 0 : 420)
+          .ease(d3.easeCubicOut)
           .attr('r', DOT_R).attr('opacity', 0.68);
       });
     });
@@ -292,7 +305,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
   /* ════════════════════════════════════════════════════════
      DRILL-DOWN — barre verticali con parità a 1
   ════════════════════════════════════════════════════════ */
-  function drawDrill(cont) {
+  function drawDrill(cont, options = {}) {
+    const { animateBars: shouldAnimateBars = true } = options;
     const rows  = countries.filter(d => d.continent === cont).sort((a,b) => a.gpi - b.gpi);
     const color = COL[cont];
     const gpis  = rows.map(d => d.gpi);
@@ -361,14 +375,23 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     /* bars */
     const BASE_BAR_OPACITY = 0.78;
     const INACTIVE_BAR_OPACITY = 0.22;
+    const animateBars = shouldAnimateBars && !prefersReducedMotion;
     const barSel = g.selectAll('.bar').data(rows).join('rect').attr('class','bar')
       .attr('x', d => xS(d.code))
-      .attr('y', d => Math.min(yS(d.gpi), parY))
+      .attr('y', animateBars ? d => d.gpi >= 1 ? parY - 1 : parY : d => Math.min(yS(d.gpi), parY))
       .attr('width', bw)
-      .attr('height', d => Math.max(1, Math.abs(yS(d.gpi) - parY)))
+      .attr('height', animateBars ? 1 : d => Math.max(1, Math.abs(yS(d.gpi) - parY)))
       .attr('fill', d => d.gpi < 1 ? COL_GIRLS : COL_BOYS)
       .attr('opacity', BASE_BAR_OPACITY).attr('rx', 1)
       .style('cursor','pointer');
+
+    if (animateBars) {
+      barSel.transition('bar-grow')
+        .duration(620)
+        .ease(d3.easeCubicOut)
+        .attr('y', d => Math.min(yS(d.gpi), parY))
+        .attr('height', d => Math.max(1, Math.abs(yS(d.gpi) - parY)));
+    }
 
     /* labels: tutti i paesi, testo verticale -90° */
     const labelFsz = Math.max(6, Math.min(compact ? 7.5 : 8.5, bw * (compact ? 0.68 : 0.75)));
@@ -394,22 +417,22 @@ async function renderQualityScatter(selector, isFullscreen = false) {
     const highlightCode = (code) => {
       if (activeCode === code) return;
       activeCode = code;
-      barSel.interrupt().transition().duration(130)
+      barSel.interrupt('bar-highlight').transition('bar-highlight').duration(130)
         .attr('opacity', d => d.code === code ? 1 : INACTIVE_BAR_OPACITY)
         .attr('stroke', d => d.code === code ? '#ffffff' : 'none')
         .attr('stroke-width', d => d.code === code ? 1.2 : 0);
-      labelSel.interrupt().transition().duration(130)
+      labelSel.interrupt('label-highlight').transition('label-highlight').duration(130)
         .attr('opacity', d => d.code === code ? 1 : 0.62)
         .attr('font-weight', d => d.code === code ? '700' : null);
     };
 
     const clearHighlight = () => {
       activeCode = null;
-      barSel.interrupt().transition().duration(130)
+      barSel.interrupt('bar-highlight').transition('bar-highlight').duration(130)
         .attr('opacity', BASE_BAR_OPACITY)
         .attr('stroke', 'none')
         .attr('stroke-width', 0);
-      labelSel.interrupt().transition().duration(130)
+      labelSel.interrupt('label-highlight').transition('label-highlight').duration(130)
         .attr('opacity', 0.9)
         .attr('font-weight', null);
     };

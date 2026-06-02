@@ -21,6 +21,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
     (containerNode.clientWidth  || window.innerWidth  * 0.85) < 620 ||
     (containerNode.clientHeight || window.innerHeight * 0.82) < 360
   );
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   const raw = await d3.csv('datasets/processed/child_marriage_cmmm.csv', d3.autoType);
 
@@ -433,13 +434,33 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
 
       const barBottom = PAD.top + chartH;
       const bar18 = h18 > 0
-        ? svg.append('rect').attr('x', bx).attr('y', barBottom - h15 - h18)
-          .attr('width', BAR_W).attr('height', h18).attr('fill', colorBy18).attr('opacity', BASE_OPACITY_BY18)
+        ? svg.append('rect').attr('x', bx).attr('y', prefersReducedMotion ? barBottom - h15 - h18 : barBottom)
+          .attr('width', BAR_W).attr('height', prefersReducedMotion ? h18 : 0).attr('fill', colorBy18).attr('opacity', BASE_OPACITY_BY18)
         : null;
       const bar15 = h15 > 0
-        ? svg.append('rect').attr('x', bx).attr('y', barBottom - h15)
-          .attr('width', BAR_W).attr('height', h15).attr('fill', colorBy15).attr('opacity', BASE_OPACITY_BY15)
+        ? svg.append('rect').attr('x', bx).attr('y', prefersReducedMotion ? barBottom - h15 : barBottom)
+          .attr('width', BAR_W).attr('height', prefersReducedMotion ? h15 : 0).attr('fill', colorBy15).attr('opacity', BASE_OPACITY_BY15)
         : null;
+
+      if (!prefersReducedMotion) {
+        const delay = i * 12;
+        if (bar15) {
+          bar15.transition()
+            .delay(delay)
+            .duration(520)
+            .ease(d3.easeCubicOut)
+            .attr('y', barBottom - h15)
+            .attr('height', h15);
+        }
+        if (bar18) {
+          bar18.transition()
+            .delay(delay + 120)
+            .duration(520)
+            .ease(d3.easeCubicOut)
+            .attr('y', barBottom - h15 - h18)
+            .attr('height', h18);
+        }
+      }
 
       const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
       const label = svg.append('text')

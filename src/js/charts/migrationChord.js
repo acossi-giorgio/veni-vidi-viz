@@ -128,7 +128,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     .style('position', 'absolute').style('background', TOOLTIP_BG)
     .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '10px 14px')
     .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.6')
-    .style('max-width', 'min(72vw, 620px)')
+    .style('max-width', 'min(92vw, 1120px)')
     .style('z-index', '10000').style('display', 'none').style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)');
 
   function showTip(e, html) {
@@ -140,18 +140,55 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
   function hideTip() { tooltip.style('display', 'none'); }
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[ch]));
+  }
+  function chunkRows(rows = [], size = 7) {
+    const chunks = [];
+    for (let i = 0; i < rows.length; i += size) chunks.push(rows.slice(i, i + size));
+    return chunks;
+  }
   function detailRowsToHtml(detailRows = []) {
     if (!detailRows.length) return '';
-    const rows = detailRows.map(r => `<div><span style="opacity:.82">${r.name}</span>: ${d3.format(',.0f')(r.val)}</div>`);
-    const cols = rows.length > 26 ? 3 : (rows.length > 12 ? 2 : 1);
+    const fmt = d3.format(',.0f');
+    const columns = chunkRows(detailRows, 7).map(columnRows => `
+      <div style="display:flex;flex-direction:column;row-gap:2px;min-width:0;">
+        ${columnRows.map(r => `<div><span style="opacity:.82">${escapeHtml(r.name)}</span>: ${fmt(r.val)}</div>`).join('')}
+      </div>
+    `);
     return [
       '<br><span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi</span>',
-      `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(${cols}, minmax(150px, 1fr));column-gap:14px;row-gap:2px;max-height:46vh;overflow:auto;">${rows.join('')}</div>`,
+      `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
+    ].join('');
+  }
+  function mapTooltipRowsToHtml(title, rows = [], nameKey, valueKey = 'stock') {
+    if (!rows.length) return '';
+    const fmt = d3.format(',.0f');
+    const columns = chunkRows(rows, 7).map(columnRows => `
+      <div style="display:flex;flex-direction:column;row-gap:2px;min-width:0;">
+        ${columnRows.map(r => `
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+            <span style="opacity:.82;min-width:0;">${escapeHtml(r[nameKey])}</span>
+            <strong>${fmt(r[valueKey])}</strong>
+          </div>
+        `).join('')}
+      </div>
+    `);
+    return [
+      `<div style="margin-top:6px;opacity:.45;font-size:9px;letter-spacing:.05em;text-transform:uppercase">${title}</div>`,
+      `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
   }
 
   const containerNode = container.node();
-  let currentYear = MAX_YEAR;
+  const FIXED_YEAR = DATA_YEARS.includes(2020) ? 2020 : MAX_YEAR;
+  let currentYear = FIXED_YEAR;
   let mode = 'sankey';
   let animTimer = null;
   let sankeyDrillAfrica = false;
@@ -201,120 +238,22 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   }
   updateModeBtns();
 
-  const PLAYER_H = 72;
-
   const svgArea = wrap.append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('right', '0').style('bottom', '0');
 
-  // ── Bottom player bar (overlay) ───────────────────────────
-  const footer = wrap.append('div')
-    .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
-    .style('height', PLAYER_H + 'px')
-    .style('background', 'rgba(255,255,255,0.88)')
-    .style('backdrop-filter', 'blur(4px)')
-    .style('border-radius', '0 0 10px 10px')
-    .style('border-top', '1px solid rgba(232,238,247,0.8)')
+  // ── Fixed reference year badge ─────────────────────────────
+  wrap.append('div')
+    .style('position', 'absolute').style('right', '12px').style('bottom', '6px').style('z-index', '20')
     .style('display', 'flex').style('align-items', 'center')
-    .style('padding', '0 16px').style('gap', '14px').style('z-index', '20')
-    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
-
-  const ctrlWrap = footer.append('div')
-    .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
-
-  function mkCtrlBtn(inner, title) {
-    return ctrlWrap.append('button')
-      .attr('title', title)
-      .style('width', '30px').style('height', '30px').style('border-radius', '50%')
-      .style('border', `1px solid ${UI_MUTED_BORDER}`).style('background', UI_MUTED)
-      .style('cursor', 'pointer').style('display', 'flex').style('align-items', 'center')
-      .style('justify-content', 'center').style('font-size', '13px').style('color', UI_ACTIVE)
-      .style('flex-shrink', '0').style('transition', 'all 0.15s')
-      .style('padding', '0').style('line-height', '1')
-      .html(inner);
-  }
-
-  function syncYearUi() {
-    slider.property('value', yearToIndex(currentYear));
-    yearLabel.text(currentYear);
-  }
-
-  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => {
-    stopAnim();
-    currentYear = MIN_YEAR;
-    syncYearUi();
-    draw();
-  });
-  const btnPrev = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
-    stopAnim();
-    const idx = yearToIndex(currentYear);
-    currentYear = DATA_YEARS[Math.max(0, idx - 1)];
-    syncYearUi();
-    draw();
-  });
-
-  const playBtn = ctrlWrap.append('button')
-    .style('width', '36px').style('height', '36px').style('border-radius', '50%')
-    .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
-    .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
-    .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
-    .style('padding', '0').style('line-height', '1')
-    .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
-    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
-    .on('click', () => {
-      if (animTimer) { stopAnim(); return; }
-      let idx = currentYear >= MAX_YEAR ? 0 : yearToIndex(currentYear);
-      playBtn.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
-      function step() {
-        currentYear = DATA_YEARS[idx];
-        syncYearUi();
-        draw();
-        idx++;
-        if (idx < DATA_YEARS.length) animTimer = setTimeout(step, 1200);
-        else stopAnim();
-      }
-      step();
-    });
-
-  const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
-    stopAnim();
-    const idx = yearToIndex(currentYear);
-    currentYear = DATA_YEARS[Math.min(DATA_YEARS.length - 1, idx + 1)];
-    syncYearUi();
-    draw();
-  });
-
-  // Timeline
-  const timelineWrap = footer.append('div')
-    .style('flex', '1').style('position', 'relative').style('padding', '0 4px');
-
-  const labelRow = timelineWrap.append('div')
-    .style('display', 'flex').style('justify-content', 'space-between')
-    .style('font-size', '8.5px').style('color', UI_MUTED_INK).style('margin-bottom', '2px')
-    .style('pointer-events', 'none');
-  DATA_YEARS.forEach(y => labelRow.append('span').text(y));
-
-  const slider = timelineWrap.append('input')
-    .attr('type', 'range')
-    .attr('min', 0).attr('max', DATA_YEARS.length - 1).attr('step', 1).attr('value', DATA_YEARS.length - 1)
-    .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
-    .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
-    .on('input', function() {
-      stopAnim();
-      currentYear = DATA_YEARS[+this.value];
-      syncYearUi();
-      draw();
-    });
-
-  // Year display — bottom-right of player bar
-  const yearLabel = footer.append('div')
-    .style('font-size', '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
-    .style('min-width', '54px').style('text-align', 'right').style('flex-shrink', '0')
-    .style('letter-spacing', '-0.5px').text(currentYear);
+    .style('background', 'transparent').style('backdrop-filter', 'none')
+    .style('border', 'none').style('border-radius', '10px')
+    .style('box-shadow', 'none')
+    .style('padding', '0')
+    .html(`<span style="font-size:32px;color:${UI_ACTIVE_STRONG};font-weight:750;letter-spacing:-.5px">${currentYear}</span>`);
 
   function stopAnim() {
     if (animTimer) { clearTimeout(animTimer); animTimer = null; }
-    playBtn.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
   }
 
   const HEADER_H = 44; // approximate height of the top pill-bar header
@@ -328,7 +267,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     if (mode === 'map') {
       drawMap(W, H);
     } else {
-      const sankeyH = Math.max(50, H - HEADER_H - PLAYER_H);
+      const sankeyH = Math.max(50, H - HEADER_H);
       drawSankey(W, sankeyH);
       svgArea.select('svg').style('margin-top', HEADER_H + 'px');
     }
@@ -527,11 +466,6 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   /* ── Sankey: Africa → Dest Continents → Top Countries ─────── */
   function drawSankey(W, H) {
-    const yearData = getYearData(currentYear).filter(d =>
-      d.origin_continent === 'Africa' &&
-      d.dest_continent !== 'Africa' && d.stock > 0
-    );
-
     const isCompact = W < 760;
     const isVeryCompact = W < 560;
     const margin = {
@@ -548,211 +482,341 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('background', getCssToken('surface-raised', '#ffffff')).style('font-family', 'inherit');
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const linkLayer = g.append('g').attr('class', 'sk-link-layer');
+    const nodeLayer = g.append('g').attr('class', 'sk-node-layer');
+    const linkPath = d3.sankeyLinkHorizontal();
+    let lastNodePos = new Map();
 
-    // ── Build nodes & links ─────────────────────────────────────
-    const destContStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_continent);
-    const destConts = [...destContStock.keys()].sort((a, b) => destContStock.get(b) - destContStock.get(a));
+    function buildSankeyGraph() {
+      const yearData = getYearData(currentYear).filter(d =>
+        d.origin_continent === 'Africa' &&
+        d.dest_continent !== 'Africa' && d.stock > 0
+      );
+      const destContStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_continent);
+      const destConts = [...destContStock.keys()].sort((a, b) => destContStock.get(b) - destContStock.get(a));
+      const nodes = [];
+      const links = [];
+      const africaTotal = d3.sum(destContStock.values());
 
-    let nodes = [], links = [];
-    const africaTotal = d3.sum(destContStock.values());
-
-    // Africa stays visible; on click, origins open on the left (mirrored drill-down).
-    nodes.push({
-      id: 'AFRICA',
-      name: 'Africa',
-      layer: 0,
-      col: CONT_COLOR.Africa,
-      role: 'africa',
-      total: africaTotal,
-    });
-
-    // Optional source breakdown (left side), with same 1% aggregation logic.
-    if (sankeyDrillAfrica) {
-      const sourceStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.origin_code);
-      const sortedSrc = [...sourceStock.entries()].sort((a, b) => b[1] - a[1]);
-      const srcThreshold = africaTotal * 0.01;
-      const srcVisible = sortedSrc.filter(([, v]) => v >= srcThreshold);
-      const srcHidden = sortedSrc.filter(([, v]) => v < srcThreshold);
-
-      srcVisible.forEach(([code, val]) => {
-        const name = yearData.find(d => d.origin_code === code)?.origin_country || code;
-        nodes.push({ id: `SRC_${code}`, name, layer: 0, col: CONT_COLOR.Africa, role: 'src-country' });
-        links.push({ source: `SRC_${code}`, target: 'AFRICA', value: val });
+      nodes.push({
+        id: 'AFRICA',
+        name: 'Africa',
+        layer: 0,
+        col: CONT_COLOR.Africa,
+        role: 'africa',
+        total: africaTotal,
       });
 
-      if (srcHidden.length > 0) {
-        const detail = srcHidden.map(([code, val]) => {
+      if (sankeyDrillAfrica) {
+        const sourceStock = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.origin_code);
+        const sortedSrc = [...sourceStock.entries()].sort((a, b) => b[1] - a[1]);
+        const srcThreshold = africaTotal * 0.01;
+        const srcVisible = sortedSrc.filter(([, v]) => v >= srcThreshold);
+        const srcHidden = sortedSrc.filter(([, v]) => v < srcThreshold);
+
+        srcVisible.forEach(([code, val]) => {
           const name = yearData.find(d => d.origin_code === code)?.origin_country || code;
-          return { name, val };
+          nodes.push({ id: `SRC_${code}`, name, layer: 0, col: CONT_COLOR.Africa, role: 'src-country', parentId: 'AFRICA' });
+          links.push({ source: `SRC_${code}`, target: 'AFRICA', value: val });
         });
-        const srcOthersVal = d3.sum(srcHidden, d => d[1]);
-        nodes.push({ id: 'SRC_OTHERS', name: 'Altri', layer: 0, col: CONT_COLOR.Africa, role: 'src-country', detail });
-        links.push({ source: 'SRC_OTHERS', target: 'AFRICA', value: srcOthersVal });
+
+        if (srcHidden.length > 0) {
+          const detail = srcHidden.map(([code, val]) => {
+            const name = yearData.find(d => d.origin_code === code)?.origin_country || code;
+            return { name, val };
+          });
+          const srcOthersVal = d3.sum(srcHidden, d => d[1]);
+          nodes.push({ id: 'SRC_OTHERS', name: 'Altri', layer: 0, col: CONT_COLOR.Africa, role: 'src-country', parentId: 'AFRICA', detail });
+          links.push({ source: 'SRC_OTHERS', target: 'AFRICA', value: srcOthersVal });
+        }
+      }
+
+      destConts.forEach(cont => {
+        nodes.push({
+          id: cont,
+          name: cont,
+          layer: 1,
+          col: CONT_COLOR[cont] || '#888',
+          role: 'dest-cont',
+          parentId: 'AFRICA',
+        });
+        links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
+      });
+
+      const pendingCountries = [];
+      sankeyDrillContinents.forEach(cont => {
+        const contData = yearData.filter(d => d.dest_continent === cont);
+        const countryStock = d3.rollup(contData, v => d3.sum(v, d => d.stock), d => d.dest_code);
+        const contTotal = d3.sum(countryStock.values());
+        const threshold = contTotal * 0.01;
+        const sorted = [...countryStock.entries()].sort((a, b) => b[1] - a[1]);
+        const visible = sorted.filter(([, v]) => v >= threshold);
+        const hidden  = sorted.filter(([, v]) => v < threshold);
+        visible.forEach(([code, val]) => {
+          const name = contData.find(d => d.dest_code === code)?.dest_country || code;
+          pendingCountries.push({ id: code, name, col: CONT_COLOR[cont] || '#888', source: cont, value: val, detail: null });
+        });
+        if (hidden.length > 0) {
+          const othVal = d3.sum(hidden, d => d[1]);
+          const detail = hidden.map(([code, val]) => {
+            const name = contData.find(d => d.dest_code === code)?.dest_country || code;
+            return { name, val };
+          });
+          pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail });
+        }
+      });
+      pendingCountries.sort((a, b) => {
+        const aOther = String(a.id).startsWith('__others_');
+        const bOther = String(b.id).startsWith('__others_');
+        if (aOther !== bOther) return aOther ? 1 : -1;
+        return b.value - a.value;
+      });
+      pendingCountries.forEach(c => {
+        nodes.push({ id: c.id, name: c.name, layer: 2, col: c.col, role: 'dest-country', parentId: c.source, detail: c.detail });
+        links.push({ source: c.source, target: c.id, value: c.value });
+      });
+
+      const sankeyGen = d3.sankey()
+        .nodeId(d => d.id)
+        .nodeAlign(d3.sankeyLeft)
+        .nodeSort(null)
+        .linkSort(null)
+        .nodeWidth(nodeWidth)
+        .nodePadding(nodePadding)
+        .extent([[0, 0], [iw, ih]]);
+
+      return sankeyGen({
+        nodes: nodes.map(d => ({ ...d })),
+        links: links.filter(l => l.value > 0).map(d => ({ ...d })),
+      });
+    }
+
+    function linkKey(d) {
+      return `${d.source.id}->${d.target.id}`;
+    }
+
+    function nodeStartTransform(d, action = {}) {
+      const parent = lastNodePos.get(d.parentId || action.parentId);
+      if (!parent) return `translate(${d.x0},${d.y0})`;
+      const h = Math.max(1, d.y1 - d.y0);
+      return `translate(${parent.x0},${(parent.y0 + parent.y1) / 2 - h / 2})`;
+    }
+
+    function nodeExitTransform(d, action = {}) {
+      const parent = lastNodePos.get(d.parentId || action.parentId);
+      if (!parent) return `translate(${d.x0},${d.y0})`;
+      const h = Math.max(1, d.y1 - d.y0);
+      return `translate(${parent.x0},${(parent.y0 + parent.y1) / 2 - h / 2})`;
+    }
+
+    function revealFlow(path, direction = 'right', duration = 900, delay = 0) {
+      const length = path.getTotalLength();
+      d3.select(path)
+        .attr('stroke-dasharray', length)
+        .attr('stroke-dashoffset', direction === 'left' ? -length : length)
+        .attr('stroke-opacity', 0.12)
+        .transition()
+        .delay(delay)
+        .duration(duration)
+        .ease(d3.easeSinInOut)
+        .attr('stroke-dashoffset', 0)
+        .attr('stroke-opacity', 0.25)
+        .on('end', function() {
+          d3.select(this).attr('stroke-dasharray', null).attr('stroke-dashoffset', null);
+        });
+    }
+
+    function compressFlow(path, direction = 'left', duration = 900, delay = 0) {
+      const length = path.getTotalLength();
+      d3.select(path)
+        .interrupt()
+        .attr('stroke-dasharray', length)
+        .attr('stroke-dashoffset', 0)
+        .transition()
+        .delay(delay)
+        .duration(duration)
+        .ease(d3.easeSinInOut)
+        .attr('stroke-dashoffset', direction === 'left' ? -length : length)
+        .attr('stroke-opacity', 0)
+        .remove();
+    }
+
+    function handleNodeClick(e, d) {
+      if (!d) return;
+      hideTip();
+      if (d.role === 'africa') {
+        const opening = !sankeyDrillAfrica;
+        sankeyDrillAfrica = opening;
+        renderSankey({
+          type: opening ? 'expand' : 'collapse',
+          direction: opening ? 'left' : 'right',
+          parentId: 'AFRICA',
+        });
+      } else if (d.role === 'dest-cont') {
+        const opening = !sankeyDrillContinents.has(d.id);
+        if (opening) sankeyDrillContinents.add(d.id);
+        else sankeyDrillContinents.delete(d.id);
+        renderSankey({
+          type: opening ? 'expand' : 'collapse',
+          direction: opening ? 'right' : 'left',
+          parentId: d.id,
+        });
       }
     }
 
-    destConts.forEach(cont => {
-      nodes.push({
-        id: cont,
-        name: cont,
-        layer: 1,
-        col: CONT_COLOR[cont] || '#888',
-        role: 'dest-cont',
-      });
-      links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
-    });
+    function renderSankey(action = { type: 'initial', direction: 'right' }) {
+      const graph = buildSankeyGraph();
+      const visLinks = graph.links;
+      const visNodes = graph.nodes;
+      const flowDuration = action.type === 'initial' ? 1040 : 860;
+      const settleDelay = 72;
+      const revealDelay = Math.max(0, flowDuration - settleDelay);
+      const labelRevealDelay = action.type === 'collapse' ? Math.max(0, flowDuration - 90) : revealDelay;
+      const enteringNodeIds = new Set(visNodes.filter(d => !lastNodePos.has(d.id)).map(d => d.id));
+      const nodeOrder = new Map(visNodes.map((d, index) => [d.id, index]));
+      const densityFactor = Math.max(0.45, Math.min(1, 10 / Math.max(10, visNodes.length)));
+      const nodeStagger = (action.type === 'initial' ? 14 : 10) * densityFactor;
+      const linkStagger = (action.type === 'initial' ? 8 : 6) * densityFactor;
+      const nodeFadeDuration = 240;
+      const labelFadeDuration = 210;
+      const exitFadeDuration = 170;
 
-    // Collect all country nodes globally, sort by value desc
-    // Dynamic threshold: 1% of that continent's total → aggregate rest into "Altri"
-    const pendingCountries = [];
-    sankeyDrillContinents.forEach(cont => {
-      const contData = yearData.filter(d => d.dest_continent === cont);
-      const countryStock = d3.rollup(contData, v => d3.sum(v, d => d.stock), d => d.dest_code);
-      const contTotal = d3.sum(countryStock.values());
-      const threshold = contTotal * 0.01;
-      const sorted = [...countryStock.entries()].sort((a, b) => b[1] - a[1]);
-      const visible = sorted.filter(([, v]) => v >= threshold);
-      const hidden  = sorted.filter(([, v]) => v < threshold);
-      visible.forEach(([code, val]) => {
-        const name = contData.find(d => d.dest_code === code)?.dest_country || code;
-        pendingCountries.push({ id: code, name, col: CONT_COLOR[cont] || '#888', source: cont, value: val, detail: null });
+      const linkSel = linkLayer.selectAll('path.sk-link')
+        .data(visLinks, linkKey);
+
+      linkSel.exit().each(function(_, index) {
+        compressFlow(this, action.direction || 'left', flowDuration, index * 6);
       });
-      if (hidden.length > 0) {
-        const othVal = d3.sum(hidden, d => d[1]);
-        const detail = hidden.map(([code, val]) => {
-          const name = contData.find(d => d.dest_code === code)?.dest_country || code;
-          return { name, val };
+
+      const linkEnter = linkSel.enter()
+        .append('path')
+        .attr('class', 'sk-link')
+        .attr('d', linkPath)
+        .attr('fill', 'none')
+        .attr('stroke', d => d.target.col || '#aaa')
+        .attr('stroke-width', d => Math.max(1, d.width))
+        .attr('stroke-opacity', 0)
+        .style('cursor', 'pointer');
+
+      linkEnter.each(function(_, index) {
+        revealFlow(this, action.direction || 'right', flowDuration, index * linkStagger);
+      });
+
+      linkSel.merge(linkEnter)
+        .on('mouseover', function() { d3.select(this).attr('stroke-opacity', 0.55); })
+        .on('mousemove', (e, d) => showTip(e,
+          `<strong style="color:${d.source.col||'#fff'}">${d.source.name}</strong>` +
+          ` → <strong style="color:${d.target.col||'#fff'}">${d.target.name}</strong><br>` +
+          `Migranti: <strong>${d3.format(',.0f')(d.value)}</strong>`
+        ))
+        .on('mouseleave', function() {
+          hideTip();
+          d3.select(this).attr('stroke-opacity', 0.25);
         });
-        pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail });
-      }
-    });
-    pendingCountries.sort((a, b) => {
-      const aOther = String(a.id).startsWith('__others_');
-      const bOther = String(b.id).startsWith('__others_');
-      if (aOther !== bOther) return aOther ? 1 : -1;
-      return b.value - a.value;
-    });
-    pendingCountries.forEach(c => {
-      nodes.push({ id: c.id, name: c.name, layer: 2, col: c.col, role: 'dest-country', detail: c.detail });
-      links.push({ source: c.source, target: c.id, value: c.value });
-    });
 
-    const DUMMY_ID = '__dummy__'; // kept for filter references below
+      linkSel
+        .transition()
+        .delay((_, index) => index * linkStagger)
+        .duration(flowDuration)
+        .ease(d3.easeSinInOut)
+        .attr('d', linkPath)
+        .attr('stroke', d => d.target.col || '#aaa')
+        .attr('stroke-width', d => Math.max(1, d.width))
+        .attr('stroke-opacity', 0.25);
 
-    // Build sankey-compatible index
-    const nodeById = new Map(nodes.map((n, i) => [n.id, i]));
-    const sankeyLinks = links.map(l => ({
-      source: nodeById.get(l.source),
-      target: nodeById.get(l.target),
-      value: l.value,
-    })).filter(l => l.source != null && l.target != null && l.value > 0);
+      const nodeSel = nodeLayer.selectAll('g.sk-node')
+        .data(visNodes, d => d.id);
 
-    const sankeyGen = d3.sankey()
-      .nodeId(d => d.index)
-      .nodeAlign(d3.sankeyLeft)
-      .nodeSort(null)
-      .linkSort(null)
-      .nodeWidth(nodeWidth)
-      .nodePadding(nodePadding)
-      .extent([[0, 0], [iw, ih]]);
+      nodeSel.exit()
+        .transition()
+        .delay((d, index) => (action.type === 'collapse' ? revealDelay : 0) + index * 14)
+        .duration(exitFadeDuration)
+        .ease(d3.easeQuadOut)
+        .attr('opacity', 0)
+        .remove();
 
-    const { nodes: sNodes, links: sLinks } = sankeyGen({
-      nodes: nodes.map((d, i) => ({ ...d, index: i })),
-      links: sankeyLinks,
-    });
+      const nodeEnter = nodeSel.enter()
+        .append('g')
+        .attr('class', 'sk-node')
+        .attr('transform', d => `translate(${d.x0},${d.y0})`)
+        .attr('opacity', 0);
 
-    // ── Links (exclude dummy) ──────────────────────────────────
-    const visLinks = sLinks.filter(l => nodes[l.target.index]?.id !== DUMMY_ID);
-    g.selectAll('.sk-link').data(visLinks).join('path')
-      .attr('class', 'sk-link')
-      .attr('d', d3.sankeyLinkHorizontal())
-      .attr('fill', 'none')
-      .attr('stroke', d => nodes[d.target.index]?.col || '#aaa')
-      .attr('stroke-width', d => Math.max(1, d.width))
-      .attr('stroke-opacity', 0)
-      .style('cursor', 'pointer')
-      .on('mouseover', function() { d3.select(this).attr('stroke-opacity', 0.55); })
-      .on('mouseleave', function() { d3.select(this).attr('stroke-opacity', 0.25); })
-      .call(s => s.transition().duration(600).ease(d3.easeCubicOut).attr('stroke-opacity', 0.25))
-      .on('mousemove', (e, d) => showTip(e,
-        `<strong style="color:${nodes[d.source.index]?.col||'#fff'}">${nodes[d.source.index]?.name}</strong>` +
-        ` → <strong style="color:${nodes[d.target.index]?.col||'#fff'}">${nodes[d.target.index]?.name}</strong><br>` +
-        `Migranti: <strong>${d3.format(',.0f')(d.value)}</strong>`
-      ))
-      .on('mouseleave', () => { hideTip(); g.selectAll('.sk-link').attr('stroke-opacity', 0.25); });
+      nodeEnter.append('rect')
+        .attr('width', d => d.x1 - d.x0)
+        .attr('height', d => Math.max(1, d.y1 - d.y0))
+        .attr('fill', d => d.col || '#888')
+        .attr('rx', 3)
+        .attr('opacity', 0);
 
-    // ── Nodes (exclude dummy) ──────────────────────────────────
-    const visNodes = sNodes.filter(n => nodes[n.index]?.id !== DUMMY_ID);
-    const nodeG = g.selectAll('.sk-node').data(visNodes).join('g').attr('class', 'sk-node');
+      nodeEnter.append('text')
+        .attr('dominant-baseline', 'middle')
+        .attr('opacity', 0)
+        .style('pointer-events', 'none');
 
-    nodeG.append('rect')
-      .attr('x', d => d.x0).attr('y', d => d.y0)
-      .attr('width', d => d.x1 - d.x0)
-      .attr('height', d => Math.max(1, d.y1 - d.y0))
-      .attr('fill', d => nodes[d.index]?.col || '#888')
-      .attr('rx', 3).attr('opacity', 0)
-      .call(s => s.transition().duration(500).ease(d3.easeCubicOut)
-        .delay((_, i) => i * 30).attr('opacity', 0.85))
-      .style('cursor', d => {
-        const nd = nodes[d.index];
-        return nd?.role === 'africa' || nd?.role === 'dest-cont' ? 'pointer' : 'default';
-      })
-      .on('click', (e, d) => {
-        const nd = nodes[d.index];
-        if (!nd) return;
-        if (nd.role === 'africa') {
-          sankeyDrillAfrica = !sankeyDrillAfrica;
-        } else if (nd.role === 'dest-cont') {
-          if (sankeyDrillContinents.has(nd.id)) sankeyDrillContinents.delete(nd.id);
-          else sankeyDrillContinents.add(nd.id);
-        } else {
-          return;
-        }
-        draw();
-      })
-      .on('mousemove', (e, d) => {
-        const nd = nodes[d.index];
-        if (!nd || !nd.name) return;
-        let html = `<strong style="color:${nd.col||'#fff'}">${nd.name}</strong><br>` +
-          `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>`;
-        if (nd.role === 'africa') {
-          html += sankeyDrillAfrica
-            ? '<br><em style="opacity:.6;font-size:10px">Clicca per chiudere ↩</em>'
-            : '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio ←</em>';
-        } else if (nd.role === 'dest-cont') {
-          html += sankeyDrillContinents.has(nd.id)
-            ? '<br><em style="opacity:.6;font-size:10px">Clicca per chiudere ↩</em>'
-            : '<br><em style="opacity:.6;font-size:10px">Clicca per dettaglio →</em>';
-        }
-        if (nd.detail) html += detailRowsToHtml(nd.detail);
-        showTip(e, html);
-      })
-      .on('mouseleave', hideTip);
+      const nodeMerged = nodeSel.merge(nodeEnter)
+        .style('cursor', d => d.role === 'africa' || d.role === 'dest-cont' ? 'pointer' : 'default')
+        .on('click', handleNodeClick)
+        .on('mousemove', (e, d) => {
+          if (!d || !d.name) return;
+          let html = `<strong style="color:${d.col||'#fff'}">${d.name}</strong><br>` +
+            `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>`;
+          if (d.role === 'africa') {
+            html += sankeyDrillAfrica
+              ? '<br><em style="opacity:.6;font-size:10px">Clicca per comprimere →</em>'
+              : '<br><em style="opacity:.6;font-size:10px">Clicca per espandere ←</em>';
+          } else if (d.role === 'dest-cont') {
+            html += sankeyDrillContinents.has(d.id)
+              ? '<br><em style="opacity:.6;font-size:10px">Clicca per comprimere ←</em>'
+              : '<br><em style="opacity:.6;font-size:10px">Clicca per espandere →</em>';
+          }
+          if (d.detail) html += detailRowsToHtml(d.detail);
+          showTip(e, html);
+        })
+        .on('mouseleave', hideTip);
 
-    // ── Labels ─────────────────────────────────────────────────
-    nodeG.append('text')
-      .attr('x', d => nodes[d.index]?.layer === 0 ? d.x0 - 6 : d.x1 + 6)
-      .attr('y', d => (d.y1 + d.y0) / 2)
-      .attr('text-anchor', d => nodes[d.index]?.layer === 0 ? 'end' : 'start')
-      .attr('dominant-baseline', 'middle')
-      .attr('font-size', d => {
-        if (nodes[d.index]?.layer === 0) return isCompact ? 10 : 11;
-        return isVeryCompact ? 8 : 9;
-      })
-      .attr('font-weight', d => nodes[d.index]?.layer === 0 ? '400' : '500')
-      .attr('fill', d => nodes[d.index]?.col || '#555')
-      .attr('opacity', 0)
-      .style('pointer-events', 'none')
-      .call(s => s.transition().duration(400).ease(d3.easeCubicOut).delay(300).attr('opacity', 1))
-      .text(d => {
-        const nd = nodes[d.index];
-        if (!nd || !nd.name) return '';
-        const maxChars = isVeryCompact ? 9 : (isCompact ? 12 : 16);
-        const label = nd.name.length > maxChars ? nd.name.slice(0, maxChars - 1) + '…' : nd.name;
-        return isVeryCompact ? label : `${label}  ${d3.format('.2~s')(d.value)}`;
-      });
+      nodeMerged.transition()
+        .delay(d => (enteringNodeIds.has(d.id) ? revealDelay : 0) + (nodeOrder.get(d.id) || 0) * nodeStagger)
+        .duration(nodeFadeDuration)
+        .ease(d3.easeSinOut)
+        .attr('transform', d => `translate(${d.x0},${d.y0})`)
+        .attr('opacity', 1);
 
+      nodeMerged.select('rect').transition()
+        .delay(d => (enteringNodeIds.has(d.id) ? revealDelay : 0) + (nodeOrder.get(d.id) || 0) * nodeStagger)
+        .duration(nodeFadeDuration)
+        .ease(d3.easeSinOut)
+        .attr('width', d => d.x1 - d.x0)
+        .attr('height', d => Math.max(1, d.y1 - d.y0))
+        .attr('fill', d => d.col || '#888')
+        .attr('opacity', 0.85);
 
+      nodeMerged.select('text')
+        .attr('x', d => d.layer === 0 ? -6 : (d.x1 - d.x0) + 6)
+        .attr('y', d => (d.y1 - d.y0) / 2)
+        .attr('text-anchor', d => d.layer === 0 ? 'end' : 'start')
+        .attr('font-size', d => {
+          if (d.layer === 0) return isCompact ? 10 : 11;
+          return isVeryCompact ? 8 : 9;
+        })
+        .attr('font-weight', d => d.layer === 0 ? '400' : '500')
+        .attr('fill', d => d.col || '#555')
+        .attr('opacity', d => action.type === 'collapse' ? 0 : (enteringNodeIds.has(d.id) ? 0 : 1))
+        .text(d => {
+          if (!d || !d.name) return '';
+          const maxChars = isVeryCompact ? 9 : (isCompact ? 12 : 16);
+          const label = d.name.length > maxChars ? d.name.slice(0, maxChars - 1) + '…' : d.name;
+          return isVeryCompact ? label : `${label}  ${d3.format('.2~s')(d.value)}`;
+        })
+        .transition()
+        .delay(d => (action.type === 'collapse' ? labelRevealDelay : (enteringNodeIds.has(d.id) ? revealDelay : 0)) + (nodeOrder.get(d.id) || 0) * nodeStagger + 70)
+        .duration(labelFadeDuration)
+        .ease(d3.easeSinOut)
+        .attr('opacity', 1);
+
+      lastNodePos = new Map(visNodes.map(d => [d.id, { x0: d.x0, y0: d.y0, x1: d.x1, y1: d.y1 }]));
+    }
+
+    renderSankey({ type: 'initial', direction: 'right' });
   }
 
   /* ── Connection Map ────────────────────────────────────────── */
@@ -949,14 +1013,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         const rows  = bySrc.get(a3) || [];
         let html = `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
         html += `Totale emigrati: <strong>${fmt(total)}</strong>`;
-        if (rows.length) {
-          html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PRINCIPALI DESTINAZIONI</span>`;
-          rows.slice(0, 8).forEach(r => {
-            html += `<br><span style="opacity:.8">${r.dstName}</span>: <strong>${fmt(r.stock)}</strong>`;
-          });
-          if (rows.length > 8) html += `<br><span style="opacity:.4;font-size:9px">+ altri ${rows.length - 8} paesi</span>`;
-        }
-        html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i flussi</em>`;
+        html += mapTooltipRowsToHtml('Principali destinazioni', rows, 'dstName');
+        html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i collegamenti</em>`;
         return html;
       }
       const total = stockByDest.get(a3) || 0;
@@ -965,14 +1023,8 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       const col   = CONT_COLOR[cont] || '#607d8b';
       let html = `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>`;
       html += `Totale migranti africani: <strong>${fmt(total)}</strong>`;
-      if (rows.length) {
-        html += `<br><span style="opacity:.45;font-size:9px;letter-spacing:.05em">PER PAESE DI ORIGINE</span>`;
-        rows.slice(0, 8).forEach(r => {
-          html += `<br><span style="opacity:.8">${r.srcName}</span>: <strong>${fmt(r.stock)}</strong>`;
-        });
-        if (rows.length > 8) html += `<br><span style="opacity:.4;font-size:9px">+ altri ${rows.length - 8} paesi</span>`;
-      }
-      html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i flussi</em>`;
+      html += mapTooltipRowsToHtml('Per paese di origine', rows, 'srcName');
+      html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i collegamenti</em>`;
       return html;
     }
     function revealArcs(a3) {
@@ -1028,20 +1080,19 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
   draw();
 
-  containerNode._migrationShowYear = function(year) {
-    stopAnim(); mode = 'network'; currentYear = clampYearToAvailable(year);
-    syncYearUi();
-    header.selectAll('.chord-mode-btn')
-      .style('background', d => d === 'network' ? '#333' : '#fff')
-      .style('color', d => d === 'network' ? '#fff' : '#333');
+  containerNode._migrationShowYear = function() {
+    stopAnim(); mode = 'sankey'; currentYear = FIXED_YEAR;
+    updateModeBtns();
     draw();
   };
-  containerNode._migrationAnimate = function() { playBtn.dispatch('click'); };
+  containerNode._migrationAnimate = function() {
+    stopAnim(); mode = 'sankey'; currentYear = FIXED_YEAR;
+    updateModeBtns();
+    draw();
+  };
   containerNode._migrationShowMap = function() {
-    stopAnim(); mode = 'map';
-    header.selectAll('.chord-mode-btn')
-      .style('background', d => d === 'map' ? '#333' : '#fff')
-      .style('color', d => d === 'map' ? '#fff' : '#333');
+    stopAnim(); mode = 'map'; currentYear = FIXED_YEAR;
+    updateModeBtns();
     draw();
   };
   containerNode._getHelpContext = () => ({

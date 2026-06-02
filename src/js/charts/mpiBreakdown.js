@@ -73,6 +73,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
   const veryCompact = isFullscreen && (W < 620 || H < 360);
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   // ── Toggle pills (top-left) ────────────────────────────────
   const toggleBar = d3.select(container).append('div')
@@ -337,17 +338,21 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     }
 
     const barW = africaBins[0] ? xS(africaBins[0].x1) - xS(africaBins[0].x0) : 20;
-    africaBins.forEach(bin => {
+    const animateBars = !prefersReducedMotion;
+    const barDuration = animateBars ? 650 : 0;
+    africaBins.forEach((bin, index) => {
       if (!bin.length) return;
       const isBeforeSevereCut = severeCut != null && bin.x1 <= severeCut;
       const fill = isBeforeSevereCut
         ? getUiColor('chartBaseFill', '#ddd8cf')
         : mpiColor((bin.x0 + bin.x1) / 2);
       const opa = severeCut ? 0.9 : 0.82;
+      const targetY = yS(bin.length);
+      const targetH = ih - targetY;
 
-      g.append('rect')
-        .attr('x', xS(bin.x0) + 1).attr('y', yS(bin.length))
-        .attr('width', Math.max(1, barW - 2)).attr('height', ih - yS(bin.length))
+      const bar = g.append('rect')
+        .attr('x', xS(bin.x0) + 1).attr('y', animateBars ? ih : targetY)
+        .attr('width', Math.max(1, barW - 2)).attr('height', animateBars ? 0 : targetH)
         .attr('fill', fill).attr('opacity', opa).attr('rx', 2).style('cursor', 'pointer')
         .on('mouseover', function () {
           d3.select(this).attr('opacity', 1);
@@ -367,12 +372,28 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           tipEl.style.display = 'none';
         });
 
+      if (animateBars) {
+        bar.transition()
+          .delay(index * 34)
+          .duration(barDuration)
+          .ease(d3.easeCubicOut)
+          .attr('y', targetY)
+          .attr('height', targetH);
+      }
+
       if (bin.length >= 3) {
-        g.append('text')
+        const label = g.append('text')
           .attr('x', xS(bin.x0) + barW / 2).attr('y', yS(bin.length) - 3)
           .attr('text-anchor', 'middle').attr('font-size', 8.5)
-          .attr('fill', isBeforeSevereCut ? CHART_AXIS : fill).attr('opacity', opa + 0.1).style('pointer-events', 'none')
+          .attr('fill', isBeforeSevereCut ? CHART_AXIS : fill)
+          .attr('opacity', animateBars ? 0 : opa + 0.1).style('pointer-events', 'none')
           .text(bin.length);
+        if (animateBars) {
+          label.transition()
+            .delay(index * 34 + barDuration * 0.72)
+            .duration(180)
+            .attr('opacity', opa + 0.1);
+        }
       }
     });
 

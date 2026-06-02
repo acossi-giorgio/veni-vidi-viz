@@ -9,7 +9,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';
-  container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;';
+  container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;width:100%;align-self:stretch;';
 
   const CONTS  = ['Africa', 'Europe'];
   const COLORS = {
@@ -101,6 +101,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
     (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
     (container.clientHeight || window.innerHeight * 0.82) < 420
   );
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   /* ── Tooltip ────────────────────────────────────────────── */
   d3.select('body').selectAll('.tooltip-excl').remove();
@@ -130,6 +131,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
   /* ── Top bar: continent / outcome controls ──────────────── */
   const topBar = d3.select(container).append('div')
     .style('display', 'flex').style('align-items', 'center')
+    .style('width', '100%')
     .style('justify-content', 'flex-start')
     .style('padding', compact ? '6px 10px 2px' : '8px 16px 4px').style('flex-shrink', '0');
 
@@ -524,7 +526,7 @@ async function renderExclusionChart(selector, isFullscreen = false) {
       const baseDotOp = focusCont ? (isFocus ? 0.86 : 0.22) : 0.72;
       const baseR = isFocus ? 2.8 : 2.3;
 
-      gb.append('path')
+      const bottomPath = gb.append('path')
         .datum(series)
         .attr('class', 'excl-hover-line')
         .attr('data-cont', cont)
@@ -533,7 +535,17 @@ async function renderExclusionChart(selector, isFullscreen = false) {
         .attr('stroke', col)
         .attr('stroke-width', isFocus ? 1.9 : 1.3)
         .attr('opacity', baseLineOp)
-        .attr('d', lineReturn);
+        .attr('d', lineReturn)
+        .node();
+
+      if (bottomPath && !prefersReducedMotion) {
+        const bottomLen = bottomPath.getTotalLength();
+        d3.select(bottomPath)
+          .attr('stroke-dasharray', bottomLen)
+          .attr('stroke-dashoffset', bottomLen)
+          .transition().duration(1600).ease(d3.easeCubicInOut)
+          .attr('stroke-dashoffset', 0);
+      }
 
       gb.selectAll(`.marg-dot-${cont}`)
         .data(series)
@@ -546,8 +558,12 @@ async function renderExclusionChart(selector, isFullscreen = false) {
         .attr('cy', d => yReturnScale(d.value))
         .attr('r', baseR)
         .attr('fill', col)
-        .attr('opacity', baseDotOp)
-        .style('pointer-events', 'none');
+        .attr('opacity', prefersReducedMotion ? baseDotOp : 0)
+        .style('pointer-events', 'none')
+        .transition()
+        .delay((d, i) => prefersReducedMotion ? 0 : 1200 * (i / Math.max(1, series.length - 1)))
+        .duration(prefersReducedMotion ? 0 : 180)
+        .attr('opacity', baseDotOp);
 
       gb.selectAll(`.marg-hit-${cont}`)
         .data(series)

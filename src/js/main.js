@@ -492,8 +492,8 @@ let MISSING_DATA_NOTES = {
     'Paesi con serie incompleta: non applicabile (dataset snapshot per paese).',
   ].join('\n'),
   'chart-5-1': [
-    'Paesi africani senza alcun flusso verso destinazioni non africane (anni disponibili 2000, 2005, 2010, 2015, 2020): Cape Verde; Comoros; Mauritius; Sao Tome and Principe; Seychelles.',
-    'Paesi africani con serie incompleta su questi anni: nessuno.',
+    'Paesi africani senza stock migratorio registrato verso destinazioni non africane nel 2020: Cape Verde; Comoros; Mauritius; Sao Tome and Principe; Seychelles.',
+    'Paesi africani con dato incompleto nel 2020: nessuno.',
     'Codici non mappabili nella base geografica (scala 110m): nessuno (risolto in ETL).',
   ].join('\n'),
 };
@@ -560,7 +560,7 @@ const CHART_HELP_NOTES = {
   'chart-5-1': [
     'Questo grafico ha due modalità: rete dei collegamenti migratori e mappa delle rotte geografiche.',
     'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio tra origine e destinazione.',
-    'Slider e play mostrano l\'evoluzione tra 2000 e 2020 (con interpolazione tra anni quinquennali).',
+    'L\'anno di riferimento e\' fisso al 2020.',
     'Interazioni: hover per valori dei collegamenti, filtri/toggle vista e funzioni di esplorazione spaziale.'
   ].join('\n'),
 };
@@ -827,8 +827,8 @@ const CHART_HELP_BUILDERS = {
         : 'La vista attuale mostra la rete dei collegamenti migratori. Serve a capire quali corridoi sono più forti e come si distribuiscono tra le aree.',
       reading: isMap
         ? 'La geografia conta più degli assi: leggi la mappa attraverso posizione, direzione delle rotte e spessore degli archi. Archi più spessi indicano stock migratori più elevati.'
-        : 'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio. I nodi e i flussi aiutano a leggere quali aree pesano di più nella rete.',
-      interactions: 'Usa play e slider per cambiare anno. Puoi passare da rete a mappa con i toggle in alto e usare hover sui collegamenti per leggere i valori.',
+        : 'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio. I nodi e i collegamenti aiutano a leggere quali aree pesano di più nella rete.',
+      interactions: 'L\'anno resta fisso al 2020. Puoi passare da rete a mappa con i toggle in alto e usare hover sui collegamenti per leggere i valori.',
     };
   },
 };
