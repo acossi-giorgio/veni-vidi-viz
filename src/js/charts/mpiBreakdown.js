@@ -237,8 +237,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('font-size', compact ? 8 : 9)
       .attr('fill', CHART_AXIS)
       .text('No data');
-
-    return { width: totalW + 14, height: totalH + 8 };
   }
 
   function draw() {
@@ -319,13 +317,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('N° paesi');
 
-    drawLegendCard(
-      g,
-      Math.max(0, iw - (compact ? 98 : 124)),
-      4,
-      'MPI'
-    );
-
     if (severeCut) {
       g.append('line')
         .attr('x1', xS(severeCut)).attr('x2', xS(severeCut))
@@ -397,9 +388,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       }
     });
 
-    // No-data chip grid
-    // No-data countries are already represented in the legend; avoid extra
-    // labels that would steal vertical space from the histogram.
+    // No-data chip grid intentionally omitted to preserve vertical space.
   }
 
   /* ── Choropleth (world map) ─────────────────────────────── */
@@ -507,6 +496,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       ih - (compact ? 156 : 172),
       'MPI'
     );
+
   }
 
   draw();

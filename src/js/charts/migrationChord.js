@@ -120,26 +120,147 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   const CHART_WATER = getUiColor('chartWater', '#ece8e0');
   const CHART_BASE_FILL = getUiColor('chartBaseFill', '#d6d0c5');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
+  const wrap = container.append('div')
+    .style('width', '100%').style('height', '100%').style('position', 'relative');
 
   d3.select('body').selectAll('.tooltip-chord').remove();
-  const tooltip = d3.select('body').append('div').attr('class', 'tooltip-chord')
-    .style('position', 'absolute').style('background', TOOLTIP_BG)
-    .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '10px 14px')
-    .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.6')
-    .style('max-width', 'min(92vw, 1120px)')
-    .style('z-index', '10000').style('display', 'none').style('box-shadow', '0 4px 12px rgba(0,0,0,0.3)');
+  const tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip-chord')
+    .attr('aria-hidden', 'true');
+  wrap.selectAll('.migration-popup').remove();
+  const popup = wrap.append('div')
+    .attr('class', 'migration-popup')
+    .attr('aria-hidden', 'true')
+    .style('pointer-events', 'none')
+    .on('click', (event) => event.stopPropagation());
 
-  function showTip(e, html) {
-    tooltip.style('display', 'block').html(html);
-    const r = tooltip.node().getBoundingClientRect();
-    let tx = e.pageX + 12, ty = e.pageY + 8;
-    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 12;
-    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 8;
+  let pinnedTipKey = null;
+  let pinnedTipOnClose = null;
+
+  function positionTip(clientX, clientY) {
+    const node = tooltip.node();
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    const margin = 12;
+    let tx = clientX + 16;
+    let ty = clientY + 12;
+
+    if (tx + rect.width > window.innerWidth - margin) tx = clientX - rect.width - 16;
+    if (tx < margin) tx = Math.max(margin, window.innerWidth - rect.width - margin);
+
+    if (ty + rect.height > window.innerHeight - margin) ty = window.innerHeight - rect.height - margin;
+    if (ty < margin) ty = margin;
+
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
-  function hideTip() { tooltip.style('display', 'none'); }
+
+  function hideTip(force = false) {
+    if (pinnedTipKey && !force) return;
+    tooltip
+      .attr('class', 'tooltip-chord')
+      .style('display', 'none')
+      .attr('aria-hidden', 'true')
+      .html('');
+  }
+
+  function closePinnedTip(options = {}) {
+    const { skipOnClose = false } = options;
+    const onClose = pinnedTipOnClose;
+    pinnedTipKey = null;
+    pinnedTipOnClose = null;
+    hideTip(true);
+    popup
+      .style('display', 'none')
+      .style('pointer-events', 'none')
+      .attr('aria-hidden', 'true')
+      .html('');
+    if (!skipOnClose && typeof onClose === 'function') onClose();
+  }
+
+  function showTip(e, html, options = {}) {
+    if (pinnedTipKey) return;
+    const {
+      maxWidth = 'min(92vw, 28rem)',
+    } = options;
+
+    tooltip
+      .attr('class', 'tooltip-chord')
+      .style('--tooltip-max-width', maxWidth)
+      .style('display', 'block')
+      .attr('aria-hidden', 'false')
+      .html(html);
+
+    positionTip(e.clientX, e.clientY);
+  }
+
+  function showPinnedTip(anchor, config) {
+    const {
+      key,
+      title,
+      meta = '',
+      bodyHtml,
+      actionLabel = '',
+      actionHint = '',
+      onAction = null,
+      onClose = null,
+      width = 'min(92vw, 34rem)',
+    } = config;
+
+    pinnedTipKey = key;
+    pinnedTipOnClose = onClose;
+    hideTip(true);
+
+    popup
+      .style('--popup-width', width)
+      .style('display', 'block')
+      .style('pointer-events', 'auto')
+      .attr('aria-hidden', 'false')
+      .html(`
+        <div class="migration-popup__panel">
+          <div class="migration-popup__header">
+            <div class="migration-popup__header-copy">
+              <div class="migration-popup__title">${title}</div>
+              ${meta ? `<div class="migration-popup__meta">${meta}</div>` : ''}
+            </div>
+            <div class="migration-popup__header-actions">
+              ${actionLabel ? `<button type="button" class="migration-popup__action">${actionLabel}</button>` : ''}
+              <button type="button" class="migration-popup__close" aria-label="Chiudi dettaglio">×</button>
+            </div>
+          </div>
+          ${actionHint ? `<div class="migration-popup__hint migration-popup__hint--header">${actionHint}</div>` : ''}
+          <div class="migration-popup__body">${bodyHtml}</div>
+        </div>
+      `);
+
+    const wrapRect = wrap.node().getBoundingClientRect();
+    const margin = 14;
+    const popupNode = popup.node();
+    const popupRect = popupNode.getBoundingClientRect();
+    let left = anchor.clientX - wrapRect.left + 18;
+    let top = anchor.clientY - wrapRect.top + 18;
+
+    if (left + popupRect.width > wrapRect.width - margin) left = wrapRect.width - popupRect.width - margin;
+    if (top + popupRect.height > wrapRect.height - margin) top = wrapRect.height - popupRect.height - margin;
+    if (left < margin) left = margin;
+    if (top < margin) top = margin;
+
+    popup.style('left', `${left}px`).style('top', `${top}px`);
+
+    popup.select('.migration-popup__close').on('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      closePinnedTip();
+    });
+
+    if (actionLabel && typeof onAction === 'function') {
+      popup.select('.migration-popup__action').on('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onAction();
+      });
+    }
+  }
+
   function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, ch => ({
       '&': '&amp;',
@@ -149,7 +270,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       "'": '&#39;',
     }[ch]));
   }
-  function chunkRows(rows = [], size = 7) {
+  function chunkRows(rows = [], size = 10) {
     const chunks = [];
     for (let i = 0; i < rows.length; i += size) chunks.push(rows.slice(i, i + size));
     return chunks;
@@ -157,7 +278,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   function detailRowsToHtml(detailRows = []) {
     if (!detailRows.length) return '';
     const fmt = d3.format(',.0f');
-    const columns = chunkRows(detailRows, 7).map(columnRows => `
+    const columns = chunkRows(detailRows, 10).map(columnRows => `
       <div style="display:flex;flex-direction:column;row-gap:2px;min-width:0;">
         ${columnRows.map(r => `<div><span style="opacity:.82">${escapeHtml(r.name)}</span>: ${fmt(r.val)}</div>`).join('')}
       </div>
@@ -170,7 +291,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   function mapTooltipRowsToHtml(title, rows = [], nameKey, valueKey = 'stock') {
     if (!rows.length) return '';
     const fmt = d3.format(',.0f');
-    const columns = chunkRows(rows, 7).map(columnRows => `
+    const columns = chunkRows(rows, 10).map(columnRows => `
       <div style="display:flex;flex-direction:column;row-gap:2px;min-width:0;">
         ${columnRows.map(r => `
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
@@ -186,6 +307,24 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     ].join('');
   }
 
+  function mapTooltipListHtml(title, rows = [], nameKey, valueKey = 'stock') {
+    if (!rows.length) return '';
+    const fmt = d3.format(',.0f');
+    return `
+      <section class="tooltip-chord__section">
+        <div class="tooltip-chord__eyebrow">${escapeHtml(title)}</div>
+        <div class="tooltip-chord__list">
+          ${rows.map(r => `
+            <div class="tooltip-chord__row">
+              <span>${escapeHtml(r[nameKey])}</span>
+              <strong>${fmt(r[valueKey])}</strong>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  }
+
   const containerNode = container.node();
   const FIXED_YEAR = DATA_YEARS.includes(2020) ? 2020 : MAX_YEAR;
   let currentYear = FIXED_YEAR;
@@ -193,9 +332,6 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   let animTimer = null;
   let sankeyDrillAfrica = false;
   let sankeyDrillContinents = new Set(); // expanded dest continents
-
-  const wrap = container.append('div')
-    .style('width', '100%').style('height', '100%').style('position', 'relative');
 
   // ── Top header: pill buttons (overlay) ───────────────────────
   const header = wrap.append('div')
@@ -259,6 +395,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   const HEADER_H = 44; // approximate height of the top pill-bar header
 
   function draw() {
+    closePinnedTip();
     svgArea.html('');
     const svgRect = svgArea.node().getBoundingClientRect();
     const W = svgRect.width  || 560;
@@ -771,7 +908,9 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
               : '<br><em style="opacity:.6;font-size:10px">Clicca per espandere →</em>';
           }
           if (d.detail) html += detailRowsToHtml(d.detail);
-          showTip(e, html);
+          showTip(e, html, {
+            maxWidth: d.detail ? 'min(92vw, 70rem)' : 'min(92vw, 28rem)',
+          });
         })
         .on('mouseleave', hideTip);
 
@@ -883,41 +1022,16 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
     });
     const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
     const maxPair = d3.max(pairs, d => d.stock) || 1;
-    const threshold = maxPair * 0.005;
     // Countries with any valid flow in the selected year (for map coloring/tooltip).
     const countrySrcCodes = new Set(yearData.map(d => d.origin_code));
     const countryDstCodes = new Set(yearData.map(d => d.dest_code));
-    // Keep low-volume origins/destinations clickable: force top links per source and per destination.
-    const topPairsBySource = new Set();
-    d3.group(pairs, p => p.srcCode).forEach(srcPairs => {
-      srcPairs
-        .filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
-        .sort((a, b) => b.stock - a.stock)
-        .slice(0, 2)
-        .forEach(p => topPairsBySource.add(`${p.srcCode}||${p.dstCode}`));
-    });
-    const topPairsByDestination = new Set();
-    d3.group(pairs, p => p.dstCode).forEach(dstPairs => {
-      dstPairs
-        .filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode))
-        .sort((a, b) => b.stock - a.stock)
-        .slice(0, 2)
-        .forEach(p => topPairsByDestination.add(`${p.srcCode}||${p.dstCode}`));
-    });
-    const renderPairs = pairs.filter(p =>
-      (
-        p.stock >= threshold ||
-        topPairsBySource.has(`${p.srcCode}||${p.dstCode}`) ||
-        topPairsByDestination.has(`${p.srcCode}||${p.dstCode}`)
-      ) &&
-      centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode)
-    );
+    const renderPairs = pairs.filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode));
     const arcSrcCodes = new Set(renderPairs.map(p => p.srcCode));
     const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
 
     // breakdown: destCode → [{srcName, stock}] sorted desc
     const byDest = new Map();
-    renderPairs.forEach(p => {
+    pairs.forEach(p => {
       if (!byDest.has(p.dstCode)) byDest.set(p.dstCode, []);
       byDest.get(p.dstCode).push({ srcName: p.srcName, stock: p.stock });
     });
@@ -925,7 +1039,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
 
     // breakdown: srcCode → [{dstName, stock}] sorted desc
     const bySrc = new Map();
-    renderPairs.forEach(p => {
+    pairs.forEach(p => {
       if (!bySrc.has(p.srcCode)) bySrc.set(p.srcCode, []);
       bySrc.get(p.srcCode).push({ dstName: p.dstName, stock: p.stock });
     });
@@ -989,50 +1103,110 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
         if (topicSrcCodes.has(a3) || topicDstCodes.has(a3))
-          showTip(e, arcTipHtml(a3));
+          showTip(e, arcHoverHtml(a3), { maxWidth: 'min(92vw, 24rem)' });
       })
-      .on('mouseleave', hideTip)
+      .on('mouseleave', () => hideTip(true))
       .on('click', (e, f) => {
+        e.stopPropagation();
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
-        if (a3 === arcHoverA3) { clearArcHover(); return; } // click again → hide
-        clearArcHover();
-        if (arcSrcCodes.has(a3) || arcDstCodes.has(a3)) {
-          arcHoverA3 = a3;
-          revealArcs(a3);
+        if (!(topicSrcCodes.has(a3) || topicDstCodes.has(a3))) return;
+        hideTip(true);
+        if (pinnedTipKey && pinnedTipKey !== `migration-map-${a3}`) closePinnedTip();
+        if (pinnedTipKey === `migration-map-${a3}`) {
+          closePinnedTip();
+          clearArcHover();
+          return;
         }
+        clearArcHover();
+        openArcPopup(e, a3);
       });
 
     // Arc click state
     let arcHoverA3 = null;
 
-    function arcTipHtml(a3) {
+    function arcHoverHtml(a3) {
       const fmt = d3.format(',.0f');
       const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
       if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
-        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em> (${currentYear})`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em><br><em style="opacity:.5;font-size:10px">Clicca per aprire il dettaglio</em>`;
       }
       if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
-        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em> (${currentYear})`;
+        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em><br><em style="opacity:.5;font-size:10px">Clicca per aprire il dettaglio</em>`;
+      }
+      if (countrySrcCodes.has(a3)) {
+        const total = origStockMap.get(a3) || 0;
+        return `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Totale emigrati: <strong>${fmt(total)}</strong><br><em style="opacity:.5;font-size:10px">Clicca per elenco e collegamenti</em>`;
+      }
+      const total = stockByDest.get(a3) || 0;
+      const cont = destContMap.get(a3);
+      const col = CONT_COLOR[cont] || '#607d8b';
+      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti africani: <strong>${fmt(total)}</strong><br><em style="opacity:.5;font-size:10px">Clicca per elenco e collegamenti</em>`;
+    }
+
+    function buildArcPopupConfig(a3, anchor) {
+      const fmt = d3.format(',.0f');
+      const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
+      if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
+        return {
+          key: `migration-map-${a3}`,
+          title: `<span style="color:${CONT_COLOR.Africa}">${countryName}</span>`,
+          meta: 'Origine',
+          bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
+          onClose: () => clearArcHover(),
+        };
+      }
+      if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
+        return {
+          key: `migration-map-${a3}`,
+          title: escapeHtml(countryName),
+          meta: 'Destinazione',
+          bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
+          onClose: () => clearArcHover(),
+        };
       }
       if (countrySrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;
         const rows  = bySrc.get(a3) || [];
-        let html = `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>`;
-        html += `Totale emigrati: <strong>${fmt(total)}</strong>`;
-        html += mapTooltipRowsToHtml('Principali destinazioni', rows, 'dstName');
-        html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i collegamenti</em>`;
-        return html;
+        return {
+          key: `migration-map-${a3}`,
+          title: `<span style="color:${CONT_COLOR.Africa}">${escapeHtml(origNameMap.get(a3) || countryName)}</span>`,
+          meta: 'Origine',
+          bodyHtml: `
+            <div><strong>Totale emigrati:</strong> ${fmt(total)}</div>
+            ${mapTooltipListHtml('Principali destinazioni', rows, 'dstName')}
+          `,
+          actionLabel: 'Mostra collegamenti',
+          onAction: () => {
+            toggleArcSelection(a3);
+            closePinnedTip({ skipOnClose: true });
+          },
+          onClose: () => clearArcHover(),
+        };
       }
       const total = stockByDest.get(a3) || 0;
       const rows  = byDest.get(a3) || [];
       const cont  = destContMap.get(a3);
       const col   = CONT_COLOR[cont] || '#607d8b';
-      let html = `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>`;
-      html += `Totale migranti africani: <strong>${fmt(total)}</strong>`;
-      html += mapTooltipRowsToHtml('Per paese di origine', rows, 'srcName');
-      html += `<br><em style="opacity:.4;font-size:9px">Clicca per vedere i collegamenti</em>`;
-      return html;
+      return {
+        key: `migration-map-${a3}`,
+        title: `<span style="color:${col}">${escapeHtml(destNameMap.get(a3) || countryName)}</span>`,
+        meta: 'Destinazione',
+        bodyHtml: `
+          <div><strong>Totale migranti africani:</strong> ${fmt(total)}</div>
+          ${mapTooltipListHtml('Per paese di origine', rows, 'srcName')}
+        `,
+        actionLabel: 'Mostra collegamenti',
+        onAction: () => {
+          toggleArcSelection(a3);
+          closePinnedTip({ skipOnClose: true });
+        },
+        onClose: () => clearArcHover(),
+      };
+    }
+
+    function openArcPopup(anchor, a3) {
+      showPinnedTip(anchor, buildArcPopupConfig(a3, anchor));
     }
     function revealArcs(a3) {
       const sel = arcSrcCodes.has(a3)
@@ -1052,6 +1226,18 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
       arcHoverA3 = null;
       g.selectAll('.mig-arc').interrupt()
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
+    }
+
+    function toggleArcSelection(a3) {
+      if (arcHoverA3 === a3) {
+        clearArcHover();
+        return;
+      }
+      clearArcHover();
+      if (arcSrcCodes.has(a3) || arcDstCodes.has(a3)) {
+        arcHoverA3 = a3;
+        revealArcs(a3);
+      }
     }
 
     // Great circle arcs via projection invert → GeoJSON LineString → pathGen
@@ -1083,6 +1269,11 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
           .attr('opacity', 0)
           .style('pointer-events', 'none');
       });
+
+    svg.on('click', () => {
+      closePinnedTip();
+      clearArcHover();
+    });
   }
 
   draw();

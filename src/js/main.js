@@ -189,18 +189,16 @@ function getNarrativeCards(chartId) {
   return Array.from(document.querySelectorAll(`.narrative-card[data-chart="${chartId}"]`));
 }
 
-function getActiveNarrativeCard(chartId) {
-  return document.querySelector(`.narrative-card[data-chart="${chartId}"].is-active`)
-    || getNarrativeCards(chartId)[0]
-    || null;
+function getActiveNarrativeCard(chartId, options = {}) {
+  const { fallbackToFirst = true } = options;
+  const activeCard = document.querySelector(`.narrative-card[data-chart="${chartId}"].is-active`);
+  if (activeCard) return activeCard;
+  if (!fallbackToFirst) return null;
+  return getNarrativeCards(chartId)[0] || null;
 }
 
 function isMobileViewport() {
   return window.matchMedia('(max-width: 760px), (pointer: coarse) and (max-height: 500px) and (orientation: landscape)').matches;
-}
-
-function isMobilePortraitViewport() {
-  return isMobileViewport() && window.innerHeight > window.innerWidth;
 }
 
 function prefersReducedMotion() {
@@ -735,7 +733,7 @@ const CHART_HELP_BUILDERS = {
           ? 'La vista attuale mostra la distribuzione dell\'MPI con focus sui paesi africani più esposti. Serve a capire quanti paesi si accumulano nella fascia più critica.'
           : 'La vista attuale mostra la distribuzione dell\'MPI. Serve a leggere come i paesi si distribuiscono lungo il livello di povertà multidimensionale.',
       reading: isMap
-        ? 'La legenda colore indica l\'intensità dell\'MPI: toni più scuri corrispondono a livelli più alti. La mappa non usa assi cartesiani: la lettura passa da posizione geografica e legenda.'
+        ? 'La mappa non usa assi cartesiani: la lettura passa da posizione geografica, legenda colore e tooltip sui singoli paesi.'
         : 'Asse X = valore MPI. Asse Y = numero di paesi presenti in ogni intervallo. Barre più alte indicano fasce in cui si concentrano più paesi.',
       interactions: isMap
         ? 'Usa il toggle per passare alla distribuzione. Passa sui paesi per vedere il valore e confrontare rapidamente aree vicine.'
@@ -860,7 +858,7 @@ function syncMobilePlaceholder(chartId) {
   const placeholder = chartEl.closest('.chart-box')?.querySelector('.chart-mobile-placeholder');
   if (!placeholder) return;
 
-  const activeCard = getActiveNarrativeCard(chartId);
+  const activeCard = getActiveNarrativeCard(chartId, { fallbackToFirst: !isMobileViewport() });
   const stateEl = placeholder.querySelector('.chart-mobile-placeholder-state');
   const hintEl = placeholder.querySelector('.chart-mobile-placeholder-hint');
   const rotateEl = placeholder.querySelector('.chart-mobile-placeholder-rotate');
@@ -887,7 +885,7 @@ function updateFullscreenModalMeta(chartId) {
   const hintEl = document.getElementById('fullscreenModalHint');
   if (!titleEl || !kickerEl || !hintEl) return;
 
-  const activeCard = getActiveNarrativeCard(chartId);
+  const activeCard = getActiveNarrativeCard(chartId, { fallbackToFirst: !isMobileViewport() });
   const section = activeCard?.closest('section[data-act]');
   const act = section?.dataset.act;
 
@@ -1042,6 +1040,7 @@ function syncNarrativeCardInteractivity() {
   const cards = document.querySelectorAll('.narrative-card');
   cards.forEach((card) => {
     if (mobile) {
+      card.classList.remove('is-active');
       card.setAttribute('aria-disabled', 'true');
       card.removeAttribute('role');
       card.removeAttribute('tabindex');
@@ -1050,6 +1049,20 @@ function syncNarrativeCardInteractivity() {
       card.setAttribute('role', 'button');
       if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
     }
+  });
+
+  if (mobile) return;
+
+  [...new Set(Array.from(cards).map(card => card.dataset.chart))].forEach((chartId) => {
+    const chartCards = getNarrativeCards(chartId);
+    if (!chartCards.length || chartCards.some(card => card.classList.contains('is-active'))) return;
+
+    const savedState = window._chartStates?.[chartId];
+    const nextActive = Number.isFinite(savedState)
+      ? chartCards.find(card => parseInt(card.dataset.state, 10) === savedState)
+      : null;
+
+    (nextActive || chartCards[0])?.classList.add('is-active');
   });
 }
 
@@ -1405,24 +1418,15 @@ function initProgressBar() {
 /* ── Fullscreen Modal ────────────────────────────────────── */
 function initFullscreenModal() {
   const modal = document.getElementById('fullscreenModal');
-  const modalContent = modal?.querySelector('.fullscreen-modal-content');
   const closeBtn = document.querySelector('.fullscreen-modal-close');
   const container = document.getElementById('fullscreenChartContainer');
-  if (!modal || !modalContent || !closeBtn || !container) return;
+  if (!modal || !closeBtn || !container) return;
 
   let currentChartId = null;
   let reopenTimer = null;
 
-  function applyOrientationMode() {
-    const useRotatedLayout = modal.classList.contains('is-active')
-      && isMobilePortraitViewport()
-      && shouldRotateMobileChart(currentChartId);
-    modalContent.classList.toggle('is-mobile-portrait', useRotatedLayout);
-  }
-
   function close() {
     modal.classList.remove('is-active');
-    modalContent.classList.remove('is-mobile-portrait');
     container.innerHTML = '';
     document.body.style.overflow = '';
     currentChartId = null;
@@ -1434,7 +1438,6 @@ function initFullscreenModal() {
     modal.classList.add('is-active');
     document.body.style.overflow = 'hidden';
     container.innerHTML = '';
-    applyOrientationMode();
 
     const stage = document.createElement('div');
     stage.className = 'fullscreen-chart-stage';
@@ -1483,7 +1486,6 @@ function initFullscreenModal() {
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   window.addEventListener('resize', () => {
-    applyOrientationMode();
     if (!modal.classList.contains('is-active') || !currentChartId) return;
     clearTimeout(reopenTimer);
     reopenTimer = setTimeout(() => open(currentChartId), 180);
