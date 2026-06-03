@@ -54,7 +54,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
   const YEAR_MIN = incomeYears[0], YEAR_MAX = incomeYears[incomeYears.length - 1];
 
-  let currentYear = YEAR_MIN;
+  let currentYear = YEAR_MAX;
   let playing = false, playTimer = null;
   let highlightContinent = null;
   const rawW = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
@@ -298,7 +298,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   // ── DOM API ───────────────────────────────────────────────
   container._gapminderPlay  = () => { if (!playing) startPlay(); };
   container._gapminderPause = stopPlay;
-  container._gapminderReset = () => { stopPlay(); currentYear = YEAR_MIN; highlightContinent = null; draw(false); };
+  container._gapminderReset = () => { stopPlay(); currentYear = YEAR_MAX; highlightContinent = null; draw(false); };
   container._gapminderAnimate = () => { stopPlay(); currentYear = YEAR_MIN; draw(false); startPlay(); };
   container._gapminderHighlightContinent = (c) => {
     highlightContinent = c;
