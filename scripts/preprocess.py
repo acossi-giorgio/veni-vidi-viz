@@ -11,8 +11,6 @@ Run: python scripts/preprocess.py
 
 import os
 import unicodedata
-import json
-import urllib.request
 import re
 import pandas as pd
 
@@ -173,7 +171,7 @@ def build_simple_country_names(code_name_official):
 
 
 def load_mappings():
-    path = os.path.join(RAW, "country-code.csv")
+    path = os.path.join(RAW, "country_codes_raw.csv")
     df = pd.read_csv(path).rename(columns={
         "Three_Letter_Country_Code": "code",
         "Continent_Name":            "continent",
@@ -193,7 +191,7 @@ def load_mappings():
     for mapping in (code_name_official, code_name_simple):
         for k, v in mapping.items():
             name_code[unicodedata.normalize("NFKD", str(v)).lower()] = k
-    # Kosovo (XKX) appears in some source datasets but is absent from country-code.csv.
+    # Kosovo (XKX) appears in some source datasets but is absent from country_codes_raw.csv.
     code_continent.setdefault("XKX", "Europe")
     code_name_simple.setdefault("XKX", "Kosovo")
     name_code.setdefault("kosovo", "XKX")
@@ -362,13 +360,13 @@ def make_missing_data_registry():
         income = pd.read_csv(os.path.join(OUT, "income.csv"))
         life = pd.read_csv(os.path.join(OUT, "life_expectancy.csv"))
         pop = pd.read_csv(os.path.join(OUT, "population.csv"))
-        mpi = pd.read_csv(os.path.join(OUT, "mpi.csv"))
-        spend = pd.read_csv(os.path.join(OUT, "edu_spending.csv"))
-        gpi = pd.read_csv(os.path.join(OUT, "gpi_secondary.csv"))
-        oos = pd.read_csv(os.path.join(OUT, "out_of_school.csv"))
-        literacy = pd.read_csv(os.path.join(OUT, "literacy.csv"))
+        mpi = pd.read_csv(os.path.join(OUT, "multidimensional_poverty_index.csv"))
+        spend = pd.read_csv(os.path.join(OUT, "education_spending.csv"))
+        gpi = pd.read_csv(os.path.join(OUT, "gender_parity_secondary.csv"))
+        oos = pd.read_csv(os.path.join(OUT, "out_of_school_children.csv"))
+        literacy = pd.read_csv(os.path.join(OUT, "youth_literacy.csv"))
         child_labor = pd.read_csv(os.path.join(OUT, "child_labor.csv"))
-        child_marriage = pd.read_csv(os.path.join(OUT, "child_marriage_cmmm.csv"))
+        child_marriage = pd.read_csv(os.path.join(OUT, "child_marriage_prevalence.csv"))
         migration = pd.read_csv(os.path.join(OUT, "migration.csv"))
         fgm = pd.read_csv(os.path.join(OUT, "fgm_quintile_prevalence.csv"))
 
@@ -387,31 +385,31 @@ def make_missing_data_registry():
         _append_missing_rows(rows, "population.csv", "no_data", nd)
         _append_missing_rows(rows, "population.csv", "incomplete", inc)
 
-        # mpi.csv (snapshot)
+        # multidimensional_poverty_index.csv (snapshot)
         nd = _coverage_snapshot_no_data(mpi, af_codes)
-        _append_missing_rows(rows, "mpi.csv", "no_data", nd)
+        _append_missing_rows(rows, "multidimensional_poverty_index.csv", "no_data", nd)
 
-        # edu_spending.csv
+        # education_spending.csv
         years_edu = list(range(2000, 2023))
         nd, inc = _coverage_no_data_and_incomplete(spend, ae_codes, years_edu)
-        _append_missing_rows(rows, "edu_spending.csv", "no_data", nd)
-        _append_missing_rows(rows, "edu_spending.csv", "incomplete", inc)
+        _append_missing_rows(rows, "education_spending.csv", "no_data", nd)
+        _append_missing_rows(rows, "education_spending.csv", "incomplete", inc)
 
-        # gpi_secondary.csv
+        # gender_parity_secondary.csv
         years_32 = list(range(2000, 2025))
         nd, inc = _coverage_no_data_and_incomplete(gpi, ae_codes, years_32)
-        _append_missing_rows(rows, "gpi_secondary.csv", "no_data", nd)
-        _append_missing_rows(rows, "gpi_secondary.csv", "incomplete", inc)
+        _append_missing_rows(rows, "gender_parity_secondary.csv", "no_data", nd)
+        _append_missing_rows(rows, "gender_parity_secondary.csv", "incomplete", inc)
 
-        # out_of_school.csv
+        # out_of_school_children.csv
         nd, inc = _coverage_no_data_and_incomplete(oos, ae_codes, years_32)
-        _append_missing_rows(rows, "out_of_school.csv", "no_data", nd)
-        _append_missing_rows(rows, "out_of_school.csv", "incomplete", inc)
+        _append_missing_rows(rows, "out_of_school_children.csv", "no_data", nd)
+        _append_missing_rows(rows, "out_of_school_children.csv", "incomplete", inc)
 
-        # literacy.csv
+        # youth_literacy.csv
         nd, inc = _coverage_no_data_and_incomplete(literacy, ae_codes, years_edu)
-        _append_missing_rows(rows, "literacy.csv", "no_data", nd)
-        _append_missing_rows(rows, "literacy.csv", "incomplete", inc)
+        _append_missing_rows(rows, "youth_literacy.csv", "no_data", nd)
+        _append_missing_rows(rows, "youth_literacy.csv", "incomplete", inc)
 
         # child_labor.csv (snapshot)
         nd = _coverage_snapshot_no_data(child_labor, af_codes)
@@ -422,13 +420,13 @@ def make_missing_data_registry():
         nd_inc_income = _income_missing_for_child_labor_year(income, child_labor, af_codes)
         _append_missing_rows(rows, "income.csv", "no_data", nd_inc_income)
 
-        # child_marriage_cmmm.csv (snapshot)
+        # child_marriage_prevalence.csv (snapshot)
         cm = child_marriage.copy()
         if "by18_pct" in cm.columns:
             cm = cm[cm["by18_pct"].notna()].rename(columns={"by18_pct": "value"})
         nd = _coverage_snapshot_no_data(cm, ae_codes)
-        _append_missing_rows(rows, "child_marriage_cmmm.csv", "no_data", nd)
-        _append_missing_rows(rows, "child_marriage_cmmm.csv", "incomplete", [])
+        _append_missing_rows(rows, "child_marriage_prevalence.csv", "no_data", nd)
+        _append_missing_rows(rows, "child_marriage_prevalence.csv", "incomplete", [])
 
         # migration.csv
         nd, inc = _migration_origin_coverage(migration, AFRICA_TOPIC_CODES, [2000, 2005, 2010, 2015, 2020])
@@ -444,9 +442,9 @@ def make_missing_data_registry():
             rows,
             columns=["dataset", "missing_type", "code", "country"]
         ).drop_duplicates().sort_values(["missing_type", "dataset", "country"])
-        save("missing_data.csv", registry)
+        save("missing_data_registry.csv", registry)
     except Exception as e:
-        report("missing_data.csv", pd.DataFrame(), str(e))
+        report("missing_data_registry.csv", pd.DataFrame(), str(e))
 
 def owid_rename(df):
     """Rename standard OWID columns: Entity->country, Code->code, Year->year, last->value."""
@@ -472,12 +470,12 @@ def normalise(s):
     return unicodedata.normalize("NFKD", str(s)).lower().strip()
 
 
-# ── edu_spending.csv ──────────────────────────────────────────────────────────
+# ── education_spending.csv ────────────────────────────────────────────────────
 # value = Government expenditure on education, total (% of GDP)
 # Fonte: World Bank SE.XPD.TOTL.GD.ZS
 def make_edu_spending():
     try:
-        df = pd.read_csv(os.path.join(RAW, "edu_spending.csv"), skiprows=4, encoding="utf-8-sig")
+        df = pd.read_csv(os.path.join(RAW, "education_spending_raw.csv"), skiprows=4, encoding="utf-8-sig")
         df = df.rename(columns={"Country Name": "country", "Country Code": "code"})
         df = df[df["code"].str.len() == 3]
         year_cols = [c for c in df.columns if str(c).isdigit() and MIN_YEAR <= int(c) <= MAX_YEAR]
@@ -487,33 +485,18 @@ def make_edu_spending():
         melted = melted.dropna(subset=["value"])
         melted["continent"] = melted["code"].map(CODE_CONTINENT)
         melted = melted[melted["continent"].notna()]
-        save("edu_spending.csv",
+        save("education_spending.csv",
              melted[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("edu_spending.csv", pd.DataFrame(), str(e))
+        report("education_spending.csv", pd.DataFrame(), str(e))
 
 
-# ── edu_completion.csv ────────────────────────────────────────────────────────
-# value = Completion rate, upper secondary education, both sexes (%)
-# Fonte: Our World in Data / SDG 4.1.2
-def make_edu_completion():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "edu_completion.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("edu_completion.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("edu_completion.csv", pd.DataFrame(), str(e))
-
-
-# ── literacy.csv ──────────────────────────────────────────────────────────────
-# value = Literacy rate, adult total (% of people ages 15+)
+# ── youth_literacy.csv ───────────────────────────────────────────────────────
+# value = Literacy rate among young people (%)
 # Fonte: Our World in Data / UNESCO UIS
 def make_literacy():
     try:
-        for fname in ("literacy_raw.csv", "literacy.csv"):
+        for fname in ("literacy_raw.csv",):
             p = os.path.join(RAW, fname)
             if os.path.exists(p):
                 df = pd.read_csv(p)
@@ -524,10 +507,10 @@ def make_literacy():
         df = filter_countries(df)
         df = year_range(df)
         df = df[df["value"].notna()]
-        save("literacy.csv",
+        save("youth_literacy.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("literacy.csv", pd.DataFrame(), str(e))
+        report("youth_literacy.csv", pd.DataFrame(), str(e))
 
 
 # ── income.csv ────────────────────────────────────────────────────────────────
@@ -535,7 +518,7 @@ def make_literacy():
 # Fonte: World Bank / custom CSV
 def make_income():
     try:
-        df = pd.read_csv(os.path.join(RAW, "gdp_per_capita.csv"))
+        df = pd.read_csv(os.path.join(RAW, "income_raw.csv"))
         df = df.rename(columns={
             "Country Name": "country", "Code": "code",
             "Year": "year", "GDP_Per_Capita (USD)": "value",
@@ -558,7 +541,7 @@ def make_income():
 def make_population():
     try:
         df = pd.read_excel(
-            os.path.join(RAW, "child_population_raw.xlsx"),
+            os.path.join(RAW, "population_raw.xlsx"),
             sheet_name="Estimates", header=16,
             usecols=[1, 5, 10, 12, 13, 14],
         )
@@ -595,31 +578,12 @@ def make_child_labor():
         report("child_labor.csv", pd.DataFrame(), str(e))
 
 
-# ── child_marriage.csv ────────────────────────────────────────────────────────
-# value = Women first married by age 18 (% of women ages 20-24)
-# Fonte: Our World in Data / UNICEF
-def make_child_marriage():
-    try:
-        df = pd.read_csv(os.path.join(RAW, "child_marriage_raw.csv"))
-        df = df.rename(columns={
-            df.columns[0]: "country", df.columns[1]: "code",
-            df.columns[2]: "year",    df.columns[3]: "value",
-        })
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("child_marriage.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("child_marriage.csv", pd.DataFrame(), str(e))
-
-
 # ── fgm_quintile_prevalence.csv ───────────────────────────────────────────────
 # Quota di ragazze (0-14) con FGM per quintile di ricchezza (snapshot UNICEF)
-# Fonte: UNICEF Global Databases (XLS_FGM-Girls-prevalence.xlsx)
+# Fonte: UNICEF Global Databases (fgm_quintile_prevalence_raw.xlsx)
 def make_fgm_quintile_prevalence():
     try:
-        path = os.path.join(RAW, "XLS_FGM-Girls-prevalence.xlsx")
+        path = os.path.join(RAW, "fgm_quintile_prevalence_raw.xlsx")
         df = pd.read_excel(path, sheet_name="Daughters FGM", header=6)
 
         # Layout fixed by UNICEF workbook structure.
@@ -687,12 +651,12 @@ def make_fgm_quintile_prevalence():
         report("fgm_quintile_prevalence.csv", pd.DataFrame(), str(e))
 
 
-# ── out_of_school.csv ────────────────────────────────────────────────────────
+# ── out_of_school_children.csv ───────────────────────────────────────────────
 # value = Children out of primary school, both sexes (absolute number)
 # Fonte: Our World in Data / UNESCO UIS
 def make_out_of_school():
     try:
-        df = pd.read_csv(os.path.join(RAW, "out_of_school_raw.csv"))
+        df = pd.read_csv(os.path.join(RAW, "out_of_school_children_raw.csv"))
         df = df.rename(columns={
             df.columns[0]: "country",
             df.columns[1]: "code",
@@ -702,56 +666,56 @@ def make_out_of_school():
         df = filter_countries(df)
         df = year_range(df)
         df = df[df["value"].notna()]
-        save("out_of_school.csv",
+        save("out_of_school_children.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("out_of_school.csv", pd.DataFrame(), str(e))
+        report("out_of_school_children.csv", pd.DataFrame(), str(e))
 
 
-# ── poverty.csv ──────────────────────────────────────────────────────────────
+# ── extreme_poverty.csv ──────────────────────────────────────────────────────
 # value = Share of population living on less than $2.15/day (%)
 # Fonte: Our World in Data / World Bank PIP
 def make_poverty():
     try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "poverty_raw.csv")))
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "extreme_poverty_raw.csv")))
         df = filter_countries(df)
         df = year_range(df)
         df = df[df["value"].notna()]
-        save("poverty.csv",
+        save("extreme_poverty.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("poverty.csv", pd.DataFrame(), str(e))
+        report("extreme_poverty.csv", pd.DataFrame(), str(e))
 
 
-# ── gini.csv ──────────────────────────────────────────────────────────────────
+# ── gini_index.csv ────────────────────────────────────────────────────────────
 # value = Gini coefficient (0=perfect equality, 1=perfect inequality)
 # Fonte: Our World in Data / World Bank PIP
 def make_gini():
     try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "gini_raw.csv")))
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "gini_index_raw.csv")))
         df = filter_countries(df)
         df = year_range(df)
         df = df[df["value"].notna()]
-        save("gini.csv",
+        save("gini_index.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("gini.csv", pd.DataFrame(), str(e))
+        report("gini_index.csv", pd.DataFrame(), str(e))
 
 
-# ── gpi_secondary.csv ─────────────────────────────────────────────────────────
+# ── gender_parity_secondary.csv ───────────────────────────────────────────────
 # value = Adjusted gender parity index, lower secondary net enrollment
 #         (1 = parity, <1 = boys favored, >1 = girls favored)
 # Fonte: Our World in Data / UNESCO UIS
 def make_gpi_secondary():
     try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "gpi_secondary_raw.csv")))
+        df = owid_rename(pd.read_csv(os.path.join(RAW, "gender_parity_secondary_raw.csv")))
         df = filter_countries(df)
         df = year_range(df)
         df = df[df["value"].notna()]
-        save("gpi_secondary.csv",
+        save("gender_parity_secondary.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("gpi_secondary.csv", pd.DataFrame(), str(e))
+        report("gender_parity_secondary.csv", pd.DataFrame(), str(e))
 
 
 # ── life_expectancy.csv ───────────────────────────────────────────────────────
@@ -759,7 +723,7 @@ def make_gpi_secondary():
 # Fonte: Our World in Data / UN WPP
 def make_life_expectancy():
     try:
-        df = pd.read_csv(os.path.join(RAW, "life_expectancy.csv"))
+        df = pd.read_csv(os.path.join(RAW, "life_expectancy_raw.csv"))
         # Columns: Entity, Code, Year, Life expectancy, Continent
         df = df.rename(columns={
             "Entity": "country", "Code": "code",
@@ -775,21 +739,6 @@ def make_life_expectancy():
         report("life_expectancy.csv", pd.DataFrame(), str(e))
 
 
-# ── remittances.csv ───────────────────────────────────────────────────────────
-# value = Personal remittances received (% of GDP)
-# Fonte: Our World in Data / World Bank (IMF + OECD)
-def make_remittances():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "remittances_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("remittances.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("remittances.csv", pd.DataFrame(), str(e))
-
-
 # ── migration.csv ─────────────────────────────────────────────────────────────
 # Flussi bilaterali: stock di migranti per coppia (origine, destinazione)
 # Schema: origin_code, origin_country, origin_continent,
@@ -801,7 +750,7 @@ def make_migration():
         import openpyxl
 
         # Build numeric ISO code -> ISO3 + continent mapping
-        cc = pd.read_csv(os.path.join(RAW, "country-code.csv")).rename(columns={
+        cc = pd.read_csv(os.path.join(RAW, "country_codes_raw.csv")).rename(columns={
             "Three_Letter_Country_Code": "code",
             "Country_Number": "num",
         })[["code", "num"]].dropna()
@@ -867,38 +816,16 @@ def make_migration():
         )
         save("migration.csv", df.sort_values(["origin_code", "dest_code", "year"]))
 
-        # QA artifact: codes present in migration but not mappable in world-atlas 110m.
-        # Uses numeric-code aliases where atlas id differs from ISO table (SDN).
-        atlas = json.load(urllib.request.urlopen("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json"))
-        geoms = atlas.get("objects", {}).get("countries", {}).get("geometries", [])
-        atlas_ids = set(int(g["id"]) for g in geoms if str(g.get("id", "")).isdigit())
-        code_num = cc.set_index("code")["num"].to_dict()
-
-        all_codes = set(df["origin_code"]).union(set(df["dest_code"]))
-        unmapped = []
-        for code in sorted(all_codes):
-            num = code_num.get(code)
-            if code in MIGRATION_ATLAS_NUM_ALIAS:
-                num = MIGRATION_ATLAS_NUM_ALIAS[code]
-            if num is None or int(num) not in atlas_ids:
-                unmapped.append({
-                    "code": code,
-                    "country": CODE_NAME.get(code, code),
-                    "country_number": code_num.get(code),
-                })
-
-        qa = pd.DataFrame(unmapped, columns=["code", "country", "country_number"])
-        save("migration_unmapped_codes.csv", qa)
     except Exception as e:
         report("migration.csv", pd.DataFrame(), str(e))
 
 
-# ── mpi.csv ───────────────────────────────────────────────────────────────────
+# ── multidimensional_poverty_index.csv ───────────────────────────────────────
 # value = MPI score (0–1), national level only
 # Fonte: OPHI Global MPI via HDX
 def make_mpi():
     try:
-        df = pd.read_csv(os.path.join(RAW, "multidimensional-poverty-index-mpi.csv"))
+        df = pd.read_csv(os.path.join(RAW, "multidimensional_poverty_index_raw.csv"))
         df = df.rename(columns={
             "Code":                                    "code",
             "Entity":                                  "country",
@@ -910,9 +837,9 @@ def make_mpi():
         df = df[df["value"].notna() & (df["value"] > 0)]
         out = df[["code", "country", "continent", "year", "value"]].copy()
         out = out.sort_values(["code", "year"])
-        save("mpi.csv", out)
+        save("multidimensional_poverty_index.csv", out)
     except Exception as e:
-        report("mpi.csv", pd.DataFrame(), str(e))
+        report("multidimensional_poverty_index.csv", pd.DataFrame(), str(e))
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -922,7 +849,12 @@ if __name__ == "__main__":
                   "child_marriage_trends.csv", "out_of_school.csv",
                   "missing_data_modal.csv", "missing_data_countries.csv",
                   "migration_continent.csv", "migration_country.csv",
-                  "child_mortality.csv", "maternal_mortality.csv"):
+                  "child_mortality.csv", "maternal_mortality.csv",
+                  "education_spending.csv", "adult_literacy.csv", "youth_literacy.csv",
+                  "out_of_school_children.csv", "extreme_poverty.csv",
+                  "gini_index.csv", "gender_parity_secondary.csv",
+                  "multidimensional_poverty_index.csv",
+                  "missing_data_registry.csv"):
         p = os.path.join(OUT, stale)
         if os.path.exists(p):
             os.remove(p)
@@ -931,19 +863,16 @@ if __name__ == "__main__":
     print("\nVeni Vidi Viz -- Preprocessing\n" + "=" * 55)
     make_life_expectancy()
     make_edu_spending()
-    make_edu_completion()
     make_literacy()
     make_income()
     make_population()
     make_child_labor()
-    make_child_marriage()
     make_fgm_quintile_prevalence()
     make_out_of_school()
     make_poverty()
     make_gini()
     make_gpi_secondary()
 
-    make_remittances()
     make_migration()
     make_mpi()
     harmonize_all_processed_country_names()

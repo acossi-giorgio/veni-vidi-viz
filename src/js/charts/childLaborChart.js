@@ -3,7 +3,7 @@
    X = reddito pro capite (log), Y = lavoro minorile %
    Mediane come separatori dei 4 quadranti
    ============================================================ */
-async function renderChildLaborBubble(selector = '#chart-4-1', isFullscreen = false) {
+async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = false) {
   const container = d3.select(selector);
   if (container.empty()) return;
   container.html('');

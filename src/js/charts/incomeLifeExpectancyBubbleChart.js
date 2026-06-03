@@ -2,7 +2,7 @@
    Grafico 1-2 (Atto I) — Gapminder: reddito × aspettativa di vita
    X = PIL pro capite (log/lin toggle), Y = aspettativa di vita, R = pop
    ============================================================ */
-async function renderGapminderBubble(selector, isFullscreen = false) {
+async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';

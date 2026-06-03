@@ -573,31 +573,31 @@ const DATASET_NOTES = {
     'Dataset integrativi: datasets/processed/life_expectancy.csv, datasets/processed/population.csv'
   ].join('\n'),
   'chart-2-1': [
-    'Dataset principale: datasets/processed/mpi.csv',
+    'Dataset principale: datasets/processed/multidimensional_poverty_index.csv',
     'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
   ].join('\n'),
   'chart-3-1': [
-    'Dataset principale: datasets/processed/edu_spending.csv',
+    'Dataset principale: datasets/processed/education_spending.csv',
     'Dataset integrativi: datasets/processed/income.csv, datasets/processed/population.csv'
   ].join('\n'),
   'chart-3-2': [
-    'Dataset principale: datasets/processed/gpi_secondary.csv',
-    'Dataset integrativo: datasets/processed/out_of_school.csv'
+    'Dataset principale: datasets/processed/gender_parity_secondary.csv',
+    'Dataset integrativo: datasets/processed/out_of_school_children.csv'
   ].join('\n'),
   'chart-3-3': [
-    'Dataset principali: datasets/processed/edu_spending.csv, datasets/processed/literacy.csv',
-    'Dataset integrativi: datasets/processed/out_of_school.csv, datasets/processed/income.csv, datasets/processed/population.csv'
+    'Dataset principali: datasets/processed/education_spending.csv, datasets/processed/youth_literacy.csv',
+    'Dataset integrativi: datasets/processed/out_of_school_children.csv, datasets/processed/income.csv, datasets/processed/population.csv'
   ].join('\n'),
   'chart-4-1': [
     'Dataset principale: datasets/processed/child_labor.csv',
     'Dataset integrativo: datasets/processed/income.csv'
   ].join('\n'),
   'chart-4-2': [
-    'Dataset principale: datasets/processed/child_marriage_cmmm.csv'
+    'Dataset principale: datasets/processed/child_marriage_prevalence.csv'
   ].join('\n'),
   'chart-4-3': [
     'Dataset principale: datasets/processed/fgm_quintile_prevalence.csv',
-    'Dataset raw di origine: datasets/raw/XLS_FGM-Girls-prevalence.xlsx',
+    'Dataset raw di origine: datasets/raw/fgm_quintile_prevalence_raw.xlsx',
     'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
   ].join('\n'),
   'chart-5-1': [
@@ -609,12 +609,12 @@ const DATASET_NOTES = {
 const CHART_MISSING_DATASETS = {
   'chart-1-1': ['income.csv'],
   'chart-1-2': ['income.csv', 'life_expectancy.csv', 'population.csv'],
-  'chart-2-1': ['mpi.csv'],
-  'chart-3-1': ['edu_spending.csv', 'income.csv', 'population.csv'],
-  'chart-3-2': ['gpi_secondary.csv', 'out_of_school.csv'],
-  'chart-3-3': ['edu_spending.csv', 'literacy.csv', 'out_of_school.csv', 'income.csv', 'population.csv'],
+  'chart-2-1': ['multidimensional_poverty_index.csv'],
+  'chart-3-1': ['education_spending.csv', 'income.csv', 'population.csv'],
+  'chart-3-2': ['gender_parity_secondary.csv', 'out_of_school_children.csv'],
+  'chart-3-3': ['education_spending.csv', 'youth_literacy.csv', 'out_of_school_children.csv', 'income.csv', 'population.csv'],
   'chart-4-1': ['child_labor.csv', 'income.csv'],
-  'chart-4-2': ['child_marriage_cmmm.csv'],
+  'chart-4-2': ['child_marriage_prevalence.csv'],
   'chart-4-3': ['fgm_quintile_prevalence.csv'],
   'chart-5-1': ['migration.csv'],
 };
@@ -627,7 +627,7 @@ const CHART_LATEST_VALUE_MISSING_NOTE = new Set([
 
 async function loadMissingDataNotesFromCsv() {
   try {
-    const rows = await d3.csv('datasets/processed/missing_data.csv', d3.autoType);
+    const rows = await d3.csv('datasets/processed/missing_data_registry.csv', d3.autoType);
     if (!Array.isArray(rows) || !rows.length) return;
 
     const byDataset = new Map();
@@ -668,7 +668,7 @@ async function loadMissingDataNotesFromCsv() {
 
     MISSING_DATA_NOTES = nextNotes;
   } catch (err) {
-    console.warn('missing_data.csv non disponibile, uso fallback hardcoded.', err);
+    console.warn('missing_data_registry.csv non disponibile, uso fallback hardcoded.', err);
   }
 }
 
@@ -911,17 +911,16 @@ async function renderInlineChartsIfNeeded() {
   inlineChartsRendering = true;
 
   const renderSteps = [
-    ['chart-1-1', () => renderChoroplethMulti('#chart-1-1')],
-    ['chart-1-2', () => renderGapminderBubble('#chart-1-2')],
+    ['chart-1-1', () => renderIncomeChoroplethChart('#chart-1-1')],
+    ['chart-1-2', () => renderIncomeLifeExpectancyBubbleChart('#chart-1-2')],
     ['chart-2-1', () => renderMpiBreakdown('#chart-2-1')],
-    ['chart-3-1', () => renderEduTreemap('#chart-3-1')],
-    ['chart-3-2', () => renderQualityScatter('#chart-3-2')],
-    ['chart-3-3', () => renderExclusionChart('#chart-3-3')],
-    ['chart-4-1', () => renderChildLaborBubble('#chart-4-1')],
-    ['chart-4-2', () => renderMarriageChart('#chart-4-2')],
-    ['chart-4-3', () => renderMortalityChart('#chart-4-3')],
-    ['chart-5-1', () => renderMigrationChord('#chart-5-1')],
-    // ['chart-5-2', () => renderRemittancesChart('#chart-5-2')],
+    ['chart-3-1', () => renderEducationSpendingChart('#chart-3-1')],
+    ['chart-3-2', () => renderGenderParityChart('#chart-3-2')],
+    ['chart-3-3', () => renderEducationOutcomesChart('#chart-3-3')],
+    ['chart-4-1', () => renderChildLaborChart('#chart-4-1')],
+    ['chart-4-2', () => renderChildMarriageChart('#chart-4-2')],
+    ['chart-4-3', () => renderFgmChart('#chart-4-3')],
+    ['chart-5-1', () => renderMigrationChart('#chart-5-1')],
   ];
 
   try {
@@ -1449,17 +1448,16 @@ function initFullscreenModal() {
 
     try {
       await withChartLoading(chartId, async () => {
-        if (chartId === 'chart-1-1') await renderChoroplethMulti(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-1-2') await renderGapminderBubble(`#fullscreen-${chartId}`, true);
+        if (chartId === 'chart-1-1') await renderIncomeChoroplethChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-1-2') await renderIncomeLifeExpectancyBubbleChart(`#fullscreen-${chartId}`, true);
         else if (chartId === 'chart-2-1') await renderMpiBreakdown(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-3-1') await renderEduTreemap(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-3-2') await renderQualityScatter(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-3-3') await renderExclusionChart(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-4-1') await renderChildLaborBubble(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-4-2') await renderMarriageChart(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-4-3') await renderMortalityChart(`#fullscreen-${chartId}`, true);
-        else if (chartId === 'chart-5-1') await renderMigrationChord(`#fullscreen-${chartId}`, true);
-        // else if (chartId === 'chart-5-2') await renderRemittancesChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-1') await renderEducationSpendingChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-2') await renderGenderParityChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-3-3') await renderEducationOutcomesChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-1') await renderChildLaborChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-2') await renderChildMarriageChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-4-3') await renderFgmChart(`#fullscreen-${chartId}`, true);
+        else if (chartId === 'chart-5-1') await renderMigrationChart(`#fullscreen-${chartId}`, true);
       }, wrap);
     } catch (e) {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';

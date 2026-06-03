@@ -1,0 +1,547 @@
+dataset,missing_type,code,country
+education_spending.csv,incomplete,ALB,Albania
+education_spending.csv,incomplete,DZA,Algeria
+education_spending.csv,incomplete,AND,Andorra
+education_spending.csv,incomplete,AGO,Angola
+education_spending.csv,incomplete,BLR,Belarus
+education_spending.csv,incomplete,BEL,Belgium
+education_spending.csv,incomplete,BEN,Benin
+education_spending.csv,incomplete,BIH,Bosnia and Herzegovina
+education_spending.csv,incomplete,BWA,Botswana
+education_spending.csv,incomplete,BGR,Bulgaria
+education_spending.csv,incomplete,BFA,Burkina Faso
+education_spending.csv,incomplete,BDI,Burundi
+education_spending.csv,incomplete,CMR,Cameroon
+education_spending.csv,incomplete,CPV,Cape Verde
+education_spending.csv,incomplete,CAF,Central African Republic
+education_spending.csv,incomplete,TCD,Chad
+education_spending.csv,incomplete,COM,Comoros
+education_spending.csv,incomplete,COG,Congo
+education_spending.csv,incomplete,HRV,Croatia
+education_spending.csv,incomplete,COD,DR Congo
+education_spending.csv,incomplete,DNK,Denmark
+education_spending.csv,incomplete,DJI,Djibouti
+education_spending.csv,incomplete,EGY,Egypt
+education_spending.csv,incomplete,ERI,Eritrea
+education_spending.csv,incomplete,EST,Estonia
+education_spending.csv,incomplete,SWZ,Eswatini
+education_spending.csv,incomplete,ETH,Ethiopia
+education_spending.csv,incomplete,FRA,France
+education_spending.csv,incomplete,GAB,Gabon
+education_spending.csv,incomplete,DEU,Germany
+education_spending.csv,incomplete,GHA,Ghana
+education_spending.csv,incomplete,GRC,Greece
+education_spending.csv,incomplete,GIN,Guinea
+education_spending.csv,incomplete,GNB,Guinea-Bissau
+education_spending.csv,incomplete,IRL,Ireland
+education_spending.csv,incomplete,KEN,Kenya
+education_spending.csv,incomplete,LVA,Latvia
+education_spending.csv,incomplete,LSO,Lesotho
+education_spending.csv,incomplete,LBR,Liberia
+education_spending.csv,incomplete,LIE,Liechtenstein
+education_spending.csv,incomplete,LTU,Lithuania
+education_spending.csv,incomplete,LUX,Luxembourg
+education_spending.csv,incomplete,MWI,Malawi
+education_spending.csv,incomplete,MLI,Mali
+education_spending.csv,incomplete,MLT,Malta
+education_spending.csv,incomplete,MRT,Mauritania
+education_spending.csv,incomplete,MCO,Monaco
+education_spending.csv,incomplete,MAR,Morocco
+education_spending.csv,incomplete,MOZ,Mozambique
+education_spending.csv,incomplete,NAM,Namibia
+education_spending.csv,incomplete,NER,Niger
+education_spending.csv,incomplete,NGA,Nigeria
+education_spending.csv,incomplete,MKD,North Macedonia
+education_spending.csv,incomplete,PRT,Portugal
+education_spending.csv,incomplete,RWA,Rwanda
+education_spending.csv,incomplete,SMR,San Marino
+education_spending.csv,incomplete,STP,Sao Tome and Principe
+education_spending.csv,incomplete,SEN,Senegal
+education_spending.csv,incomplete,SRB,Serbia
+education_spending.csv,incomplete,SYC,Seychelles
+education_spending.csv,incomplete,SLE,Sierra Leone
+education_spending.csv,incomplete,SVN,Slovenia
+education_spending.csv,incomplete,SOM,Somalia
+education_spending.csv,incomplete,SSD,South Sudan
+education_spending.csv,incomplete,SDN,Sudan
+education_spending.csv,incomplete,TZA,Tanzania
+education_spending.csv,incomplete,TUN,Tunisia
+education_spending.csv,incomplete,UGA,Uganda
+education_spending.csv,incomplete,UKR,Ukraine
+education_spending.csv,incomplete,GBR,United Kingdom
+education_spending.csv,incomplete,ZMB,Zambia
+education_spending.csv,incomplete,ZWE,Zimbabwe
+gender_parity_secondary.csv,incomplete,ALB,Albania
+gender_parity_secondary.csv,incomplete,DZA,Algeria
+gender_parity_secondary.csv,incomplete,AND,Andorra
+gender_parity_secondary.csv,incomplete,AGO,Angola
+gender_parity_secondary.csv,incomplete,AUT,Austria
+gender_parity_secondary.csv,incomplete,BLR,Belarus
+gender_parity_secondary.csv,incomplete,BEL,Belgium
+gender_parity_secondary.csv,incomplete,BEN,Benin
+gender_parity_secondary.csv,incomplete,BIH,Bosnia and Herzegovina
+gender_parity_secondary.csv,incomplete,BWA,Botswana
+gender_parity_secondary.csv,incomplete,BGR,Bulgaria
+gender_parity_secondary.csv,incomplete,BFA,Burkina Faso
+gender_parity_secondary.csv,incomplete,BDI,Burundi
+gender_parity_secondary.csv,incomplete,CMR,Cameroon
+gender_parity_secondary.csv,incomplete,CPV,Cape Verde
+gender_parity_secondary.csv,incomplete,CAF,Central African Republic
+gender_parity_secondary.csv,incomplete,TCD,Chad
+gender_parity_secondary.csv,incomplete,COM,Comoros
+gender_parity_secondary.csv,incomplete,COG,Congo
+gender_parity_secondary.csv,incomplete,CIV,Cote d'Ivoire
+gender_parity_secondary.csv,incomplete,CZE,Czechia
+gender_parity_secondary.csv,incomplete,DNK,Denmark
+gender_parity_secondary.csv,incomplete,EGY,Egypt
+gender_parity_secondary.csv,incomplete,ERI,Eritrea
+gender_parity_secondary.csv,incomplete,EST,Estonia
+gender_parity_secondary.csv,incomplete,SWZ,Eswatini
+gender_parity_secondary.csv,incomplete,ETH,Ethiopia
+gender_parity_secondary.csv,incomplete,FIN,Finland
+gender_parity_secondary.csv,incomplete,FRA,France
+gender_parity_secondary.csv,incomplete,GAB,Gabon
+gender_parity_secondary.csv,incomplete,GMB,Gambia
+gender_parity_secondary.csv,incomplete,DEU,Germany
+gender_parity_secondary.csv,incomplete,GHA,Ghana
+gender_parity_secondary.csv,incomplete,GRC,Greece
+gender_parity_secondary.csv,incomplete,GIN,Guinea
+gender_parity_secondary.csv,incomplete,GNB,Guinea-Bissau
+gender_parity_secondary.csv,incomplete,HUN,Hungary
+gender_parity_secondary.csv,incomplete,ISL,Iceland
+gender_parity_secondary.csv,incomplete,ITA,Italy
+gender_parity_secondary.csv,incomplete,KEN,Kenya
+gender_parity_secondary.csv,incomplete,LVA,Latvia
+gender_parity_secondary.csv,incomplete,LSO,Lesotho
+gender_parity_secondary.csv,incomplete,LBR,Liberia
+gender_parity_secondary.csv,incomplete,LIE,Liechtenstein
+gender_parity_secondary.csv,incomplete,LTU,Lithuania
+gender_parity_secondary.csv,incomplete,LUX,Luxembourg
+gender_parity_secondary.csv,incomplete,MDG,Madagascar
+gender_parity_secondary.csv,incomplete,MWI,Malawi
+gender_parity_secondary.csv,incomplete,MLI,Mali
+gender_parity_secondary.csv,incomplete,MLT,Malta
+gender_parity_secondary.csv,incomplete,MRT,Mauritania
+gender_parity_secondary.csv,incomplete,MUS,Mauritius
+gender_parity_secondary.csv,incomplete,MDA,Moldova
+gender_parity_secondary.csv,incomplete,MNE,Montenegro
+gender_parity_secondary.csv,incomplete,MAR,Morocco
+gender_parity_secondary.csv,incomplete,MOZ,Mozambique
+gender_parity_secondary.csv,incomplete,NAM,Namibia
+gender_parity_secondary.csv,incomplete,NLD,Netherlands
+gender_parity_secondary.csv,incomplete,NER,Niger
+gender_parity_secondary.csv,incomplete,MKD,North Macedonia
+gender_parity_secondary.csv,incomplete,NOR,Norway
+gender_parity_secondary.csv,incomplete,POL,Poland
+gender_parity_secondary.csv,incomplete,PRT,Portugal
+gender_parity_secondary.csv,incomplete,ROU,Romania
+gender_parity_secondary.csv,incomplete,RWA,Rwanda
+gender_parity_secondary.csv,incomplete,SMR,San Marino
+gender_parity_secondary.csv,incomplete,STP,Sao Tome and Principe
+gender_parity_secondary.csv,incomplete,SEN,Senegal
+gender_parity_secondary.csv,incomplete,SRB,Serbia
+gender_parity_secondary.csv,incomplete,SYC,Seychelles
+gender_parity_secondary.csv,incomplete,SLE,Sierra Leone
+gender_parity_secondary.csv,incomplete,SVK,Slovakia
+gender_parity_secondary.csv,incomplete,SVN,Slovenia
+gender_parity_secondary.csv,incomplete,ZAF,South Africa
+gender_parity_secondary.csv,incomplete,SSD,South Sudan
+gender_parity_secondary.csv,incomplete,ESP,Spain
+gender_parity_secondary.csv,incomplete,SDN,Sudan
+gender_parity_secondary.csv,incomplete,SWE,Sweden
+gender_parity_secondary.csv,incomplete,CHE,Switzerland
+gender_parity_secondary.csv,incomplete,TZA,Tanzania
+gender_parity_secondary.csv,incomplete,TGO,Togo
+gender_parity_secondary.csv,incomplete,UGA,Uganda
+gender_parity_secondary.csv,incomplete,UKR,Ukraine
+gender_parity_secondary.csv,incomplete,GBR,United Kingdom
+gender_parity_secondary.csv,incomplete,ZWE,Zimbabwe
+income.csv,incomplete,ERI,Eritrea
+income.csv,incomplete,IMN,Isle of Man
+income.csv,incomplete,LIE,Liechtenstein
+income.csv,incomplete,SMR,San Marino
+income.csv,incomplete,SSD,South Sudan
+out_of_school_children.csv,incomplete,ALB,Albania
+out_of_school_children.csv,incomplete,AND,Andorra
+out_of_school_children.csv,incomplete,AGO,Angola
+out_of_school_children.csv,incomplete,AUT,Austria
+out_of_school_children.csv,incomplete,BLR,Belarus
+out_of_school_children.csv,incomplete,BEL,Belgium
+out_of_school_children.csv,incomplete,BEN,Benin
+out_of_school_children.csv,incomplete,BIH,Bosnia and Herzegovina
+out_of_school_children.csv,incomplete,BWA,Botswana
+out_of_school_children.csv,incomplete,BGR,Bulgaria
+out_of_school_children.csv,incomplete,BFA,Burkina Faso
+out_of_school_children.csv,incomplete,BDI,Burundi
+out_of_school_children.csv,incomplete,CMR,Cameroon
+out_of_school_children.csv,incomplete,CPV,Cape Verde
+out_of_school_children.csv,incomplete,CAF,Central African Republic
+out_of_school_children.csv,incomplete,TCD,Chad
+out_of_school_children.csv,incomplete,COM,Comoros
+out_of_school_children.csv,incomplete,COG,Congo
+out_of_school_children.csv,incomplete,CIV,Cote d'Ivoire
+out_of_school_children.csv,incomplete,HRV,Croatia
+out_of_school_children.csv,incomplete,CZE,Czechia
+out_of_school_children.csv,incomplete,DNK,Denmark
+out_of_school_children.csv,incomplete,EGY,Egypt
+out_of_school_children.csv,incomplete,GNQ,Equatorial Guinea
+out_of_school_children.csv,incomplete,ERI,Eritrea
+out_of_school_children.csv,incomplete,EST,Estonia
+out_of_school_children.csv,incomplete,SWZ,Eswatini
+out_of_school_children.csv,incomplete,ETH,Ethiopia
+out_of_school_children.csv,incomplete,FIN,Finland
+out_of_school_children.csv,incomplete,FRA,France
+out_of_school_children.csv,incomplete,GAB,Gabon
+out_of_school_children.csv,incomplete,GMB,Gambia
+out_of_school_children.csv,incomplete,DEU,Germany
+out_of_school_children.csv,incomplete,GHA,Ghana
+out_of_school_children.csv,incomplete,GIB,Gibraltar
+out_of_school_children.csv,incomplete,GRC,Greece
+out_of_school_children.csv,incomplete,GIN,Guinea
+out_of_school_children.csv,incomplete,GNB,Guinea-Bissau
+out_of_school_children.csv,incomplete,HUN,Hungary
+out_of_school_children.csv,incomplete,ISL,Iceland
+out_of_school_children.csv,incomplete,IRL,Ireland
+out_of_school_children.csv,incomplete,ITA,Italy
+out_of_school_children.csv,incomplete,KEN,Kenya
+out_of_school_children.csv,incomplete,LVA,Latvia
+out_of_school_children.csv,incomplete,LSO,Lesotho
+out_of_school_children.csv,incomplete,LBR,Liberia
+out_of_school_children.csv,incomplete,LIE,Liechtenstein
+out_of_school_children.csv,incomplete,LTU,Lithuania
+out_of_school_children.csv,incomplete,LUX,Luxembourg
+out_of_school_children.csv,incomplete,MDG,Madagascar
+out_of_school_children.csv,incomplete,MWI,Malawi
+out_of_school_children.csv,incomplete,MLI,Mali
+out_of_school_children.csv,incomplete,MLT,Malta
+out_of_school_children.csv,incomplete,MRT,Mauritania
+out_of_school_children.csv,incomplete,MUS,Mauritius
+out_of_school_children.csv,incomplete,MDA,Moldova
+out_of_school_children.csv,incomplete,MNE,Montenegro
+out_of_school_children.csv,incomplete,MAR,Morocco
+out_of_school_children.csv,incomplete,MOZ,Mozambique
+out_of_school_children.csv,incomplete,NAM,Namibia
+out_of_school_children.csv,incomplete,NLD,Netherlands
+out_of_school_children.csv,incomplete,NER,Niger
+out_of_school_children.csv,incomplete,NGA,Nigeria
+out_of_school_children.csv,incomplete,MKD,North Macedonia
+out_of_school_children.csv,incomplete,NOR,Norway
+out_of_school_children.csv,incomplete,POL,Poland
+out_of_school_children.csv,incomplete,PRT,Portugal
+out_of_school_children.csv,incomplete,ROU,Romania
+out_of_school_children.csv,incomplete,RWA,Rwanda
+out_of_school_children.csv,incomplete,SMR,San Marino
+out_of_school_children.csv,incomplete,STP,Sao Tome and Principe
+out_of_school_children.csv,incomplete,SEN,Senegal
+out_of_school_children.csv,incomplete,SRB,Serbia
+out_of_school_children.csv,incomplete,SYC,Seychelles
+out_of_school_children.csv,incomplete,SLE,Sierra Leone
+out_of_school_children.csv,incomplete,SVK,Slovakia
+out_of_school_children.csv,incomplete,SVN,Slovenia
+out_of_school_children.csv,incomplete,ZAF,South Africa
+out_of_school_children.csv,incomplete,SSD,South Sudan
+out_of_school_children.csv,incomplete,ESP,Spain
+out_of_school_children.csv,incomplete,SDN,Sudan
+out_of_school_children.csv,incomplete,SWE,Sweden
+out_of_school_children.csv,incomplete,CHE,Switzerland
+out_of_school_children.csv,incomplete,TZA,Tanzania
+out_of_school_children.csv,incomplete,TGO,Togo
+out_of_school_children.csv,incomplete,TUN,Tunisia
+out_of_school_children.csv,incomplete,UGA,Uganda
+out_of_school_children.csv,incomplete,UKR,Ukraine
+out_of_school_children.csv,incomplete,GBR,United Kingdom
+out_of_school_children.csv,incomplete,ZMB,Zambia
+out_of_school_children.csv,incomplete,ZWE,Zimbabwe
+youth_literacy.csv,incomplete,ALB,Albania
+youth_literacy.csv,incomplete,DZA,Algeria
+youth_literacy.csv,incomplete,AGO,Angola
+youth_literacy.csv,incomplete,BLR,Belarus
+youth_literacy.csv,incomplete,BEN,Benin
+youth_literacy.csv,incomplete,BIH,Bosnia and Herzegovina
+youth_literacy.csv,incomplete,BWA,Botswana
+youth_literacy.csv,incomplete,BGR,Bulgaria
+youth_literacy.csv,incomplete,BFA,Burkina Faso
+youth_literacy.csv,incomplete,BDI,Burundi
+youth_literacy.csv,incomplete,CMR,Cameroon
+youth_literacy.csv,incomplete,CPV,Cape Verde
+youth_literacy.csv,incomplete,CAF,Central African Republic
+youth_literacy.csv,incomplete,TCD,Chad
+youth_literacy.csv,incomplete,COM,Comoros
+youth_literacy.csv,incomplete,COG,Congo
+youth_literacy.csv,incomplete,CIV,Cote d'Ivoire
+youth_literacy.csv,incomplete,HRV,Croatia
+youth_literacy.csv,incomplete,COD,DR Congo
+youth_literacy.csv,incomplete,EGY,Egypt
+youth_literacy.csv,incomplete,GNQ,Equatorial Guinea
+youth_literacy.csv,incomplete,ERI,Eritrea
+youth_literacy.csv,incomplete,EST,Estonia
+youth_literacy.csv,incomplete,SWZ,Eswatini
+youth_literacy.csv,incomplete,ETH,Ethiopia
+youth_literacy.csv,incomplete,GAB,Gabon
+youth_literacy.csv,incomplete,GMB,Gambia
+youth_literacy.csv,incomplete,GHA,Ghana
+youth_literacy.csv,incomplete,GRC,Greece
+youth_literacy.csv,incomplete,GIN,Guinea
+youth_literacy.csv,incomplete,GNB,Guinea-Bissau
+youth_literacy.csv,incomplete,ITA,Italy
+youth_literacy.csv,incomplete,KEN,Kenya
+youth_literacy.csv,incomplete,LVA,Latvia
+youth_literacy.csv,incomplete,LSO,Lesotho
+youth_literacy.csv,incomplete,LBR,Liberia
+youth_literacy.csv,incomplete,LTU,Lithuania
+youth_literacy.csv,incomplete,MDG,Madagascar
+youth_literacy.csv,incomplete,MWI,Malawi
+youth_literacy.csv,incomplete,MLI,Mali
+youth_literacy.csv,incomplete,MLT,Malta
+youth_literacy.csv,incomplete,MRT,Mauritania
+youth_literacy.csv,incomplete,MUS,Mauritius
+youth_literacy.csv,incomplete,MDA,Moldova
+youth_literacy.csv,incomplete,MNE,Montenegro
+youth_literacy.csv,incomplete,MAR,Morocco
+youth_literacy.csv,incomplete,MOZ,Mozambique
+youth_literacy.csv,incomplete,NAM,Namibia
+youth_literacy.csv,incomplete,NER,Niger
+youth_literacy.csv,incomplete,NGA,Nigeria
+youth_literacy.csv,incomplete,MKD,North Macedonia
+youth_literacy.csv,incomplete,PRT,Portugal
+youth_literacy.csv,incomplete,ROU,Romania
+youth_literacy.csv,incomplete,RWA,Rwanda
+youth_literacy.csv,incomplete,SMR,San Marino
+youth_literacy.csv,incomplete,STP,Sao Tome and Principe
+youth_literacy.csv,incomplete,SEN,Senegal
+youth_literacy.csv,incomplete,SRB,Serbia
+youth_literacy.csv,incomplete,SYC,Seychelles
+youth_literacy.csv,incomplete,SLE,Sierra Leone
+youth_literacy.csv,incomplete,SOM,Somalia
+youth_literacy.csv,incomplete,ZAF,South Africa
+youth_literacy.csv,incomplete,SSD,South Sudan
+youth_literacy.csv,incomplete,ESP,Spain
+youth_literacy.csv,incomplete,SDN,Sudan
+youth_literacy.csv,incomplete,TZA,Tanzania
+youth_literacy.csv,incomplete,TGO,Togo
+youth_literacy.csv,incomplete,TUN,Tunisia
+youth_literacy.csv,incomplete,UGA,Uganda
+youth_literacy.csv,incomplete,UKR,Ukraine
+youth_literacy.csv,incomplete,ZMB,Zambia
+youth_literacy.csv,incomplete,ZWE,Zimbabwe
+child_labor.csv,no_data,BWA,Botswana
+child_labor.csv,no_data,CPV,Cape Verde
+child_labor.csv,no_data,DJI,Djibouti
+child_labor.csv,no_data,GNQ,Equatorial Guinea
+child_labor.csv,no_data,ERI,Eritrea
+child_labor.csv,no_data,LBY,Libyan Arab Jamahiriya
+child_labor.csv,no_data,MUS,Mauritius
+child_labor.csv,no_data,MYT,Mayotte
+child_labor.csv,no_data,MAR,Morocco
+child_labor.csv,no_data,NAM,Namibia
+child_labor.csv,no_data,REU,Reunion
+child_labor.csv,no_data,RWA,Rwanda
+child_labor.csv,no_data,SHN,Saint Helena
+child_labor.csv,no_data,SYC,Seychelles
+child_labor.csv,no_data,SOM,Somalia
+child_labor.csv,no_data,ZAF,South Africa
+child_labor.csv,no_data,SSD,South Sudan
+child_labor.csv,no_data,ESH,Western Sahara
+child_marriage_prevalence.csv,no_data,AND,Andorra
+child_marriage_prevalence.csv,no_data,AUT,Austria
+child_marriage_prevalence.csv,no_data,BWA,Botswana
+child_marriage_prevalence.csv,no_data,BGR,Bulgaria
+child_marriage_prevalence.csv,no_data,HRV,Croatia
+child_marriage_prevalence.csv,no_data,CZE,Czechia
+child_marriage_prevalence.csv,no_data,EST,Estonia
+child_marriage_prevalence.csv,no_data,FRO,Faroe Islands
+child_marriage_prevalence.csv,no_data,FRA,France
+child_marriage_prevalence.csv,no_data,DEU,Germany
+child_marriage_prevalence.csv,no_data,GIB,Gibraltar
+child_marriage_prevalence.csv,no_data,GRC,Greece
+child_marriage_prevalence.csv,no_data,GGY,Guernsey
+child_marriage_prevalence.csv,no_data,VAT,Holy See
+child_marriage_prevalence.csv,no_data,HUN,Hungary
+child_marriage_prevalence.csv,no_data,ISL,Iceland
+child_marriage_prevalence.csv,no_data,IRL,Ireland
+child_marriage_prevalence.csv,no_data,IMN,Isle of Man
+child_marriage_prevalence.csv,no_data,ITA,Italy
+child_marriage_prevalence.csv,no_data,JEY,Jersey
+child_marriage_prevalence.csv,no_data,LVA,Latvia
+child_marriage_prevalence.csv,no_data,LBY,Libyan Arab Jamahiriya
+child_marriage_prevalence.csv,no_data,LIE,Liechtenstein
+child_marriage_prevalence.csv,no_data,LUX,Luxembourg
+child_marriage_prevalence.csv,no_data,MLT,Malta
+child_marriage_prevalence.csv,no_data,MUS,Mauritius
+child_marriage_prevalence.csv,no_data,MYT,Mayotte
+child_marriage_prevalence.csv,no_data,MCO,Monaco
+child_marriage_prevalence.csv,no_data,NLD,Netherlands
+child_marriage_prevalence.csv,no_data,POL,Poland
+child_marriage_prevalence.csv,no_data,PRT,Portugal
+child_marriage_prevalence.csv,no_data,REU,Reunion
+child_marriage_prevalence.csv,no_data,SHN,Saint Helena
+child_marriage_prevalence.csv,no_data,SMR,San Marino
+child_marriage_prevalence.csv,no_data,SYC,Seychelles
+child_marriage_prevalence.csv,no_data,SVK,Slovakia
+child_marriage_prevalence.csv,no_data,SVN,Slovenia
+child_marriage_prevalence.csv,no_data,ESP,Spain
+child_marriage_prevalence.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+child_marriage_prevalence.csv,no_data,SWE,Sweden
+child_marriage_prevalence.csv,no_data,CHE,Switzerland
+child_marriage_prevalence.csv,no_data,ESH,Western Sahara
+child_marriage_prevalence.csv,no_data,ALA,Åland Islands
+education_spending.csv,no_data,GNQ,Equatorial Guinea
+education_spending.csv,no_data,FRO,Faroe Islands
+education_spending.csv,no_data,GIB,Gibraltar
+education_spending.csv,no_data,GGY,Guernsey
+education_spending.csv,no_data,VAT,Holy See
+education_spending.csv,no_data,IMN,Isle of Man
+education_spending.csv,no_data,JEY,Jersey
+education_spending.csv,no_data,XKX,Kosovo
+education_spending.csv,no_data,LBY,Libyan Arab Jamahiriya
+education_spending.csv,no_data,MYT,Mayotte
+education_spending.csv,no_data,MNE,Montenegro
+education_spending.csv,no_data,REU,Reunion
+education_spending.csv,no_data,SHN,Saint Helena
+education_spending.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+education_spending.csv,no_data,ESH,Western Sahara
+education_spending.csv,no_data,ALA,Åland Islands
+fgm_quintile_prevalence.csv,no_data,DZA,Algeria
+fgm_quintile_prevalence.csv,no_data,AGO,Angola
+fgm_quintile_prevalence.csv,no_data,BWA,Botswana
+fgm_quintile_prevalence.csv,no_data,BDI,Burundi
+fgm_quintile_prevalence.csv,no_data,CPV,Cape Verde
+fgm_quintile_prevalence.csv,no_data,COM,Comoros
+fgm_quintile_prevalence.csv,no_data,COG,Congo
+fgm_quintile_prevalence.csv,no_data,CIV,Cote d'Ivoire
+fgm_quintile_prevalence.csv,no_data,COD,DR Congo
+fgm_quintile_prevalence.csv,no_data,DJI,Djibouti
+fgm_quintile_prevalence.csv,no_data,GNQ,Equatorial Guinea
+fgm_quintile_prevalence.csv,no_data,SWZ,Eswatini
+fgm_quintile_prevalence.csv,no_data,GAB,Gabon
+fgm_quintile_prevalence.csv,no_data,LSO,Lesotho
+fgm_quintile_prevalence.csv,no_data,LBR,Liberia
+fgm_quintile_prevalence.csv,no_data,LBY,Libyan Arab Jamahiriya
+fgm_quintile_prevalence.csv,no_data,MDG,Madagascar
+fgm_quintile_prevalence.csv,no_data,MWI,Malawi
+fgm_quintile_prevalence.csv,no_data,MUS,Mauritius
+fgm_quintile_prevalence.csv,no_data,MYT,Mayotte
+fgm_quintile_prevalence.csv,no_data,MAR,Morocco
+fgm_quintile_prevalence.csv,no_data,MOZ,Mozambique
+fgm_quintile_prevalence.csv,no_data,NAM,Namibia
+fgm_quintile_prevalence.csv,no_data,REU,Reunion
+fgm_quintile_prevalence.csv,no_data,RWA,Rwanda
+fgm_quintile_prevalence.csv,no_data,SHN,Saint Helena
+fgm_quintile_prevalence.csv,no_data,STP,Sao Tome and Principe
+fgm_quintile_prevalence.csv,no_data,SYC,Seychelles
+fgm_quintile_prevalence.csv,no_data,ZAF,South Africa
+fgm_quintile_prevalence.csv,no_data,SSD,South Sudan
+fgm_quintile_prevalence.csv,no_data,TUN,Tunisia
+fgm_quintile_prevalence.csv,no_data,ESH,Western Sahara
+fgm_quintile_prevalence.csv,no_data,ZMB,Zambia
+fgm_quintile_prevalence.csv,no_data,ZWE,Zimbabwe
+gender_parity_secondary.csv,no_data,HRV,Croatia
+gender_parity_secondary.csv,no_data,COD,DR Congo
+gender_parity_secondary.csv,no_data,DJI,Djibouti
+gender_parity_secondary.csv,no_data,GNQ,Equatorial Guinea
+gender_parity_secondary.csv,no_data,FRO,Faroe Islands
+gender_parity_secondary.csv,no_data,GIB,Gibraltar
+gender_parity_secondary.csv,no_data,GGY,Guernsey
+gender_parity_secondary.csv,no_data,VAT,Holy See
+gender_parity_secondary.csv,no_data,IRL,Ireland
+gender_parity_secondary.csv,no_data,IMN,Isle of Man
+gender_parity_secondary.csv,no_data,JEY,Jersey
+gender_parity_secondary.csv,no_data,XKX,Kosovo
+gender_parity_secondary.csv,no_data,LBY,Libyan Arab Jamahiriya
+gender_parity_secondary.csv,no_data,MYT,Mayotte
+gender_parity_secondary.csv,no_data,MCO,Monaco
+gender_parity_secondary.csv,no_data,NGA,Nigeria
+gender_parity_secondary.csv,no_data,REU,Reunion
+gender_parity_secondary.csv,no_data,SHN,Saint Helena
+gender_parity_secondary.csv,no_data,SOM,Somalia
+gender_parity_secondary.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+gender_parity_secondary.csv,no_data,TUN,Tunisia
+gender_parity_secondary.csv,no_data,ESH,Western Sahara
+gender_parity_secondary.csv,no_data,ZMB,Zambia
+gender_parity_secondary.csv,no_data,ALA,Åland Islands
+income.csv,no_data,GIB,Gibraltar
+income.csv,no_data,GGY,Guernsey
+income.csv,no_data,VAT,Holy See
+income.csv,no_data,JEY,Jersey
+income.csv,no_data,XKX,Kosovo
+income.csv,no_data,MYT,Mayotte
+income.csv,no_data,REU,Reunion
+income.csv,no_data,SHN,Saint Helena
+income.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+income.csv,no_data,ESH,Western Sahara
+income.csv,no_data,ALA,Åland Islands
+life_expectancy.csv,no_data,XKX,Kosovo
+life_expectancy.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+life_expectancy.csv,no_data,ALA,Åland Islands
+migration.csv,no_data,CPV,Cape Verde
+migration.csv,no_data,COM,Comoros
+migration.csv,no_data,MUS,Mauritius
+migration.csv,no_data,STP,Sao Tome and Principe
+migration.csv,no_data,SYC,Seychelles
+multidimensional_poverty_index.csv,no_data,CPV,Cape Verde
+multidimensional_poverty_index.csv,no_data,DJI,Djibouti
+multidimensional_poverty_index.csv,no_data,GNQ,Equatorial Guinea
+multidimensional_poverty_index.csv,no_data,ERI,Eritrea
+multidimensional_poverty_index.csv,no_data,MUS,Mauritius
+multidimensional_poverty_index.csv,no_data,MYT,Mayotte
+multidimensional_poverty_index.csv,no_data,REU,Reunion
+multidimensional_poverty_index.csv,no_data,SHN,Saint Helena
+multidimensional_poverty_index.csv,no_data,SOM,Somalia
+multidimensional_poverty_index.csv,no_data,SSD,South Sudan
+multidimensional_poverty_index.csv,no_data,ESH,Western Sahara
+out_of_school_children.csv,no_data,COD,DR Congo
+out_of_school_children.csv,no_data,DJI,Djibouti
+out_of_school_children.csv,no_data,FRO,Faroe Islands
+out_of_school_children.csv,no_data,GGY,Guernsey
+out_of_school_children.csv,no_data,VAT,Holy See
+out_of_school_children.csv,no_data,IMN,Isle of Man
+out_of_school_children.csv,no_data,JEY,Jersey
+out_of_school_children.csv,no_data,XKX,Kosovo
+out_of_school_children.csv,no_data,LBY,Libyan Arab Jamahiriya
+out_of_school_children.csv,no_data,MYT,Mayotte
+out_of_school_children.csv,no_data,MCO,Monaco
+out_of_school_children.csv,no_data,REU,Reunion
+out_of_school_children.csv,no_data,SHN,Saint Helena
+out_of_school_children.csv,no_data,SOM,Somalia
+out_of_school_children.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+out_of_school_children.csv,no_data,ESH,Western Sahara
+out_of_school_children.csv,no_data,ALA,Åland Islands
+population.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+population.csv,no_data,ALA,Åland Islands
+youth_literacy.csv,no_data,AND,Andorra
+youth_literacy.csv,no_data,AUT,Austria
+youth_literacy.csv,no_data,BEL,Belgium
+youth_literacy.csv,no_data,CZE,Czechia
+youth_literacy.csv,no_data,DNK,Denmark
+youth_literacy.csv,no_data,DJI,Djibouti
+youth_literacy.csv,no_data,FRO,Faroe Islands
+youth_literacy.csv,no_data,FIN,Finland
+youth_literacy.csv,no_data,FRA,France
+youth_literacy.csv,no_data,DEU,Germany
+youth_literacy.csv,no_data,GIB,Gibraltar
+youth_literacy.csv,no_data,GGY,Guernsey
+youth_literacy.csv,no_data,VAT,Holy See
+youth_literacy.csv,no_data,HUN,Hungary
+youth_literacy.csv,no_data,ISL,Iceland
+youth_literacy.csv,no_data,IRL,Ireland
+youth_literacy.csv,no_data,IMN,Isle of Man
+youth_literacy.csv,no_data,JEY,Jersey
+youth_literacy.csv,no_data,XKX,Kosovo
+youth_literacy.csv,no_data,LBY,Libyan Arab Jamahiriya
+youth_literacy.csv,no_data,LIE,Liechtenstein
+youth_literacy.csv,no_data,LUX,Luxembourg
+youth_literacy.csv,no_data,MYT,Mayotte
+youth_literacy.csv,no_data,MCO,Monaco
+youth_literacy.csv,no_data,NLD,Netherlands
+youth_literacy.csv,no_data,NOR,Norway
+youth_literacy.csv,no_data,POL,Poland
+youth_literacy.csv,no_data,REU,Reunion
+youth_literacy.csv,no_data,SHN,Saint Helena
+youth_literacy.csv,no_data,SVK,Slovakia
+youth_literacy.csv,no_data,SVN,Slovenia
+youth_literacy.csv,no_data,SJM,Svalbard & Jan Mayen Islands
+youth_literacy.csv,no_data,SWE,Sweden
+youth_literacy.csv,no_data,CHE,Switzerland
+youth_literacy.csv,no_data,GBR,United Kingdom
+youth_literacy.csv,no_data,ESH,Western Sahara
+youth_literacy.csv,no_data,ALA,Åland Islands

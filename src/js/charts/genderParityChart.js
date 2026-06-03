@@ -5,7 +5,7 @@
                GPI < 1 → barra SOTTO la linea  (bambine escluse)
                GPI > 1 → barra SOPRA la linea  (bambini esclusi)
    ============================================================ */
-async function renderQualityScatter(selector, isFullscreen = false) {
+async function renderGenderParityChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';
@@ -66,8 +66,8 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
   /* ── dati ───────────────────────────────────────────────── */
   const [gpiRaw, oosRaw] = await Promise.all([
-    d3.csv('datasets/processed/gpi_secondary.csv', d3.autoType),
-    d3.csv('datasets/processed/out_of_school.csv', d3.autoType),
+    d3.csv('datasets/processed/gender_parity_secondary.csv', d3.autoType),
+    d3.csv('datasets/processed/out_of_school_children.csv', d3.autoType),
   ]);
 
   const byCode = new Map();

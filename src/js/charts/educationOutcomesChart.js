@@ -5,7 +5,7 @@
    Y = alfabetizzazione % OR bambini fuori scuola (M)
    Pannello sotto: rendimento marginale su finestra mobile triennale
    ============================================================ */
-async function renderExclusionChart(selector, isFullscreen = false) {
+async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';
@@ -28,9 +28,9 @@ async function renderExclusionChart(selector, isFullscreen = false) {
 
   /* ── Load data ──────────────────────────────────────────── */
   const [eduRaw, litRaw, oosRaw, incRaw, popRaw] = await Promise.all([
-    d3.csv('datasets/processed/edu_spending.csv',  d3.autoType),
-    d3.csv('datasets/processed/literacy.csv',      d3.autoType),
-    d3.csv('datasets/processed/out_of_school.csv', d3.autoType),
+    d3.csv('datasets/processed/education_spending.csv',  d3.autoType),
+    d3.csv('datasets/processed/youth_literacy.csv',      d3.autoType),
+    d3.csv('datasets/processed/out_of_school_children.csv', d3.autoType),
     d3.csv('datasets/processed/income.csv',        d3.autoType),
     d3.csv('datasets/processed/population.csv',    d3.autoType),
   ]);

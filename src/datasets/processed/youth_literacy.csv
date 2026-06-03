@@ -1,0 +1,932 @@
+code,country,continent,year,value
+ABW,Aruba,North America,2000,99.0
+ABW,Aruba,North America,2010,99.0
+AFG,Afghanistan,Asia,2011,47.0
+AFG,Afghanistan,Asia,2015,35.82084
+AFG,Afghanistan,Asia,2021,56.0
+AFG,Afghanistan,Asia,2022,62.66
+AGO,Angola,Africa,2001,72.0
+AGO,Angola,Africa,2014,77.0
+AGO,Angola,Africa,2015,75.66081
+ALB,Albania,Europe,2001,99.0
+ALB,Albania,Europe,2008,99.0
+ALB,Albania,Europe,2009,95.68
+ALB,Albania,Europe,2011,99.0
+ALB,Albania,Europe,2012,99.0
+ALB,Albania,Europe,2017,99.02406
+ARE,United Arab Emirates,Asia,2005,95.0
+ARE,United Arab Emirates,Asia,2019,98.0
+ARE,United Arab Emirates,Asia,2021,100.0
+ARE,United Arab Emirates,Asia,2022,100.0
+ARE,United Arab Emirates,Asia,2023,100.0
+ARG,Argentina,South America,2001,99.0
+ARM,Armenia,Asia,2000,100.0
+ARM,Armenia,Asia,2001,100.0
+ARM,Armenia,Asia,2011,100.0
+ARM,Armenia,Asia,2016,100.0
+ARM,Armenia,Asia,2017,100.0
+ARM,Armenia,Asia,2020,100.0
+ARM,Armenia,Asia,2022,99.77402
+AZE,Azerbaijan,Asia,2006,100.0
+AZE,Azerbaijan,Asia,2007,100.0
+AZE,Azerbaijan,Asia,2009,100.0
+AZE,Azerbaijan,Asia,2010,100.0
+AZE,Azerbaijan,Asia,2011,100.0
+AZE,Azerbaijan,Asia,2012,100.0
+AZE,Azerbaijan,Asia,2013,100.0
+AZE,Azerbaijan,Asia,2014,100.0
+AZE,Azerbaijan,Asia,2015,100.0
+AZE,Azerbaijan,Asia,2016,100.0
+AZE,Azerbaijan,Asia,2017,100.0
+AZE,Azerbaijan,Asia,2019,100.0
+AZE,Azerbaijan,Asia,2023,100.0
+BDI,Burundi,Africa,2000,73.0
+BDI,Burundi,Africa,2008,62.0
+BDI,Burundi,Africa,2010,74.46
+BDI,Burundi,Africa,2014,80.0
+BDI,Burundi,Africa,2016,84.36368
+BDI,Burundi,Africa,2017,88.0
+BEN,Benin,Africa,2001,47.96
+BEN,Benin,Africa,2002,45.0
+BEN,Benin,Africa,2006,57.37
+BEN,Benin,Africa,2017,58.8122
+BEN,Benin,Africa,2019,69.24932
+BEN,Benin,Africa,2021,65.3227
+BEN,Benin,Africa,2022,71.25036
+BFA,Burkina Faso,Africa,2003,31.0
+BFA,Burkina Faso,Africa,2005,33.0
+BFA,Burkina Faso,Africa,2006,33.0
+BFA,Burkina Faso,Africa,2007,39.0
+BFA,Burkina Faso,Africa,2010,37.19
+BFA,Burkina Faso,Africa,2014,50.0
+BFA,Burkina Faso,Africa,2018,59.0
+BFA,Burkina Faso,Africa,2019,47.0
+BFA,Burkina Faso,Africa,2021,62.66986
+BFA,Burkina Faso,Africa,2022,62.80518
+BGD,Bangladesh,Asia,2000,100.0
+BGD,Bangladesh,Asia,2001,64.0
+BGD,Bangladesh,Asia,2007,87.61
+BGD,Bangladesh,Asia,2011,78.0
+BGD,Bangladesh,Asia,2012,78.0
+BGD,Bangladesh,Asia,2013,86.0
+BGD,Bangladesh,Asia,2014,86.0
+BGD,Bangladesh,Asia,2015,88.0
+BGD,Bangladesh,Asia,2016,92.0
+BGD,Bangladesh,Asia,2017,93.0
+BGD,Bangladesh,Asia,2018,93.0
+BGD,Bangladesh,Asia,2019,95.0
+BGD,Bangladesh,Asia,2020,94.0
+BGD,Bangladesh,Asia,2021,95.0
+BGD,Bangladesh,Asia,2022,93.0
+BGR,Bulgaria,Europe,2001,98.0
+BGR,Bulgaria,Europe,2011,98.0
+BHR,Bahrain,Asia,2001,97.0
+BHR,Bahrain,Asia,2022,99.0
+BHR,Bahrain,Asia,2023,99.0
+BIH,Bosnia and Herzegovina,Europe,2000,100.0
+BIH,Bosnia and Herzegovina,Europe,2013,100.0
+BLR,Belarus,Europe,2009,100.0
+BLR,Belarus,Europe,2012,100.0
+BLR,Belarus,Europe,2019,100.0
+BLZ,Belize,North America,2015,97.9493
+BOL,Bolivia,South America,2000,97.3
+BOL,Bolivia,South America,2001,97.4
+BOL,Bolivia,South America,2002,98.1
+BOL,Bolivia,South America,2003,98.3
+BOL,Bolivia,South America,2004,99.1
+BOL,Bolivia,South America,2005,98.8
+BOL,Bolivia,South America,2006,98.4
+BOL,Bolivia,South America,2007,99.4
+BOL,Bolivia,South America,2008,99.2
+BOL,Bolivia,South America,2009,99.4
+BOL,Bolivia,South America,2011,99.0
+BOL,Bolivia,South America,2012,99.3
+BOL,Bolivia,South America,2013,99.3
+BOL,Bolivia,South America,2014,99.4
+BOL,Bolivia,South America,2015,99.4
+BOL,Bolivia,South America,2016,99.4
+BOL,Bolivia,South America,2017,99.4
+BOL,Bolivia,South America,2018,99.6
+BOL,Bolivia,South America,2019,99.5
+BOL,Bolivia,South America,2020,99.6
+BOL,Bolivia,South America,2021,99.5
+BRA,Brazil,South America,2000,94.0
+BRA,Brazil,South America,2001,95.8
+BRA,Brazil,South America,2002,96.3
+BRA,Brazil,South America,2003,96.6
+BRA,Brazil,South America,2004,96.8
+BRA,Brazil,South America,2005,97.1
+BRA,Brazil,South America,2006,97.6
+BRA,Brazil,South America,2007,97.8
+BRA,Brazil,South America,2008,97.8
+BRA,Brazil,South America,2009,98.1
+BRA,Brazil,South America,2010,98.0
+BRA,Brazil,South America,2011,98.5
+BRA,Brazil,South America,2012,98.6
+BRA,Brazil,South America,2013,98.7
+BRA,Brazil,South America,2014,98.8
+BRA,Brazil,South America,2015,99.0
+BRA,Brazil,South America,2016,99.1
+BRA,Brazil,South America,2017,99.1
+BRA,Brazil,South America,2018,99.0
+BRA,Brazil,South America,2019,99.1
+BRA,Brazil,South America,2020,99.2
+BRA,Brazil,South America,2021,99.3
+BRA,Brazil,South America,2022,99.3
+BRA,Brazil,South America,2023,99.3
+BRB,Barbados,North America,2012,100.0
+BRN,Brunei,Asia,2001,99.0
+BRN,Brunei,Asia,2011,99.0
+BTN,Bhutan,Asia,2005,74.0
+BTN,Bhutan,Asia,2012,86.0
+BTN,Bhutan,Asia,2017,93.0
+BWA,Botswana,Africa,2003,94.0
+CAF,Central African Republic,Africa,2000,61.0
+CAF,Central African Republic,Africa,2019,50.60208
+CHL,Chile,South America,2000,99.1
+CHL,Chile,South America,2002,99.0
+CHL,Chile,South America,2003,99.1
+CHL,Chile,South America,2006,99.1
+CHL,Chile,South America,2009,99.4
+CHL,Chile,South America,2011,99.4
+CHL,Chile,South America,2013,99.1
+CHL,Chile,South America,2015,99.4
+CHL,Chile,South America,2017,99.0
+CHL,Chile,South America,2022,99.3
+CHN,China,Asia,2000,99.0
+CHN,China,Asia,2010,100.0
+CHN,China,Asia,2020,100.0
+CIV,Cote d'Ivoire,Africa,2000,61.0
+CIV,Cote d'Ivoire,Africa,2014,53.0
+CIV,Cote d'Ivoire,Africa,2016,62.99058
+CIV,Cote d'Ivoire,Africa,2019,84.0
+CIV,Cote d'Ivoire,Africa,2021,66.84427
+CMR,Cameroon,Africa,2000,83.0
+CMR,Cameroon,Africa,2004,75.11
+CMR,Cameroon,Africa,2007,83.0
+CMR,Cameroon,Africa,2010,81.0
+CMR,Cameroon,Africa,2011,80.66
+CMR,Cameroon,Africa,2018,81.89339
+COD,DR Congo,Africa,2001,70.0
+COD,DR Congo,Africa,2007,77.41
+COD,DR Congo,Africa,2012,84.0
+COD,DR Congo,Africa,2013,85.98
+COD,DR Congo,Africa,2016,85.0
+COD,DR Congo,Africa,2018,84.07339
+COG,Congo,Africa,2005,79.0
+COL,Colombia,South America,2002,97.4
+COL,Colombia,South America,2003,97.5
+COL,Colombia,South America,2004,97.9
+COL,Colombia,South America,2005,98.0
+COL,Colombia,South America,2006,98.0
+COL,Colombia,South America,2007,98.0
+COL,Colombia,South America,2008,98.0
+COL,Colombia,South America,2009,97.9
+COL,Colombia,South America,2010,98.2
+COL,Colombia,South America,2011,98.3
+COL,Colombia,South America,2012,98.2
+COL,Colombia,South America,2013,98.3
+COL,Colombia,South America,2014,98.5
+COL,Colombia,South America,2015,98.5
+COL,Colombia,South America,2016,98.7
+COL,Colombia,South America,2017,98.6
+COL,Colombia,South America,2018,98.9
+COL,Colombia,South America,2019,98.8
+COL,Colombia,South America,2020,99.0
+COL,Colombia,South America,2021,99.1
+COL,Colombia,South America,2022,98.9
+COL,Colombia,South America,2023,99.0
+COM,Comoros,Africa,2000,80.0
+COM,Comoros,Africa,2012,82.04
+CPV,Cape Verde,Africa,2012,98.0
+CPV,Cape Verde,Africa,2015,98.0
+CRI,Costa Rica,North America,2000,98.0
+CRI,Costa Rica,North America,2011,99.0
+CRI,Costa Rica,North America,2018,80.55
+CUB,Cuba,North America,2002,100.0
+CUB,Cuba,North America,2012,100.0
+CUB,Cuba,North America,2019,99.61174
+CYM,Cayman Islands,North America,2007,99.0
+CYP,Cyprus,Asia,2001,100.0
+CYP,Cyprus,Asia,2011,100.0
+DOM,Dominican Republic,North America,2000,94.9
+DOM,Dominican Republic,North America,2001,95.4
+DOM,Dominican Republic,North America,2002,95.1
+DOM,Dominican Republic,North America,2003,95.7
+DOM,Dominican Republic,North America,2004,95.9
+DOM,Dominican Republic,North America,2005,96.7
+DOM,Dominican Republic,North America,2006,96.6
+DOM,Dominican Republic,North America,2007,97.5
+DOM,Dominican Republic,North America,2008,96.6
+DOM,Dominican Republic,North America,2009,97.3
+DOM,Dominican Republic,North America,2010,97.0
+DOM,Dominican Republic,North America,2011,97.6
+DOM,Dominican Republic,North America,2012,97.3
+DOM,Dominican Republic,North America,2013,97.9
+DOM,Dominican Republic,North America,2014,98.1
+DOM,Dominican Republic,North America,2015,98.1
+DOM,Dominican Republic,North America,2016,98.5
+DOM,Dominican Republic,North America,2017,98.1
+DOM,Dominican Republic,North America,2018,98.5
+DOM,Dominican Republic,North America,2019,98.7
+DOM,Dominican Republic,North America,2020,98.9
+DOM,Dominican Republic,North America,2021,98.8
+DOM,Dominican Republic,North America,2022,98.5
+DOM,Dominican Republic,North America,2023,98.5
+DZA,Algeria,Africa,2002,90.0
+DZA,Algeria,Africa,2006,92.0
+DZA,Algeria,Africa,2008,94.0
+DZA,Algeria,Africa,2019,74.03
+ECU,Ecuador,South America,2001,97.4
+ECU,Ecuador,South America,2003,96.9
+ECU,Ecuador,South America,2005,98.2
+ECU,Ecuador,South America,2006,98.2
+ECU,Ecuador,South America,2007,98.4
+ECU,Ecuador,South America,2008,98.5
+ECU,Ecuador,South America,2009,98.8
+ECU,Ecuador,South America,2010,98.7
+ECU,Ecuador,South America,2011,98.7
+ECU,Ecuador,South America,2012,98.8
+ECU,Ecuador,South America,2013,98.6
+ECU,Ecuador,South America,2014,99.1
+ECU,Ecuador,South America,2015,99.1
+ECU,Ecuador,South America,2016,99.1
+ECU,Ecuador,South America,2017,99.3
+ECU,Ecuador,South America,2018,99.0
+ECU,Ecuador,South America,2019,98.5
+ECU,Ecuador,South America,2020,98.8
+ECU,Ecuador,South America,2021,99.1
+ECU,Ecuador,South America,2022,99.1
+ECU,Ecuador,South America,2023,99.1
+EGY,Egypt,Africa,2005,85.0
+EGY,Egypt,Africa,2006,85.0
+EGY,Egypt,Africa,2010,88.0
+EGY,Egypt,Africa,2012,89.0
+EGY,Egypt,Africa,2013,92.0
+EGY,Egypt,Africa,2014,94.08
+EGY,Egypt,Africa,2017,88.0
+EGY,Egypt,Africa,2022,95.19
+ERI,Eritrea,Africa,2002,78.0
+ERI,Eritrea,Africa,2008,87.0
+ESP,Spain,Europe,2004,100.0
+ESP,Spain,Europe,2005,100.0
+ESP,Spain,Europe,2006,100.0
+ESP,Spain,Europe,2007,100.0
+ESP,Spain,Europe,2008,100.0
+ESP,Spain,Europe,2009,100.0
+ESP,Spain,Europe,2010,100.0
+ESP,Spain,Europe,2011,100.0
+ESP,Spain,Europe,2012,100.0
+ESP,Spain,Europe,2013,100.0
+ESP,Spain,Europe,2014,100.0
+ESP,Spain,Europe,2015,100.0
+ESP,Spain,Europe,2016,100.0
+ESP,Spain,Europe,2018,100.0
+ESP,Spain,Europe,2020,100.0
+ESP,Spain,Europe,2021,100.0
+EST,Estonia,Europe,2000,100.0
+EST,Estonia,Europe,2011,100.0
+ETH,Ethiopia,Africa,2000,38.61
+ETH,Ethiopia,Africa,2004,50.0
+ETH,Ethiopia,Africa,2005,47.49
+ETH,Ethiopia,Africa,2007,55.0
+ETH,Ethiopia,Africa,2011,54.83
+ETH,Ethiopia,Africa,2016,71.78572
+GAB,Gabon,Africa,2012,94.41
+GAB,Gabon,Africa,2021,93.98143
+GEO,Georgia,Asia,2002,100.0
+GEO,Georgia,Asia,2014,100.0
+GEO,Georgia,Asia,2017,100.0
+GEO,Georgia,Asia,2018,99.92054
+GEO,Georgia,Asia,2022,100.0
+GEO,Georgia,Asia,2023,99.3393
+GHA,Ghana,Africa,2000,71.0
+GHA,Ghana,Africa,2003,79.71
+GHA,Ghana,Africa,2010,86.0
+GHA,Ghana,Africa,2014,87.6
+GHA,Ghana,Africa,2017,87.78218
+GHA,Ghana,Africa,2021,91.5131
+GIN,Guinea,Africa,2003,47.0
+GIN,Guinea,Africa,2005,45.93
+GIN,Guinea,Africa,2010,31.0
+GIN,Guinea,Africa,2012,56.4
+GIN,Guinea,Africa,2014,46.0
+GIN,Guinea,Africa,2018,54.0
+GMB,Gambia,Africa,2000,53.0
+GMB,Gambia,Africa,2013,72.62
+GMB,Gambia,Africa,2015,67.0
+GMB,Gambia,Africa,2018,71.07905
+GMB,Gambia,Africa,2021,67.49284
+GNB,Guinea-Bissau,Africa,2000,59.0
+GNB,Guinea-Bissau,Africa,2019,75.31854
+GNB,Guinea-Bissau,Africa,2022,82.23081
+GNQ,Equatorial Guinea,Africa,2000,97.0
+GRC,Greece,Europe,2001,99.0
+GRC,Greece,Europe,2009,99.0
+GTM,Guatemala,North America,2000,81.7
+GTM,Guatemala,North America,2002,82.0
+GTM,Guatemala,North America,2006,87.8
+GTM,Guatemala,North America,2012,94.0
+GTM,Guatemala,North America,2013,92.0
+GTM,Guatemala,North America,2014,93.3
+GTM,Guatemala,North America,2015,95.1796
+GTM,Guatemala,North America,2018,95.0
+GTM,Guatemala,North America,2022,94.98435
+GTM,Guatemala,North America,2023,97.0
+GUY,Guyana,South America,2009,95.82
+GUY,Guyana,South America,2020,99.14367
+HND,Honduras,North America,2001,91.2
+HND,Honduras,North America,2004,90.9
+HND,Honduras,North America,2005,91.8
+HND,Honduras,North America,2007,94.0
+HND,Honduras,North America,2009,94.0
+HND,Honduras,North America,2010,95.2
+HND,Honduras,North America,2011,95.9
+HND,Honduras,North America,2012,95.0
+HND,Honduras,North America,2013,95.1
+HND,Honduras,North America,2014,95.7
+HND,Honduras,North America,2015,96.0
+HND,Honduras,North America,2016,96.1
+HND,Honduras,North America,2018,96.5
+HND,Honduras,North America,2019,96.1
+HND,Honduras,North America,2023,95.6
+HRV,Croatia,Europe,2001,100.0
+HTI,Haiti,North America,2003,82.0
+HTI,Haiti,North America,2012,85.44
+HTI,Haiti,North America,2017,88.87232
+IDN,Indonesia,Asia,2004,99.0
+IDN,Indonesia,Asia,2006,97.0
+IDN,Indonesia,Asia,2008,99.0
+IDN,Indonesia,Asia,2009,99.0
+IDN,Indonesia,Asia,2011,99.0
+IDN,Indonesia,Asia,2014,100.0
+IDN,Indonesia,Asia,2015,100.0
+IDN,Indonesia,Asia,2016,100.0
+IDN,Indonesia,Asia,2017,99.58
+IDN,Indonesia,Asia,2018,100.0
+IDN,Indonesia,Asia,2020,100.0
+IDN,Indonesia,Asia,2022,93.79
+IND,India,Asia,2001,76.0
+IND,India,Asia,2006,81.0
+IND,India,Asia,2011,86.0
+IND,India,Asia,2016,90.29387
+IND,India,Asia,2020,94.6
+IND,India,Asia,2022,97.0
+IND,India,Asia,2023,97.0
+IRN,Iran,Asia,2005,97.0
+IRN,Iran,Asia,2006,97.0
+IRN,Iran,Asia,2008,98.0
+IRN,Iran,Asia,2012,98.0
+IRN,Iran,Asia,2013,98.0
+IRN,Iran,Asia,2014,98.0
+IRN,Iran,Asia,2016,98.0
+IRQ,Iraq,Asia,2000,85.0
+IRQ,Iraq,Asia,2012,84.0
+IRQ,Iraq,Asia,2014,89.0
+IRQ,Iraq,Asia,2016,91.0
+IRQ,Iraq,Asia,2017,94.0
+ITA,Italy,Europe,2001,100.0
+ITA,Italy,Europe,2011,100.0
+ITA,Italy,Europe,2019,100.0
+JAM,Jamaica,North America,2022,93.57
+JOR,Jordan,Asia,2003,99.0
+JOR,Jordan,Asia,2005,99.0
+JOR,Jordan,Asia,2007,99.0
+JOR,Jordan,Asia,2010,99.0
+JOR,Jordan,Asia,2011,99.0
+JOR,Jordan,Asia,2012,99.0
+JOR,Jordan,Asia,2018,97.09277
+JOR,Jordan,Asia,2023,99.0
+KAZ,Kazakhstan,Asia,2009,100.0
+KEN,Kenya,Africa,2000,93.0
+KEN,Kenya,Africa,2014,93.18
+KEN,Kenya,Africa,2022,95.72989
+KGZ,Kyrgyz Republic,Asia,2009,100.0
+KHM,Cambodia,Asia,2004,83.0
+KHM,Cambodia,Asia,2005,77.96
+KHM,Cambodia,Asia,2008,87.0
+KHM,Cambodia,Asia,2009,87.0
+KHM,Cambodia,Asia,2010,79.44
+KHM,Cambodia,Asia,2014,90.0
+KHM,Cambodia,Asia,2015,92.0
+KHM,Cambodia,Asia,2021,91.83219
+KIR,Kiribati,Oceania,2018,97.15876
+KOR,South Korea,Asia,2008,100.0
+KWT,Kuwait,Asia,2005,100.0
+KWT,Kuwait,Asia,2006,99.0
+KWT,Kuwait,Asia,2007,98.0
+KWT,Kuwait,Asia,2008,99.0
+KWT,Kuwait,Asia,2010,99.0
+KWT,Kuwait,Asia,2012,99.0
+KWT,Kuwait,Asia,2013,99.0
+KWT,Kuwait,Asia,2015,99.0
+KWT,Kuwait,Asia,2017,99.0
+KWT,Kuwait,Asia,2018,99.0
+KWT,Kuwait,Asia,2020,99.0
+LAO,Laos,Asia,2000,81.0
+LAO,Laos,Asia,2001,78.0
+LAO,Laos,Asia,2005,84.0
+LAO,Laos,Asia,2015,92.0
+LAO,Laos,Asia,2017,87.91506
+LBN,Lebanon,Asia,2007,99.0
+LBN,Lebanon,Asia,2009,99.0
+LBN,Lebanon,Asia,2018,97.0
+LBR,Liberia,Africa,2007,66.42
+LBR,Liberia,Africa,2013,75.06
+LCA,Saint Lucia,North America,2012,99.98
+LKA,Sri Lanka,Asia,2001,96.0
+LKA,Sri Lanka,Asia,2006,97.0
+LKA,Sri Lanka,Asia,2008,98.0
+LKA,Sri Lanka,Asia,2010,98.0
+LKA,Sri Lanka,Asia,2016,99.0
+LKA,Sri Lanka,Asia,2017,99.0
+LKA,Sri Lanka,Asia,2018,99.0
+LKA,Sri Lanka,Asia,2019,99.0
+LKA,Sri Lanka,Asia,2020,99.0
+LKA,Sri Lanka,Asia,2021,99.0
+LKA,Sri Lanka,Asia,2022,99.0
+LKA,Sri Lanka,Asia,2023,99.0
+LSO,Lesotho,Africa,2000,91.0
+LSO,Lesotho,Africa,2006,76.0
+LSO,Lesotho,Africa,2009,88.35
+LSO,Lesotho,Africa,2014,91.98
+LSO,Lesotho,Africa,2016,98.0
+LSO,Lesotho,Africa,2018,95.1947
+LTU,Lithuania,Europe,2001,100.0
+LTU,Lithuania,Europe,2011,100.0
+LVA,Latvia,Europe,2000,100.0
+LVA,Latvia,Europe,2011,100.0
+MAC,Macao,Asia,2001,100.0
+MAC,Macao,Asia,2006,100.0
+MAC,Macao,Asia,2011,100.0
+MAC,Macao,Asia,2016,100.0
+MAR,Morocco,Africa,2004,70.0
+MAR,Morocco,Africa,2008,78.0
+MAR,Morocco,Africa,2009,79.0
+MAR,Morocco,Africa,2011,82.0
+MAR,Morocco,Africa,2012,91.0
+MDA,Moldova,Europe,2000,100.0
+MDA,Moldova,Europe,2005,99.91
+MDA,Moldova,Europe,2012,99.91
+MDA,Moldova,Europe,2014,100.0
+MDG,Madagascar,Africa,2000,70.0
+MDG,Madagascar,Africa,2005,58.0
+MDG,Madagascar,Africa,2012,77.0
+MDG,Madagascar,Africa,2018,80.0
+MDG,Madagascar,Africa,2021,82.3826
+MDV,Maldives,Asia,2000,98.0
+MDV,Maldives,Asia,2006,99.0
+MDV,Maldives,Asia,2014,99.0
+MDV,Maldives,Asia,2016,99.0
+MDV,Maldives,Asia,2017,98.13089
+MDV,Maldives,Asia,2019,98.74424
+MEX,Mexico,North America,2000,97.3
+MEX,Mexico,North America,2002,97.5
+MEX,Mexico,North America,2004,97.3
+MEX,Mexico,North America,2005,98.0
+MEX,Mexico,North America,2006,97.9
+MEX,Mexico,North America,2007,98.0
+MEX,Mexico,North America,2008,98.3
+MEX,Mexico,North America,2009,99.0
+MEX,Mexico,North America,2010,98.4
+MEX,Mexico,North America,2011,98.0
+MEX,Mexico,North America,2012,98.7
+MEX,Mexico,North America,2013,99.0
+MEX,Mexico,North America,2014,98.6
+MEX,Mexico,North America,2015,99.0
+MEX,Mexico,North America,2016,98.6
+MEX,Mexico,North America,2017,99.0
+MEX,Mexico,North America,2018,98.6
+MEX,Mexico,North America,2020,99.0
+MEX,Mexico,North America,2022,99.0
+MHL,Marshall Islands,Oceania,2011,98.0
+MKD,North Macedonia,Europe,2002,99.0
+MLI,Mali,Africa,2006,39.0
+MLI,Mali,Africa,2010,44.0
+MLI,Mali,Africa,2011,42.0
+MLI,Mali,Africa,2015,49.0
+MLI,Mali,Africa,2018,50.0
+MLI,Mali,Africa,2020,53.35
+MLT,Malta,Europe,2005,98.0
+MLT,Malta,Europe,2011,99.0
+MMR,Myanmar,Asia,2000,95.0
+MMR,Myanmar,Asia,2014,94.0
+MMR,Myanmar,Asia,2016,90.42327
+MMR,Myanmar,Asia,2019,95.0
+MNE,Montenegro,Europe,2003,99.0
+MNE,Montenegro,Europe,2011,99.0
+MNE,Montenegro,Europe,2018,97.4223
+MNG,Mongolia,Asia,2000,98.0
+MNG,Mongolia,Asia,2010,98.0
+MNG,Mongolia,Asia,2018,99.53313
+MNG,Mongolia,Asia,2020,99.0
+MNG,Mongolia,Asia,2022,99.6923
+MOZ,Mozambique,Africa,2003,62.0
+MOZ,Mozambique,Africa,2009,67.0
+MOZ,Mozambique,Africa,2015,71.0
+MOZ,Mozambique,Africa,2017,71.0
+MOZ,Mozambique,Africa,2020,70.0
+MRT,Mauritania,Africa,2000,61.0
+MRT,Mauritania,Africa,2013,71.0
+MRT,Mauritania,Africa,2015,81.42109
+MRT,Mauritania,Africa,2020,70.86398
+MUS,Mauritius,Africa,2000,95.0
+MUS,Mauritius,Africa,2011,98.0
+MWI,Malawi,Africa,2020,80.7257
+MYS,Malaysia,Asia,2000,97.0
+MYS,Malaysia,Asia,2010,98.0
+MYS,Malaysia,Asia,2016,98.0
+MYS,Malaysia,Asia,2017,97.0
+MYS,Malaysia,Asia,2018,97.0
+MYS,Malaysia,Asia,2019,97.0
+MYS,Malaysia,Asia,2022,99.0
+NAM,Namibia,Africa,2000,89.43
+NAM,Namibia,Africa,2001,92.0
+NAM,Namibia,Africa,2007,91.2
+NAM,Namibia,Africa,2011,94.0
+NAM,Namibia,Africa,2013,94.16
+NER,Niger,Africa,2001,20.0
+NER,Niger,Africa,2005,37.0
+NER,Niger,Africa,2006,21.39
+NER,Niger,Africa,2012,40.0
+NER,Niger,Africa,2018,45.53388
+NER,Niger,Africa,2022,53.91244
+NGA,Nigeria,Africa,2003,69.0
+NGA,Nigeria,Africa,2006,79.0
+NGA,Nigeria,Africa,2008,66.78
+NGA,Nigeria,Africa,2013,79.16
+NGA,Nigeria,Africa,2016,72.95526
+NGA,Nigeria,Africa,2018,65.78498
+NGA,Nigeria,Africa,2021,73.67277
+NIC,Nicaragua,North America,2001,87.3
+NIC,Nicaragua,North America,2005,91.0
+NIC,Nicaragua,North America,2009,93.7
+NIC,Nicaragua,North America,2014,95.3
+NPL,Nepal,Asia,2001,70.0
+NPL,Nepal,Asia,2006,82.1
+NPL,Nepal,Asia,2011,85.0
+NPL,Nepal,Asia,2016,89.09406
+NPL,Nepal,Asia,2019,94.23831
+NPL,Nepal,Asia,2022,92.4
+OMN,Oman,Asia,2003,76.0
+OMN,Oman,Asia,2008,98.0
+OMN,Oman,Asia,2010,98.0
+OMN,Oman,Asia,2015,99.0
+OMN,Oman,Asia,2017,99.0
+OMN,Oman,Asia,2018,99.0
+OMN,Oman,Asia,2020,100.0
+OMN,Oman,Asia,2022,100.0
+PAK,Pakistan,Asia,2005,65.0
+PAK,Pakistan,Asia,2006,69.0
+PAK,Pakistan,Asia,2007,66.0
+PAK,Pakistan,Asia,2008,71.0
+PAK,Pakistan,Asia,2009,71.0
+PAK,Pakistan,Asia,2010,71.0
+PAK,Pakistan,Asia,2011,71.0
+PAK,Pakistan,Asia,2012,73.0
+PAK,Pakistan,Asia,2013,72.0
+PAK,Pakistan,Asia,2014,73.0
+PAK,Pakistan,Asia,2017,75.0
+PAK,Pakistan,Asia,2018,72.0
+PAK,Pakistan,Asia,2019,73.0
+PAK,Pakistan,Asia,2021,73.13283
+PAN,Panama,North America,2000,96.0
+PAN,Panama,North America,2010,98.0
+PAN,Panama,North America,2014,98.0
+PAN,Panama,North America,2015,98.2
+PAN,Panama,North America,2016,98.8
+PAN,Panama,North America,2017,99.1
+PAN,Panama,North America,2018,99.1
+PAN,Panama,North America,2019,98.9
+PAN,Panama,North America,2021,99.3
+PAN,Panama,North America,2022,99.3
+PAN,Panama,North America,2023,98.9
+PER,Peru,South America,2000,97.6
+PER,Peru,South America,2001,97.2
+PER,Peru,South America,2002,96.8
+PER,Peru,South America,2003,96.8
+PER,Peru,South America,2004,97.4
+PER,Peru,South America,2005,97.5
+PER,Peru,South America,2006,98.0
+PER,Peru,South America,2007,97.6
+PER,Peru,South America,2008,97.8
+PER,Peru,South America,2009,98.3
+PER,Peru,South America,2010,98.3
+PER,Peru,South America,2011,98.5
+PER,Peru,South America,2012,98.7
+PER,Peru,South America,2013,98.9
+PER,Peru,South America,2014,99.0
+PER,Peru,South America,2015,99.1
+PER,Peru,South America,2016,98.9
+PER,Peru,South America,2017,99.1
+PER,Peru,South America,2018,99.0
+PER,Peru,South America,2019,99.1
+PER,Peru,South America,2020,99.5
+PER,Peru,South America,2021,99.1
+PER,Peru,South America,2022,99.3
+PER,Peru,South America,2023,99.4
+PHL,Philippines,Asia,2000,95.0
+PHL,Philippines,Asia,2003,95.0
+PHL,Philippines,Asia,2008,98.0
+PHL,Philippines,Asia,2013,98.0
+PHL,Philippines,Asia,2015,99.0
+PHL,Philippines,Asia,2017,100.0
+PHL,Philippines,Asia,2019,98.0
+PHL,Philippines,Asia,2020,99.0
+PHL,Philippines,Asia,2022,99.77
+PLW,Palau,Oceania,2013,100.0
+PLW,Palau,Oceania,2015,99.0
+PNG,Papua New Guinea,Oceania,2000,67.0
+PNG,Papua New Guinea,Oceania,2017,82.72244
+PRI,Puerto Rico,North America,2010,99.0
+PRI,Puerto Rico,North America,2017,92.0
+PRK,North Korea,Asia,2008,100.0
+PRT,Portugal,Europe,2011,99.0
+PRY,Paraguay,South America,2001,95.6
+PRY,Paraguay,South America,2002,97.4
+PRY,Paraguay,South America,2003,97.4
+PRY,Paraguay,South America,2004,97.2
+PRY,Paraguay,South America,2005,97.9
+PRY,Paraguay,South America,2006,98.1
+PRY,Paraguay,South America,2007,98.7
+PRY,Paraguay,South America,2008,97.9
+PRY,Paraguay,South America,2009,98.5
+PRY,Paraguay,South America,2010,98.6
+PRY,Paraguay,South America,2011,98.5
+PRY,Paraguay,South America,2012,98.2
+PRY,Paraguay,South America,2013,98.9
+PRY,Paraguay,South America,2014,98.7
+PRY,Paraguay,South America,2015,98.7
+PRY,Paraguay,South America,2016,98.4
+PRY,Paraguay,South America,2017,98.3
+PRY,Paraguay,South America,2018,98.3
+PRY,Paraguay,South America,2019,98.4
+PRY,Paraguay,South America,2020,98.6
+PRY,Paraguay,South America,2021,98.6
+PRY,Paraguay,South America,2022,98.6
+PRY,Paraguay,South America,2023,98.9
+PSE,Palestinian Territory,Asia,2004,99.0
+PSE,Palestinian Territory,Asia,2006,99.0
+PSE,Palestinian Territory,Asia,2007,99.0
+PSE,Palestinian Territory,Asia,2008,99.0
+PSE,Palestinian Territory,Asia,2009,99.0
+PSE,Palestinian Territory,Asia,2010,99.0
+PSE,Palestinian Territory,Asia,2011,99.0
+PSE,Palestinian Territory,Asia,2012,99.0
+PSE,Palestinian Territory,Asia,2013,99.0
+PSE,Palestinian Territory,Asia,2014,99.0
+PSE,Palestinian Territory,Asia,2015,99.0
+PSE,Palestinian Territory,Asia,2016,99.0
+PSE,Palestinian Territory,Asia,2017,99.0
+PSE,Palestinian Territory,Asia,2018,99.0
+PSE,Palestinian Territory,Asia,2019,99.0
+PSE,Palestinian Territory,Asia,2020,99.0
+PSE,Palestinian Territory,Asia,2022,99.0
+QAT,Qatar,Asia,2004,96.0
+QAT,Qatar,Asia,2007,99.0
+QAT,Qatar,Asia,2008,96.0
+QAT,Qatar,Asia,2009,98.0
+QAT,Qatar,Asia,2010,97.0
+QAT,Qatar,Asia,2011,98.0
+QAT,Qatar,Asia,2012,99.0
+QAT,Qatar,Asia,2013,99.0
+QAT,Qatar,Asia,2014,99.0
+ROU,Romania,Europe,2002,98.0
+ROU,Romania,Europe,2011,99.0
+ROU,Romania,Europe,2021,100.0
+RUS,Russia,Asia,2002,100.0
+RUS,Russia,Asia,2010,100.0
+RUS,Russia,Asia,2021,100.0
+RWA,Rwanda,Africa,2000,78.0
+RWA,Rwanda,Africa,2005,70.46
+RWA,Rwanda,Africa,2010,80.19
+RWA,Rwanda,Africa,2012,82.0
+RWA,Rwanda,Africa,2014,85.0
+RWA,Rwanda,Africa,2015,88.55225
+RWA,Rwanda,Africa,2018,86.0
+RWA,Rwanda,Africa,2020,91.51317
+RWA,Rwanda,Africa,2022,90.0
+SAU,Saudi Arabia,Asia,2000,96.0
+SAU,Saudi Arabia,Asia,2004,96.0
+SAU,Saudi Arabia,Asia,2013,99.0
+SAU,Saudi Arabia,Asia,2017,99.0
+SAU,Saudi Arabia,Asia,2020,99.0
+SDN,Sudan,Africa,2000,78.0
+SDN,Sudan,Africa,2008,66.0
+SEN,Senegal,Africa,2002,49.0
+SEN,Senegal,Africa,2005,46.13
+SEN,Senegal,Africa,2006,51.0
+SEN,Senegal,Africa,2009,63.0
+SEN,Senegal,Africa,2011,66.0
+SEN,Senegal,Africa,2013,57.0
+SEN,Senegal,Africa,2014,57.29
+SEN,Senegal,Africa,2015,61.28663
+SEN,Senegal,Africa,2016,64.51501
+SEN,Senegal,Africa,2017,69.0
+SEN,Senegal,Africa,2018,65.95588
+SEN,Senegal,Africa,2019,66.50423
+SEN,Senegal,Africa,2023,67.44988
+SGP,Singapore,Asia,2000,100.0
+SGP,Singapore,Asia,2010,100.0
+SGP,Singapore,Asia,2011,100.0
+SGP,Singapore,Asia,2012,100.0
+SGP,Singapore,Asia,2013,100.0
+SGP,Singapore,Asia,2014,100.0
+SGP,Singapore,Asia,2015,100.0
+SGP,Singapore,Asia,2016,100.0
+SGP,Singapore,Asia,2017,100.0
+SGP,Singapore,Asia,2018,100.0
+SGP,Singapore,Asia,2019,100.0
+SGP,Singapore,Asia,2020,100.0
+SGP,Singapore,Asia,2021,100.0
+SLE,Sierra Leone,Africa,2004,48.0
+SLE,Sierra Leone,Africa,2008,58.42
+SLE,Sierra Leone,Africa,2013,69.79
+SLE,Sierra Leone,Africa,2017,73.60394
+SLE,Sierra Leone,Africa,2019,72.98558
+SLV,El Salvador,North America,2000,92.4
+SLV,El Salvador,North America,2001,93.6
+SLV,El Salvador,North America,2002,93.3
+SLV,El Salvador,North America,2003,93.3
+SLV,El Salvador,North America,2004,93.8
+SLV,El Salvador,North America,2005,94.9
+SLV,El Salvador,North America,2006,95.0
+SLV,El Salvador,North America,2007,95.5
+SLV,El Salvador,North America,2008,96.0
+SLV,El Salvador,North America,2009,95.6
+SLV,El Salvador,North America,2010,96.0
+SLV,El Salvador,North America,2011,97.0
+SLV,El Salvador,North America,2012,97.1
+SLV,El Salvador,North America,2013,97.2
+SLV,El Salvador,North America,2014,97.8
+SLV,El Salvador,North America,2015,97.9
+SLV,El Salvador,North America,2016,98.0
+SLV,El Salvador,North America,2017,98.0
+SLV,El Salvador,North America,2018,98.0
+SLV,El Salvador,North America,2019,98.3
+SLV,El Salvador,North America,2020,98.5
+SLV,El Salvador,North America,2021,98.1
+SLV,El Salvador,North America,2022,98.3
+SLV,El Salvador,North America,2023,98.1
+SMR,San Marino,Europe,2022,100.0
+SOM,Somalia,Africa,2022,71.0
+SRB,Serbia,Europe,2003,99.0
+SRB,Serbia,Europe,2011,99.0
+SRB,Serbia,Europe,2016,100.0
+SRB,Serbia,Europe,2019,100.0
+SSD,South Sudan,Africa,2008,37.0
+STP,Sao Tome and Principe,Africa,2001,95.0
+STP,Sao Tome and Principe,Africa,2012,97.0
+STP,Sao Tome and Principe,Africa,2019,95.48575
+SUR,Suriname,South America,2004,95.0
+SUR,Suriname,South America,2008,99.0
+SUR,Suriname,South America,2010,98.0
+SUR,Suriname,South America,2012,98.0
+SUR,Suriname,South America,2018,97.68767
+SWZ,Eswatini,Africa,2000,92.0
+SWZ,Eswatini,Africa,2006,91.41
+SWZ,Eswatini,Africa,2022,98.65985
+SYC,Seychelles,Africa,2002,99.0
+SYC,Seychelles,Africa,2010,99.0
+SYR,Syria,Asia,2002,95.0
+SYR,Syria,Asia,2004,92.0
+SYR,Syria,Asia,2021,98.0
+TCA,Turks and Caicos Islands,North America,2020,99.94
+TCD,Chad,Africa,2000,38.0
+TCD,Chad,Africa,2004,42.0
+TCD,Chad,Africa,2016,31.0
+TCD,Chad,Africa,2019,45.1346
+TGO,Togo,Africa,2000,74.0
+TGO,Togo,Africa,2006,76.0
+TGO,Togo,Africa,2009,82.0
+TGO,Togo,Africa,2011,80.0
+TGO,Togo,Africa,2014,79.66
+TGO,Togo,Africa,2015,84.0
+TGO,Togo,Africa,2017,82.50615
+TGO,Togo,Africa,2019,88.0
+TGO,Togo,Africa,2022,90.36298
+THA,Thailand,Asia,2000,98.0
+THA,Thailand,Asia,2005,98.0
+THA,Thailand,Asia,2010,97.0
+THA,Thailand,Asia,2013,98.0
+THA,Thailand,Asia,2015,98.0
+THA,Thailand,Asia,2016,97.49386
+THA,Thailand,Asia,2018,98.0
+THA,Thailand,Asia,2019,98.52035
+THA,Thailand,Asia,2022,98.17296
+TJK,Tajikistan,Asia,2000,100.0
+TJK,Tajikistan,Asia,2017,98.81
+TLS,Timor-Leste,Asia,2009,85.64
+TLS,Timor-Leste,Asia,2010,80.0
+TLS,Timor-Leste,Asia,2016,89.14448
+TON,Tonga,Oceania,2006,99.0
+TON,Tonga,Oceania,2011,99.0
+TON,Tonga,Oceania,2016,98.0
+TON,Tonga,Oceania,2019,99.89434
+TTO,Trinidad and Tobago,North America,2022,92.0
+TUN,Tunisia,Africa,2004,94.0
+TUN,Tunisia,Africa,2007,96.0
+TUN,Tunisia,Africa,2008,97.0
+TUN,Tunisia,Africa,2010,97.0
+TUN,Tunisia,Africa,2011,97.0
+TUN,Tunisia,Africa,2012,97.0
+TUN,Tunisia,Africa,2014,96.0
+TUN,Tunisia,Africa,2018,97.97744
+TUN,Tunisia,Africa,2019,97.0
+TUN,Tunisia,Africa,2021,98.94075
+TUN,Tunisia,Africa,2023,98.16142
+TUR,Turkey,Asia,2004,96.0
+TUR,Turkey,Asia,2005,96.0
+TUR,Turkey,Asia,2006,96.0
+TUR,Turkey,Asia,2007,96.0
+TUR,Turkey,Asia,2009,98.0
+TUR,Turkey,Asia,2010,98.0
+TUR,Turkey,Asia,2011,99.0
+TUR,Turkey,Asia,2012,99.0
+TUR,Turkey,Asia,2013,99.0
+TUR,Turkey,Asia,2014,99.0
+TUR,Turkey,Asia,2015,99.0
+TUR,Turkey,Asia,2016,100.0
+TUR,Turkey,Asia,2017,100.0
+TUR,Turkey,Asia,2018,99.39
+TUR,Turkey,Asia,2019,100.0
+TUR,Turkey,Asia,2021,100.0
+TUR,Turkey,Asia,2022,92.23
+TUV,Tuvalu,Oceania,2019,98.81539
+TZA,Tanzania,Africa,2002,78.0
+TZA,Tanzania,Africa,2012,86.0
+TZA,Tanzania,Africa,2015,86.0
+TZA,Tanzania,Africa,2022,87.07037
+UGA,Uganda,Africa,2002,81.0
+UGA,Uganda,Africa,2006,84.0
+UGA,Uganda,Africa,2010,87.0
+UGA,Uganda,Africa,2012,84.0
+UGA,Uganda,Africa,2016,79.78305
+UKR,Ukraine,Europe,2001,100.0
+URY,Uruguay,South America,2006,99.0
+URY,Uruguay,South America,2007,99.0
+URY,Uruguay,South America,2008,98.9
+URY,Uruguay,South America,2009,99.0
+URY,Uruguay,South America,2010,98.8
+URY,Uruguay,South America,2011,98.9
+URY,Uruguay,South America,2012,99.0
+URY,Uruguay,South America,2013,98.9
+URY,Uruguay,South America,2014,98.8
+URY,Uruguay,South America,2015,98.9
+URY,Uruguay,South America,2016,99.1
+URY,Uruguay,South America,2017,98.9
+URY,Uruguay,South America,2018,98.9
+URY,Uruguay,South America,2019,99.0
+URY,Uruguay,South America,2021,99.2
+URY,Uruguay,South America,2022,99.1
+URY,Uruguay,South America,2023,99.0
+UZB,Uzbekistan,Asia,2000,100.0
+UZB,Uzbekistan,Asia,2013,100.0
+UZB,Uzbekistan,Asia,2014,100.0
+UZB,Uzbekistan,Asia,2015,100.0
+UZB,Uzbekistan,Asia,2016,100.0
+UZB,Uzbekistan,Asia,2018,100.0
+UZB,Uzbekistan,Asia,2019,100.0
+UZB,Uzbekistan,Asia,2021,100.0
+UZB,Uzbekistan,Asia,2022,100.0
+VEN,Venezuela,South America,2000,97.6
+VEN,Venezuela,South America,2001,97.6
+VEN,Venezuela,South America,2002,97.8
+VEN,Venezuela,South America,2003,97.8
+VEN,Venezuela,South America,2004,98.1
+VEN,Venezuela,South America,2005,98.1
+VEN,Venezuela,South America,2006,98.3
+VEN,Venezuela,South America,2007,98.4
+VEN,Venezuela,South America,2008,98.5
+VEN,Venezuela,South America,2009,98.5
+VEN,Venezuela,South America,2010,98.5
+VEN,Venezuela,South America,2011,98.6
+VEN,Venezuela,South America,2012,98.8
+VEN,Venezuela,South America,2013,98.7
+VEN,Venezuela,South America,2014,98.9
+VEN,Venezuela,South America,2015,99.0
+VEN,Venezuela,South America,2016,99.0
+VNM,Vietnam,Asia,2000,95.0
+VNM,Vietnam,Asia,2009,97.0
+VNM,Vietnam,Asia,2019,99.0
+VNM,Vietnam,Asia,2020,98.20052
+VNM,Vietnam,Asia,2022,99.0
+VUT,Vanuatu,Oceania,2023,93.9273
+WSM,Samoa,Oceania,2011,99.0
+WSM,Samoa,Oceania,2016,100.0
+WSM,Samoa,Oceania,2019,99.02413
+ZAF,South Africa,Africa,2007,98.0
+ZAF,South Africa,Africa,2009,98.0
+ZAF,South Africa,Africa,2010,99.0
+ZAF,South Africa,Africa,2011,99.0
+ZAF,South Africa,Africa,2012,99.0
+ZAF,South Africa,Africa,2014,99.0
+ZAF,South Africa,Africa,2015,99.0
+ZAF,South Africa,Africa,2016,96.70674
+ZAF,South Africa,Africa,2017,95.0
+ZAF,South Africa,Africa,2019,98.0
+ZAF,South Africa,Africa,2021,97.0
+ZMB,Zambia,Africa,2002,69.0
+ZMB,Zambia,Africa,2010,89.0
+ZMB,Zambia,Africa,2018,77.68875
+ZWE,Zimbabwe,Africa,2019,92.51284

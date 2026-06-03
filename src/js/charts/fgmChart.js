@@ -1,7 +1,7 @@
 /* ============================================================
    Grafico 4-3 (Atto III) — FGM: barchart + choropleth Africa
    ============================================================ */
-async function renderMortalityChart(selector, isFullscreen = false) {
+async function renderFgmChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
 
@@ -46,7 +46,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   const [rowsRaw, atlas, countryCodeRaw] = await Promise.all([
     d3.csv('datasets/processed/fgm_quintile_prevalence.csv', d3.autoType),
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
-    d3.csv('datasets/raw/country-code.csv', d3.autoType),
+    d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType),
   ]);
 
   if (!Array.isArray(rowsRaw) || !rowsRaw.length) {

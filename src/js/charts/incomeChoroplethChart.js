@@ -2,7 +2,7 @@
    Grafico 1-1 (Atto I) — Choropleth reddito + trend continenti
    Metrica fissa: income. Player esterno con timeline.
    ============================================================ */
-async function renderChoroplethMulti(selector, isFullscreen = false) {
+async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';

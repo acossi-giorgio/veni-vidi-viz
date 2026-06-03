@@ -2,7 +2,7 @@
    Grafico 3-1 (Atto II) — Multi-line: spesa pubblica istruzione
    Vista 1: % PIL  |  Vista 2: $ assoluto (% × PIL × pop)
    ============================================================ */
-async function renderEduTreemap(selector, isFullscreen = false) {
+async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';
@@ -23,7 +23,7 @@ async function renderEduTreemap(selector, isFullscreen = false) {
   const MAX_YEAR = 2022;
 
   const [spendRaw, incomeRaw, popRaw] = await Promise.all([
-    d3.csv('datasets/processed/edu_spending.csv', d3.autoType),
+    d3.csv('datasets/processed/education_spending.csv', d3.autoType),
     d3.csv('datasets/processed/income.csv', d3.autoType),
     d3.csv('datasets/processed/population.csv', d3.autoType),
   ]);

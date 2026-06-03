@@ -46,7 +46,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const AFRICA_CODES = new Set(ALL_AFRICA.map(d => d.code));
 
   const [raw, geoData] = await Promise.all([
-    d3.csv('datasets/processed/mpi.csv', d3.autoType),
+    d3.csv('datasets/processed/multidimensional_poverty_index.csv', d3.autoType),
     d3.json(WORLD_ATLAS_URL).catch(() => null),
   ]);
 

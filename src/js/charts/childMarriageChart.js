@@ -3,7 +3,7 @@
    Overview: waffle Africa 10×10 (by15 + by18) + pannello stats
    Drill-down: stacked bar per paese — toggle % / Assoluto
    ============================================================ */
-async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false) {
+async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = false) {
   const container = d3.select(selector);
   if (container.empty()) return;
   container.html('');
@@ -23,7 +23,7 @@ async function renderMarriageChart(selector = '#chart-4-2', isFullscreen = false
   );
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
-  const raw = await d3.csv('datasets/processed/child_marriage_cmmm.csv', d3.autoType);
+  const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
 
   const AFRICA = getContinentColor('Africa', '#c96a3d');
   const EUROPE = getContinentColor('Europe', '#5169b2');
