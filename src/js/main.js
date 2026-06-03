@@ -977,7 +977,6 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
   if (chartId === 'chart-1-2') {
     if (state === 0 && el._gapminderReset) el._gapminderReset();
     else if (state === 1 && el._gapminderAnimate) el._gapminderAnimate();
-    else if (state === 2 && el._gapminderSwitchY) el._gapminderSwitchY('mpi');
   }
 
   if (chartId === 'chart-2-1') {

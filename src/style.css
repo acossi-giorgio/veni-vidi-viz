@@ -98,9 +98,9 @@ img { max-width: 100%; height: auto; }
 button, input, select { font: inherit; }
 
 /* ── TYPOGRAPHY ──────────────────────────────────────────── */
-h1 { font-size: clamp(2rem, 3.5vw, 3.2rem);   line-height: 1.1; font-weight: 700; }
+h1 { font-size: clamp(2.35rem, 4.2vw, 4rem);   line-height: 1.1; font-weight: 700; }
 h2 { font-size: clamp(1.4rem, 2.2vw, 2.2rem); line-height: 1.2; font-weight: 700; }
-h3 { font-size: clamp(1rem, 1.2vw, 1.2rem);   line-height: 1.3; font-weight: 600; }
+h3 { font-size: clamp(1rem, 1.15vw, 1.12rem);   line-height: 1.7; font-weight: 600; }
 p  { font-size: clamp(0.88rem, 0.95vw, 1rem);  line-height: 1.8;  color: var(--ink-muted); }
 a  { color: var(--accent-1); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -192,25 +192,27 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .hero-copy {
   position: relative;
   z-index: 2;
-  max-width: 680px;
+  max-width: 900px;
   margin-left: max(0px, calc((100% - var(--page-max)) / 2));
   padding: 0;
 }
 .hero-title {
   color: #fffdf8;
-  margin-bottom: 1.25rem;
+  margin-bottom: 2rem;
   text-shadow: 0 4px 18px rgba(17, 15, 12, 0.55);
 }
 .hero-subtitle {
-  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  max-width: 750px;
   color: rgba(255, 253, 248, 0.88);
   font-weight: 400;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   line-height: 1.5;
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.5);
 }
 .hero-body {
-  max-width: 660px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  max-width: 750px;
   margin-bottom: 1.25rem;
   color: rgba(255, 253, 248, 0.86);
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.55);
@@ -320,12 +322,12 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 .act-label {
   display: inline-block;
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-bottom: 0.6rem;
-  opacity: 0.75;
+  margin-bottom: 1.5rem;
+  opacity: 0.80;
 }
 .act-1 .act-label,
 .act-2 .act-label,
@@ -340,7 +342,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 
 .act-desc {
   max-width: 680px;
-  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
   line-height: 1.7;
   color: rgba(255, 253, 248, 0.9);
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.65);
