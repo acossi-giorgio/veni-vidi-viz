@@ -114,7 +114,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const incomeStats  = buildContStats(incomeRaw);
 
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
-  let currentYear  = incomeYears[incomeYears.length - 1];
+  let currentYear  = incomeYears[0];
   let selectedCode = null;
   let viewType     = 'map';
   let playing      = false;
@@ -793,7 +793,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   container._choroplethReset = () => {
     stopPlay();
     selectedCode = null;
-    currentYear  = incomeYears[incomeYears.length - 1];
+    currentYear  = incomeYears[0];
     viewType     = 'map';
     paths.attr('opacity', 1).attr('stroke-width', 0.35);
     panel.style('display', 'none');
