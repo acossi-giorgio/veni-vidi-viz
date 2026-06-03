@@ -1,5 +1,5 @@
 /* ============================================================
-   Grafico 4-3 (Atto III) — FGM: spider + choropleth Africa
+   Grafico 4-3 (Atto III) — FGM: barchart + choropleth Africa
    ============================================================ */
 async function renderMortalityChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -23,7 +23,11 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const RISK_STOPS = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826']);
   const HIGHLIGHT = shadeColor(UI_ACTIVE, 0.2);
-  const MAX_SPIDER_VALUE = 25;
+  const MAX_BAR_VALUE = 100;
+  const OVERVIEW_MAX_BAR_VALUE = 25;
+  const riskColor = d3.scaleThreshold()
+    .domain([20, 40, 60, 80])
+    .range(RISK_STOPS);
 
   const quintiles = [
     { key: 'poorest', label: 'Poorest' },
@@ -32,7 +36,13 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     { key: 'fourth', label: 'Fourth' },
     { key: 'richest', label: 'Richest' },
   ];
-
+  const QUINTILE_COLORS = new Map([
+    ['poorest', '#b44a3f'],
+    ['second', '#d48a2f'],
+    ['middle', '#6d9f46'],
+    ['fourth', '#4a8f88'],
+    ['richest', '#6c74b7'],
+  ]);
   const [rowsRaw, atlas, countryCodeRaw] = await Promise.all([
     d3.csv('datasets/processed/fgm_quintile_prevalence.csv', d3.autoType),
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
@@ -80,7 +90,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
   const africaCodes = new Set(countryMeta.filter((d) => d.continent === 'Africa').map((d) => d.code));
   const codeToName = new Map(countryMeta.map((d) => [d.code, d.country]));
 
-  let mode = 'spider';
+  let mode = 'bar';
   let selectedCode = maxMeanRow.code;
 
   const tip = d3.select('body').selectAll('.fgm-tip').data([0]).join('div')
@@ -118,6 +128,14 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     tip.style('display', 'none');
   }
 
+  function getRiskColor(value) {
+    return riskColor(Number.isFinite(value) ? value : 0);
+  }
+
+  function getQuintileColor(key) {
+    return QUINTILE_COLORS.get(key) || HIGHLIGHT;
+  }
+
   function addModeSelector(parent) {
     const tabs = parent.append('div')
       .style('position', 'absolute')
@@ -133,7 +151,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       .style('z-index', '20');
 
     [
-      ['Spider medio', 'spider'],
+      ['Bar chart medio', 'bar'],
       ['Mappa', 'map'],
     ].forEach(([label, value]) => {
       const active = mode === value;
@@ -155,32 +173,30 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     });
   }
 
-  function drawRadar(target, values, options = {}) {
+  function drawBarChart(target, values, options = {}) {
     target.innerHTML = '';
     const rect = target.getBoundingClientRect();
-    const W = Math.max(280, rect.width || 420);
+    const W = Math.max(300, rect.width || 420);
     const H = Math.max(260, rect.height || 320);
-    const compactRadar = W < 380 || H < 300;
-    const isOverview = !options.compareValues;
-    const maxValue = options.maxValue || MAX_SPIDER_VALUE;
-    const levels = 5;
-    const labelPad = compactRadar ? 18 : (isOverview ? 22 : 24);
-    const sidePad = compactRadar ? 44 : (isOverview ? 70 : 54);
-    const topPad = compactRadar ? 34 : (isOverview ? 46 : 40);
-    const bottomPad = compactRadar ? 40 : (isOverview ? 62 : 46);
-    const innerW = Math.max(140, W - sidePad * 2);
-    const innerH = Math.max(140, H - topPad - bottomPad);
-    const radius = Math.max(
-      isOverview ? 132 : 86,
-      Math.min(
-        innerW / 2,
-        innerH / 2,
-        Math.min(W, H) * (compactRadar ? 0.37 : (isOverview ? 0.5 : 0.43))
-      )
-    );
-    const cx = W * 0.5;
-    const cy = topPad + innerH / 2;
-    const angleStep = (Math.PI * 2) / quintiles.length;
+    const isGrouped = Array.isArray(options.series) && options.series.length > 1;
+    const series = isGrouped
+      ? options.series
+      : [{
+          key: 'value',
+          label: options.series?.[0]?.label || 'Media africana',
+          color: HIGHLIGHT,
+          variant: 'primary',
+          values,
+        }];
+    const maxValue = options.maxValue || MAX_BAR_VALUE;
+    const margin = {
+      top: 26,
+      right: isGrouped ? 20 : 12,
+      bottom: 52,
+      left: 54,
+    };
+    const innerW = Math.max(160, W - margin.left - margin.right);
+    const innerH = Math.max(140, H - margin.top - margin.bottom);
 
     const svg = d3.select(target).append('svg')
       .attr('width', W)
@@ -189,105 +205,112 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       .style('height', '100%')
       .style('display', 'block');
 
-    const r = d3.scaleLinear().domain([0, maxValue]).range([0, radius]);
-    const point = (q, i, source) => {
-      const angle = angleStep * i;
-      const value = Math.max(0, Math.min(maxValue, Number(source[q.key] || 0)));
-      return {
-        key: q.key,
-        label: q.label,
-        value: Number(source[q.key] || 0),
-        x: cx + Math.sin(angle) * r(value),
-        y: cy - Math.cos(angle) * r(value),
-        angle,
-      };
-    };
-    const pointsFor = (source) => quintiles.map((q, i) => point(q, i, source));
-    const line = d3.line()
-      .x((d) => d.x)
-      .y((d) => d.y)
-      .curve(d3.curveLinearClosed);
+    const chartG = svg.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const ringColor = colorToRgba(CHART_GRID, 0.95, CHART_GRID);
-    for (let i = 1; i <= levels; i += 1) {
-      svg.append('circle')
-        .attr('cx', cx)
-        .attr('cy', cy)
-        .attr('r', (radius / levels) * i)
-        .attr('fill', 'none')
-        .attr('stroke', ringColor)
-        .attr('stroke-width', 1);
-    }
+    const x0 = d3.scaleBand()
+      .domain(quintiles.map((q) => q.label))
+      .range([0, innerW])
+      .padding(isGrouped ? 0.06 : 0.08);
 
-    if (isOverview) {
-      [5, 10, 15, 20, 25].forEach((v) => {
-        svg.append('text')
-          .attr('x', cx + 5)
-          .attr('y', cy - r(v) + 11)
-          .attr('font-size', compactRadar ? 9 : 10)
-          .attr('fill', CHART_AXIS)
-          .text(`${v}%`);
-      });
-    }
+    const x1 = d3.scaleBand()
+      .domain(series.map((s) => s.label))
+      .range([0, x0.bandwidth()])
+      .padding(0.02);
 
-    quintiles.forEach((q, i) => {
-      const angle = angleStep * i;
-      const x2 = cx + Math.sin(angle) * radius;
-      const y2 = cy - Math.cos(angle) * radius;
-      svg.append('line')
-        .attr('x1', cx)
-        .attr('y1', cy)
-        .attr('x2', x2)
-        .attr('y2', y2)
-        .attr('stroke', CHART_GRID)
-        .attr('stroke-width', 1);
+    const barWidthRatio = isGrouped ? 0.82 : 0.7;
 
-      const lx = cx + Math.sin(angle) * (radius + labelPad);
-      const ly = cy - Math.cos(angle) * (radius + labelPad);
-      svg.append('text')
-        .attr('x', lx)
-        .attr('y', ly)
-        .attr('text-anchor', Math.abs(Math.sin(angle)) < 0.25 ? 'middle' : (Math.sin(angle) > 0 ? 'start' : 'end'))
-        .attr('dominant-baseline', Math.cos(angle) > 0.55 ? 'auto' : (Math.cos(angle) < -0.55 ? 'hanging' : 'middle'))
-        .attr('font-size', compactRadar ? 10 : 11)
-        .attr('font-weight', '700')
+    const y = d3.scaleLinear()
+      .domain([0, maxValue])
+      .nice()
+      .range([innerH, 0]);
+
+    chartG.append('g')
+      .call(d3.axisLeft(y).ticks(Math.min(6, Math.max(4, Math.floor(innerH / 50)))).tickFormat((d) => `${d}%`))
+      .call((g) => g.select('.domain').remove())
+      .call((g) => g.selectAll('line').attr('stroke', CHART_GRID))
+      .call((g) => g.selectAll('text').attr('fill', CHART_AXIS).attr('font-size', 10));
+
+    chartG.append('g')
+      .attr('transform', `translate(0,${innerH})`)
+      .call(d3.axisBottom(x0))
+      .call((g) => g.select('.domain').attr('stroke', CHART_GRID))
+      .call((g) => g.selectAll('line').remove())
+      .call((g) => g.selectAll('text')
         .attr('fill', CHART_LABEL)
-        .text(q.label);
-    });
+        .attr('font-size', 10)
+        .attr('font-weight', '700'));
 
-    if (options.compareValues) {
-      svg.append('path')
-        .datum(pointsFor(options.compareValues))
-        .attr('d', line)
-        .attr('fill', colorToRgba(CHART_LABEL, 0.06, CHART_LABEL))
-        .attr('stroke', colorToRgba(CHART_LABEL, 0.7, CHART_LABEL))
-        .attr('stroke-width', 1.4)
-        .attr('stroke-dasharray', '4 3');
-    }
+    chartG.append('g')
+      .call(d3.axisLeft(y).ticks(Math.min(6, Math.max(4, Math.floor(innerH / 50)))))
+      .call((g) => g.select('.domain').remove())
+      .call((g) => g.selectAll('.tick text').remove())
+      .call((g) => g.selectAll('.tick line').attr('x2', innerW).attr('stroke', colorToRgba(CHART_GRID, 0.9, CHART_GRID)));
 
-    const pts = pointsFor(values);
-    svg.append('path')
-      .datum(pts)
-      .attr('d', line)
-      .attr('fill', colorToRgba(UI_ACTIVE, 0.22, UI_ACTIVE))
-      .attr('stroke', HIGHLIGHT)
-      .attr('stroke-width', 2.4)
-      .attr('stroke-linejoin', 'round');
+    const groupedRows = quintiles.map((q) => ({
+      quintile: q.label,
+      quintileKey: q.key,
+      values: series.map((s) => ({
+        series: s.label,
+        variant: s.variant || 'primary',
+        value: Number(s.values?.[q.key] || 0),
+      })),
+    }));
 
-    svg.selectAll('.radar-point')
-      .data(pts)
-      .join('circle')
-      .attr('class', 'radar-point')
-      .attr('cx', (d) => d.x)
-      .attr('cy', (d) => d.y)
-      .attr('r', 4)
-      .attr('fill', HIGHLIGHT)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.1)
+    const groups = chartG.selectAll('.fgm-bar-group')
+      .data(groupedRows)
+      .join('g')
+      .attr('class', 'fgm-bar-group')
+      .attr('transform', (d) => `translate(${x0(d.quintile)},0)`);
+
+    groups.selectAll('rect')
+      .data((d) => d.values.map((entry) => ({ ...entry, quintile: d.quintile, quintileKey: d.quintileKey })))
+      .join('rect')
+      .attr('x', (d) => x1(d.series) + ((x1.bandwidth() * (1 - barWidthRatio)) / 2))
+      .attr('y', (d) => y(Math.max(0, d.value)))
+      .attr('width', x1.bandwidth() * barWidthRatio)
+      .attr('height', (d) => Math.max(0, innerH - y(Math.max(0, d.value))))
+      .attr('rx', 4)
+      .attr('fill', (d) => {
+        const base = getQuintileColor(d.quintileKey);
+        if (!isGrouped) return base;
+        return d.variant === 'reference' ? '#fffdf9' : base;
+      })
+      .attr('stroke', (d) => {
+        if (!isGrouped || d.variant !== 'reference') return 'none';
+        return getQuintileColor(d.quintileKey);
+      })
+      .attr('stroke-width', (d) => (isGrouped && d.variant === 'reference' ? 2 : 0))
+      .attr('stroke-dasharray', (d) => (isGrouped && d.variant === 'reference' ? '6 4' : null))
       .on('mousemove', (event, d) => {
-        showTooltip(event, `<strong>${d.label}</strong><br>${d.value.toFixed(1)}%`);
+        showTooltip(event, `<strong>${d.quintile}</strong><br>${d.series}: ${d.value.toFixed(1)}%`);
       })
       .on('mouseleave', hideTooltip);
+
+    if (isGrouped) {
+      const legend = svg.append('g')
+        .attr('transform', `translate(${margin.left},8)`);
+
+      series.forEach((s, i) => {
+        const row = legend.append('g').attr('transform', `translate(${i * 130},0)`);
+        row.append('rect')
+          .attr('width', 12)
+          .attr('height', 12)
+          .attr('rx', 3)
+          .attr('fill', s.variant === 'reference' ? '#fffdf9' : UI_ACTIVE)
+          .attr('stroke', s.variant === 'reference' ? UI_ACTIVE : 'none')
+          .attr('stroke-width', s.variant === 'reference' ? 2 : 0)
+          .attr('stroke-dasharray', s.variant === 'reference' ? '6 4' : null);
+        row.append('text')
+          .attr('x', 18)
+          .attr('y', 6)
+          .attr('dominant-baseline', 'middle')
+          .attr('font-size', 10)
+          .attr('font-weight', '600')
+          .attr('fill', CHART_LABEL)
+          .text(s.variant === 'reference' ? `${s.label}` : `${s.label}`);
+      });
+    }
   }
 
   function drawOverview() {
@@ -295,22 +318,30 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     stage.style('background', '#fffdf9');
     addModeSelector(stage);
 
-    const radarWrap = stage.append('div')
+    const chartWrap = stage.append('div')
       .style('position', 'absolute')
       .style('inset', '72px 12px 14px')
       .style('min-height', '0')
       .node();
 
-    drawRadar(radarWrap, globalMean);
+    drawBarChart(chartWrap, globalMean, {
+      series: [{
+        label: 'Media africana',
+        color: HIGHLIGHT,
+        variant: 'primary',
+        values: globalMean,
+      }],
+      maxValue: OVERVIEW_MAX_BAR_VALUE,
+    });
   }
 
   function drawLegendCard(svg, x, y, color, noDataPattern) {
     const rowsLegend = [
-      { value: 80, color: color(80) },
-      { value: 60, color: color(60) },
-      { value: 40, color: color(40) },
-      { value: 20, color: color(20) },
-      { value: 0, color: color(0) },
+      { label: '80%+', color: color(80) },
+      { label: '60-79%', color: color(60) },
+      { label: '40-59%', color: color(40) },
+      { label: '20-39%', color: color(20) },
+      { label: '0-19%', color: color(0) },
     ];
     const sw = 15;
     const sh = 15;
@@ -360,7 +391,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
         .attr('font-size', 10)
         .attr('font-weight', '500')
         .attr('fill', CHART_LABEL)
-        .text(`${row.value}%`);
+        .text(row.label);
     });
 
     const ndY = rowsTop + rowsLegend.length * rowH + 11;
@@ -381,18 +412,6 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       .attr('font-weight', '500')
       .attr('fill', CHART_AXIS)
       .text('No data');
-  }
-
-  function getPopupRadarMax(localValues, compareValues) {
-    const peak = d3.max(
-      [localValues, compareValues]
-        .flatMap((source) => quintiles.map((q) => Number(source?.[q.key])))
-        .filter((value) => Number.isFinite(value) && value >= 0),
-    ) || MAX_SPIDER_VALUE;
-
-    const padded = peak <= 1 ? peak + 1 : peak * 1.08;
-    const step = padded <= 5 ? 1 : padded <= 10 ? 2 : padded <= 25 ? 5 : padded <= 50 ? 10 : 20;
-    return Math.max(step, Math.ceil(padded / step) * step);
   }
 
   function drawCountryPopup(parent, row) {
@@ -447,14 +466,17 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       .style('color', CHART_AXIS)
       .text(`Media quintili: ${row.quintile_mean.toFixed(1)}% | Anno: ${row.reference_year || 'n/d'}`);
 
-    const radarWrap = popup.append('div')
+    const chartWrap = popup.append('div')
       .style('min-height', '0')
       .style('padding', '0 10px 12px')
       .node();
 
-    drawRadar(radarWrap, row, {
-      compareValues: globalMean,
-      maxValue: getPopupRadarMax(row, globalMean),
+    drawBarChart(chartWrap, row, {
+      series: [
+        { label: 'Paese selezionato', color: HIGHLIGHT, variant: 'primary', values: row },
+        { label: 'Media africana', color: colorToRgba(CHART_LABEL, 0.7, CHART_LABEL), variant: 'reference', values: globalMean },
+      ],
+      maxValue: MAX_BAR_VALUE,
     });
   }
 
@@ -486,10 +508,6 @@ async function renderMortalityChart(selector, isFullscreen = false) {
     const projection = d3.geoNaturalEarth1()
       .fitExtent([[4, 8], [width - 4, height - 8]], { type: 'FeatureCollection', features: countries });
     const path = d3.geoPath(projection);
-    const color = d3.scaleThreshold()
-      .domain([20, 40, 60, 80])
-      .range(RISK_STOPS);
-
     const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs');
     const clipId = `fgm-map-clip-${isFullscreen ? 'fs' : 'ed'}`;
     defs.select(`#${clipId}`).remove();
@@ -518,7 +536,7 @@ async function renderMortalityChart(selector, isFullscreen = false) {
         const code = numToCode.get(Number(d.id)) || '';
         if (!africaCodes.has(code)) return CHART_BASE;
         const row = byCode.get(code);
-        return row ? color(row.quintile_mean) : noDataPattern;
+        return row ? getRiskColor(row.quintile_mean) : noDataPattern;
       })
       .attr('pointer-events', (d) => {
         const code = numToCode.get(Number(d.id)) || '';
@@ -578,18 +596,18 @@ async function renderMortalityChart(selector, isFullscreen = false) {
       .call(zoom.transform, initialTransform)
       .on('click', () => stage.selectAll('.fgm-country-popup').remove());
 
-    drawLegendCard(svg, width - 158, height - 204, color, noDataPattern);
+    drawLegendCard(svg, width - 158, height - 204, getRiskColor, noDataPattern);
   }
 
   function render() {
-    if (mode === 'spider') drawOverview();
+    if (mode === 'bar') drawOverview();
     else drawMapMode();
   }
 
   render();
 
   container._mortalityScatter = () => {
-    mode = 'spider';
+    mode = 'bar';
     render();
   };
   container._mortalityHighlightMarriage = () => {

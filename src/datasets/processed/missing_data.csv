@@ -384,20 +384,6 @@ child_marriage_cmmm.csv,no_data,SWE,Sweden
 child_marriage_cmmm.csv,no_data,CHE,Switzerland
 child_marriage_cmmm.csv,no_data,ESH,Western Sahara
 child_marriage_cmmm.csv,no_data,ALA,Åland Islands
-child_mortality.csv,no_data,FRO,Faroe Islands
-child_mortality.csv,no_data,GIB,Gibraltar
-child_mortality.csv,no_data,GGY,Guernsey
-child_mortality.csv,no_data,VAT,Holy See
-child_mortality.csv,no_data,IMN,Isle of Man
-child_mortality.csv,no_data,JEY,Jersey
-child_mortality.csv,no_data,XKX,Kosovo
-child_mortality.csv,no_data,LIE,Liechtenstein
-child_mortality.csv,no_data,MYT,Mayotte
-child_mortality.csv,no_data,REU,Reunion
-child_mortality.csv,no_data,SHN,Saint Helena
-child_mortality.csv,no_data,SJM,Svalbard & Jan Mayen Islands
-child_mortality.csv,no_data,ESH,Western Sahara
-child_mortality.csv,no_data,ALA,Åland Islands
 edu_spending.csv,no_data,GNQ,Equatorial Guinea
 edu_spending.csv,no_data,FRO,Faroe Islands
 edu_spending.csv,no_data,GIB,Gibraltar
@@ -524,20 +510,6 @@ literacy.csv,no_data,CHE,Switzerland
 literacy.csv,no_data,GBR,United Kingdom
 literacy.csv,no_data,ESH,Western Sahara
 literacy.csv,no_data,ALA,Åland Islands
-maternal_mortality.csv,no_data,FRO,Faroe Islands
-maternal_mortality.csv,no_data,GIB,Gibraltar
-maternal_mortality.csv,no_data,GGY,Guernsey
-maternal_mortality.csv,no_data,VAT,Holy See
-maternal_mortality.csv,no_data,IMN,Isle of Man
-maternal_mortality.csv,no_data,JEY,Jersey
-maternal_mortality.csv,no_data,XKX,Kosovo
-maternal_mortality.csv,no_data,LIE,Liechtenstein
-maternal_mortality.csv,no_data,MYT,Mayotte
-maternal_mortality.csv,no_data,REU,Reunion
-maternal_mortality.csv,no_data,SHN,Saint Helena
-maternal_mortality.csv,no_data,SJM,Svalbard & Jan Mayen Islands
-maternal_mortality.csv,no_data,ESH,Western Sahara
-maternal_mortality.csv,no_data,ALA,Åland Islands
 migration.csv,no_data,CPV,Cape Verde
 migration.csv,no_data,COM,Comoros
 migration.csv,no_data,MUS,Mauritius

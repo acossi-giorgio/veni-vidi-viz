@@ -808,13 +808,13 @@ const CHART_HELP_BUILDERS = {
     return {
       description: isMap
         ? 'La vista attuale mostra una mappa coropletica dell\'Africa con intensita colore basata sulla media dei quintili FGM per paese.'
-        : 'La vista attuale mostra uno spider con la media africana per quintile di ricchezza sul fenomeno FGM tra ragazze 0-14 anni.',
+        : 'La vista attuale mostra un bar chart con la media africana per quintile di ricchezza sul fenomeno FGM tra ragazze 0-14 anni.',
       reading: isMap
-        ? 'La mappa non usa assi cartesiani: il colore sintetizza la media dei cinque quintili (Poorest->Richest). Cliccando un paese, il popup mostra lo spider locale con la distribuzione interna per quintile.'
-        : 'Lo spider ha cinque assi (Poorest, Second, Middle, Fourth, Richest). Piu lontano dal centro significa prevalenza percentuale piu alta in quel quintile.',
+        ? 'La mappa non usa assi cartesiani: il colore sintetizza la media dei cinque quintili (Poorest->Richest). Cliccando un paese, il popup mostra un grouped bar chart locale con confronto rispetto alla media africana.'
+        : 'Il bar chart mostra cinque barre (Poorest, Second, Middle, Fourth, Richest). Barre piu alte significano prevalenza percentuale piu alta in quel quintile.',
       interactions: isMap
-        ? `Clicca un paese per aggiornare lo spider locale. ${selected}Usa hover per leggere media e anno di riferimento.`
-        : 'Usa il toggle in alto per passare alla mappa. In entrambi i casi, hover sui punti dello spider per vedere i valori puntuali.',
+        ? `Clicca un paese per aggiornare il grouped bar chart locale. ${selected}Usa hover per leggere media e anno di riferimento.`
+        : 'Usa il toggle in alto per passare alla mappa. In entrambe le viste, hover sulle barre per vedere i valori puntuali.',
     };
   },
   'chart-5-1': ({ chart }) => {

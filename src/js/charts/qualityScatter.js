@@ -358,7 +358,7 @@ async function renderQualityScatter(selector, isFullscreen = false) {
 
     /* parity label */
     g.append('text').attr('x', iw + 5).attr('y', parY + 4)
-      .attr('font-size',compact ? 7.5 : 8.5).attr('fill',CHART_AXIS).text('1 (parità)');
+      .attr('font-size',compact ? 7.5 : 8.5).attr('fill',CHART_AXIS).text('');
 
     /* Y axis */
     g.append('g')

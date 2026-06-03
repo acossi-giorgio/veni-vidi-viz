@@ -369,8 +369,6 @@ def make_missing_data_registry():
         literacy = pd.read_csv(os.path.join(OUT, "literacy.csv"))
         child_labor = pd.read_csv(os.path.join(OUT, "child_labor.csv"))
         child_marriage = pd.read_csv(os.path.join(OUT, "child_marriage_cmmm.csv"))
-        maternal = pd.read_csv(os.path.join(OUT, "maternal_mortality.csv"))
-        child_mort = pd.read_csv(os.path.join(OUT, "child_mortality.csv"))
         migration = pd.read_csv(os.path.join(OUT, "migration.csv"))
         fgm = pd.read_csv(os.path.join(OUT, "fgm_quintile_prevalence.csv"))
 
@@ -431,15 +429,6 @@ def make_missing_data_registry():
         nd = _coverage_snapshot_no_data(cm, ae_codes)
         _append_missing_rows(rows, "child_marriage_cmmm.csv", "no_data", nd)
         _append_missing_rows(rows, "child_marriage_cmmm.csv", "incomplete", [])
-
-        # maternal_mortality.csv + child_mortality.csv
-        years_43 = list(range(2000, 2024))
-        nd, inc = _coverage_no_data_and_incomplete(maternal, ae_codes, years_43)
-        _append_missing_rows(rows, "maternal_mortality.csv", "no_data", nd)
-        _append_missing_rows(rows, "maternal_mortality.csv", "incomplete", inc)
-        nd, inc = _coverage_no_data_and_incomplete(child_mort, ae_codes, years_43)
-        _append_missing_rows(rows, "child_mortality.csv", "no_data", nd)
-        _append_missing_rows(rows, "child_mortality.csv", "incomplete", inc)
 
         # migration.csv
         nd, inc = _migration_origin_coverage(migration, AFRICA_TOPIC_CODES, [2000, 2005, 2010, 2015, 2020])
@@ -765,36 +754,6 @@ def make_gpi_secondary():
         report("gpi_secondary.csv", pd.DataFrame(), str(e))
 
 
-# ── child_mortality.csv ───────────────────────────────────────────────────────
-# value = Under-5 mortality rate (deaths per 1000 live births)
-# Fonte: Our World in Data / UN IGME + Gapminder
-def make_child_mortality():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "child_mortality_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("child_mortality.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("child_mortality.csv", pd.DataFrame(), str(e))
-
-
-# ── maternal_mortality.csv ────────────────────────────────────────────────────
-# value = Maternal mortality ratio (deaths per 100,000 live births)
-# Fonte: Our World in Data / WHO GHO
-def make_maternal_mortality():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "maternal_mortality_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("maternal_mortality.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("maternal_mortality.csv", pd.DataFrame(), str(e))
-
-
 # ── life_expectancy.csv ───────────────────────────────────────────────────────
 # value = Life expectancy at birth (years)
 # Fonte: Our World in Data / UN WPP
@@ -962,7 +921,8 @@ if __name__ == "__main__":
     for stale in ("bubble.csv", "trends.csv", "child_labor_trends.csv",
                   "child_marriage_trends.csv", "out_of_school.csv",
                   "missing_data_modal.csv", "missing_data_countries.csv",
-                  "migration_continent.csv", "migration_country.csv"):
+                  "migration_continent.csv", "migration_country.csv",
+                  "child_mortality.csv", "maternal_mortality.csv"):
         p = os.path.join(OUT, stale)
         if os.path.exists(p):
             os.remove(p)
@@ -983,8 +943,6 @@ if __name__ == "__main__":
     make_gini()
     make_gpi_secondary()
 
-    make_child_mortality()
-    make_maternal_mortality()
     make_remittances()
     make_migration()
     make_mpi()
