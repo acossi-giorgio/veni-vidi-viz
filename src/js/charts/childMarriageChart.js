@@ -21,6 +21,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     (containerNode.clientWidth  || window.innerWidth  * 0.85) < 620 ||
     (containerNode.clientHeight || window.innerHeight * 0.82) < 360
   );
+  const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches;
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
@@ -69,6 +70,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     let tx = e.pageX + 14, ty = e.pageY + 10;
     if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 14;
     if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 10;
+    tx = Math.max(8, Math.min(tx, window.innerWidth - r.width - 8));
+    ty = Math.max(8, Math.min(ty, window.innerHeight - r.height - 8));
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
   function hideTip() { tooltip.style('display', 'none'); }
@@ -100,6 +103,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
   /* ── OVERVIEW ───────────────────────────────────────────── */
   function drawOverview(W, H) {
+    const mobileFullscreen = isFullscreen && compact;
+    const scaledMobileOverview = mobileFullscreen;
+    const layoutW = scaledMobileOverview ? Math.max(640, W) : W;
+    const layoutH = scaledMobileOverview ? Math.max(380, Math.min(H, 440)) : H;
     const africa = raw.filter(d => d.continent === 'Africa' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
     const afN15  = d3.sum(africa, d => d.by15_n ?? 0);
     const afN18  = d3.sum(africa, d => d.by18_n ?? 0);
@@ -115,21 +122,61 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const eu15   = euNTot > 0 ? euN15 / euNTot * 100 : 0;
     const eu18   = euNTot > 0 ? euN18 / euNTot * 100 : 0;
 
-    const PAD  = compact ? { top: 12, bottom: 12, left: 16, right: 14 } : { top: 16, bottom: 16, left: 24, right: 20 };
-    const PW   = compact ? (veryCompact ? 80 : 92) : 102;
+    const africaRows = [
+      { label: 'Prima dei 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
+      { label: 'Prima dei 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
+    ];
+    const europeRows = [
+      { label: 'Prima dei 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_EU_BY15 },
+      { label: 'Prima dei 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_EU_BY18 },
+    ];
+
+    const PAD  = compact ? { top: 12, bottom: 12, left: 12, right: 12 } : { top: 16, bottom: 16, left: 24, right: 20 };
+    const PW   = compact ? (veryCompact ? 76 : 88) : 102;
     const PGAP = compact ? (veryCompact ? 8 : 12) : 14;
-    const WGAP = compact ? 14 : 24;
+    const WGAP = compact ? (scaledMobileOverview ? 10 : 14) : 24;
     const PP   = compact ? 7 : 8;
-    const avH  = H - PAD.top - PAD.bottom;
+    const avH  = layoutH - PAD.top - PAD.bottom;
 
     const TITLE_H = 34;
     const HINT_H = 20;
     const afGap = 2;
     const euGap = compact ? 1 : 2;
     const europeRatio = compact ? 0.46 : 0.5;
+
+    const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
+      .attr('viewBox', `0 0 ${layoutW} ${layoutH}`)
+      .attr('preserveAspectRatio', scaledMobileOverview ? 'xMidYMid meet' : 'none')
+      .style('display', 'block').style('font-family', 'inherit');
+
+    function drawPanelRows(rows, xLabel, xValue, startY) {
+      let y = startY;
+      rows.forEach(r => {
+        svg.append('circle').attr('cx', xLabel - 9).attr('cy', y + 2).attr('r', 4.5)
+          .attr('fill', r.color).attr('opacity', 0.88);
+        svg.append('text').attr('x', xLabel).attr('y', y + 6)
+          .attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS).text(r.label);
+        y += 16;
+        const pctY = y + 12;
+        const pctText = svg.append('text').attr('x', xValue).attr('y', pctY)
+          .attr('font-size', compact ? 15 : 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
+
+        const pctBox = pctText.node().getBBox();
+        svg.append('text')
+          .attr('x', xValue + pctBox.width + 4)
+          .attr('y', pctY)
+          .attr('font-size', compact ? 5.5 : 6)
+          .attr('font-weight', '500')
+          .attr('fill', CHART_AXIS)
+          .text(`≈ ${r.n}`);
+        y += 20;
+      });
+      return y;
+    }
+
     const panelX = PAD.left + 50;
     const rightZoneX = panelX + PW + PGAP;
-    const rightZoneW = W - rightZoneX - PAD.right;
+    const rightZoneW = layoutW - rightZoneX - PAD.right;
     const maxWaffleH = avH - TITLE_H - HINT_H;
 
     let afCS = Math.max(5, Math.floor((Math.min(maxWaffleH, rightZoneW / (1 + europeRatio)) - 9 * afGap) / 10));
@@ -145,14 +192,13 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     }
 
     const blockH = TITLE_H + afW + HINT_H;
-    const blockY = PAD.top + (avH - blockH) / 2;
+    const blockY = scaledMobileOverview
+      ? PAD.top + 6
+      : PAD.top + (avH - blockH) / 2;
     const afX = rightZoneX + Math.max(0, (rightZoneW - afW - WGAP - euW) / 2);
     const euX = afX + afW + WGAP;
     const afY = blockY + TITLE_H;
     const euY = afY + Math.max(0, (afW - euW) / 2);
-
-    const svg = vizDiv.append('svg').attr('width', W).attr('height', H)
-      .style('display', 'block').style('font-family', 'inherit');
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 14)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 12 : 14).attr('font-weight', '700').attr('fill', AFRICA)
@@ -206,40 +252,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('width', PW + PP * 2).attr('height', panelH + PP * 2)
       .attr('rx', 8).attr('fill', getCssToken('surface-raised', '#ffffff')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
 
-    function drawPanelRows(rows, xLabel, xValue, startY) {
-      let y = startY;
-      rows.forEach(r => {
-        svg.append('circle').attr('cx', xLabel - 9).attr('cy', y + 2).attr('r', 4.5)
-          .attr('fill', r.color).attr('opacity', 0.88);
-        svg.append('text').attr('x', xLabel).attr('y', y + 6)
-          .attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS).text(r.label);
-        y += 16;
-        const pctY = y + 12;
-        const pctText = svg.append('text').attr('x', xValue).attr('y', pctY)
-          .attr('font-size', compact ? 15 : 17).attr('font-weight', '700').attr('fill', r.color).text(r.pct);
-
-        const pctBox = pctText.node().getBBox();
-        svg.append('text')
-          .attr('x', xValue + pctBox.width + 4)
-          .attr('y', pctY)
-          .attr('font-size', compact ? 5.5 : 6)
-          .attr('font-weight', '500')
-          .attr('fill', CHART_AXIS)
-          .text(`≈ ${r.n}`);
-        y += 20;
-      });
-      return y;
-    }
-
-    const africaRows = [
-      { label: 'Prima dei 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
-      { label: 'Prima dei 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
-    ];
-    const europeRows = [
-      { label: 'Prima dei 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_EU_BY15 },
-      { label: 'Prima dei 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_EU_BY18 },
-    ];
-
     const panelLeft = px0;
     const panelInnerTop = py0 + 2;
 
@@ -261,6 +273,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
   /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
   function drawDrillDown(W, H) {
+    const mobileFullscreen = isFullscreen && compact;
     const data = raw
       .filter(d => d.continent === selectedContinent && d.by18_pct != null)
       .sort((a, b) => b.by18_pct - a.by18_pct);
@@ -282,21 +295,32 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     // Reserve a dedicated header lane for controls so they never overlap bars/axes
     const CONTROL_LANE_H = compact ? 34 : 38;
-    const PAD    = compact
-      ? { top: 40 + CONTROL_LANE_H, bottom: 60, left: 34, right: 6 }
-      : { top: 44 + CONTROL_LANE_H, bottom: 68, left: 42, right: 8 };
-    const chartH = H - PAD.top - PAD.bottom;
-    const BAR_G  = 2;
-    const availW = W - PAD.left - PAD.right;
-    const BAR_W  = Math.max(10, Math.min(28, (availW - BAR_G * (data.length - 1)) / data.length));
+    const frameW = W;
+    const frameH = mobileFullscreen
+      ? Math.max(360, Math.min(H - 10, Math.round(H * 0.74)))
+      : H;
+    const frameX = 0;
+    const frameY = mobileFullscreen ? 8 : 0;
+    const PAD    = mobileFullscreen
+      ? { top: 28 + CONTROL_LANE_H, bottom: 68, left: 36, right: 10 }
+      : compact
+        ? { top: 40 + CONTROL_LANE_H, bottom: 60, left: 34, right: 6 }
+        : { top: 44 + CONTROL_LANE_H, bottom: 68, left: 42, right: 8 };
+    const chartH = frameH - PAD.top - PAD.bottom;
+    const BAR_G  = mobileFullscreen ? 1 : 2;
+    const availW = frameW - PAD.left - PAD.right;
+    const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(28, (availW - BAR_G * (data.length - 1)) / data.length));
     const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
     const totalW = PAD.left + barsW + PAD.right;
 
     /* center bars if they fit within the container */
-    const svgW        = Math.max(W, totalW);
+    const svgW        = Math.max(frameW, totalW);
     const barsOffsetX = svgW > totalW ? (svgW - totalW) / 2 : 0;
 
-    vizDiv.style('overflow-x', svgW > W ? 'auto' : 'hidden').style('overflow-y', 'hidden');
+    vizDiv
+      .style('overflow-x', svgW > W ? 'auto' : 'hidden')
+      .style('overflow-y', 'hidden')
+      .style('-webkit-overflow-scrolling', 'touch');
 
     const svg = vizDiv.append('svg')
       .attr('width', svgW).attr('height', H)
@@ -352,17 +376,20 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       ? v => v >= 1e6 ? (v / 1e6).toFixed(0) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(0) + 'K' : v
       : v => v + '%';
 
-    const axisX = barsOffsetX + PAD.left;
+    const axisX = frameX + barsOffsetX + PAD.left;
 
-    const yG = svg.append('g').attr('transform', `translate(${axisX},${PAD.top})`)
+    const yG = svg.append('g').attr('transform', `translate(${axisX},${frameY + PAD.top})`)
       .call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt).tickSize(-barsW));
     yG.select('.domain').remove();
     yG.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
     yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS);
 
-    svg.append('text').attr('x', axisX + barsW / 2).attr('y', PAD.top - 12)
-      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', titleColor)
-      .text(`${continentLabel} · ${data.length} paesi · ordinati per % prima dei 18`);
+    svg.append('text').attr('x', mobileFullscreen ? axisX : frameX + frameW / 2).attr('y', frameY + PAD.top - 12)
+      .attr('text-anchor', mobileFullscreen ? 'start' : 'middle')
+      .attr('font-size', mobileFullscreen ? 9 : 10).attr('fill', titleColor)
+      .text(mobileFullscreen
+        ? `${continentLabel} · ${data.length} paesi`
+        : `${continentLabel} · ${data.length} paesi · ordinati per % prima dei 18`);
 
     const BASE_OPACITY_BY15 = 0.9;
     const BASE_OPACITY_BY18 = 0.88;
@@ -432,7 +459,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         h18 = Math.max(0, yScale(0) - yScale((d.by18_pct ?? 0) - (d.by15_pct ?? 0)));
       }
 
-      const barBottom = PAD.top + chartH;
+      const barBottom = frameY + PAD.top + chartH;
       const bar18 = h18 > 0
         ? svg.append('rect').attr('x', bx).attr('y', prefersReducedMotion ? barBottom - h15 - h18 : barBottom)
           .attr('width', BAR_W).attr('height', prefersReducedMotion ? h18 : 0).attr('fill', colorBy18).attr('opacity', BASE_OPACITY_BY18)
@@ -462,12 +489,13 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         }
       }
 
-      const name = d.country.length > 10 ? d.country.slice(0, 9) + '…' : d.country;
+      const labelCut = mobileFullscreen ? 8 : 10;
+      const name = d.country.length > labelCut ? d.country.slice(0, labelCut - 1) + '…' : d.country;
       const label = svg.append('text')
-        .attr('transform', `translate(${bx + BAR_W / 2},${PAD.top + chartH + 4}) rotate(-55)`)
-        .attr('text-anchor', 'end').attr('font-size', compact ? 6.5 : 7.5).attr('fill', CHART_LABEL).text(name);
+        .attr('transform', `translate(${bx + BAR_W / 2},${frameY + PAD.top + chartH + 4}) rotate(-55)`)
+        .attr('text-anchor', 'end').attr('font-size', mobileFullscreen ? 6 : (compact ? 6.5 : 7.5)).attr('fill', CHART_LABEL).text(name);
 
-      const hit = svg.append('rect').attr('x', bx).attr('y', PAD.top).attr('width', BAR_W).attr('height', chartH)
+      const hit = svg.append('rect').attr('x', bx).attr('y', frameY + PAD.top).attr('width', BAR_W).attr('height', chartH)
         .attr('rx', 3)
         .attr('fill', 'transparent').style('cursor', 'default')
         .on('mousemove', e => {
@@ -486,6 +514,20 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
           hideTip();
         });
 
+      if (coarsePointer) {
+        hit.on('click', e => {
+          activateColumn(i);
+          showTip(e,
+            `<strong>${d.country}</strong> · ${d.year ?? '—'}<br>` +
+            (d.source ? `<em style="opacity:.6;font-size:9px">${d.source}</em><br>` : '') +
+            `<span style="color:${colorBy15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
+            (d.by15_n != null ? `  (${fmtN(d.by15_n)})` : '') + '<br>' +
+            `<span style="color:${colorBy18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
+            (d.by18_n != null ? `  (${fmtN(d.by18_n)})` : '')
+          );
+        });
+      }
+
       columns.push({ bar18, bar15, label, hit });
     });
 
@@ -495,27 +537,29 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     });
 
     /* ── Legenda top-right ──────────────────────────────────── */
-    const LEG_ITEMS = [
-      { color: colorBy15, label: 'Prima dei 15 anni' },
-      { color: colorBy18, label: 'Tra 15 e 18 anni'  },
-    ];
-    const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
-    const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
-    const LX = Math.min(svgW, axisX + barsW) - 4;
-    const LY = PAD.top + 4;
-    const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
-    legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)
-      .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
-    legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
-      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS).attr('letter-spacing', '0.08em')
-      .text('FASCIA');
-    LEG_ITEMS.forEach((item, i) => {
-      const ly = LP + LHH + 4 + i * LRH;
-      legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)
-        .attr('fill', item.color).attr('opacity', 0.85);
-      legG.append('text').attr('x', -LW + 23).attr('y', ly + 9)
-        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).text(item.label);
-    });
+    if (!mobileFullscreen) {
+      const LEG_ITEMS = [
+        { color: colorBy15, label: 'Prima dei 15 anni' },
+        { color: colorBy18, label: 'Tra 15 e 18 anni'  },
+      ];
+      const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
+      const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
+      const LX = Math.min(frameX + svgW, axisX + barsW) - 4;
+      const LY = frameY + PAD.top + 4;
+      const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
+      legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)
+        .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
+      legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
+        .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS).attr('letter-spacing', '0.08em')
+        .text('FASCIA');
+      LEG_ITEMS.forEach((item, i) => {
+        const ly = LP + LHH + 4 + i * LRH;
+        legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)
+          .attr('fill', item.color).attr('opacity', 0.85);
+        legG.append('text').attr('x', -LW + 23).attr('y', ly + 9)
+          .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).text(item.label);
+      });
+    }
   }
 
   /* ── Draw dispatcher ────────────────────────────────────── */

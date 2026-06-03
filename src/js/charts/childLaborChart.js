@@ -214,27 +214,49 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .text(`${n} paesi`);
     });
 
-    // ── Legend top-right — pill style ────────────────────────
-    const PAD = 8, HDR_H = 14, ROW_H = 16;
-    const pillW = compact ? 144 : 190;
-    const pillH = PAD + HDR_H + 4 + QUADRANT.length * ROW_H + PAD;
-    // Position below quadrant labels (y=14 label + y=25 count → start at 34)
-    const LEG_X = iw, LEG_Y = compact ? 28 : 34;
-    const legG = g.append('g').attr('transform', `translate(${LEG_X},${LEG_Y})`);
-    legG.append('rect').attr('x', -pillW).attr('y', 0)
-      .attr('width', pillW).attr('height', pillH)
-      .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
-    legG.append('text')
-      .attr('x', -pillW + 10).attr('y', PAD + 9)
-      .attr('font-size', 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
-      .attr('letter-spacing', '0.08em').style('pointer-events', 'none')
-      .text('SEZIONE');
-    QUADRANT.forEach((q, i) => {
-      const ly = PAD + HDR_H + 4 + i * ROW_H;
-      legG.append('circle').attr('cx', -pillW + 14).attr('cy', ly + 5).attr('r', 4)
-        .attr('fill', q.color).attr('opacity', 0.85);
-      legG.append('text').attr('x', -pillW + 23).attr('y', ly + 9)
-        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).style('pointer-events', 'none')
+    // ── Legend top-right — panel style ───────────────────────
+    d3.select(containerNode).selectAll('.section-legend').remove();
+    const LEG_W = compact ? 148 : 180;
+    const legDiv = d3.select(containerNode).append('div')
+      .attr('class', 'section-legend')
+      .style('position', 'absolute')
+      .style('top', compact ? '84px' : '92px')
+      .style('right', compact ? '8px' : '12px')
+      .style('width', LEG_W + 'px')
+      .style('background', '#ffffff')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`)
+      .style('border-radius', '8px')
+      .style('padding', compact ? '8px 10px' : '10px 12px')
+      .style('z-index', '15')
+      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
+
+    legDiv.append('div')
+      .style('font-size', compact ? '7px' : '8px')
+      .style('font-weight', '700')
+      .style('color', CHART_AXIS)
+      .style('letter-spacing', '0.07em')
+      .style('text-transform', 'uppercase')
+      .style('margin-bottom', compact ? '6px' : '8px')
+      .text('Sezione');
+
+    QUADRANT.forEach((q) => {
+      const row = legDiv.append('div')
+        .style('display', 'flex')
+        .style('align-items', 'center')
+        .style('gap', '8px')
+        .style('margin-bottom', compact ? '4px' : '5px');
+
+      row.append('div')
+        .style('width', compact ? '8px' : '9px')
+        .style('height', compact ? '8px' : '9px')
+        .style('border-radius', '50%')
+        .style('background', q.color)
+        .style('opacity', '0.82')
+        .style('flex-shrink', '0');
+
+      row.append('div')
+        .style('font-size', compact ? '8px' : '9px')
+        .style('color', CHART_LABEL)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 

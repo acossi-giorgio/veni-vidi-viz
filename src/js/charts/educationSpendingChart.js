@@ -20,6 +20,8 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Africa', 'Europe'];
+  const COVERAGE_THRESHOLD = 0.8;
+  const COVERAGE_ALERT = '#c84d3a';
   const MAX_YEAR = 2022;
 
   const [spendRaw, incomeRaw, popRaw] = await Promise.all([
@@ -134,7 +136,11 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
   svg.append('defs').append('clipPath').attr('id', `edu-clip-${isFullscreen ? 'fs' : 'sm'}`)
-    .append('rect').attr('width', iw).attr('height', ih);
+    .append('rect')
+    .attr('x', -10)
+    .attr('y', -10)
+    .attr('width', iw + 20)
+    .attr('height', ih + 20);
   const chartG = g.append('g').attr('clip-path', `url(#edu-clip-${isFullscreen ? 'fs' : 'sm'})`);
 
   // Axes groups (rebuilt on redraw)
@@ -162,6 +168,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
   let currentYS = null;
   let meanByContYear = new Map();
+  let coverageByYear = new Map();
 
   function fmtY(v) {
     if (viewMetric === 'pct') return `${v.toFixed(1)}%`;
@@ -211,6 +218,25 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     });
 
     yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
+    d3.select(container).selectAll('.coverage-legend').remove();
+
+    coverageByYear = new Map(allYears.map((year) => {
+      const stats = CONTS.map((cont) => {
+        const contSeries = cs.get(cont);
+        const totalCountries = contSeries?.countries?.size || 0;
+        const coveredCountries = new Set();
+        contSeries?.countries?.forEach((country, code) => {
+          if (country?.pts?.some(pt => pt.year === year)) coveredCountries.add(code);
+        });
+        const covered = coveredCountries.size;
+        const pct = totalCountries > 0 ? covered / totalCountries : 0;
+        return { cont, covered, totalCountries, pct };
+      });
+      return [year, {
+        year,
+        stats,
+      }];
+    }));
 
     // Rebuild crosshair lookup
     meanByContYear = new Map();
@@ -222,9 +248,68 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     });
 
     chartG.selectAll('.mean-line').remove();
+    chartG.selectAll('.mean-point').remove();
+    chartG.selectAll('.mean-point-alert').remove();
     g.selectAll('.end-label').remove();
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => currentYS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null);
+
+    const LEG_W = compact ? 120 : 140;
+    const legDiv = d3.select(container).append('div')
+      .attr('class', 'coverage-legend')
+      .style('position', 'absolute')
+      .style('top', compact ? '58px' : '64px')
+      .style('right', compact ? '8px' : '12px')
+      .style('width', LEG_W + 'px')
+      .style('background', 'rgba(255,255,255,0.94)')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`)
+      .style('border-radius', '8px')
+      .style('padding', compact ? '9px 10px' : '11px 12px')
+      .style('z-index', '15')
+      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
+
+    legDiv.append('div')
+      .style('font-size', compact ? '7px' : '8px')
+      .style('font-weight', '700')
+      .style('color', CHART_AXIS)
+      .style('letter-spacing', '0.07em')
+      .style('text-transform', 'uppercase')
+      .style('margin-bottom', compact ? '7px' : '9px')
+      .text('Copertura dati');
+
+    const legendRow1 = legDiv.append('div')
+      .style('display', 'flex')
+      .style('align-items', 'center')
+      .style('gap', '8px')
+      .style('margin-bottom', compact ? '5px' : '6px');
+
+
+    const legendRow2 = legDiv.append('div')
+      .style('display', 'flex')
+      .style('align-items', 'center')
+      .style('gap', '8px');
+
+    const iconWrap = legendRow2.append('div')
+      .style('position', 'relative')
+      .style('width', compact ? '14px' : '16px')
+      .style('height', compact ? '14px' : '16px')
+      .style('flex-shrink', '0');
+
+    iconWrap.append('div')
+      .style('position', 'absolute')
+      .style('left', '0')
+      .style('top', '0')
+      .style('width', compact ? '14px' : '16px')
+      .style('height', compact ? '14px' : '16px')
+      .style('border-radius', '50%')
+      .style('border', `1.6px dashed ${COVERAGE_ALERT}`)
+      .style('box-sizing', 'border-box');
+
+    legendRow2.append('div')
+      .style('font-size', compact ? '8px' : '9px')
+      .style('color', UI_MUTED_INK)
+      .style('line-height', '1.15')
+      .text('< 80%');
 
     CONTS.forEach(cont => {
       const col = CONT_COLOR[cont];
@@ -235,9 +320,53 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         .attr('fill', 'none').attr('stroke', col).attr('stroke-width', 2.5).attr('opacity', 0.9)
         .attr('d', lineFn);
 
-      const len = meanPath.node().getTotalLength();
-      meanPath.attr('stroke-dasharray', len).attr('stroke-dashoffset', len)
-        .transition().duration(1200).ease(d3.easeCubicInOut).attr('stroke-dashoffset', 0);
+      meanPath.attr('stroke-linecap', 'round');
+      const pathLength = meanPath.node()?.getTotalLength?.() || 0;
+      if (pathLength > 0) {
+        meanPath
+          .attr('stroke-dasharray', `${pathLength} ${pathLength}`)
+          .attr('stroke-dashoffset', pathLength)
+          .transition()
+          .duration(900)
+          .ease(d3.easeCubicOut)
+          .attr('stroke-dashoffset', 0);
+      }
+
+      chartG.selectAll(`.mean-point-${cont}`)
+        .data(s.mean.filter(pt => pt.mean != null))
+        .join('circle')
+        .attr('class', `mean-point mean-point-${cont}`)
+        .attr('cx', d => xS(d.year))
+        .attr('cy', d => currentYS(d.mean))
+        .attr('r', compact ? 3.2 : 3.8)
+        .attr('fill', col)
+        .attr('stroke', '#fffdf8')
+        .attr('stroke-width', 1.2)
+        .attr('opacity', 0)
+        .transition()
+        .delay(420)
+        .duration(320)
+        .attr('opacity', 0.98);
+
+      chartG.selectAll(`.mean-point-alert-${cont}`)
+        .data(s.mean.filter(d => {
+          const pct = coverageByYear.get(d.year)?.stats.find(stat => stat.cont === cont)?.pct || 0;
+          return d.mean != null && pct < COVERAGE_THRESHOLD;
+        }))
+        .join('circle')
+        .attr('class', `mean-point-alert mean-point-alert-${cont}`)
+        .attr('cx', d => xS(d.year))
+        .attr('cy', d => currentYS(d.mean))
+        .attr('r', compact ? 5.6 : 6.6)
+        .attr('fill', 'none')
+        .attr('stroke', COVERAGE_ALERT)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', compact ? '2.2,1.6' : '2.6,1.8')
+        .attr('opacity', 0)
+        .transition()
+        .delay(520)
+        .duration(320)
+        .attr('opacity', 0.95);
 
       const last = s.mean[s.mean.length - 1];
       if (last) {
@@ -275,6 +404,13 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         const col = CONT_COLOR[cont];
         html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? fmtY(v) : 'N/D'}`;
       });
+      const coverage = coverageByYear.get(nearYear);
+      if (coverage?.stats?.length) {
+        html += '<br><span style="color:#d6cfc7">Copertura dati</span>';
+        coverage.stats.forEach(({ cont, pct, covered, totalCountries }) => {
+          html += `<br>${cont}: ${Math.round(pct * 100)}% (${covered}/${totalCountries})`;
+        });
+      }
       tipEl.innerHTML = html;
       tipEl.style.display = 'block';
       let tx = event.clientX + 14, ty = event.clientY - 28;

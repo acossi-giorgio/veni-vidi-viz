@@ -6,7 +6,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   if (!container) return;
 
   container.innerHTML = '';
-  container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;';
+  container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;width:100%;height:100%;min-width:0;min-height:0;align-items:stretch;justify-content:flex-start;';
 
   const UI_ACTIVE = getUiColor('controlActive', '#a44742');
   const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
@@ -110,6 +110,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   const stage = d3.select(container).append('div')
     .style('position', 'relative')
     .style('flex', '1 1 0')
+    .style('width', '100%')
     .style('min-height', '0')
     .style('overflow', 'hidden')
     .style('background', CHART_WATER);

@@ -52,7 +52,8 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   incomeRaw.forEach(d => { if (d.code && d.country) codeName[d.code] = d.country; });
 
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
-  const YEAR_MIN = incomeYears[0], YEAR_MAX = incomeYears[incomeYears.length - 1];
+  const YEAR_MIN = incomeYears[0];
+  const YEAR_MAX = Math.min(2023, incomeYears[incomeYears.length - 1] || 2023);
 
   let currentYear = YEAR_MAX;
   let playing = false, playTimer = null;
@@ -164,25 +165,31 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   }
 
   function getFrame(year) {
-    const iy = incomeYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
-    const lyYears = Object.keys(lifeMap).map(Number);
-    const ly = lyYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
-    const pyYears = Object.keys(popMap).map(Number);
-    const py = pyYears.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
-    return Object.keys(incomeMap[iy] || {}).map(code => {
-      const income = incomeMap[iy][code];
+    const incomeYear = incomeMap[year] || {};
+    const lifeYear = lifeMap[year] || {};
+    const popYear = popMap[year] || {};
+
+    return Object.keys(incomeYear).map(code => {
+      const income = incomeYear[code];
       if (!income || income <= 0) return null;
       const cont = codeContinent[code];
       if (cont !== 'Africa' && cont !== 'Europe') return null;
-      const lifeVal = lifeMap[ly]?.[code];
-      if (lifeVal == null) return null;
-      const pop = popMap[py]?.[code] || 1000;
+      const lifeVal = lifeYear[code];
+      const pop = popYear[code];
+      if (lifeVal == null || pop == null) return null;
       return { code, country: codeName[code] || code, continent: cont, income, lifeVal, pop };
     }).filter(Boolean).sort((a, b) => b.pop - a.pop);
   }
 
   function draw(animate) {
     const frame = getFrame(currentYear);
+    const incomeYear = incomeMap[currentYear] || {};
+    const eligibleCountries = Object.keys(incomeYear).filter((code) => {
+      const cont = codeContinent[code];
+      return cont === 'Africa' || cont === 'Europe';
+    });
+    const coverageCount = frame.length;
+    const excludedCount = Math.max(0, eligibleCountries.length - coverageCount);
     const dur = animate ? 450 : 0;
 
     bubblesG.selectAll('circle').data(frame, d => d.code).join(
@@ -208,6 +215,25 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
     sliderEl.property('value', currentYear);
     yearDisplay.text(currentYear);
+
+    if (!frame.length) {
+      const empty = chartDiv.selectAll('.gapminder-empty-state').data([0]).join('div')
+        .attr('class', 'gapminder-empty-state')
+        .style('position', 'absolute')
+        .style('inset', '50% auto auto 50%')
+        .style('transform', 'translate(-50%, -50%)')
+        .style('padding', '10px 14px')
+        .style('border', `1px solid ${UI_MUTED_BORDER}`)
+        .style('border-radius', '10px')
+        .style('background', 'rgba(255,255,255,0.95)')
+        .style('box-shadow', '0 4px 16px rgba(0,0,0,0.10)')
+        .style('font-size', compact ? '11px' : '12px')
+        .style('line-height', '1.5')
+        .style('color', UI_MUTED_INK);
+      empty.html('Nessun paese ha tutti e tre i valori nello stesso anno per il frame selezionato.');
+    } else {
+      chartDiv.selectAll('.gapminder-empty-state').remove();
+    }
   }
 
   // ── Player bar ────────────────────────────────────────────

@@ -446,12 +446,12 @@ const MOBILE_ROTATED_CHARTS = new Set([
 
 let MISSING_DATA_NOTES = {
   'chart-1-1': [
-    'Paesi senza alcun dato — Reddito pro capite (2000-2024, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Reddito pro capite (2000-2024, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
+    'Paesi senza alcun dato — Reddito pro capite (2000-2023, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
+    'Paesi con serie incompleta — Reddito pro capite (2000-2023, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
   ].join('\n'),
   'chart-1-2': [
-    'Paesi senza alcun dato — Reddito pro capite (2000-2024, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Reddito pro capite (2000-2024, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
+    'Paesi senza alcun dato — Reddito pro capite (2000-2023, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
+    'Paesi con serie incompleta — Reddito pro capite (2000-2023, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
     'Paesi senza alcun dato — Aspettativa di vita (2000-2023, Africa+Europa): Svalbard & Jan Mayen Islands; Åland Islands.',
     'Paesi con serie incompleta — Aspettativa di vita (2000-2023, Africa+Europa): nessuno.',
     'Paesi senza alcun dato — Popolazione (2000-2023, Africa+Europa): Svalbard & Jan Mayen Islands; Åland Islands.',
@@ -506,7 +506,7 @@ const CHART_HELP_NOTES = {
   'chart-1-2': [
     'Ogni bolla rappresenta un paese: la posizione orizzontale (asse X) è il reddito pro capite, la posizione verticale (asse Y) è l\'aspettativa di vita o la metrica selezionata.',
     'La dimensione della bolla rappresenta la popolazione: bolle più grandi = paesi più popolosi.',
-    'Play e slider animano la traiettoria 2000-2024 per mostrare spostamenti nel tempo.',
+    'Play e slider animano la traiettoria 2000-2023 per mostrare spostamenti nel tempo.',
     'Interazioni: hover per tooltip dettagliato e filtri/toggle per cambiare lettura degli assi.'
   ].join('\n'),
   'chart-2-1': [
@@ -719,9 +719,9 @@ const CHART_HELP_BUILDERS = {
     };
   },
   'chart-1-2': ({ chart }) => ({
-    description: 'Ogni bolla rappresenta un paese di Africa o Europa. La vista confronta ricchezza media, aspettativa di vita e peso demografico nello stesso spazio.',
+    description: 'Ogni bolla rappresenta un paese di Africa o Europa con reddito, aspettativa di vita e popolazione disponibili nello stesso anno. I paesi senza un trio completo per l\'anno selezionato vengono esclusi dalla vista.',
     reading: 'Asse X = reddito pro capite in scala logaritmica. Asse Y = aspettativa di vita. La dimensione della bolla rappresenta la popolazione. L\'anno mostrato ora è ' + (chart.currentYear || 'quello selezionato') + '.',
-    interactions: 'Usa play e slider per far scorrere il tempo. Passa sulle bolle per leggere i dettagli del paese. La vista narrativa può anche mettere in evidenza un continente specifico.',
+    interactions: 'Usa play e slider per far scorrere il tempo. Passa sulle bolle per leggere i dettagli del paese. La nota di copertura indica quanti paesi restano nel frame dopo il filtro sui tre valori.',
   }),
   'chart-2-1': ({ chart }) => {
     const isMap = chart.viewType === 'map';
@@ -747,7 +747,7 @@ const CHART_HELP_BUILDERS = {
         ? 'La vista attuale confronta la spesa pubblica in istruzione come valore assoluto stimato in USD. È utile per capire la massa di risorse mobilitata.'
         : 'La vista attuale confronta la spesa pubblica in istruzione come quota del PIL. È utile per capire il peso relativo dell\'istruzione nelle economie considerate.',
       reading: 'Asse X = anno. Asse Y = ' + (abs ? 'spesa totale stimata in USD.' : 'spesa in istruzione come % del PIL.') + ' Le linee mostrano le medie continentali di Africa ed Europa.',
-      interactions: 'Usa i pulsanti in alto per passare da % PIL a USD assoluti. Hover sui punti e sulle linee per leggere i valori puntuali nel tempo.',
+      interactions: 'Usa i pulsanti in alto per passare da % PIL a USD assoluti. I pallini restano sempre visibili lungo le linee: quando la copertura dati del continente scende sotto l\'80%, compare attorno al pallino un anello rosso tratteggiato. Nel tooltip trovi anche la percentuale di copertura per Africa ed Europa nell\'anno selezionato.',
     };
   },
   'chart-3-2': ({ chart }) => ({
@@ -863,7 +863,7 @@ function syncMobilePlaceholder(chartId) {
   const hintEl = placeholder.querySelector('.chart-mobile-placeholder-hint');
   const rotateEl = placeholder.querySelector('.chart-mobile-placeholder-rotate');
   const title = activeCard?.querySelector('h3')?.textContent?.trim() || 'Vista iniziale';
-  const needsRotate = shouldRotateMobileChart(chartId);
+  const needsRotate = isMobileViewport();
 
   placeholder.dataset.hasSelection = activeCard ? 'true' : 'false';
   placeholder.dataset.needsRotate = needsRotate ? 'true' : 'false';
@@ -885,13 +885,17 @@ function updateFullscreenModalMeta(chartId) {
   const hintEl = document.getElementById('fullscreenModalHint');
   if (!titleEl || !kickerEl || !hintEl) return;
 
+  const chartRoot = document.getElementById(chartId)?.closest('.chart-box');
+  const chartHeader = chartRoot?.querySelector('.chart-header');
+  const chartTitle = chartHeader?.querySelector('.chart-title')?.textContent?.trim();
+  const chartSubtitle = chartHeader?.querySelector('.chart-subtitle')?.textContent?.trim();
   const activeCard = getActiveNarrativeCard(chartId, { fallbackToFirst: !isMobileViewport() });
-  const section = activeCard?.closest('section[data-act]');
+  const section = chartRoot?.closest('section[data-act]') || activeCard?.closest('section[data-act]');
   const act = section?.dataset.act;
 
   kickerEl.textContent = act ? `Atto ${act}` : 'Grafico interattivo';
-  titleEl.textContent = activeCard?.querySelector('h3')?.textContent?.trim() || 'Grafico interattivo';
-  hintEl.textContent = 'Vista attiva selezionata dalle card narrative. Usa filtri, slider e tooltip del grafico per approfondire.';
+  titleEl.textContent = chartTitle || activeCard?.querySelector('h3')?.textContent?.trim() || 'Grafico interattivo';
+  hintEl.textContent = chartSubtitle || 'Usa i controlli del grafico per esplorare i dati a schermo intero.';
 }
 
 function syncAllMobilePlaceholders() {
@@ -1372,7 +1376,7 @@ function initMobilePlaceholders() {
       <span class="chart-mobile-placeholder-title">Grafico interattivo</span>
       <span class="chart-mobile-placeholder-state">Vista iniziale</span>
       <span class="chart-mobile-placeholder-hint">Tocca per esplorare a schermo intero</span>
-      <span class="chart-mobile-placeholder-rotate"></span>
+      <span class="chart-mobile-placeholder-rotate">Questo grafico rende meglio in orizzontale. Se puoi, ruota il telefono prima di aprirlo.</span>
     `;
     ph.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
