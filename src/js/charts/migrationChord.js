@@ -397,6 +397,7 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
   function draw() {
     closePinnedTip();
     svgArea.html('');
+    wrap.selectAll('.migration-scale-note').remove();
     const svgRect = svgArea.node().getBoundingClientRect();
     const W = svgRect.width  || 560;
     const H = svgRect.height || 380;
@@ -1269,6 +1270,35 @@ async function renderMigrationChord(selector = '#chart-5-1', isFullscreen = fals
           .attr('opacity', 0)
           .style('pointer-events', 'none');
       });
+
+    const noteCompact = W < 720 || H < 360;
+    const noteLines = [
+      { label: 'Più scuro', value: 'flusso maggiore' },
+      { label: 'Più chiaro', value: 'flusso minore' },
+    ];
+    const note = wrap.append('div')
+      .attr('class', 'migration-scale-note')
+      .style('position', 'absolute')
+      .style('left', '12px')
+      .style('bottom', '12px')
+      .style('z-index', '25')
+      .style('pointer-events', 'none')
+      .style('background', 'rgba(255,255,255,0.94)')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`)
+      .style('border-radius', '8px')
+      .style('padding', noteCompact ? '9px 12px' : '12px 16px')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.11)')
+      .style('color', UI_MUTED_INK)
+      .style('font-size', noteCompact ? '10px' : '11.5px')
+      .style('font-weight', '600')
+      .style('line-height', '1.5')
+      .html(noteLines.map(line => `
+        <div style="display:flex;align-items:center;gap:${noteCompact ? '7px' : '9px'};">
+          <span>${escapeHtml(line.label)}</span>
+          <span style="color:${UI_MUTED_INK};font-size:${noteCompact ? '13px' : '15px'};line-height:1;">&rarr;</span>
+          <span>${escapeHtml(line.value)}</span>
+        </div>
+      `).join(''));
 
     svg.on('click', () => {
       closePinnedTip();

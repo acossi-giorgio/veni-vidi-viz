@@ -64,7 +64,17 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const africaCodes = new Set(africa.map(d => d.code));
   const maxValue = d3.max(allLatest, d => d.value) || 0.3;
   const scaleMax = Math.max(0.3, Math.ceil(maxValue * 20) / 20);
-  const mpiColor = d3.scaleSequential(d3.interpolateRgbBasis(GRADIENT_STOPS)).domain([0, scaleMax]);
+  const MPI_STEP = 0.05;
+  const mpiRamp = d3.scaleSequential(d3.interpolateRgbBasis(GRADIENT_STOPS)).domain([0, scaleMax]);
+  const mpiThresholds = d3.range(MPI_STEP, scaleMax, MPI_STEP);
+  const mpiBinColors = d3.range(mpiThresholds.length + 1).map(i => {
+    const lo = i * MPI_STEP;
+    const hi = Math.min(scaleMax, lo + MPI_STEP);
+    return mpiRamp((lo + hi) / 2);
+  });
+  const mpiColor = d3.scaleThreshold()
+    .domain(mpiThresholds)
+    .range(mpiBinColors);
 
   let mode = 'africa'; // 'africa' | 'severe'
   let viewType = 'dist'; // 'dist' | 'map'
@@ -173,26 +183,39 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   }
 
   function getLegendRows() {
-    return d3.range(5).map(i => {
-      const t = 1 - i / 4;
-      const value = t * scaleMax;
+    const edges = [0, ...mpiThresholds, scaleMax];
+    return d3.range(edges.length - 1).map(i => {
+      const lo = edges[i];
+      const hi = edges[i + 1];
       return {
-        color: mpiColor(value),
-        label: value.toFixed(2),
+        color: mpiColor((lo + hi) / 2),
+        label: `${lo.toFixed(2)}–${hi.toFixed(2)}`,
       };
-    });
+    }).reverse();
   }
 
-  function drawLegendCard(parent, x, y, title) {
+  function drawLegendCard(parent, x, y, title, maxW = null, maxH = null) {
     const rows = getLegendRows();
-    const SW = compact ? 12 : 14;
-    const SH = compact ? 12 : 14;
+    const colCount = 1;
+    const rowsPerCol = rows.length;
+    const SW = compact ? 10 : 12;
+    const SH = compact ? 10 : 12;
     const GAP = compact ? 3 : 4;
-    const LABEL_X = SW + (compact ? 5 : 7);
+    const LABEL_X = SW + (compact ? 6 : 7);
+    const colW = compact ? 84 : 96;
     const rowH = SH + GAP;
-    const totalH = rows.length * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 8 : 10);
-    const totalW = compact ? 88 : 110;
-    const lg = parent.append('g').attr('transform', `translate(${x},${y})`);
+    const totalH = rowsPerCol * rowH + (compact ? 8 : 10) + rowH + (compact ? 12 : 14) + (compact ? 10 : 12);
+    const totalW = colW;
+    const outerW = totalW + 4;
+    const outerH = totalH + 2;
+    const pad = compact ? 10 : 12;
+    const tx = maxW && maxH
+      ? Math.max(pad, Math.min(x, maxW - outerW - pad))
+      : x;
+    const ty = maxW && maxH
+      ? Math.max(pad, Math.min(y, maxH - outerH - pad))
+      : y;
+    const lg = parent.append('g').attr('transform', `translate(${tx},${ty})`);
 
     lg.append('rect')
       .attr('x', -10).attr('y', -6)
@@ -204,7 +227,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
     lg.append('text')
       .attr('x', 0).attr('y', 10)
-      .attr('font-size', compact ? 7 : 8)
+      .attr('font-size', compact ? 8 : 9)
       .attr('font-weight', '700')
       .attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.07em')
@@ -212,19 +235,20 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
     rows.forEach((row, i) => {
       const cy = 18 + i * rowH;
+      const cx = 0;
       lg.append('rect')
-        .attr('x', 0).attr('y', cy)
+        .attr('x', cx).attr('y', cy)
         .attr('width', SW).attr('height', SH)
         .attr('rx', 3)
         .attr('fill', row.color);
       lg.append('text')
-        .attr('x', LABEL_X).attr('y', cy + SH / 2 + 4)
+        .attr('x', cx + LABEL_X).attr('y', cy + SH / 2 + 4)
         .attr('font-size', compact ? 8 : 9)
         .attr('fill', CHART_LABEL)
         .text(row.label);
     });
 
-    const ndY = 18 + rows.length * rowH + 6;
+    const ndY = 18 + rowsPerCol * rowH + 6;
     lg.append('rect')
       .attr('x', 0).attr('y', ndY)
       .attr('width', SW).attr('height', SH)
@@ -372,20 +396,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           .attr('height', targetH);
       }
 
-      if (bin.length >= 3) {
-        const label = g.append('text')
-          .attr('x', xS(bin.x0) + barW / 2).attr('y', yS(bin.length) - 3)
-          .attr('text-anchor', 'middle').attr('font-size', 8.5)
-          .attr('fill', isBeforeSevereCut ? CHART_AXIS : fill)
-          .attr('opacity', animateBars ? 0 : opa + 0.1).style('pointer-events', 'none')
-          .text(bin.length);
-        if (animateBars) {
-          label.transition()
-            .delay(index * 34 + barDuration * 0.72)
-            .duration(180)
-            .attr('opacity', opa + 0.1);
-        }
-      }
     });
 
     // No-data chip grid intentionally omitted to preserve vertical space.
@@ -492,9 +502,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
     drawLegendCard(
       g,
-      iw - (compact ? 104 : 120),
-      ih - (compact ? 156 : 172),
-      'MPI'
+      iw - (compact ? 120 : 138),
+      ih - (compact ? 182 : 206),
+      'MPI',
+      iw,
+      ih
     );
 
   }

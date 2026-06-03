@@ -286,7 +286,7 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
     const rowH = SH + GAP;
     const extraRows = 2; // separator + no-data
     const totalH = STEPS * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 20 : 24);
-    const totalW = compact ? 88 : 110;
+    const totalW = compact ? 118 : 140;
     const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
 
     // Background panel
@@ -320,7 +320,9 @@ async function renderChoroplethMulti(selector, isFullscreen = false) {
       legG.append('text')
         .attr('x', px + LABEL_X).attr('y', cy + SH / 2 + 4)
         .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-        .text(i === 0 ? `≥ ${fmtLegendValue(b.lo)}` : fmtLegendValue(b.lo));
+        .text(i === 0
+          ? `≥ ${fmtLegendValue(b.lo)}`
+          : `${fmtLegendValue(b.lo)}–${fmtLegendValue(b.hi)}`);
     });
 
     // No Data
