@@ -43,8 +43,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     'Africa': getContinentColor('Africa', '#c96a3d'),
     'Europe': getContinentColor('Europe', '#5169b2'),
   };
-  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
-  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_ACTIVE = getActColor(1, getUiColor('controlActive', '#5169b2'));
+  const UI_ACTIVE_STRONG = getActColorStrong(1, getUiColor('controlActiveStrong', '#314685'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_WATER = getUiColor('chartWater', '#ece8e0');
@@ -56,7 +56,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const CHART_PANEL = getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)');
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
-  const CHORO_COLORS = getMetricStops('income', ['#f4eadc', '#e6cb98', '#c99a55', '#a36b30', '#6f4518']);
+  const CHORO_COLORS = ['#fbf2e1', '#e2c88f', '#c18f5a', '#8e5b3d', '#4f352a'];
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
 
@@ -123,6 +123,13 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const rawW = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 800);
   const rawH = container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 480);
   const compact = isFullscreen && (rawW < 760 || rawH < 420);
+  const SERIES_STROKE_W = compact ? 2.2 : 2.5;
+  const SERIES_DOT_R = compact ? 4.2 : 4.8;
+  const SERIES_DOT_STROKE_W = compact ? 1.4 : 1.7;
+  const SERIES_DOT_STROKE = '#f7f7f5';
+  const TREND_LINE_DRAW_MS = 1400;
+  const DOT_FADE_MS = 320;
+  const LABEL_FADE_MS = 220;
   const PLAYER_H = compact ? 64 : 72;
   const W = rawW;
   const H = rawH - PLAYER_H;
@@ -282,17 +289,21 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     colorScale.domain(vals.length ? vals : [0, 1]);
 
     const STEPS = CHORO_COLORS.length;
-    const SW = compact ? 12 : 14, SH = compact ? 12 : 14, GAP = compact ? 3 : 4, LABEL_X = SW + (compact ? 5 : 7);
-    const rowH = SH + GAP;
-    const extraRows = 2; // separator + no-data
-    const totalH = STEPS * rowH + (compact ? 6 : 8) + rowH + (compact ? 12 : 14) + (compact ? 20 : 24);
-    const totalW = compact ? 118 : 140;
+    const SW = compact ? 18 : 22;
+    const SH = compact ? 13 : 16;
+    const GAP = 0;
+    const stackH = STEPS * SH + (STEPS - 1) * GAP;
+    const LABEL_X = SW + (compact ? 6 : 8);
+    const titleGap = compact ? 16 : 18;
+    const noDataGap = compact ? 6 : 8;
+    const totalH = titleGap + stackH + noDataGap + SH + (compact ? 12 : 14);
+    const totalW = compact ? 118 : 132;
     const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
 
     // Background panel
     legG.append('rect')
-      .attr('x', px - 10).attr('y', py - 6)
-      .attr('width', totalW + 14).attr('height', totalH + 8)
+      .attr('x', px - 8).attr('y', py - 5)
+      .attr('width', totalW + 10).attr('height', totalH + 6)
       .attr('rx', 8).attr('fill', 'rgba(255,255,255,0.92)')
       .attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
 
@@ -311,25 +322,32 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     }
     bins.reverse(); // high -> low in legend
 
+    const stackY = py + titleGap;
     bins.forEach((b, i) => {
-      const cy = py + 18 + i * rowH;
+      const cy = stackY + i * (SH + GAP);
       legG.append('rect')
         .attr('x', px).attr('y', cy)
-        .attr('width', SW).attr('height', SH).attr('rx', 3)
+        .attr('width', SW).attr('height', SH)
         .attr('fill', b.color);
       legG.append('text')
-        .attr('x', px + LABEL_X).attr('y', cy + SH / 2 + 4)
-        .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-        .text(i === 0
-          ? `≥ ${fmtLegendValue(b.lo)}`
-          : `${fmtLegendValue(b.lo)}–${fmtLegendValue(b.hi)}`);
+        .attr('x', px + LABEL_X)
+        .attr('y', cy + SH / 2 + (compact ? 3 : 4))
+        .attr('font-size', compact ? 8 : 9)
+        .attr('fill', CHART_LABEL)
+        .text(
+          i === 0
+            ? `> ${fmtLegendValue(b.lo)}`
+            : i === bins.length - 1
+              ? `< ${fmtLegendValue(b.hi)}`
+              : fmtLegendValue(b.hi)
+        );
     });
 
     // No Data
-    const ndY = py + 18 + STEPS * rowH + (compact ? 8 : 12);
+    const ndY = stackY + stackH + noDataGap;
     legG.append('rect')
       .attr('x', px).attr('y', ndY)
-      .attr('width', SW).attr('height', SH).attr('rx', 3)
+      .attr('width', SW).attr('height', SH).attr('rx', 2)
       .attr('fill', NO_DATA_PATTERN)
       .attr('stroke', UI_MUTED_BORDER)
       .attr('stroke-width', 0.5);
@@ -419,7 +437,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .attr('d', d3.area().x(p => xS(p.year)).y0(ih).y1(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
 
     pg.append('path').datum(pts)
-      .attr('fill', 'none').attr('stroke', UI_ACTIVE).attr('stroke-width', 2)
+      .attr('fill', 'none').attr('stroke', UI_ACTIVE).attr('stroke-width', SERIES_STROKE_W)
+      .attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round')
       .attr('d', d3.line().x(p => xS(p.year)).y(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
 
     const near = pts.reduce((a, b) => Math.abs(b.year - currentYear) < Math.abs(a.year - currentYear) ? b : a);
@@ -432,7 +451,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     // Dot (reactive)
     panelDot = pg.append('circle')
       .attr('cx', xS(near.year)).attr('cy', yS(near.value))
-      .attr('r', 5).attr('fill', CONT_COLOR.Africa).attr('stroke', '#fff').attr('stroke-width', 1.5);
+      .attr('r', SERIES_DOT_R).attr('fill', CONT_COLOR.Africa).attr('stroke', SERIES_DOT_STROKE).attr('stroke-width', SERIES_DOT_STROKE_W);
 
     panelVal = panel.append('div')
       .style('font-size', '12px').style('color', CHART_LABEL).style('margin-top', '6px').style('font-weight', '600')
@@ -582,18 +601,37 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       if (!stats.length) return;
       const color = CONT_COLOR[continent] || '#888';
       const path = g.append('path').datum(stats)
-        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2).attr('opacity', 0.9)
+        .attr('fill', 'none').attr('stroke', color).attr('stroke-width', SERIES_STROKE_W).attr('opacity', 0.9)
+        .attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round')
         .attr('d', lineFn).style('pointer-events', 'none');
       const len = path.node().getTotalLength();
       path.attr('stroke-dasharray', len).attr('stroke-dashoffset', len)
-        .transition().duration(1400).delay(ci * 200).ease(d3.easeCubicInOut)
+        .transition().duration(TREND_LINE_DRAW_MS).delay(ci * 200).ease(d3.easeCubicInOut)
         .attr('stroke-dashoffset', 0);
+
+      g.selectAll(`.trend-point-${continent}`)
+        .data(stats.filter(pt => pt.mean != null && pt.mean > 0))
+        .join('circle')
+        .attr('class', `trend-point-${continent}`)
+        .attr('cx', d => xS(d.year))
+        .attr('cy', d => yS(d.mean))
+        .attr('r', SERIES_DOT_R)
+        .attr('fill', color)
+        .attr('stroke', SERIES_DOT_STROKE)
+        .attr('stroke-width', SERIES_DOT_STROKE_W)
+        .attr('opacity', 0)
+        .style('pointer-events', 'none')
+        .transition()
+        .delay(ci * 200 + TREND_LINE_DRAW_MS + 60)
+        .duration(DOT_FADE_MS)
+        .attr('opacity', 0.98);
+
       const last = stats[stats.length - 1];
       if (last) {
         const lbl = g.append('text').attr('x', xS(last.year) + 4).attr('y', yS(last.mean) + 3)
           .attr('font-size', 9).attr('fill', color).attr('font-weight', '600')
           .attr('opacity', 0).style('pointer-events', 'none').text(continent);
-        lbl.transition().duration(400).delay(ci * 200 + 1400).attr('opacity', 0.9);
+        lbl.transition().duration(LABEL_FADE_MS).delay(ci * 200 + TREND_LINE_DRAW_MS + DOT_FADE_MS + 120).attr('opacity', 0.9);
       }
     });
 
@@ -606,8 +644,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
     const crossDots = CONT_ORDER.map(cont => ({
       cont,
-      dot: g.append('circle').attr('r', 5)
-        .attr('fill', CONT_COLOR[cont] || '#888').attr('stroke', '#fff').attr('stroke-width', 1.5)
+      dot: g.append('circle').attr('r', SERIES_DOT_R)
+        .attr('fill', CONT_COLOR[cont] || '#888').attr('stroke', SERIES_DOT_STROKE).attr('stroke-width', SERIES_DOT_STROKE_W)
         .attr('opacity', 0).style('pointer-events', 'none'),
     }));
 
@@ -669,6 +707,11 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
+    const iconVariant = inner.includes('8249') || inner.includes('8250')
+      ? ' player-control-btn-icon--arrow'
+      : inner.includes('8635')
+        ? ' player-control-btn-icon--reset'
+        : '';
     const btn = ctrlWrap.append('div')
       .attr('title', title)
       .attr('role', 'button')
@@ -683,7 +726,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .style('-webkit-appearance', 'none').style('appearance', 'none')
       .style('transform', 'none').style('outline', 'none')
       .style('-webkit-tap-highlight-color', 'transparent')
-      .html(inner);
+      .html(`<span class="player-control-btn-icon${iconVariant}">${inner}</span>`);
     btn.on('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
@@ -707,7 +750,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('font-size', '15px').style('color', '#fff').style('flex-shrink', '0')
     .style('padding', '0').style('line-height', '1')
     .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
-    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
+    .html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>')
     .on('click', () => playing ? stopPlay() : startPlay());
 
   const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
@@ -718,7 +761,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
   function startPlay() {
     playing = true;
-    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
+    btnPlay.html('<span class="player-play-icon"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg></span>').style('background', CONT_COLOR.Africa);
     animTimer = setInterval(() => {
       const i = incomeYears.indexOf(currentYear);
       if (i >= incomeYears.length - 1) { stopPlay(); return; }
@@ -730,7 +773,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   function stopPlay() {
     playing = false;
     clearInterval(animTimer);
-    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
+    btnPlay.html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>').style('background', UI_ACTIVE);
   }
 
   // Timeline

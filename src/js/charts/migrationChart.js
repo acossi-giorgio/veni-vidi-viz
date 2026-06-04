@@ -112,8 +112,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     'South America': getContinentColor('South America', '#5f9c63'),
     'Oceania': getContinentColor('Oceania', '#d39b3d'),
   };
-  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
-  const UI_ACTIVE_STRONG = getUiColor('controlActiveStrong', '#314685');
+  const UI_ACTIVE = getActColor(4, getUiColor('controlActive', '#5169b2'));
+  const UI_ACTIVE_STRONG = getActColorStrong(4, getUiColor('controlActiveStrong', '#314685'));
   const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
@@ -349,7 +349,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
   function mkModeBtn(m, label) {
     return pillBar.append('button')
       .style('font-size', '11px').style('padding', '5px 14px').style('border-radius', '6px')
-      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
+      .style('border', '1px solid transparent').style('cursor', 'pointer').style('font-weight', '600')
       .style('transition', 'all 0.15s').text(label)
       .on('click', () => {
         mode = m;
@@ -367,8 +367,9 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
   function updateModeBtns() {
     const set = (btn, active) => btn
       .style('background', active ? UI_ACTIVE : 'transparent')
-      .style('color',      active ? '#fff'    : UI_MUTED_INK)
-      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
+      .style('color', active ? '#fff' : UI_ACTIVE_STRONG)
+      .style('border-color', active ? UI_ACTIVE_STRONG : 'transparent')
+      .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE_STRONG, 0.28)}` : 'none');
     set(btnSankey, mode === 'sankey');
     set(btnMap,    mode === 'map');
   }
@@ -1101,12 +1102,21 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         return (a3 && (topicSrcCodes.has(a3) || topicDstCodes.has(a3))) ? 'pointer' : 'default';
       })
       .on('mousemove', (e, f) => {
+        if (pinnedTipKey) return;
         const a3 = _MIG_NUM_TO_A3[+f.id];
         if (!a3) return;
-        if (topicSrcCodes.has(a3) || topicDstCodes.has(a3))
+        if (topicSrcCodes.has(a3) || topicDstCodes.has(a3)) {
+          if (arcHoverA3 !== a3 && (arcSrcCodes.has(a3) || arcDstCodes.has(a3))) {
+            arcHoverA3 = a3;
+            revealArcs(a3);
+          }
           showTip(e, arcHoverHtml(a3), { maxWidth: 'min(92vw, 24rem)' });
+        }
       })
-      .on('mouseleave', () => hideTip(true))
+      .on('mouseleave', () => {
+        hideTip(true);
+        clearArcHover();
+      })
       .on('click', (e, f) => {
         e.stopPropagation();
         const a3 = _MIG_NUM_TO_A3[+f.id];
@@ -1116,10 +1126,9 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         if (pinnedTipKey && pinnedTipKey !== `migration-map-${a3}`) closePinnedTip();
         if (pinnedTipKey === `migration-map-${a3}`) {
           closePinnedTip();
-          clearArcHover();
           return;
         }
-        clearArcHover();
+        clearArcSelection();
         openArcPopup(e, a3);
       });
 
@@ -1130,19 +1139,19 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       const fmt = d3.format(',.0f');
       const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
       if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
-        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em><br><em style="opacity:.5;font-size:10px">Clicca per aprire il dettaglio</em>`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em>`;
       }
       if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
-        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em><br><em style="opacity:.5;font-size:10px">Clicca per aprire il dettaglio</em>`;
+        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em>`;
       }
       if (countrySrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;
-        return `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Totale emigrati: <strong>${fmt(total)}</strong><br><em style="opacity:.5;font-size:10px">Clicca per elenco e collegamenti</em>`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Totale emigrati: <strong>${fmt(total)}</strong>`;
       }
       const total = stockByDest.get(a3) || 0;
       const cont = destContMap.get(a3);
       const col = CONT_COLOR[cont] || '#607d8b';
-      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti africani: <strong>${fmt(total)}</strong><br><em style="opacity:.5;font-size:10px">Clicca per elenco e collegamenti</em>`;
+      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti africani: <strong>${fmt(total)}</strong>`;
     }
 
     function buildArcPopupConfig(a3, anchor) {
@@ -1154,7 +1163,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           title: `<span style="color:${CONT_COLOR.Africa}">${countryName}</span>`,
           meta: 'Origine',
           bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
-          onClose: () => clearArcHover(),
+          onClose: () => clearArcSelection(),
         };
       }
       if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
@@ -1163,7 +1172,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           title: escapeHtml(countryName),
           meta: 'Destinazione',
           bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
-          onClose: () => clearArcHover(),
+          onClose: () => clearArcSelection(),
         };
       }
       if (countrySrcCodes.has(a3)) {
@@ -1177,12 +1186,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
             <div><strong>Totale emigrati:</strong> ${fmt(total)}</div>
             ${mapTooltipListHtml('Principali destinazioni', rows, 'dstName')}
           `,
-          actionLabel: 'Mostra collegamenti',
-          onAction: () => {
-            toggleArcSelection(a3);
-            closePinnedTip({ skipOnClose: true });
-          },
-          onClose: () => clearArcHover(),
+          onClose: () => clearArcSelection(),
         };
       }
       const total = stockByDest.get(a3) || 0;
@@ -1197,28 +1201,32 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           <div><strong>Totale migranti africani:</strong> ${fmt(total)}</div>
           ${mapTooltipListHtml('Per paese di origine', rows, 'srcName')}
         `,
-        actionLabel: 'Mostra collegamenti',
-        onAction: () => {
-          toggleArcSelection(a3);
-          closePinnedTip({ skipOnClose: true });
-        },
-        onClose: () => clearArcHover(),
+        onClose: () => clearArcSelection(),
       };
     }
 
     function openArcPopup(anchor, a3) {
       showPinnedTip(anchor, buildArcPopupConfig(a3, anchor));
     }
+    const HOVER_ARC_OPACITY = 0.52;
+    const ARC_STROKE_WIDTH = 1.2;
+
     function revealArcs(a3) {
       const sel = arcSrcCodes.has(a3)
         ? g.selectAll(`.mig-arc[data-src="${a3}"]`)
         : g.selectAll(`.mig-arc[data-dest="${a3}"]`);
+      g.selectAll('.mig-arc')
+        .interrupt()
+        .attr('stroke-dasharray', null)
+        .attr('stroke-dashoffset', null)
+        .attr('opacity', 0);
       sel.raise().each(function() {
         const len = this.getTotalLength();
         d3.select(this)
+          .interrupt()
           .attr('stroke-dasharray', len)
           .attr('stroke-dashoffset', len)
-          .attr('opacity', 0.75)
+          .attr('opacity', HOVER_ARC_OPACITY)
           .transition().duration(700).ease(d3.easeLinear)
           .attr('stroke-dashoffset', 0);
       });
@@ -1229,16 +1237,10 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
     }
 
-    function toggleArcSelection(a3) {
-      if (arcHoverA3 === a3) {
-        clearArcHover();
-        return;
-      }
-      clearArcHover();
-      if (arcSrcCodes.has(a3) || arcDstCodes.has(a3)) {
-        arcHoverA3 = a3;
-        revealArcs(a3);
-      }
+    function clearArcSelection() {
+      arcHoverA3 = null;
+      g.selectAll('.mig-arc').interrupt()
+        .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
     }
 
     // Great circle arcs via projection invert → GeoJSON LineString → pathGen
@@ -1248,8 +1250,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       if (!srcGeo || !dstGeo) return `M${src[0]},${src[1]}`;
       return pathGen({ type: 'LineString', coordinates: [srcGeo, dstGeo] }) || `M${src[0]},${src[1]}`;
     }
-
-    const arcWScale = d3.scaleSqrt().domain([0, maxPair]).range([0.6, 5]).clamp(true);
 
     // draw small arcs first so large ones render on top
     renderPairs
@@ -1265,7 +1265,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           .attr('d', arcPath(src, dst))
           .attr('fill', 'none')
           .attr('stroke', col)
-          .attr('stroke-width', arcWScale(p.stock))
+          .attr('stroke-width', ARC_STROKE_WIDTH)
           .attr('stroke-linecap', 'round')
           .attr('opacity', 0)
           .style('pointer-events', 'none');
@@ -1273,8 +1273,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     const noteCompact = W < 720 || H < 360;
     const noteLines = [
-      { label: 'Più scuro', value: 'flusso maggiore' },
-      { label: 'Più chiaro', value: 'flusso minore' },
+      { label: 'Hover sul paese', value: 'mostra i flussi' },
+      { label: 'Click sul paese', value: 'apre il dettaglio' },
     ];
     const note = wrap.append('div')
       .attr('class', 'migration-scale-note')
@@ -1302,7 +1302,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     svg.on('click', () => {
       closePinnedTip();
-      clearArcHover();
+      clearArcSelection();
     });
   }
 

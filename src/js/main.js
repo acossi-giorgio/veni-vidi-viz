@@ -84,56 +84,53 @@ function shadeColor(ref, amount = 0.25) {
   return mixColors(resolveChartColor(ref, ref), '#111111', amount);
 }
 
-const CONTINENT_TOKEN_MAP = {
-  'Africa': 'continent-africa',
-  'Asia': 'continent-asia',
-  'Europe': 'continent-europe',
-  'North America': 'continent-north-america',
-  'South America': 'continent-south-america',
-  'Oceania': 'continent-oceania',
-};
-
-const METRIC_TOKEN_MAP = {
-  income: ['metric-income-0', 'metric-income-1', 'metric-income-2', 'metric-income-3', 'metric-income-4'],
-  education: ['metric-education-0', 'metric-education-1', 'metric-education-2', 'metric-education-3', 'metric-education-4'],
-  risk: ['metric-risk-0', 'metric-risk-1', 'metric-risk-2', 'metric-risk-3', 'metric-risk-4'],
-  migration: ['metric-migration-0', 'metric-migration-1', 'metric-migration-2', 'metric-migration-3', 'metric-migration-4'],
-};
+function getChartColors() {
+  return window.CHART_COLORS || {};
+}
 
 function getContinentColor(continent, fallback = '#888888') {
-  const token = CONTINENT_TOKEN_MAP[continent];
-  return token ? getCssToken(token, fallback) : fallback;
+  return getChartColors().continents?.[continent] || fallback;
 }
 
 function getMetricStops(metric, fallback = []) {
-  const tokens = METRIC_TOKEN_MAP[metric];
-  if (!tokens) return fallback;
-  const stops = tokens.map(token => getCssToken(token)).filter(Boolean);
-  return stops.length ? stops : fallback;
+  const stops = getChartColors().metrics?.[metric];
+  return Array.isArray(stops) && stops.length ? stops : fallback;
+}
+
+function getThemeColor(theme, fallback = '') {
+  return getChartColors().themes?.[theme] || fallback;
+}
+
+function getActColor(act, fallback = '') {
+  if (act == null) return fallback;
+  return getCssToken(`accent-${act}`, fallback);
+}
+
+function getActColorStrong(act, fallback = '') {
+  if (act == null) return fallback;
+  return getCssToken(`accent-${act}-strong`, fallback);
+}
+
+function getCountryPalette(fallback = []) {
+  const palette = getChartColors().countries;
+  return Array.isArray(palette) && palette.length ? palette : fallback;
+}
+
+function getCountryColor(countryKey, fallback = '#888888') {
+  const palette = getCountryPalette();
+  if (!palette.length || !countryKey) return fallback;
+  const input = String(countryKey).trim().toUpperCase();
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = ((hash << 5) - hash) + input.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % palette.length;
+  return palette[index] || fallback;
 }
 
 function getUiColor(key, fallback = '') {
-  const tokenMap = {
-    controlActive: 'control-active',
-    controlActiveStrong: 'control-active-strong',
-    controlMuted: 'control-muted',
-    controlMutedBorder: 'control-muted-border',
-    controlMutedInk: 'control-muted-ink',
-    chartWater: 'chart-water',
-    chartBaseFill: 'chart-base-fill',
-    chartNoDataFill: 'chart-nodata-fill',
-    chartNoDataStripe: 'chart-nodata-stripe',
-    chartGrid: 'chart-grid',
-    chartAxis: 'chart-axis',
-    chartLabel: 'chart-label',
-    chartPanel: 'chart-panel',
-    chartTooltipBg: 'chart-tooltip-bg',
-    chartTooltipInk: 'chart-tooltip-ink',
-    genderGirls: 'gender-girls',
-    genderBoys: 'gender-boys',
-  };
-  const token = tokenMap[key];
-  return token ? getCssToken(token, fallback) : fallback;
+  return getChartColors().ui?.[key] || fallback;
 }
 
 function ensureNoDataPattern(svg, patternId, options = {}) {
@@ -181,6 +178,11 @@ window.tintColor = tintColor;
 window.shadeColor = shadeColor;
 window.getContinentColor = getContinentColor;
 window.getMetricStops = getMetricStops;
+window.getThemeColor = getThemeColor;
+window.getActColor = getActColor;
+window.getActColorStrong = getActColorStrong;
+window.getCountryPalette = getCountryPalette;
+window.getCountryColor = getCountryColor;
 window.getUiColor = getUiColor;
 window.ensureNoDataPattern = ensureNoDataPattern;
 window.runChartViewTransition = runChartViewTransition;
@@ -747,7 +749,7 @@ const CHART_HELP_BUILDERS = {
         ? 'La vista attuale confronta la spesa pubblica in istruzione come valore assoluto stimato in USD. È utile per capire la massa di risorse mobilitata.'
         : 'La vista attuale confronta la spesa pubblica in istruzione come quota del PIL. È utile per capire il peso relativo dell\'istruzione nelle economie considerate.',
       reading: 'Asse X = anno. Asse Y = ' + (abs ? 'spesa totale stimata in USD.' : 'spesa in istruzione come % del PIL.') + ' Le linee mostrano le medie continentali di Africa ed Europa.',
-      interactions: 'Usa i pulsanti in alto per passare da % PIL a USD assoluti. I pallini restano sempre visibili lungo le linee: quando la copertura dati del continente scende sotto l\'80%, compare attorno al pallino un anello rosso tratteggiato. Nel tooltip trovi anche la percentuale di copertura per Africa ed Europa nell\'anno selezionato.',
+      interactions: 'Usa i pulsanti in alto per passare da % PIL a USD assoluti. I pallini restano sempre visibili lungo le linee. Nel tooltip trovi anche la percentuale di copertura per Africa ed Europa nell\'anno selezionato.',
     };
   },
   'chart-3-2': ({ chart }) => ({
@@ -880,10 +882,11 @@ function syncMobilePlaceholder(chartId) {
 }
 
 function updateFullscreenModalMeta(chartId) {
+  const modal = document.getElementById('fullscreenModal');
   const titleEl = document.getElementById('fullscreenModalTitle');
   const kickerEl = document.getElementById('fullscreenModalKicker');
   const hintEl = document.getElementById('fullscreenModalHint');
-  if (!titleEl || !kickerEl || !hintEl) return;
+  if (!modal || !titleEl || !kickerEl || !hintEl) return;
 
   const chartRoot = document.getElementById(chartId)?.closest('.chart-box');
   const chartHeader = chartRoot?.querySelector('.chart-header');
@@ -892,6 +895,9 @@ function updateFullscreenModalMeta(chartId) {
   const activeCard = getActiveNarrativeCard(chartId, { fallbackToFirst: !isMobileViewport() });
   const section = chartRoot?.closest('section[data-act]') || activeCard?.closest('section[data-act]');
   const act = section?.dataset.act;
+
+  if (act) modal.style.setProperty('--fullscreen-accent', `var(--accent-${act})`);
+  else modal.style.removeProperty('--fullscreen-accent');
 
   kickerEl.textContent = act ? `Atto ${act}` : 'Grafico interattivo';
   titleEl.textContent = chartTitle || activeCard?.querySelector('h3')?.textContent?.trim() || 'Grafico interattivo';

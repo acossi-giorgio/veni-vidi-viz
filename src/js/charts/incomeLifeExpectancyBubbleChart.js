@@ -248,6 +248,11 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const ctrlWrap = playerBar.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
   function mkCtrlBtn(inner, title) {
+    const iconVariant = inner.includes('8249') || inner.includes('8250')
+      ? ' player-control-btn-icon--arrow'
+      : inner.includes('8635')
+        ? ' player-control-btn-icon--reset'
+        : '';
     const btn = ctrlWrap.append('div').attr('title', title)
       .attr('role', 'button')
       .attr('tabindex', '0')
@@ -260,7 +265,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .style('-webkit-appearance', 'none').style('appearance', 'none')
       .style('transform', 'none').style('outline', 'none')
       .style('-webkit-tap-highlight-color', 'transparent')
-      .html(inner);
+      .html(`<span class="player-control-btn-icon${iconVariant}">${inner}</span>`);
     btn.on('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
@@ -282,7 +287,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')
     .style('color', '#fff').style('flex-shrink', '0').style('padding', '0').style('line-height', '1')
     .style('box-shadow', '0 2px 8px rgba(74,111,165,0.4)').style('transition', 'all 0.15s')
-    .html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>')
+    .html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>')
     .on('click', () => playing ? stopPlay() : startPlay());
 
   mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
@@ -292,7 +297,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   function startPlay() {
     playing = true;
-    btnPlay.html('<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg>').style('background', CONT_COLOR.Africa);
+    btnPlay.html('<span class="player-play-icon"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg></span>').style('background', CONT_COLOR.Africa);
     playTimer = setInterval(() => {
       currentYear = currentYear < YEAR_MAX ? incomeYears[incomeYears.indexOf(currentYear) + 1] : YEAR_MIN;
       draw(true);
@@ -301,7 +306,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   function stopPlay() {
     playing = false; clearInterval(playTimer); playTimer = null;
-    btnPlay.html('<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg>').style('background', UI_ACTIVE);
+    btnPlay.html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>').style('background', UI_ACTIVE);
   }
 
   const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');

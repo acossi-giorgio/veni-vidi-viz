@@ -14,10 +14,13 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     d3.csv('datasets/processed/child_labor.csv', d3.autoType),
   ]);
 
-  const AFRICA = getContinentColor('Africa', '#c96a3d');
-  const RISK_HIGH = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826'])[4];
-  const RISK_MID = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826'])[2];
-  const SAFE_COLOR = getMetricStops('migration', ['#e8f0ea', '#bfd0c2', '#86a78f', '#5d7f68', '#3f5947'])[2];
+  const RISK_STOPS = getMetricStops('risk', ['#FEE0D2', '#FDBBA1', '#FC9272', '#FB6A4A', '#DE2D26']);
+  const RISK_HIGH = RISK_STOPS[4];
+  const RISK_MID = RISK_STOPS[2];
+  const LOW_NEUTRAL = getUiColor('chartAxis', '#8a94a6');
+  const LOW_NEUTRAL_SOFT = typeof mixColors === 'function'
+    ? mixColors(LOW_NEUTRAL, '#ffffff', 0.45)
+    : '#c6ced6';
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
@@ -51,8 +54,8 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   const QUADRANT = [
     { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: RISK_HIGH, anchor: 'start'  },
     { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco · alto lavoro minorile',  color: RISK_MID, anchor: 'end'    },
-    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: AFRICA, anchor: 'start'  },
-    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: SAFE_COLOR, anchor: 'end'    },
+    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: LOW_NEUTRAL, anchor: 'start'  },
+    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: LOW_NEUTRAL_SOFT, anchor: 'end'    },
   ];
 
   function getQuadrant(d) {
@@ -120,8 +123,9 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       { x: mx, y: my, w: iw-mx, h: ih-my, q: QUADRANT[3] },
     ];
     qBg.forEach(({ x, y, w, h, q }) => {
+      const opacity = q.ySide === 'top' ? 0.09 : 0.045;
       g.append('rect').attr('x', x).attr('y', y).attr('width', w).attr('height', h)
-        .attr('fill', q.color).attr('opacity', 0.05);
+        .attr('fill', q.color).attr('opacity', opacity);
     });
 
     // Median lines
@@ -142,7 +146,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
       g.append('text').attr('x', lx).attr('y', ly)
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7.5 : 8.5).attr('font-weight', '600')
-        .attr('fill', q.color).attr('opacity', 0.6)
+        .attr('fill', q.color).attr('opacity', q.ySide === 'top' ? 0.78 : 0.72)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 
@@ -169,20 +173,40 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .on('mouseleave', hideTip);
     });
 
-    // Dots — colored by quadrant
+    // In this quadrant chart, dot color is part of the primary reading aid.
     g.selectAll('circle.dot').data(data, d => d.code).join(
       enter => enter.append('circle').attr('class', 'dot')
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
         .attr('r', 0).attr('fill', d => getQuadrant(d).color)
-        .attr('fill-opacity', 0).attr('stroke', '#fff').attr('stroke-width', 1)
+        .attr('fill-opacity', 0).attr('stroke', '#ffffff').attr('stroke-width', 0.9)
         .style('cursor', 'default')
-        .on('mousemove', showTip).on('mouseleave', hideTip)
+        .on('mouseover', function(event, d) {
+          d3.select(this)
+            .attr('fill-opacity', 0.98)
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 1.15)
+            .attr('r', 6.5);
+          showTip(event, d);
+        })
+        .on('mousemove', showTip)
+        .on('mouseleave', function() {
+          d3.select(this)
+            .attr('fill', d => getQuadrant(d).color)
+            .attr('fill-opacity', 0.84)
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 0.9)
+            .attr('r', 5);
+          hideTip();
+        })
         .call(s => s.transition().duration(600).ease(d3.easeCubicOut)
           .delay((_, i) => i * 8)
-          .attr('r', 5).attr('fill-opacity', 0.8)),
+          .attr('r', 5).attr('fill-opacity', 0.84)),
       update => update
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
         .attr('fill', d => getQuadrant(d).color)
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 0.9)
+        .attr('fill-opacity', 0.84)
     );
 
     // Axes
@@ -223,7 +247,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .style('top', compact ? '84px' : '92px')
       .style('right', compact ? '8px' : '12px')
       .style('width', LEG_W + 'px')
-      .style('background', '#ffffff')
+        .style('background', 'rgba(255,255,255,0.96)')
       .style('border', `1px solid ${UI_MUTED_BORDER}`)
       .style('border-radius', '8px')
       .style('padding', compact ? '8px 10px' : '10px 12px')
@@ -251,7 +275,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .style('height', compact ? '8px' : '9px')
         .style('border-radius', '50%')
         .style('background', q.color)
-        .style('opacity', '0.82')
+        .style('opacity', q.ySide === 'top' ? '0.92' : '0.82')
         .style('flex-shrink', '0');
 
       row.append('div')

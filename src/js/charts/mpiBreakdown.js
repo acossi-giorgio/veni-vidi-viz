@@ -9,10 +9,17 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   container.style.position = 'relative';
 
   const WORLD_ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
-  const GRADIENT_STOPS = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826']);
-  const COL_AFRICA = getContinentColor('Africa', '#c96a3d');
+  const AFRICA_BASE = getContinentColor('Africa', '#e66100');
+  const GRADIENT_STOPS = [
+    tintColor(AFRICA_BASE, 0.82),
+    tintColor(AFRICA_BASE, 0.6),
+    AFRICA_BASE,
+    shadeColor(AFRICA_BASE, 0.18),
+    shadeColor(AFRICA_BASE, 0.34),
+  ];
+  const COL_AFRICA = getThemeColor('mpi', getContinentColor('Africa', '#2a9d8f'));
   const COL_GREY = getUiColor('chartBaseFill', '#d6d0c5');
-  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE = getActColor(1, getUiColor('controlActive', '#525252'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
@@ -188,24 +195,24 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       const lo = edges[i];
       const hi = edges[i + 1];
       return {
+        lo,
+        hi,
         color: mpiColor((lo + hi) / 2),
-        label: `${lo.toFixed(2)}–${hi.toFixed(2)}`,
       };
     }).reverse();
   }
 
   function drawLegendCard(parent, x, y, title, maxW = null, maxH = null) {
     const rows = getLegendRows();
-    const colCount = 1;
-    const rowsPerCol = rows.length;
-    const SW = compact ? 10 : 12;
+    const SW = compact ? 12 : 14;
     const SH = compact ? 10 : 12;
-    const GAP = compact ? 3 : 4;
-    const LABEL_X = SW + (compact ? 6 : 7);
-    const colW = compact ? 84 : 96;
-    const rowH = SH + GAP;
-    const totalH = rowsPerCol * rowH + (compact ? 8 : 10) + rowH + (compact ? 12 : 14) + (compact ? 10 : 12);
-    const totalW = colW;
+    const GAP = 0;
+    const stackH = rows.length * SH + (rows.length - 1) * GAP;
+    const LABEL_X = SW + (compact ? 6 : 8);
+    const titleGap = compact ? 16 : 18;
+    const noDataGap = compact ? 6 : 8;
+    const totalH = titleGap + stackH + noDataGap + SH + (compact ? 12 : 14);
+    const totalW = compact ? 78 : 88;
     const outerW = totalW + 4;
     const outerH = totalH + 2;
     const pad = compact ? 10 : 12;
@@ -218,8 +225,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const lg = parent.append('g').attr('transform', `translate(${tx},${ty})`);
 
     lg.append('rect')
-      .attr('x', -10).attr('y', -6)
-      .attr('width', totalW + 14).attr('height', totalH + 8)
+      .attr('x', -8).attr('y', -5)
+      .attr('width', totalW + 10).attr('height', totalH + 6)
       .attr('rx', 8)
       .attr('fill', 'rgba(255,255,255,0.92)')
       .attr('stroke', UI_MUTED_BORDER)
@@ -233,26 +240,32 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('letter-spacing', '0.07em')
       .text(title.toUpperCase());
 
+    const stackY = titleGap;
     rows.forEach((row, i) => {
-      const cy = 18 + i * rowH;
-      const cx = 0;
+      const cy = stackY + i * (SH + GAP);
       lg.append('rect')
-        .attr('x', cx).attr('y', cy)
+        .attr('x', 0).attr('y', cy)
         .attr('width', SW).attr('height', SH)
-        .attr('rx', 3)
         .attr('fill', row.color);
       lg.append('text')
-        .attr('x', cx + LABEL_X).attr('y', cy + SH / 2 + 4)
+        .attr('x', LABEL_X)
+        .attr('y', cy + SH / 2 + 4)
         .attr('font-size', compact ? 8 : 9)
         .attr('fill', CHART_LABEL)
-        .text(row.label);
+        .text(
+          i === 0
+            ? `> ${row.lo.toFixed(2)}`
+            : i === rows.length - 1
+              ? `< ${row.hi.toFixed(2)}`
+              : row.hi.toFixed(2)
+        );
     });
 
-    const ndY = 18 + rowsPerCol * rowH + 6;
+    const ndY = stackY + stackH + noDataGap;
     lg.append('rect')
       .attr('x', 0).attr('y', ndY)
       .attr('width', SW).attr('height', SH)
-      .attr('rx', 3)
+      .attr('rx', 2)
       .attr('fill', noDataPattern)
       .attr('stroke', UI_MUTED_BORDER)
       .attr('stroke-width', 0.5);
@@ -341,14 +354,54 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('N° paesi');
 
+    const dirInk = shadeColor(COL_AFRICA, 0.18);
+    const dirFont = compact ? 9 : 10;
+    const arrowY = compact ? 14 : 16;
+    const arrowX2 = iw - 8;
+    const arrowX1 = arrowX2 - (compact ? 108 : 140);
+    const arrowHead = compact ? 6 : 7;
+
+    g.append('text')
+      .attr('x', arrowX2)
+      .attr('y', compact ? 3 : 5)
+      .attr('text-anchor', 'end')
+      .attr('font-size', dirFont)
+      .attr('font-weight', '600')
+      .attr('fill', dirInk)
+      .text('Verso destra l’MPI peggiora');
+
+    g.append('line')
+      .attr('x1', arrowX1)
+      .attr('x2', arrowX2)
+      .attr('y1', arrowY)
+      .attr('y2', arrowY)
+      .attr('stroke', dirInk)
+      .attr('stroke-width', 1.8);
+
+    g.append('line')
+      .attr('x1', arrowX2)
+      .attr('x2', arrowX2 - arrowHead)
+      .attr('y1', arrowY)
+      .attr('y2', arrowY - arrowHead)
+      .attr('stroke', dirInk)
+      .attr('stroke-width', 1.8);
+
+    g.append('line')
+      .attr('x1', arrowX2)
+      .attr('x2', arrowX2 - arrowHead)
+      .attr('y1', arrowY)
+      .attr('y2', arrowY + arrowHead)
+      .attr('stroke', dirInk)
+      .attr('stroke-width', 1.8);
+
     if (severeCut) {
       g.append('line')
         .attr('x1', xS(severeCut)).attr('x2', xS(severeCut))
         .attr('y1', 0).attr('y2', ih)
-        .attr('stroke', getUiColor('genderGirls', '#b05058')).attr('stroke-width', 1.5).attr('stroke-dasharray', '5,3');
+        .attr('stroke', shadeColor(COL_AFRICA, 0.18)).attr('stroke-width', 1.5).attr('stroke-dasharray', '5,3');
       g.append('text')
         .attr('x', xS(severeCut) + 4).attr('y', 14)
-        .attr('font-size', 9).attr('fill', getUiColor('genderGirls', '#b05058'))
+        .attr('font-size', 9).attr('fill', shadeColor(COL_AFRICA, 0.18))
         .text('soglia grave ->');
     }
 
@@ -502,7 +555,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
     drawLegendCard(
       g,
-      iw - (compact ? 120 : 138),
+      iw - (compact ? 96 : 110),
       ih - (compact ? 182 : 206),
       'MPI',
       iw,

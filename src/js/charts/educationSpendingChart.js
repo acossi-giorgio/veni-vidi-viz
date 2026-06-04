@@ -12,7 +12,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     'Africa': getContinentColor('Africa', '#c96a3d'),
     'Europe': getContinentColor('Europe', '#5169b2'),
   };
-  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE = getActColor(2, getUiColor('controlActive', '#5169b2'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
@@ -20,8 +20,6 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Africa', 'Europe'];
-  const COVERAGE_THRESHOLD = 0.8;
-  const COVERAGE_ALERT = '#c84d3a';
   const MAX_YEAR = 2022;
 
   const [spendRaw, incomeRaw, popRaw] = await Promise.all([
@@ -79,6 +77,13 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
   const veryCompact = isFullscreen && (W < 620 || H < 360);
+  const SERIES_STROKE_W = compact ? 2.2 : 2.5;
+  const SERIES_DOT_R = compact ? 4.2 : 4.8;
+  const SERIES_DOT_STROKE_W = compact ? 1.4 : 1.7;
+  const SERIES_DOT_STROKE = '#f7f7f5';
+  const LINE_DRAW_MS = 900;
+  const DOT_FADE_MS = 320;
+  const LABEL_FADE_MS = 220;
   const CONTROLS_SAFE_H = compact ? 58 : 74;
   const MARGIN = compact
     ? { top: CONTROLS_SAFE_H, right: veryCompact ? 48 : 56, bottom: 48, left: 54 }
@@ -155,7 +160,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)
     .attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '4,3').attr('opacity', 0).style('pointer-events', 'none');
   const crossDots = CONTS.map(cont => ({
-    cont, dot: g.append('circle').attr('r', compact ? 4 : 5).attr('fill', CONT_COLOR[cont]).attr('stroke', '#fff').attr('stroke-width', 1.5).attr('opacity', 0).style('pointer-events', 'none'),
+    cont, dot: g.append('circle').attr('r', SERIES_DOT_R).attr('fill', CONT_COLOR[cont]).attr('stroke', SERIES_DOT_STROKE).attr('stroke-width', SERIES_DOT_STROKE_W).attr('opacity', 0).style('pointer-events', 'none'),
   }));
 
   // Tooltip
@@ -218,7 +223,6 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     });
 
     yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
-    d3.select(container).selectAll('.coverage-legend').remove();
 
     coverageByYear = new Map(allYears.map((year) => {
       const stats = CONTS.map((cont) => {
@@ -249,67 +253,9 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
     chartG.selectAll('.mean-line').remove();
     chartG.selectAll('.mean-point').remove();
-    chartG.selectAll('.mean-point-alert').remove();
     g.selectAll('.end-label').remove();
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => currentYS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null);
-
-    const LEG_W = compact ? 120 : 140;
-    const legDiv = d3.select(container).append('div')
-      .attr('class', 'coverage-legend')
-      .style('position', 'absolute')
-      .style('top', compact ? '58px' : '64px')
-      .style('right', compact ? '8px' : '12px')
-      .style('width', LEG_W + 'px')
-      .style('background', 'rgba(255,255,255,0.94)')
-      .style('border', `1px solid ${UI_MUTED_BORDER}`)
-      .style('border-radius', '8px')
-      .style('padding', compact ? '9px 10px' : '11px 12px')
-      .style('z-index', '15')
-      .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
-
-    legDiv.append('div')
-      .style('font-size', compact ? '7px' : '8px')
-      .style('font-weight', '700')
-      .style('color', CHART_AXIS)
-      .style('letter-spacing', '0.07em')
-      .style('text-transform', 'uppercase')
-      .style('margin-bottom', compact ? '7px' : '9px')
-      .text('Copertura dati');
-
-    const legendRow1 = legDiv.append('div')
-      .style('display', 'flex')
-      .style('align-items', 'center')
-      .style('gap', '8px')
-      .style('margin-bottom', compact ? '5px' : '6px');
-
-
-    const legendRow2 = legDiv.append('div')
-      .style('display', 'flex')
-      .style('align-items', 'center')
-      .style('gap', '8px');
-
-    const iconWrap = legendRow2.append('div')
-      .style('position', 'relative')
-      .style('width', compact ? '14px' : '16px')
-      .style('height', compact ? '14px' : '16px')
-      .style('flex-shrink', '0');
-
-    iconWrap.append('div')
-      .style('position', 'absolute')
-      .style('left', '0')
-      .style('top', '0')
-      .style('width', compact ? '14px' : '16px')
-      .style('height', compact ? '14px' : '16px')
-      .style('border-radius', '50%')
-      .style('border', `1.6px dashed ${COVERAGE_ALERT}`)
-      .style('box-sizing', 'border-box');
-
-    legendRow2.append('div')
-      .style('font-size', compact ? '8px' : '9px')
-      .style('color', UI_MUTED_INK)
-      .style('line-height', '1.15')
-      .text('< 80%');
 
     CONTS.forEach(cont => {
       const col = CONT_COLOR[cont];
@@ -317,17 +263,17 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       if (!s) return;
 
       const meanPath = chartG.append('path').datum(s.mean).attr('class', 'mean-line')
-        .attr('fill', 'none').attr('stroke', col).attr('stroke-width', 2.5).attr('opacity', 0.9)
+        .attr('fill', 'none').attr('stroke', col).attr('stroke-width', SERIES_STROKE_W).attr('opacity', 0.9)
         .attr('d', lineFn);
 
-      meanPath.attr('stroke-linecap', 'round');
+      meanPath.attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
       const pathLength = meanPath.node()?.getTotalLength?.() || 0;
       if (pathLength > 0) {
         meanPath
-          .attr('stroke-dasharray', `${pathLength} ${pathLength}`)
-          .attr('stroke-dashoffset', pathLength)
-          .transition()
-          .duration(900)
+        .attr('stroke-dasharray', `${pathLength} ${pathLength}`)
+        .attr('stroke-dashoffset', pathLength)
+        .transition()
+          .duration(LINE_DRAW_MS)
           .ease(d3.easeCubicOut)
           .attr('stroke-dashoffset', 0);
       }
@@ -338,35 +284,15 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         .attr('class', `mean-point mean-point-${cont}`)
         .attr('cx', d => xS(d.year))
         .attr('cy', d => currentYS(d.mean))
-        .attr('r', compact ? 3.2 : 3.8)
+        .attr('r', SERIES_DOT_R)
         .attr('fill', col)
-        .attr('stroke', '#fffdf8')
-        .attr('stroke-width', 1.2)
+        .attr('stroke', SERIES_DOT_STROKE)
+        .attr('stroke-width', SERIES_DOT_STROKE_W)
         .attr('opacity', 0)
         .transition()
-        .delay(420)
-        .duration(320)
+        .delay(LINE_DRAW_MS + 60)
+        .duration(DOT_FADE_MS)
         .attr('opacity', 0.98);
-
-      chartG.selectAll(`.mean-point-alert-${cont}`)
-        .data(s.mean.filter(d => {
-          const pct = coverageByYear.get(d.year)?.stats.find(stat => stat.cont === cont)?.pct || 0;
-          return d.mean != null && pct < COVERAGE_THRESHOLD;
-        }))
-        .join('circle')
-        .attr('class', `mean-point-alert mean-point-alert-${cont}`)
-        .attr('cx', d => xS(d.year))
-        .attr('cy', d => currentYS(d.mean))
-        .attr('r', compact ? 5.6 : 6.6)
-        .attr('fill', 'none')
-        .attr('stroke', COVERAGE_ALERT)
-        .attr('stroke-width', 1.5)
-        .attr('stroke-dasharray', compact ? '2.2,1.6' : '2.6,1.8')
-        .attr('opacity', 0)
-        .transition()
-        .delay(520)
-        .duration(320)
-        .attr('opacity', 0.95);
 
       const last = s.mean[s.mean.length - 1];
       if (last) {
@@ -374,7 +300,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
           .attr('x', xS(last.year) + 5).attr('y', currentYS(last.mean) + 4)
           .attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', col).attr('opacity', 0)
           .text(compact ? cont : `${cont} ${fmtY(last.mean)}`)
-          .transition().duration(400).delay(1200).attr('opacity', 0.9);
+          .transition().duration(LABEL_FADE_MS).delay(LINE_DRAW_MS + DOT_FADE_MS + 120).attr('opacity', 0.9);
       }
     });
   }

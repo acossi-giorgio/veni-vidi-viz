@@ -12,11 +12,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   container.style.position = 'relative';
 
   const COL = {
-    Africa: getContinentColor('Africa', '#c96a3d'),
-    Europe: getContinentColor('Europe', '#5169b2'),
+    Africa: getContinentColor('Africa', '#2a9d8f'),
+    Europe: getContinentColor('Europe', '#4c78a8'),
   };
-  const COL_GIRLS = getUiColor('genderGirls', '#b05058');   // GPI < 1
-  const COL_BOYS  = getUiColor('genderBoys', '#5a7fbe');    // GPI > 1
+  const COL_GIRLS = getUiColor('genderGirls', '#2f6f6d');   // GPI < 1
+  const COL_BOYS  = getUiColor('genderBoys', '#6f8da6');    // GPI > 1
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
@@ -123,6 +123,72 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     return Math.log1p(normalized * 9) / Math.log1p(9) * duration;
   }
 
+  function computeBeeswarmLayout(items, xAccessor, centerX, centerY, radius, minY, maxY, padding = 1.5, maxXShift = 18) {
+    const placed = [];
+    const collisionDistance = radius * 2 + padding;
+    const collisionDistanceSq = collisionDistance * collisionDistance;
+    const isFree = (x, y) => placed.every(other => {
+      const dx = x - other.x;
+      const dy = y - other.y;
+      return (dx * dx + dy * dy) >= collisionDistanceSq - 1e-6;
+    });
+
+    return items
+      .map(item => ({ item, x: xAccessor(item) }))
+      .sort((a, b) => {
+        const dist = Math.abs(a.x - centerX);
+        const otherDist = Math.abs(b.x - centerX);
+        return dist - otherDist || a.x - b.x;
+      })
+      .map(node => {
+        let placedNode = null;
+        const xStep = 2;
+        const xOffsets = [0];
+        for (let offset = xStep; offset <= maxXShift; offset += xStep) {
+          xOffsets.push(-offset, offset);
+        }
+
+        for (const xOffset of xOffsets) {
+          const candidateX = node.x + xOffset;
+          const candidates = [centerY];
+
+          placed.forEach(other => {
+            const dx = candidateX - other.x;
+            if (Math.abs(dx) >= collisionDistance) return;
+            const dy = Math.sqrt(Math.max(0, collisionDistanceSq - dx * dx));
+            candidates.push(other.y - dy, other.y + dy);
+          });
+
+          const validY = candidates
+            .filter(y => y >= minY && y <= maxY)
+            .filter(y => isFree(candidateX, y))
+            .sort((a, b) => Math.abs(a - centerY) - Math.abs(b - centerY) || a - b);
+
+          let y = validY[0];
+          if (y == null) {
+            const step = 0.75;
+            const maxOffset = Math.ceil((maxY - minY) / step);
+            for (let i = 0; i <= maxOffset && y == null; i += 1) {
+              const up = centerY - (i * step);
+              const down = centerY + (i * step);
+              if (up >= minY && isFree(candidateX, up)) y = up;
+              else if (down <= maxY && isFree(candidateX, down)) y = down;
+            }
+          }
+          if (y == null) continue;
+
+          placedNode = { ...node, x: candidateX, y };
+          break;
+        }
+
+        if (placedNode == null) {
+          placedNode = { ...node, y: Math.max(minY, Math.min(maxY, centerY)) };
+        }
+        placed.push(placedNode);
+        return placedNode;
+      });
+  }
+
   function renderCurrentView(options = {}) {
     const { animateDrillBars = true } = options;
     root.selectAll('*').remove();
@@ -148,17 +214,16 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   ════════════════════════════════════════════════════════ */
   function drawOverview() {
     const M  = compact
-      ? { top: 28, right: 14, bottom: 38, left: veryCompact ? 62 : 76 }
-      : { top: 32, right: 28, bottom: 44, left: 110 };
+      ? { top: 42, right: 14, bottom: 64, left: veryCompact ? 62 : 76 }
+      : { top: 48, right: 28, bottom: 78, left: 110 };
     const iw = W - M.left - M.right;
     const ih = H - M.top - M.bottom;
     const g  = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
 
     const devs = countries.map(d => d.gpi - 1);
-    const [dMin, dMax] = d3.extent(devs);
     const maxAbsDev = d3.max(devs, d => Math.abs(d)) || 1;
     const xS = d3.scaleLinear()
-      .domain([Math.min(dMin - 0.04, -0.55), Math.max(dMax + 0.04, 0.24)])
+      .domain([-0.4, 0.3])
       .range([0, iw]);
 
     const bandH = ih / CONTS.length;
@@ -166,16 +231,18 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
 
     // colored zones: left = bambine escluse, right = bambini esclusi
     const parX = xS(0);
+    const zoneLabelY = compact ? -8 : -10;
+    const parityLabelY = zoneLabelY - (compact ? 12 : 14);
 
-    // zone labels — top of each zone
-    g.append('text').attr('x', parX / 2).attr('y', 14)
+    // zone labels
+    g.append('text').attr('x', parX / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
       .attr('fill', COL_GIRLS).attr('opacity', 0.7).style('pointer-events','none')
-      .text('più bambini a scuola');
-    g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', 14)
+      .text('meno ragazze iscritte');
+    g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
       .attr('fill', COL_BOYS).attr('opacity', 0.7).style('pointer-events','none')
-      .text('più bambine a scuola');
+      .text('meno ragazzi iscritti');
 
     // gridlines
     xS.ticks(8).forEach(t => {
@@ -187,18 +254,32 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     // parity dashed line + label
     g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
       .attr('stroke',CHART_AXIS).attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
-    g.append('text').attr('x',parX).attr('y',-10)
+    g.append('text').attr('x',parX).attr('y',parityLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS).text('parità');
+
+    const fmtGpiTick = d => {
+      const gpi = d + 1;
+      return Math.abs(gpi - 1) < 1e-9 ? '1.00' : gpi.toFixed(2);
+    };
 
     // x axis
     g.append('g').attr('transform',`translate(0,${ih})`)
       .call(d3.axisBottom(xS).ticks(8)
-        .tickFormat(d => d === 0 ? '0' : d > 0 ? `+${d.toFixed(2)}` : d.toFixed(2)))
+        .tickFormat(fmtGpiTick))
       .call(ax => {
         ax.select('.domain').remove();
         ax.selectAll('.tick text').attr('font-size',compact ? 8.5 : 10).attr('fill',CHART_AXIS);
         ax.selectAll('.tick line').attr('stroke',UI_MUTED_BORDER);
       });
+
+    g.append('text')
+      .attr('x', iw / 2)
+      .attr('y', ih + (compact ? 28 : 34))
+      .attr('text-anchor', 'middle')
+      .attr('font-size', compact ? 8.5 : 10)
+      .attr('font-weight', '600')
+      .attr('fill', CHART_AXIS)
+      .text('Indice di parità di genere (GPI)');
 
     // bands
     CONTS.forEach((cont, i) => {
@@ -256,29 +337,25 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         .attr('y1',cy - bandH*0.35).attr('y2',cy + bandH*0.35)
         .attr('stroke',color).attr('stroke-width',2).attr('opacity',0.5);
 
-      // dots with bin jitter
-      const binSz = 0.02;
-      const bins  = new Map();
-      rows.forEach(d => {
-        const k = Math.round((d.gpi-1)/binSz);
-        if (!bins.has(k)) bins.set(k,[]);
-        bins.get(k).push(d);
-      });
-      const maxBin = d3.max([...bins.values()], v => v.length);
-      const jScale = Math.min((bandH*0.38)/Math.max(maxBin,1), DOT_R * 2.2);
+      // dots with true beeswarm packing around the row center
+      const swarm = computeBeeswarmLayout(
+        rows,
+        d => xS(d.gpi - 1),
+        parX,
+        cy,
+        DOT_R,
+        cy - bandH * 0.4,
+        cy + bandH * 0.4,
+        2
+      );
 
-      rows.forEach(d => {
+      swarm.forEach(({ item: d, x, y }) => {
         const dev  = d.gpi - 1;
         const fill = color;
-        const k    = Math.round(dev/binSz);
-        const peers = bins.get(k);
-        const rank  = peers.indexOf(d);
-        const jit   = (rank - (peers.length-1)/2) * jScale;
 
         g.append('circle')
-          .attr('cx', xS(dev)).attr('cy', cy + jit)
+          .attr('cx', x).attr('cy', y)
           .attr('r', 0).attr('fill', fill).attr('opacity', 0)
-          .attr('stroke','#fff').attr('stroke-width',0.8)
           .style('cursor','pointer')
           .on('mouseover', function() {
             d3.select(this).attr('opacity',1).attr('r', DOT_R + 2);
@@ -317,9 +394,9 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 
-    // Fixed domain [0.6, 1.4] — same for all continents so drill-downs are comparable
+    // Fixed domain [0.6, 1.3] — same for all continents so drill-downs are comparable
     const yS = d3.scaleLinear()
-      .domain([0.6, 1.4])
+      .domain([0.6, 1.3])
       .range([ih, 0]);
     const parY = yS(1.0); // parity line = centro esatto
 

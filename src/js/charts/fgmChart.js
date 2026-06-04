@@ -8,7 +8,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   container.innerHTML = '';
   container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;width:100%;height:100%;min-width:0;min-height:0;align-items:stretch;justify-content:flex-start;';
 
-  const UI_ACTIVE = getUiColor('controlActive', '#a44742');
+  const UI_ACTIVE = getActColor(3, getUiColor('controlActive', '#525252'));
   const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
@@ -21,7 +21,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   const CHART_NODATA = getUiColor('chartNoDataFill', '#c3baad');
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
-  const RISK_STOPS = getMetricStops('risk', ['#f4e3de', '#e5aea4', '#cf7669', '#aa4943', '#782826']);
+  const RISK_STOPS = getMetricStops('fgm', ['#f3e3ec', '#e2bfd2', '#cc94b4', '#b05c91', '#7f3b68']);
   const HIGHLIGHT = shadeColor(UI_ACTIVE, 0.2);
   const MAX_BAR_VALUE = 100;
   const OVERVIEW_MAX_BAR_VALUE = 25;
@@ -36,12 +36,13 @@ async function renderFgmChart(selector, isFullscreen = false) {
     { key: 'fourth', label: 'Fourth' },
     { key: 'richest', label: 'Richest' },
   ];
+  const quintileGradient = window.CHART_COLORS?.gradients?.fgmQuintiles || {};
   const QUINTILE_COLORS = new Map([
-    ['poorest', '#b44a3f'],
-    ['second', '#d48a2f'],
-    ['middle', '#6d9f46'],
-    ['fourth', '#4a8f88'],
-    ['richest', '#6c74b7'],
+    ['poorest', quintileGradient.poorest || '#7f3b68'],
+    ['second', quintileGradient.second || '#b05c91'],
+    ['middle', quintileGradient.middle || '#cc94b4'],
+    ['fourth', quintileGradient.fourth || '#e2bfd2'],
+    ['richest', quintileGradient.richest || '#f3e3ec'],
   ]);
   const [rowsRaw, atlas, countryCodeRaw] = await Promise.all([
     d3.csv('datasets/processed/fgm_quintile_prevalence.csv', d3.autoType),
@@ -89,6 +90,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   numToCode.set(729, 'SDN');
   const africaCodes = new Set(countryMeta.filter((d) => d.continent === 'Africa').map((d) => d.code));
   const codeToName = new Map(countryMeta.map((d) => [d.code, d.country]));
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   let mode = 'bar';
   let selectedCode = maxMeanRow.code;
@@ -268,9 +270,9 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .data((d) => d.values.map((entry) => ({ ...entry, quintile: d.quintile, quintileKey: d.quintileKey })))
       .join('rect')
       .attr('x', (d) => x1(d.series) + ((x1.bandwidth() * (1 - barWidthRatio)) / 2))
-      .attr('y', (d) => y(Math.max(0, d.value)))
+      .attr('y', innerH)
       .attr('width', x1.bandwidth() * barWidthRatio)
-      .attr('height', (d) => Math.max(0, innerH - y(Math.max(0, d.value))))
+      .attr('height', 0)
       .attr('rx', 4)
       .attr('fill', (d) => {
         const base = getQuintileColor(d.quintileKey);
@@ -286,7 +288,13 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .on('mousemove', (event, d) => {
         showTooltip(event, `<strong>${d.quintile}</strong><br>${d.series}: ${d.value.toFixed(1)}%`);
       })
-      .on('mouseleave', hideTooltip);
+      .on('mouseleave', hideTooltip)
+      .transition()
+      .delay((d, i) => prefersReducedMotion ? 0 : i * 55)
+      .duration(prefersReducedMotion ? 0 : 650)
+      .ease(d3.easeCubicOut)
+      .attr('y', (d) => y(Math.max(0, d.value)))
+      .attr('height', (d) => Math.max(0, innerH - y(Math.max(0, d.value))));
 
     if (isGrouped) {
       const legend = svg.append('g')
@@ -344,15 +352,18 @@ async function renderFgmChart(selector, isFullscreen = false) {
       { label: '20-39%', color: color(20) },
       { label: '0-19%', color: color(0) },
     ];
-    const sw = 15;
-    const sh = 15;
-    const rowH = 21;
-    const cardW = 136;
-    const cardH = 184;
-    const leftPad = 16;
-    const topPad = 15;
+    const sw = 14;
+    const sh = 14;
+    const gap = 0;
+    const stackH = rowsLegend.length * sh + (rowsLegend.length - 1) * gap;
+    const cardW = 122;
+    const cardH = 140;
+    const leftPad = 14;
+    const topPad = 12;
+    const titleGap = 16;
+    const noDataGap = 6;
     const valueX = leftPad + sw + 8;
-    const rowsTop = topPad + 27;
+    const rowsTop = topPad + titleGap;
     const lg = svg.append('g').attr('transform', `translate(${x},${y})`);
 
     lg.append('rect')
@@ -377,13 +388,12 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .text('FGM MEDIA');
 
     rowsLegend.forEach((row, i) => {
-      const yy = rowsTop + i * rowH;
+      const yy = rowsTop + i * (sh + gap);
       lg.append('rect')
         .attr('x', leftPad)
         .attr('y', yy)
         .attr('width', sw)
         .attr('height', sh)
-        .attr('rx', 3)
         .attr('fill', row.color);
       lg.append('text')
         .attr('x', valueX)
@@ -395,13 +405,13 @@ async function renderFgmChart(selector, isFullscreen = false) {
         .text(row.label);
     });
 
-    const ndY = rowsTop + rowsLegend.length * rowH + 11;
+    const ndY = rowsTop + stackH + noDataGap;
     lg.append('rect')
       .attr('x', leftPad)
       .attr('y', ndY)
       .attr('width', sw)
       .attr('height', sh)
-      .attr('rx', 3)
+      .attr('rx', 2)
       .attr('fill', noDataPattern)
       .attr('stroke', UI_MUTED_BORDER)
       .attr('stroke-width', 0.5);

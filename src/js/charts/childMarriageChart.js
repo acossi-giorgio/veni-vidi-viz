@@ -26,14 +26,14 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
   const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
 
-  const AFRICA = getContinentColor('Africa', '#c96a3d');
-  const EUROPE = getContinentColor('Europe', '#5169b2');
-  const C_BY15  = shadeColor(AFRICA, 0.38);
-  const C_BY18  = tintColor(AFRICA, 0.24);
-  const C_EU_BY15 = shadeColor(EUROPE, 0.22);
-  const C_EU_BY18 = tintColor(EUROPE, 0.28);
+  const AFRICA = getThemeColor('childMarriage', getContinentColor('Africa', '#d46a4c'));
+  const EUROPE = getThemeColor('europe', getContinentColor('Europe', '#4c78a8'));
+  const C_BY15  = shadeColor(AFRICA, 0.28);
+  const C_BY18  = tintColor(AFRICA, 0.18);
+  const C_EU_BY15 = shadeColor(EUROPE, 0.18);
+  const C_EU_BY18 = tintColor(EUROPE, 0.24);
   const C_EMPTY = getUiColor('chartBaseFill', '#d6d0c5');
-  const UI_ACTIVE = getUiColor('controlActive', '#5169b2');
+  const UI_ACTIVE = getActColor(3, getUiColor('controlActive', '#525252'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
