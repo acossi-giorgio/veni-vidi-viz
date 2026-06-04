@@ -305,8 +305,36 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   }
 
   const timelineWrap = playerBar.append('div').style('flex', '1').style('position', 'relative').style('padding', '0 4px');
-  const labelRow = timelineWrap.append('div').style('display', 'flex').style('justify-content', 'space-between').style('font-size', '8.5px').style('color', CHART_AXIS).style('margin-bottom', '2px').style('pointer-events', 'none');
-  incomeYears.filter((y, i) => i % 5 === 0 || i === incomeYears.length - 1).forEach(y => labelRow.append('span').text(y));
+  const labelRow = timelineWrap.append('div')
+    .style('position', 'relative')
+    .style('height', compact ? '11px' : '12px')
+    .style('font-size', '8.5px')
+    .style('color', CHART_AXIS)
+    .style('margin-bottom', '2px')
+    .style('pointer-events', 'none');
+
+  const yearSpan = Math.max(1, YEAR_MAX - YEAR_MIN);
+  const yearTicks = [];
+  for (let y = YEAR_MIN; y <= YEAR_MAX; y += 1) {
+    if ((y - YEAR_MIN) % 5 === 0 || y === YEAR_MAX) yearTicks.push(y);
+  }
+
+  yearTicks.forEach((y, idx) => {
+    const pct = ((y - YEAR_MIN) / yearSpan) * 100;
+    const tick = labelRow.append('span')
+      .style('position', 'absolute')
+      .style('left', `${pct}%`)
+      .style('line-height', '1')
+      .text(y);
+
+    if (idx === 0) {
+      tick.style('transform', 'translateX(0%)').style('text-align', 'left');
+    } else if (idx === yearTicks.length - 1) {
+      tick.style('transform', 'translateX(-100%)').style('text-align', 'right');
+    } else {
+      tick.style('transform', 'translateX(-50%)').style('text-align', 'center');
+    }
+  });
 
   const sliderEl = timelineWrap.append('input').attr('type', 'range')
     .attr('min', YEAR_MIN).attr('max', YEAR_MAX).attr('step', 1).attr('value', currentYear)
