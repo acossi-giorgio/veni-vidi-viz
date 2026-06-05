@@ -20,6 +20,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Africa', 'Europe'];
+  const MIN_YEAR = 2000;
   const MAX_YEAR = 2022;
 
   const [spendRaw, incomeRaw, popRaw] = await Promise.all([
@@ -34,7 +35,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   popRaw.forEach(d => { if (d.code && d.value != null) popByYear.set(`${d.code}|${d.year}`, d.value); });
 
   const spendData = spendRaw.filter(d =>
-    d.value != null && d.year <= MAX_YEAR &&
+    d.value != null && d.year >= MIN_YEAR && d.year <= MAX_YEAR &&
     (d.continent === 'Africa' || d.continent === 'Europe')
   );
 
@@ -70,7 +71,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   }
 
   const allYears = [...new Set(spendData.map(d => d.year))].sort((a, b) => a - b);
-  const xDomain  = [allYears[0], MAX_YEAR];
+  const xDomain  = [MIN_YEAR, MAX_YEAR];
 
   // ── Layout ───────────────────────────────────────────────
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);

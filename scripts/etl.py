@@ -1,6 +1,8 @@
 import os
 import unicodedata
 import re
+import json
+import urllib.request
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,6 +11,7 @@ OUT = os.path.join(ROOT, "src", "datasets", "processed")
 os.makedirs(OUT, exist_ok=True)
 
 MIN_YEAR, MAX_YEAR = 2000, 2025
+HISTORY_MIN_YEAR = 1995
 YEAR_MAX_LIFE = 2023
 YEAR_MAX_POP  = 2023
 YEAR_MAX_EDU  = 2022
@@ -415,12 +418,42 @@ def year_range(df, lo=MIN_YEAR, hi=MAX_YEAR):
 def normalise(s):
     return unicodedata.normalize("NFKD", str(s)).lower().strip()
 
+def fetch_income_history_from_world_bank(start_year=HISTORY_MIN_YEAR, end_year=MIN_YEAR - 1):
+    url = (
+        "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.CD"
+        f"?format=json&per_page=25000&date={start_year}:{end_year}"
+    )
+    with urllib.request.urlopen(url, timeout=60) as response:
+        payload = json.load(response)
+
+    rows = []
+    for item in payload[1]:
+        code = item.get("countryiso3code")
+        year = item.get("date")
+        value = item.get("value")
+        if not code or code not in CODE_CONTINENT or value is None:
+            continue
+        try:
+            year_int = int(year)
+        except (TypeError, ValueError):
+            continue
+        if not (start_year <= year_int <= end_year):
+            continue
+        rows.append({
+            "Country Name": CODE_NAME.get(code, item.get("country", {}).get("value", code)),
+            "Code": code,
+            "Year": year_int,
+            "GDP_Per_Capita (USD)": value,
+            "Continent": CODE_CONTINENT.get(code),
+        })
+    return pd.DataFrame(rows)
+
 def make_edu_spending():
     try:
         df = pd.read_csv(os.path.join(RAW, "education_spending_raw.csv"), skiprows=4, encoding="utf-8-sig")
         df = df.rename(columns={"Country Name": "country", "Country Code": "code"})
         df = df[df["code"].str.len() == 3]
-        year_cols = [c for c in df.columns if str(c).isdigit() and MIN_YEAR <= int(c) <= YEAR_MAX_EDU]
+        year_cols = [c for c in df.columns if str(c).isdigit() and HISTORY_MIN_YEAR <= int(c) <= YEAR_MAX_EDU]
         melted = df.melt(id_vars=["code", "country"], value_vars=year_cols,
                          var_name="year", value_name="value")
         melted["year"] = melted["year"].astype(int)
@@ -443,7 +476,7 @@ def make_literacy():
             raise FileNotFoundError("literacy raw file not found")
         df = owid_rename(df)
         df = filter_countries(df)
-        df = year_range(df, hi=YEAR_MAX_EDU)
+        df = year_range(df, lo=HISTORY_MIN_YEAR, hi=YEAR_MAX_EDU)
         df = df[df["value"].notna()]
         save("youth_literacy.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
@@ -453,6 +486,11 @@ def make_literacy():
 def make_income():
     try:
         df = pd.read_csv(os.path.join(RAW, "income_raw.csv"))
+        if df["Year"].min() > HISTORY_MIN_YEAR:
+            hist_df = fetch_income_history_from_world_bank()
+            if not hist_df.empty:
+                df = pd.concat([df, hist_df], ignore_index=True)
+                df = df.drop_duplicates(subset=["Code", "Year"], keep="first")
         df = df.rename(columns={
             "Country Name": "country", "Code": "code",
             "Year": "year", "GDP_Per_Capita (USD)": "value",
@@ -461,7 +499,7 @@ def make_income():
         df["continent"] = df["code"].map(CODE_CONTINENT)
         df = df[df["continent"].notna()]
         df["year"] = df["year"].astype(int)
-        df = df[df["year"].between(MIN_YEAR, MAX_YEAR)]
+        df = df[df["year"].between(HISTORY_MIN_YEAR, MAX_YEAR)]
         df = df.dropna(subset=["value"])
         save("income.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
@@ -482,7 +520,7 @@ def make_population():
             df["pop_5_9"].fillna(0) + df["pop_10_14"].fillna(0) + df["pop_15_19"].fillna(0) * 0.6
         ) * 1000
         df["year"] = df["year"].astype(int)
-        df = df[df["year"].between(MIN_YEAR, YEAR_MAX_POP)]
+        df = df[df["year"].between(HISTORY_MIN_YEAR, YEAR_MAX_POP)]
         df["continent"] = df["code"].map(CODE_CONTINENT)
         df["country"]   = df["code"].map(CODE_NAME)
         df = df[df["continent"].notna() & df["country"].notna()]
@@ -578,7 +616,7 @@ def make_out_of_school():
             df.columns[3]: "value",
         })
         df = filter_countries(df)
-        df = year_range(df, hi=YEAR_MAX_EDU)
+        df = year_range(df, lo=HISTORY_MIN_YEAR, hi=YEAR_MAX_EDU)
         df = df[df["value"].notna()]
         save("out_of_school_children.csv",
              df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))

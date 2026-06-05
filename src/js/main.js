@@ -528,14 +528,14 @@ const CHART_HELP_NOTES = {
     'Interazioni: hover per dettagli, click per drill-down e pulsante back per tornare alla vista aggregata.'
   ].join('\n'),
   'chart-3-3': [
-    'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale di Africa ed Europa. Il pannello sotto sintetizza, anno per anno, il rapporto tra variazione dell\'outcome e variazione della spesa.',
+    'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale di Africa ed Europa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
     'Pannello sopra: ogni punto corrisponde a un anno aggregato per continente. Sull\'asse X trovi la spesa in istruzione, espressa in % del PIL o in USD. Sull\'asse Y trovi alfabetizzazione o bambini fuori scuola, a seconda della metrica selezionata.',
-    'Pannello sotto: qui vedi l\'indice corretto annuale. L\'indice confronta il cambiamento dell\'outcome con la variazione di spesa tra un anno e il successivo.',
-    'Formula: I = ΔOutcome / |ΔSpesa|',
-    'Definizioni: ΔOutcome = Outcome(t) - Outcome(t-1). ΔSpesa = Spesa(t) - Spesa(t-1). Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
+    'Pannello sotto: qui vedi l\'indice corretto sulla finestra selezionata. L\'indice confronta il trend dell\'outcome con il trend della spesa su finestre di 1, 3 o 5 anni.',
+    'Formula: I = slope(Outcome) / |slope(Spesa)|',
+    'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate nella finestra selezionata. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
     'Direzione outcome: con Alfabetizzazione, un aumento è positivo. Con Fuori scuola, una diminuzione è positiva: il segno viene quindi corretto internamente.',
-    'Interpretazione: se I > 0, l\'outcome migliora rispetto alla variazione di spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la variazione. L\'asse dell\'indice usa una scala logaritmica per mantenere leggibili anche i picchi più estremi.',
-    'Interazioni: usa i toggle per cambiare metrica e focus. Passa sui punti, sopra e sotto, per leggere valori annuali e delta.'
+    'Interpretazione: se I > 0, l\'outcome migliora rispetto al trend della spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la dinamica media nella finestra. L\'asse dell\'indice usa una scala lineare centrata su zero.',
+    'Interazioni: usa i toggle per cambiare metrica e focus, e il selettore per cambiare l\'aggregazione tra 1, 3 e 5 anni. Passa sui punti, sopra e sotto, per leggere valori annuali, finestra considerata e indice calcolato.'
   ].join('\n'),
   'chart-4-1': [
     'Scatter per paesi africani: ogni punto è un paese.',
@@ -765,11 +765,12 @@ const CHART_HELP_BUILDERS = {
     const outcome = chart.yMode === 'oos' ? 'bambini fuori scuola' : 'alfabetizzazione';
     const xLabel = 'spesa in istruzione in USD assoluti';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
+    const windowYears = chart.aggregationWindow || 5;
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto confronti la traiettoria annuale di Africa ed Europa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto alla variazione della spesa.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto confronti la traiettoria annuale di Africa ed Europa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
         },
         {
           label: 'Grafico sopra',
@@ -777,11 +778,11 @@ const CHART_HELP_BUILDERS = {
         },
         {
           label: 'Grafico sotto',
-          text: 'Asse X = anno. Asse Y = indice corretto annuale. Formula: I = ΔOutcome / |ΔSpesa|. Il grafico confronta la variazione dell\'outcome con la variazione di spesa tra un anno e il successivo. In modalità Fuori scuola, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente.',
+          text: `Asse X = anno. Asse Y = indice corretto su ${windowYears} anni. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nella finestra che termina nell'anno t. In modalità Fuori scuola, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente.`,
         },
         {
           label: 'Interazioni possibili',
-          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, delta e indice calcolato.',
+          text: 'Puoi cambiare continente e metrica con i pulsanti in alto e scegliere l aggregazione tra 1, 3 e 5 anni. Passa sui punti del pannello sopra e sotto per leggere valori annuali, finestra considerata, trend stimato e indice calcolato.',
         },
       ],
     };
