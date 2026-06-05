@@ -1431,9 +1431,7 @@ function initNavbar() {
   };
 
   const updateNavbarTheme = () => {
-    const navbarHeight = navbar.getBoundingClientRect().height || 0;
-    const heroBottom = hero?.getBoundingClientRect().bottom ?? 0;
-    const isInHero = isHome && heroBottom > navbarHeight + 24;
+    const isInHero = isHome && window.scrollY <= 0;
     const isScrolled = !isInHero;
     navbar.classList.toggle('is-scrolled', isScrolled);
     navbar.classList.toggle('is-transparent', isInHero);
