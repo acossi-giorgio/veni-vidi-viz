@@ -8,12 +8,22 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
+  <body class="page-shell">
 
-    <nav class="navbar">
-      <div class="navbar-inner">
-        <a class="navbar-brand" href="index.html">Veni Vidi Viz</a>
-        <span class="navbar-tagline">Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto.</span>
+    <nav class="site-navbar is-scrolled" aria-label="Navigazione principale" data-navbar>
+      <div class="site-navbar-inner">
+        <button class="site-navbar-toggle" type="button" aria-expanded="false" aria-controls="site-navbar-menu" aria-label="Apri navigazione">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="site-navbar-menu" id="site-navbar-menu">
+          <a class="site-navbar-link" href="index.html">Home</a>
+          <a class="site-navbar-link" href="datasets.html">Dataset</a>
+          <a class="site-navbar-link" href="process.html">Processo</a>
+          <a class="site-navbar-link is-current" href="about.html" aria-current="page">Chi siamo</a>
+        </div>
       </div>
     </nav>
 
@@ -54,12 +64,6 @@
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <nav class="footer-nav">
-          <a href="index.html">Home</a>
-          <a href="datasets.html">Dataset</a>
-          <a href="process.html">Processo</a>
-          <a href="about.html" aria-current="page">Chi Siamo</a>
-        </nav>
         <p class="footer-meta">&copy; 2026 Veni Vidi Viz — Un progetto di visualizzazione dati.</p>
       </div>
     </footer>

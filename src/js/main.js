@@ -102,13 +102,11 @@ function getThemeColor(theme, fallback = '') {
 }
 
 function getActColor(act, fallback = '') {
-  if (act == null) return fallback;
-  return getCssToken(`accent-${act}`, fallback);
+  return getCssToken('control-active', getCssToken('accent-1', fallback));
 }
 
 function getActColorStrong(act, fallback = '') {
-  if (act == null) return fallback;
-  return getCssToken(`accent-${act}-strong`, fallback);
+  return getCssToken('control-active-strong', getCssToken('accent-1-strong', fallback));
 }
 
 function getCountryPalette(fallback = []) {
@@ -661,10 +659,10 @@ async function loadMissingDataNotesFromCsv() {
       noDataSet.forEach((country) => incompleteSet.delete(country));
       const noData = Array.from(noDataSet).sort((a, b) => a.localeCompare(b));
       const incomplete = Array.from(incompleteSet).sort((a, b) => a.localeCompare(b));
-      const line1 = `PAESI SENZA DATI: ${noData.length ? noData.join('; ') : 'nessuno.'}`;
+      const line1 = `PAESI SENZA DATI: ${noData.length ? noData.join(', ') : 'Nessuno.'}`;
       const line2 = CHART_LATEST_VALUE_MISSING_NOTE.has(chartId)
-        ? 'PAESI CON DATI INCOMPLETI: non necessario per questa visualizzazione. Il grafico mostra l\'ultimo valore disponibile per ciascun paese e i dati non sono necessariamente allineati allo stesso anno.'
-        : `PAESI CON DATI INCOMPLETI: ${incomplete.length ? incomplete.join('; ') : 'nessuno.'}`;
+        ? 'PAESI CON DATI INCOMPLETI: Non necessario per questa visualizzazione. Il grafico mostra l\'ultimo valore disponibile per ciascun paese e i dati non sono necessariamente allineati allo stesso anno.'
+        : `PAESI CON DATI INCOMPLETI: ${incomplete.length ? incomplete.join(', ') : 'Nessuno.'}`;
       nextNotes[chartId] = [line1, line2].join('\n');
     });
 
@@ -896,8 +894,7 @@ function updateFullscreenModalMeta(chartId) {
   const section = chartRoot?.closest('section[data-act]') || activeCard?.closest('section[data-act]');
   const act = section?.dataset.act;
 
-  if (act) modal.style.setProperty('--fullscreen-accent', `var(--accent-${act})`);
-  else modal.style.removeProperty('--fullscreen-accent');
+  modal.style.setProperty('--fullscreen-accent', 'var(--control-active)');
 
   kickerEl.textContent = act ? `Atto ${act}` : 'Grafico interattivo';
   titleEl.textContent = chartTitle || activeCard?.querySelector('h3')?.textContent?.trim() || 'Grafico interattivo';
@@ -951,7 +948,7 @@ async function renderInlineChartsIfNeeded() {
 
 /* ── Init ────────────────────────────────────────────────── */
 async function init() {
-  initProgressBar();
+  initNavbar();
   initHeroCarousel();
   initMobilePlaceholders();
   initFullscreenModal();
@@ -1375,8 +1372,6 @@ function initMobilePlaceholders() {
     ph.setAttribute('role', 'button');
     ph.setAttribute('tabindex', '0');
     ph.setAttribute('aria-label', 'Apri grafico interattivo a schermo intero');
-    const act = box.closest('section[data-act]')?.dataset.act;
-    if (act) ph.style.setProperty('--placeholder-accent', `var(--accent-${act})`);
     ph.innerHTML = `
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" fill="none"/><path d="M2 12h20M12 2v20" stroke="currentColor" stroke-dasharray="4 3"/></svg>
       <span class="chart-mobile-placeholder-title">Grafico interattivo</span>
@@ -1395,32 +1390,124 @@ function initMobilePlaceholders() {
   });
 }
 
-/* ── Progress Bar ────────────────────────────────────────── */
-function initProgressBar() {
-  const segments = document.querySelectorAll('.act-segment');
-  if (!segments.length) return;
+/* ── Navbar ──────────────────────────────────────────────── */
+function initNavbar() {
+  const navbar = document.querySelector('[data-navbar]');
+  if (!navbar) return;
 
-  // Click → scroll to act
-  segments.forEach(seg => {
-    seg.addEventListener('click', () => {
-      const target = document.querySelector(seg.dataset.target);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+  const menu = navbar.querySelector('.site-navbar-menu');
+  const toggle = navbar.querySelector('.site-navbar-toggle');
+  const storyNav = document.querySelector('[data-story-nav]');
+  const storyToggle = storyNav?.querySelector('.story-nav-toggle');
+  const storyPanel = storyNav?.querySelector('.story-nav-panel');
+  const sectionLinks = Array.from(document.querySelectorAll('.story-nav-link[data-act-link]'));
+  const actAnchors = document.querySelectorAll('.act-header[data-act], .chart-section[data-act]');
+  const isHome = document.body.classList.contains('home-page');
+  const hero = document.querySelector('.hero');
 
-  // Update active segment based on which act headers are above the fold
-  function update() {
+  const syncNavbarHeight = () => {
+    const navbarHeight = Math.round(navbar.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--navbar-h', `${navbarHeight}px`);
+  };
+
+  const closeMenu = () => {
+    if (!toggle) return;
+    navbar.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  const closeStoryNav = () => {
+    if (!storyNav || !storyToggle || !storyPanel) return;
+    storyNav.classList.remove('is-open');
+    storyToggle.setAttribute('aria-expanded', 'false');
+    storyPanel.hidden = true;
+  };
+
+  const openStoryNav = () => {
+    if (!storyNav || !storyToggle || !storyPanel) return;
+    storyNav.classList.add('is-open');
+    storyToggle.setAttribute('aria-expanded', 'true');
+    storyPanel.hidden = false;
+  };
+
+  const updateNavbarTheme = () => {
+    const navbarHeight = navbar.getBoundingClientRect().height || 0;
+    const heroBottom = hero?.getBoundingClientRect().bottom ?? 0;
+    const isInHero = isHome && heroBottom > navbarHeight + 24;
+    const isScrolled = !isInHero;
+    navbar.classList.toggle('is-scrolled', isScrolled);
+    navbar.classList.toggle('is-transparent', isInHero);
+
+    if (!storyNav || !sectionLinks.length || !actAnchors.length) return;
+
+    const showStoryNav = isHome && !isInHero;
+    storyNav.hidden = !showStoryNav;
+    if (!showStoryNav) {
+      closeStoryNav();
+      return;
+    }
+
     const mid = window.scrollY + window.innerHeight / 2;
     let active = '1';
-    document.querySelectorAll('[data-act]').forEach(el => {
+    actAnchors.forEach((el) => {
       const act = el.dataset.act;
       if (act && act !== '0' && el.offsetTop <= mid) active = act;
     });
-    segments.forEach(s => s.classList.toggle('is-active', s.dataset.act === active));
+    sectionLinks.forEach((link) => link.classList.toggle('is-active', link.dataset.actLink === active));
+  };
+
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => {
+      const nextExpanded = toggle.getAttribute('aria-expanded') !== 'true';
+      navbar.classList.toggle('is-open', nextExpanded);
+      toggle.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!navbar.contains(event.target)) closeMenu();
+    });
   }
 
-  window.addEventListener('scroll', update, { passive: true });
-  update();
+  if (storyToggle && storyPanel) {
+    storyToggle.addEventListener('click', () => {
+      const nextExpanded = storyToggle.getAttribute('aria-expanded') !== 'true';
+      if (nextExpanded) openStoryNav();
+      else closeStoryNav();
+    });
+
+    sectionLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        closeStoryNav();
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!storyNav.contains(event.target)) closeStoryNav();
+    });
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeMenu();
+      closeStoryNav();
+    }
+  });
+
+  window.addEventListener('scroll', updateNavbarTheme, { passive: true });
+  window.addEventListener('resize', debounce(() => {
+    syncNavbarHeight();
+    updateNavbarTheme();
+    if (window.innerWidth > 760) closeMenu();
+  }, 120));
+
+  syncNavbarHeight();
+  updateNavbarTheme();
 }
 
 /* ── Fullscreen Modal ────────────────────────────────────── */

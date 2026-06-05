@@ -398,8 +398,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const HOVER_BY18 = isEurope ? tintColor(EUROPE, 0.4) : tintColor(AFRICA, 0.4);
     const columns = [];
     let activeColumnIndex = -1;
+    let animating = !prefersReducedMotion;
 
     function styleColumn(c, { active = false, dimmed = false } = {}) {
+      if (animating) return;
       if (!c) return;
       const fade = dimmed ? INACTIVE_FADE : 1;
       const o18 = active ? 1 : BASE_OPACITY_BY18 * fade;
@@ -477,7 +479,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
             .duration(520)
             .ease(d3.easeCubicOut)
             .attr('y', barBottom - h15)
-            .attr('height', h15);
+            .attr('height', h15)
+            .on('end', () => { if (i === data.length - 1) animating = false; });
         }
         if (bar18) {
           bar18.transition()

@@ -8,15 +8,52 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
+  <body class="home-page">
 
-    <!-- ── 4-Act Progress Bar ─────────────────────────────── -->
-    <div id="act-progress" aria-label="Navigazione atti">
-      <button class="act-segment is-active" data-act="1" data-target="#act-1" title="Atto I — La mappa della diseguaglianza"></button>
-      <button class="act-segment" data-act="2" data-target="#act-2" title="Atto II — La scuola che non funziona"></button>
-      <button class="act-segment" data-act="3" data-target="#act-3" title="Atto III — L'infanzia rubata"></button>
-      <button class="act-segment" data-act="4" data-target="#act-4" title="Atto IV — La fuga e il paradosso"></button>
-    </div>
+    <nav class="site-navbar is-transparent" aria-label="Navigazione principale" data-navbar>
+      <div class="site-navbar-inner">
+        <button class="site-navbar-toggle" type="button" aria-expanded="false" aria-controls="site-navbar-menu" aria-label="Apri navigazione">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="site-navbar-menu" id="site-navbar-menu">
+          <a class="site-navbar-link is-current" href="index.html" aria-current="page">Home</a>
+          <a class="site-navbar-link" href="datasets.html">Dataset</a>
+          <a class="site-navbar-link" href="process.html">Processo</a>
+          <a class="site-navbar-link" href="about.html">Chi siamo</a>
+        </div>
+      </div>
+    </nav>
+
+    <aside class="story-nav" aria-label="Sezioni del racconto" data-story-nav>
+      <button class="story-nav-toggle" type="button" aria-expanded="false" aria-controls="story-nav-panel" aria-label="Apri sezioni">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="5.5" r="1.8" fill="currentColor"/>
+          <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
+          <circle cx="12" cy="18.5" r="1.8" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="story-nav-panel" id="story-nav-panel" hidden>
+        <a class="story-nav-link is-active" href="#act-1" data-act-link="1">
+          <span class="story-nav-link-kicker">Capitolo 1</span>
+          <span class="story-nav-link-title">Le fondamenta della disuguaglianza</span>
+        </a>
+        <a class="story-nav-link" href="#act-2" data-act-link="2">
+          <span class="story-nav-link-kicker">Capitolo 2</span>
+          <span class="story-nav-link-title">La scuola come un lusso per pochi</span>
+        </a>
+        <a class="story-nav-link" href="#act-3" data-act-link="3">
+          <span class="story-nav-link-kicker">Capitolo 3</span>
+          <span class="story-nav-link-title">L'infanzia rubata</span>
+        </a>
+        <a class="story-nav-link" href="#act-4" data-act-link="4">
+          <span class="story-nav-link-kicker">Capitolo 4</span>
+          <span class="story-nav-link-title">La fuga e il paradosso</span>
+        </a>
+      </div>
+    </aside>
 
     <main>
 
@@ -466,12 +503,6 @@
     <!-- ── Footer ─────────────────────────────────────────── -->
     <footer class="site-footer">
       <div class="footer-inner">
-        <nav class="footer-nav">
-          <a href="index.html" aria-current="page">Home</a>
-          <a href="datasets.html">Dataset</a>
-          <a href="process.html">Processo</a>
-          <a href="about.html">Chi Siamo</a>
-        </nav>
         <p class="footer-meta">&copy; 2026 Veni Vidi Viz — Un progetto di visualizzazione dati.</p>
       </div>
     </footer>

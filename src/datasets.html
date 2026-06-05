@@ -8,12 +8,22 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
+  <body class="page-shell">
 
-    <nav class="navbar">
-      <div class="navbar-inner">
-        <a class="navbar-brand" href="index.html">Veni Vidi Viz</a>
-        <span class="navbar-tagline">Dove il reddito è basso e l'istruzione fallisce, l'infanzia paga il prezzo più alto.</span>
+    <nav class="site-navbar is-scrolled" aria-label="Navigazione principale" data-navbar>
+      <div class="site-navbar-inner">
+        <button class="site-navbar-toggle" type="button" aria-expanded="false" aria-controls="site-navbar-menu" aria-label="Apri navigazione">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="site-navbar-menu" id="site-navbar-menu">
+          <a class="site-navbar-link" href="index.html">Home</a>
+          <a class="site-navbar-link is-current" href="datasets.html" aria-current="page">Dataset</a>
+          <a class="site-navbar-link" href="process.html">Processo</a>
+          <a class="site-navbar-link" href="about.html">Chi siamo</a>
+        </div>
       </div>
     </nav>
 
@@ -51,32 +61,47 @@
                 <tr>
                   <td>Aspettativa di vita</td>
                   <td><a href="https://ourworldindata.org/grapher/life-expectancy" target="_blank" rel="noopener">Our World in Data / UN WPP</a></td>
-                  <td>Aspettativa di vita alla nascita (anni)</td>
+                  <td>Aspettativa di vita alla nascita in anni</td>
                 </tr>
                 <tr>
                   <td>Alfabetizzazione giovanile</td>
-                  <td><a href="https://ourworldindata.org/grapher/literacy?time=1988&overlay=download-data&age_group=youth&sex=both" target="_blank" rel="noopener">Our World in Data / UNESCO UIS</a></td>
-                  <td>Tasso di alfabetizzazione tra i giovani (%)</td>
+                  <td><a href="https://ourworldindata.org/grapher/literacy" target="_blank" rel="noopener">Our World in Data / UNESCO UIS</a></td>
+                  <td>Tasso di alfabetizzazione tra i giovani con fascia d'età compresa tra 15 e 24 anni espresso in percentuale sulla popolazione totale della stessa fascia di età</td>
                 </tr>
                 <tr>
                   <td>Bambini fuori dalla scuola</td>
                   <td><a href="https://ourworldindata.org/grapher/out-of-school-children-of-primary-school-age-by-world-region" target="_blank" rel="noopener">Our World in Data / UNESCO UIS</a></td>
-                  <td>Bambini fuori dalla scuola primaria (n. assoluto)</td>
-                </tr>
-                <tr>
-                  <td>Disuguaglianza (Gini)</td>
-                  <td><a href="https://data.worldbank.org/indicator/SI.POV.GINI" target="_blank" rel="noopener">World Bank — SI.POV.GINI</a></td>
-                  <td>Coefficiente Gini (0–1)</td>
+                  <td>Bambini fuori dalla scuola primaria espresso in numero assoluto</td>
                 </tr>
                 <tr>
                   <td>Lavoro minorile</td>
                   <td><a href="https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor" target="_blank" rel="noopener">Our World in Data / ILO</a></td>
-                  <td>Bambini 5–17 anni in attività lavorativa (%)</td>
+                  <td>Bambini con fascia d'età compresa tra 5 e 17 anni in attività lavorativa espresso in percentuale sulla popolazione totale della stessa fascia di età</td>
+                </tr>
+                <tr>
+                  <td>Parità di genere (GPI secondaria)</td>
+                  <td><a href="https://data.worldbank.org/indicator/SE.ENR.SECO.FM.ZS" target="_blank" rel="noopener">World Bank — Gender Parity Index</a></td>
+                  <td>Gender Parity Index relativo alle iscrizioni di alla scuola secondaria</td>
+                </tr>
+                <tr>
+                  <td>Disuguaglianza (Gini)</td>
+                  <td><a href="https://data.worldbank.org/indicator/SI.POV.GINI" target="_blank" rel="noopener">World Bank — SI.POV.GINI</a></td>
+                  <td>Gini Index</td>
+                </tr>
+                <tr>
+                  <td>Reddito pro capite</td>
+                  <td><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD" target="_blank" rel="noopener">World Bank — NY.GDP.PCAP.PP.KD</a></td>
+                  <td>GDP pro capite espresso in termini di parità di potere d'acquisto e in dollari</td>
+                </tr>
+                <tr>
+                  <td>Spesa pubblica in istruzione</td>
+                  <td><a href="https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS" target="_blank" rel="noopener">World Bank — SE.XPD.TOTL.GD.ZS</a></td>
+                  <td>Government expenditure on education espresso in percentuale sul PIL</td>
                 </tr>
                 <tr>
                   <td>Matrimonio precoce</td>
                   <td><a href="https://data.unicef.org/topic/child-protection/child-marriage/" target="_blank" rel="noopener">UNICEF — Child Marriage Dataset 2024</a></td>
-                  <td>% donne 20–24 anni sposate prima dei 18 anni</td>
+                  <td>Percentuale di donne compreso tra i 20 e i 24 anni sposate prima dei 15 e 18 anni</td>
                 </tr>
                 <tr>
                   <td>Migrazione internazionale</td>
@@ -86,43 +111,21 @@
                 <tr>
                   <td>Mutilazione genitale femminile (FGM)</td>
                   <td><a href="https://data.humdata.org/dataset/unicef-pt-chld-1-14-ps-psy-v-cgvr" target="_blank" rel="noopener">HDX / UNICEF — FGM dataset</a></td>
-                  <td>Prevalenza FGM tra ragazze 0–14 anni, per quintile di ricchezza</td>
-                </tr>
-                <tr>
-                  <td>Parità di genere (GPI secondaria)</td>
-                  <td><a href="https://data.worldbank.org/indicator/SE.ENR.SECO.FM.ZS" target="_blank" rel="noopener">World Bank — Gender Parity Index</a></td>
-                  <td>GPI scuola secondaria (F/M, 1.0 = parità)</td>
-                </tr>
-                <tr>
-                  <td>Povertà estrema</td>
-                  <td><a href="https://data.worldbank.org/indicator/SI.POV.DDAY" target="_blank" rel="noopener">World Bank — SI.POV.DDAY</a></td>
-                  <td>% popolazione sotto $2.15/giorno (PPP 2017)</td>
+                  <td>Prevalenza di FGM tra ragazze fino a 14 anni per quintile di ricchezza</td>
                 </tr>
                 <tr>
                   <td>Popolazione</td>
                   <td><a href="https://population.un.org/wpp/" target="_blank" rel="noopener">UN WPP 2024</a></td>
-                  <td>Popolazione per fasce d'età 5-year</td>
-                </tr>
-                <tr>
-                  <td>Reddito pro capite</td>
-                  <td><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD" target="_blank" rel="noopener">World Bank — NY.GDP.PCAP.PP.KD</a></td>
-                  <td>GDP per capita, PPP (USD costanti 2021)</td>
-                </tr>
-                <tr>
-                  <td>Spesa pubblica in istruzione</td>
-                  <td><a href="https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS" target="_blank" rel="noopener">World Bank — SE.XPD.TOTL.GD.ZS</a></td>
-                  <td>Government expenditure on education (% PIL)</td>
+                  <td>Popolazione per fasce d'età</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p class="table-scroll-hint">Su mobile, scorri orizzontalmente per vedere tutte le colonne della tabella.</p>
         </section>
 
-        <!-- Note aggiuntive -->
         <section class="dataset-section">
           <h2 class="page-section-title">Considerazioni sui dati</h2>
-          <p class="page-section-intro">Queste visualizzazioni servono a mostrare pattern e divari globali. Alcuni indicatori vanno letti con particolare cautela, soprattutto quando la copertura e' incompleta o la metodologia della fonte varia tra paesi.</p>
+          <p class="page-section-intro">Queste visualizzazioni servono a mostrare pattern e divari globali. Alcuni indicatori vanno letti con particolare cautela, soprattutto quando la copertura e' incompleta.</p>
           <div class="considerations-list">
             <article class="consideration-item">
               <h3>Dati mancanti</h3>
@@ -130,11 +133,15 @@
             </article>
             <article class="consideration-item">
               <h3>Finestra temporale</h3>
-              <p>Il riferimento generale e' il periodo 2000-2024. Quando una serie non arriva al 2024, usiamo l'ultimo anno disponibile e lo indichiamo direttamente nel grafico.</p>
+              <p>Il riferimento generale e' il periodo 2000-2024. Quando una serie non arriva al 2024, il grafico si ferma all'ultimo anno disponibile ed è specificato direttamente nel grafico. Nel caso di serie storiche incomplete, i dati mancanti sono chiaramente indicati. Nel caso di grafici che fanno riferimento a più dataset il grafico si ferma dove si ferma la serie più corta.</p>
             </article>
             <article class="consideration-item">
               <h3>PIL pro capite</h3>
               <p>E' una media utile per confronti internazionali, ma non descrive da sola la distribuzione interna del reddito. Per questo va letto insieme ad altri indicatori di disuguaglianza e deprivazione.</p>
+            </article>
+            <article class="consideration-item">
+              <h3>Disuguaglianza (Gini)</h3>
+              <p>L'indice di Gini misura il livello di disuguaglianza nella distribuzione del reddito o della ricchezza ed è espresso su una scala da 0 a 1 (o 0-100%). Un valore di 0 (o 0%) rappresenta la perfetta uguaglianza, dove tutti gli individui percepiscono lo stesso reddito; un valore di 1 (o 100%) rappresenta la massima disuguaglianza, situazione teorica in cui una sola persona detiene l'intero reddito. Di conseguenza, più il valore è basso, più la società è equa e la ricchezza è distribuita uniformemente; al contrario, più il valore è alto, maggiore è la concentrazione del denaro nelle mani di poche persone.</p>
             </article>
             <article class="consideration-item">
               <h3>Lavoro minorile</h3>
@@ -164,12 +171,6 @@
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <nav class="footer-nav">
-          <a href="index.html">Home</a>
-          <a href="datasets.html" aria-current="page">Dataset</a>
-          <a href="process.html">Processo</a>
-          <a href="about.html">Chi Siamo</a>
-        </nav>
         <p class="footer-meta">&copy; 2026 Veni Vidi Viz — Un progetto di visualizzazione dati.</p>
       </div>
     </footer>
