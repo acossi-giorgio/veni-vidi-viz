@@ -74,3 +74,55 @@ const CHART_COLORS = {
 };
 
 window.CHART_COLORS = CHART_COLORS;
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[ch]));
+}
+
+function formatCoverageCount(covered, total, options = {}) {
+  const {
+    label = 'Copertura dati',
+    unit = 'paesi',
+    includePercent = true,
+    precision = 0,
+  } = options;
+  const safeCovered = Number.isFinite(covered) ? covered : 0;
+  const safeTotal = Number.isFinite(total) ? total : 0;
+  const pct = safeTotal > 0 ? (safeCovered / safeTotal) * 100 : 0;
+  const pctLabel = includePercent ? ` (${pct.toFixed(precision)}%)` : '';
+  return `${escapeHtml(label)}: <strong>${safeCovered}/${safeTotal} ${escapeHtml(unit)}</strong>${pctLabel}`;
+}
+
+function formatCoverageBlock(lines = [], options = {}) {
+  const {
+    title = 'Copertura dati',
+    titleTag = 'div',
+    titleClass = 'tooltip-coverage__title',
+    lineClass = 'tooltip-coverage__line',
+  } = options;
+  const safeLines = lines.filter(Boolean);
+  if (!safeLines.length) return '';
+  const body = safeLines.map(line => {
+    if (typeof line === 'string') return `<div class="${lineClass}">${line}</div>`;
+    const {
+      label,
+      covered,
+      total,
+      unit = 'paesi',
+      includePercent = true,
+      precision = 0,
+    } = line;
+    return `<div class="${lineClass}">${formatCoverageCount(covered, total, { label, unit, includePercent, precision })}</div>`;
+  }).join('');
+  return `<section class="tooltip-coverage"><${titleTag} class="${titleClass}">${escapeHtml(title)}</${titleTag}>${body}</section>`;
+}
+
+window.escapeHtml = escapeHtml;
+window.formatCoverageCount = formatCoverageCount;
+window.formatCoverageBlock = formatCoverageBlock;

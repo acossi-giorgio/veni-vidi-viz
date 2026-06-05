@@ -428,7 +428,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           const listed = sorted
             .map(d => `${d.country} <span style="opacity:.6">${d.value.toFixed(3)}</span>`)
             .join('<br>');
-          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">MPI ${bin.x0.toFixed(2)}–${bin.x1.toFixed(2)}</strong><br><span style="opacity:.6">${bin.length} ${bin.length === 1 ? 'paese' : 'paesi'}</span><br>${listed}`;
+          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">MPI ${bin.x0.toFixed(2)}–${bin.x1.toFixed(2)}</strong><br>${listed}`;
           tipEl.style.display = 'block';
         })
         .on('mousemove', ev => {

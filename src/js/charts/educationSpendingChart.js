@@ -47,6 +47,25 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     return { ...d, value: (d.value / 100) * gdp * pop };
   }).filter(Boolean);
 
+  const coverageEligibleByMetric = {
+    pct: new Map(CONTS.map(cont => [
+      cont,
+      new Set(spendData.filter(d => d.continent === cont).map(d => d.code)),
+    ])),
+    abs: new Map(CONTS.map(cont => [
+      cont,
+      new Set(absData.filter(d => d.continent === cont).map(d => d.code)),
+    ])),
+    income: new Map(CONTS.map(cont => [
+      cont,
+      new Set(incomeRaw.filter(d => d.continent === cont && d.value != null).map(d => d.code)),
+    ])),
+    population: new Map(CONTS.map(cont => [
+      cont,
+      new Set(popRaw.filter(d => d.continent === cont && d.value != null).map(d => d.code)),
+    ])),
+  };
+
   let viewMetric = 'pct'; // 'pct' | 'abs'
 
   function currentData() { return viewMetric === 'pct' ? spendData : absData; }
@@ -227,20 +246,29 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
     coverageByYear = new Map(allYears.map((year) => {
       const stats = CONTS.map((cont) => {
-        const contSeries = cs.get(cont);
-        const totalCountries = contSeries?.countries?.size || 0;
-        const coveredCountries = new Set();
-        contSeries?.countries?.forEach((country, code) => {
-          if (country?.pts?.some(pt => pt.year === year)) coveredCountries.add(code);
-        });
-        const covered = coveredCountries.size;
-        const pct = totalCountries > 0 ? covered / totalCountries : 0;
-        return { cont, covered, totalCountries, pct };
+        const lines = [];
+        const seen = (rows) => new Set(rows.filter(d => d.continent === cont && d.year === year && d.value != null).map(d => d.code));
+        const pctCovered = seen(spendData);
+        const pctTotal = coverageEligibleByMetric.pct.get(cont)?.size || 0;
+        if (viewMetric === 'pct') {
+          lines.push({ label: 'Spesa istruzione', covered: pctCovered.size, total: pctTotal });
+        } else {
+          const absCovered = seen(absData);
+          const absTotal = coverageEligibleByMetric.abs.get(cont)?.size || 0;
+          const incomeCovered = seen(incomeRaw);
+          const incomeTotal = coverageEligibleByMetric.income.get(cont)?.size || 0;
+          const popCovered = seen(popRaw);
+          const popTotal = coverageEligibleByMetric.population.get(cont)?.size || 0;
+          lines.push(
+            { label: 'Spesa istruzione', covered: pctCovered.size, total: pctTotal },
+            { label: 'Reddito', covered: incomeCovered.size, total: incomeTotal },
+            { label: 'Popolazione', covered: popCovered.size, total: popTotal },
+            { label: 'Aggregazione effettiva', covered: absCovered.size, total: absTotal },
+          );
+        }
+        return { cont, lines };
       });
-      return [year, {
-        year,
-        stats,
-      }];
+      return [year, { year, stats }];
     }));
 
     // Rebuild crosshair lookup
@@ -333,9 +361,11 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       });
       const coverage = coverageByYear.get(nearYear);
       if (coverage?.stats?.length) {
-        html += '<br><span style="color:#d6cfc7">Copertura dati</span>';
-        coverage.stats.forEach(({ cont, pct, covered, totalCountries }) => {
-          html += `<br>${cont}: ${Math.round(pct * 100)}% (${covered}/${totalCountries})`;
+        coverage.stats.forEach(({ cont, lines }) => {
+          html += `<br><span style="color:${CONT_COLOR[cont]};font-weight:600">${cont}</span>`;
+          lines.forEach((line) => {
+            html += `<br>${formatCoverageCount(line.covered, line.total, { label: line.label, includePercent: false })}`;
+          });
         });
       }
       tipEl.innerHTML = html;

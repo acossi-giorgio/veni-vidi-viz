@@ -112,6 +112,10 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const incomeMap    = buildMap(incomeRaw);
   const incomeSeries = buildSeries(incomeRaw);
   const incomeStats  = buildContStats(incomeRaw);
+  const incomeEligibleByCont = new Map(CONT_ORDER.map(cont => [
+    cont,
+    new Set(incomeRaw.filter(d => d.value != null && d.continent === cont).map(d => d.code)),
+  ]));
 
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
   let currentYear  = incomeYears[0];
@@ -671,11 +675,14 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
         // Tooltip
         let html = `<strong style="color:#888">${nearYear}</strong>`;
-        CONT_ORDER.forEach(cont => {
-          const v = yearData[cont];
-          const col = CONT_COLOR[cont] || '#888';
-          html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
-        });
+      CONT_ORDER.forEach(cont => {
+        const v = yearData[cont];
+        const col = CONT_COLOR[cont] || '#888';
+        const covered = (incomeStats.get(cont)?.find(pt => pt.year === nearYear)?.n) || 0;
+        const total = incomeEligibleByCont.get(cont)?.size || 0;
+        html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
+        html += `<br>${formatCoverageCount(covered, total, { label: 'Copertura dati' })}`;
+      });
 
         trendTip.innerHTML = html;
         trendTip.style.display = 'block';

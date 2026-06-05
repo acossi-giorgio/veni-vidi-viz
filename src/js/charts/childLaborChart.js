@@ -163,7 +163,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .on('mousemove', function(ev) {
           tooltip.style('display', 'block').html(
             `<strong style="color:${q.color}">${q.label}</strong><br>` +
-            `${n} paesi`
+            `Copertura dati: ${n}/${data.length} paesi`
           );
           const r = tooltip.node().getBoundingClientRect();
           let tx = ev.pageX + 12, ty = ev.pageY + 8;

@@ -55,6 +55,25 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     if (d.code && d.continent && CONTS.includes(d.continent)) codeContinent.set(d.code, d.continent);
   });
 
+  function codesFor(rows, cont) {
+    return new Set(rows.filter(d => d.continent === cont && d.value != null).map(d => d.code));
+  }
+
+  const eligibleCodes = {
+    education: new Map(CONTS.map(cont => [cont, codesFor(eduRaw, cont)])),
+    income: new Map(CONTS.map(cont => [cont, codesFor(incRaw, cont)])),
+    population: new Map(CONTS.map(cont => [cont, codesFor(popRaw, cont)])),
+    literacy: new Map(CONTS.map(cont => [cont, codesFor(litRaw, cont)])),
+    outOfSchool: new Map(CONTS.map(cont => [cont, codesFor(oosRaw, cont)])),
+  };
+
+  function intersectSets(...sets) {
+    const filtered = sets.filter(set => set instanceof Set);
+    if (!filtered.length) return new Set();
+    const [first, ...rest] = filtered;
+    return new Set([...first].filter(code => rest.every(set => set.has(code))));
+  }
+
   /* ── All years available ────────────────────────────────── */
   const allYears = [...new Set(incRaw.map(d => d.year))]
     .filter(y => y >= HISTORY_MIN_YEAR && y <= DISPLAY_MAX_YEAR)
@@ -64,9 +83,23 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const points = [];
   CONTS.forEach(cont => {
     const codes = [...codeContinent.entries()].filter(([, c]) => c === cont).map(([k]) => k);
+    const effectiveEligibleCodes = intersectSets(
+      eligibleCodes.education.get(cont),
+      eligibleCodes.income.get(cont),
+      eligibleCodes.population.get(cont),
+      eligibleCodes.literacy.get(cont),
+    );
     allYears.forEach(yr => {
       let totalSpendB = 0, eduPctSum = 0, eduPctW = 0;
       let litSum = 0, litW = 0, oosSum = 0;
+      const coverageCodes = {
+        education: new Set(),
+        income: new Set(),
+        population: new Set(),
+        literacy: new Set(),
+        outOfSchool: new Set(),
+        effective: new Set(),
+      };
       codes.forEach(code => {
         const edu = eduIdx.get(`${code}|${yr}`);
         const inc = incIdx.get(`${code}|${yr}`);
@@ -78,8 +111,19 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
           eduPctSum   += edu * pop;
           eduPctW     += pop;
         }
-        if (lit != null && pop != null) { litSum += lit * pop; litW += pop; }
-        if (oos != null) oosSum += oos;
+        if (edu != null) coverageCodes.education.add(code);
+        if (inc != null) coverageCodes.income.add(code);
+        if (pop != null) coverageCodes.population.add(code);
+        if (lit != null && pop != null) {
+          litSum += lit * pop;
+          litW += pop;
+          coverageCodes.literacy.add(code);
+        }
+        if (oos != null) {
+          oosSum += oos;
+          coverageCodes.outOfSchool.add(code);
+        }
+        if (edu != null && inc != null && pop != null && lit != null) coverageCodes.effective.add(code);
       });
       if (litW > 0 && eduPctW > 0) {
         points.push({
@@ -89,6 +133,15 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
           eduPct:    eduPctSum / eduPctW,
           litPct:    litSum / litW,
           oosM:      oosSum / 1e6,
+          coverage: {
+            education: coverageCodes.education,
+            income: coverageCodes.income,
+            population: coverageCodes.population,
+            literacy: coverageCodes.literacy,
+            outOfSchool: coverageCodes.outOfSchool,
+            effective: coverageCodes.effective,
+            effectiveEligible: effectiveEligibleCodes,
+          },
         });
       }
     });
@@ -118,7 +171,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     .style('position', 'absolute').style('background', TOOLTIP_BG)
     .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '8px 13px')
     .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.7')
-    .style('z-index', '10000').style('display', 'none').style('max-width', '200px');
+    .style('z-index', '10000').style('display', 'none').style('max-width', '280px');
 
   function fmtSpend(b) {
     if (b >= 1000) return (b / 1000).toFixed(1) + ' T$';
@@ -157,6 +210,121 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 14;
     if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 10;
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+  }
+
+  function sizeOf(set) {
+    return set instanceof Set ? set.size : 0;
+  }
+
+  function unionSize(series, key) {
+    const merged = new Set();
+    series.forEach(pt => {
+      const set = pt?.coverage?.[key];
+      if (set instanceof Set) set.forEach(code => merged.add(code));
+    });
+    return merged.size;
+  }
+
+  function buildCoverageLines(point, windowSeries = [], options = {}) {
+    const includeOutcomeCoverage = options.includeOutcomeCoverage !== false;
+    const outcomeLabel = yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola';
+    const outcomeKey = yMode === 'literacy' ? 'literacy' : 'outOfSchool';
+    const baseCoverage = point?.coverage || {};
+    const lines = [
+      { label: 'Spesa istruzione', covered: sizeOf(baseCoverage.education), total: sizeOf(eligibleCodes.education.get(point.continent)) },
+      { label: 'Reddito', covered: sizeOf(baseCoverage.income), total: sizeOf(eligibleCodes.income.get(point.continent)) },
+      { label: 'Popolazione', covered: sizeOf(baseCoverage.population), total: sizeOf(eligibleCodes.population.get(point.continent)) },
+      {
+        label: 'Aggregazione effettiva',
+        covered: sizeOf(baseCoverage.effective),
+        total: sizeOf(baseCoverage.effectiveEligible),
+      },
+    ];
+
+    if (includeOutcomeCoverage) {
+      lines.splice(3, 0, {
+        label: outcomeLabel,
+        covered: sizeOf(baseCoverage[outcomeKey]),
+        total: sizeOf(eligibleCodes[outcomeKey].get(point.continent)),
+      });
+    }
+
+    if (!windowSeries.length) return lines;
+
+    return lines.map((line) => {
+      if (line.label === 'Aggregazione effettiva') {
+        return {
+          ...line,
+          covered: unionSize(windowSeries, 'effective'),
+        };
+      }
+      return {
+        ...line,
+        covered: unionSize(windowSeries, normalizeCoverageKey(line.label)),
+      };
+    });
+  }
+
+  function normalizeCoverageKey(label) {
+    if (label === 'Spesa istruzione') return 'education';
+    if (label === 'Reddito') return 'income';
+    if (label === 'Popolazione') return 'population';
+    if (label === 'Alfabetizzazione') return 'literacy';
+    if (label === 'Fuori scuola') return 'outOfSchool';
+    return 'effective';
+  }
+
+  function findCoverageLine(lines, label) {
+    return lines.find(line => line.label === label) || { covered: 0, total: 0 };
+  }
+
+  function compactCoverage(label, covered, total) {
+    return formatCoverageCount(covered, total, { label, includePercent: false });
+  }
+
+  function buildCoverageSummaryHtml(point, windowSeries = []) {
+    const lines = windowSeries.length
+      ? (point.coverageWindow || buildCoverageLines(point, windowSeries))
+      : buildCoverageLines(point);
+    const educationLine = findCoverageLine(lines, 'Spesa istruzione');
+    const incomeLine = findCoverageLine(lines, 'Reddito');
+    const populationLine = findCoverageLine(lines, 'Popolazione');
+    const outcomeLine = findCoverageLine(lines, yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola');
+    const effectiveLine = findCoverageLine(lines, 'Aggregazione effettiva');
+
+    return (
+      `<span style="opacity:.72">Copertura dati</span><br>` +
+      `${compactCoverage('Spesa', educationLine.covered, educationLine.total)}<br>` +
+      `${compactCoverage('Reddito', incomeLine.covered, incomeLine.total)}<br>` +
+      `${compactCoverage('Popolazione', populationLine.covered, populationLine.total)}<br>` +
+      `${compactCoverage(yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola', outcomeLine.covered, outcomeLine.total)}<br>` +
+      `${compactCoverage('Aggregazione finale', effectiveLine.covered, effectiveLine.total)}`
+    );
+  }
+
+    function buildTopTooltipHtml(point, color, context, dx = null, dy = null) {
+    const { xLabel, yLabel, fmtXVal, fmtYVal, xVal, yVal } = context;
+    return (
+      `<strong style="color:${color}">${point.continent}</strong> · ${point.year}<br>` +
+      `${xLabel}: <strong>${fmtXVal(xVal(point))}</strong><br>` +
+      `${yLabel}: <strong>${fmtYVal(yVal(point))}</strong><br>` +
+      `${buildCoverageSummaryHtml(point)}`
+    );
+  }
+
+  function buildBottomTooltipHtml(point, color, context) {
+    const { xLabel, yLabel, fmtXVal, fmtYVal, xVal } = context;
+    const deltaOutcomeSuffix = yMode === 'literacy' ? ' pp' : ' M';
+    return (
+      `<strong style="color:${color}">${point.continent}</strong> · ${point.year}<br>` +
+      `${xLabel}: <strong>${fmtXVal(xVal(point))}</strong><br>` +
+      `${yLabel}: <strong>${fmtYVal(point.rawOutcome)}</strong><br>` +
+      `Finestra: <strong>${point.prevYear} → ${point.year}</strong><br>` +
+      `Trend spesa medio: <strong>${fmtSigned(point.spendSlope)} B$/anno</strong><br>` +
+      `Trend ${yMode === 'literacy' ? 'alfabetizzazione' : 'fuori scuola'}: <strong>${fmtSigned(point.outcomeSlopeCorrected)}${deltaOutcomeSuffix}/anno</strong><br>` +
+      `Indice I: <strong>${fmtIndex(point.indexValue)}</strong><br>` +
+      `${buildCoverageSummaryHtml(point, point.coverageWindow ? [point] : [])}`
+    );
   }
 
   /* ── Top bar: outcome controls ──────────────────────────── */
@@ -277,6 +445,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     const fmtYVal = v => (yMode === 'literacy' ? `${v.toFixed(2)}%` : `${v.toFixed(2)} M`);
     const xLabel = 'Spesa pubblica istruzione (USD)';
     const yLabel = yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola';
+    const tooltipContext = { xLabel, yLabel, fmtXVal, fmtYVal, xVal, yVal };
     const metricKey = yMode === 'literacy' ? 'litPct' : 'oosM';
     const metricSeriesAll = (focusCont ? points.filter(d => d.continent === focusCont) : points)
       .filter(d => Number.isFinite(d[metricKey]));
@@ -460,21 +629,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
           .attr('stroke', SERIES_DOT_STROKE).attr('stroke-opacity', 0).attr('stroke-width', SERIES_DOT_STROKE_W)
           .style('cursor', 'default')
           .on('mouseenter', () => setLinkedHover(key))
-          .on('mousemove', e => {
-            const secondaryLine = yMode === 'literacy'
-              ? `Fuori scuola: <strong>${d.oosM.toFixed(1)} M</strong>`
-              : `Alfabetizzazione: <strong>${d.litPct.toFixed(1)}%</strong>`;
-            showTipHtml(
-              e,
-              `<strong style="color:${col}">${d.continent}</strong> · ${d.year}<br>` +
-              `${xLabel}: <strong>${fmtXVal(xVal(d))}</strong><br>` +
-              `${yLabel}: <strong>${fmtYVal(yVal(d))}</strong><br>` +
-              `${secondaryLine}` +
-              (dx != null && dy != null
-                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)} B$</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
-                : '')
-            );
-          })
+          .on('mousemove', e => showTipHtml(e, buildTopTooltipHtml(d, col, tooltipContext, dx, dy)))
           .on('mouseleave', () => { hideTip(); setLinkedHover(null); })
           .transition().delay(delay).duration(DOT_FADE_MS)
           .attr('fill-opacity', dotOpacity)
@@ -483,24 +638,11 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
           .attr('class', 'excl-top-hit')
           .attr('data-key', key)
           .attr('cx', cx).attr('cy', cy).attr('r', hoverR)
-          .attr('fill', 'transparent')
+          .attr('fill', 'rgba(255,255,255,0.001)')
+          .style('pointer-events', 'all')
           .style('cursor', 'default')
           .on('mouseenter', () => setLinkedHover(key))
-          .on('mousemove', e => {
-            const secondaryLine = yMode === 'literacy'
-              ? `Fuori scuola: <strong>${d.oosM.toFixed(1)} M</strong>`
-              : `Alfabetizzazione: <strong>${d.litPct.toFixed(1)}%</strong>`;
-            showTipHtml(
-              e,
-              `<strong style="color:${col}">${d.continent}</strong> · ${d.year}<br>` +
-              `${xLabel}: <strong>${fmtXVal(xVal(d))}</strong><br>` +
-              `${yLabel}: <strong>${fmtYVal(yVal(d))}</strong><br>` +
-              `${secondaryLine}` +
-              (dx != null && dy != null
-                ? `<br>Δ anno: ${xLabel} <strong>${fmtSigned(dx)} B$</strong>, ${yLabel} <strong>${fmtSigned(dy)}${yMode === 'literacy' ? ' pp' : ' M'}</strong>`
-                : '')
-            );
-          })
+          .on('mousemove', e => showTipHtml(e, buildTopTooltipHtml(d, col, tooltipContext, dx, dy)))
           .on('mouseleave', () => { hideTip(); setLinkedHover(null); });
       });
 
@@ -544,6 +686,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         const outcomeSlopeCorrected = yMode === 'literacy' ? outcomeSlopeRaw : -outcomeSlopeRaw;
         const indexValue = outcomeSlopeCorrected / Math.abs(spendSlope);
         if (!Number.isFinite(indexValue)) continue;
+        const coverageWindow = buildCoverageLines(curr, windowPoints);
         indexSeries.push({
           continent: cont,
           year: curr.year,
@@ -560,6 +703,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
           outcomeSlopeRaw,
           outcomeSlopeCorrected,
           indexValue,
+          coverageWindow,
         });
       }
       indexSeriesByCont.set(cont, indexSeries);
@@ -690,25 +834,11 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         .attr('cx', d => xYearScale(d.year))
         .attr('cy', d => yTrendScale(d.indexValue))
         .attr('r', isFocus ? 7 : 6)
-        .attr('fill', 'transparent')
+        .attr('fill', 'rgba(255,255,255,0.001)')
+        .style('pointer-events', 'all')
         .style('cursor', 'default')
         .on('mouseenter', (e, d) => setLinkedHover([`${d.continent}|${d.prevYear}`, `${d.continent}|${d.year}`], `${d.continent}|${d.year}`))
-        .on('mousemove', (e, d) => {
-          const secondaryLine = yMode === 'literacy'
-            ? `Fuori scuola: <strong>${d.oosM.toFixed(1)} M</strong>`
-            : `Alfabetizzazione: <strong>${d.litPct.toFixed(1)}%</strong>`;
-          const deltaOutcomeSuffix = yMode === 'literacy' ? ' pp' : ' M';
-          showTipHtml(e,
-            `<strong style="color:${col}">${d.continent}</strong> · ${d.year}<br>` +
-            `${xLabel}: <strong>${fmtXVal(xVal(d))}</strong><br>` +
-            `${yLabel}: <strong>${fmtYVal(d.rawOutcome)}</strong><br>` +
-            `${secondaryLine}<br>` +
-            `Finestra: <strong>${d.prevYear} → ${d.year}</strong><br>` +
-            `Trend spesa medio: <strong>${fmtSigned(d.spendSlope)} B$/anno</strong><br>` +
-            `Trend outcome corretto: <strong>${fmtSigned(d.outcomeSlopeCorrected)}${deltaOutcomeSuffix}/anno</strong><br>` +
-            `Indice I: <strong>${fmtIndex(d.indexValue)}</strong>`
-          );
-        })
+        .on('mousemove', (e, d) => showTipHtml(e, buildBottomTooltipHtml(d, col, tooltipContext)))
         .on('mouseleave', () => { hideTip(); setLinkedHover(null); });
     });
 

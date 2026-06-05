@@ -23,6 +23,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Europe', 'Africa'];
+  const EUROPE_TOTAL_EXCLUDED = new Set(['AND', 'LIE', 'MCO', 'SMR']);
 
   const ALL_COUNTRIES = {
     Africa: [
@@ -76,6 +77,10 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     if (r) byCode.set(code, { code: r.code, country: r.country, continent: r.continent, gpi: r.value, year: r.year });
   });
   const countries = Array.from(byCode.values()).filter(d => CONTS.includes(d.continent));
+  const continentTotals = {
+    Africa: ALL_COUNTRIES.Africa.length,
+    Europe: ALL_COUNTRIES.Europe.filter(({ code }) => !EUROPE_TOTAL_EXCLUDED.has(code)).length,
+  };
 
   const oosMap = new Map();
   d3.group(oosRaw, d => d.code).forEach((rows, code) => {
@@ -330,7 +335,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
 
       const showContTip = () => {
         tip.innerHTML =
-          `<strong style="color:${color}">${cont}</strong>&ensp;<span style="color:${CHART_AXIS}">${rows.length} paesi</span><br>` +
+          `<strong style="color:${color}">${cont}</strong><br>` +
+          `<span style="color:${CHART_AXIS}">Copertura dati: ${rows.length}/${continentTotals[cont]} paesi</span><br>` +
           `<span style="color:${CHART_AXIS}">Media:</span> <strong>${cMean.toFixed(3)}</strong>&ensp;` +
           `<span style="color:${CHART_AXIS}">Mediana:</span> <strong>${cMed.toFixed(3)}</strong><br>` +
           `<span style="color:${CHART_AXIS}">Min:</span> ${cMin.toFixed(3)}&ensp;` +

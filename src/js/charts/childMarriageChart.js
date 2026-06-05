@@ -25,6 +25,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
+  const continentTotals = new Map([
+    ['Africa', new Set(raw.filter(d => d.continent === 'Africa' && d.code).map(d => d.code))],
+    ['Europe', new Set(raw.filter(d => d.continent === 'Europe' && d.code).map(d => d.code))],
+  ]);
 
   const AFRICA = getContinentColor('Africa', '#e66100');
   const EUROPE = getContinentColor('Europe', '#2ca02c');
@@ -81,21 +85,31 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden');
 
   /* ── Waffle helper ──────────────────────────────────────── */
-  function drawWaffle(svg, x0, y0, pct15, pct18, cs, gap, COLS, ROWS, colors = {}) {
+  function drawWaffle(svg, x0, y0, pct15, pct18, cs, gap, COLS, ROWS, colors = {}, interactions = {}) {
     const total = COLS * ROWS;
     const n15   = Math.round(Math.min(total, pct15));
     const n18   = Math.round(Math.min(total - n15, Math.max(0, pct18 - pct15)));
     const by15Color = colors.by15 || C_BY15;
     const by18Color = colors.by18 || C_BY18;
+    const onMove = interactions.onMove || null;
+    const onLeave = interactions.onLeave || null;
+    const onClick = interactions.onClick || null;
     for (let row = 0; row < ROWS; row++) {
       for (let col = 0; col < COLS; col++) {
         const idx  = row * COLS + col;
         const fill = idx < n15 ? by15Color : idx < n15 + n18 ? by18Color : C_EMPTY;
-        svg.append('rect')
+        const cell = svg.append('rect')
           .attr('x', x0 + col * (cs + gap)).attr('y', y0 + row * (cs + gap))
           .attr('width', cs).attr('height', cs).attr('rx', Math.max(1, cs * 0.12))
-          .attr('fill', fill).attr('opacity', 0)
-          .transition().duration(300).ease(d3.easeCubicOut).delay(idx * 6)
+          .attr('fill', fill)
+          .attr('opacity', 0)
+          .style('pointer-events', 'all');
+
+        if (onMove) cell.on('mousemove', onMove);
+        if (onLeave) cell.on('mouseleave', onLeave);
+        if (onClick) cell.style('cursor', 'pointer').on('click', onClick);
+
+        cell.transition().duration(300).ease(d3.easeCubicOut).delay(idx * 6)
           .attr('opacity', fill === C_EMPTY ? 0.4 : 0.9);
       }
     }
@@ -148,6 +162,16 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('viewBox', `0 0 ${layoutW} ${layoutH}`)
       .attr('preserveAspectRatio', scaledMobileOverview ? 'xMidYMid meet' : 'none')
       .style('display', 'block').style('font-family', 'inherit');
+
+    function buildOverviewTooltip({ continent, titleColor, by15Color, by18Color, pct15, pct18, n15Value, n18Value, covered, total, showHint = false }) {
+      return (
+        `<strong style="color:${titleColor}">${continent}</strong><br>` +
+        `<span style="color:${by15Color}">●</span> Prima dei 15: <strong>${fmt(pct15, '%')}</strong> (${fmtN(n15Value)})<br>` +
+        `<span style="color:${by18Color}">●</span> Prima dei 18: <strong>${fmt(pct18, '%')}</strong> (${fmtN(n18Value)})<br>` +
+        `<span style="color:${CHART_AXIS}">Copertura dati: ${covered}/${total} paesi</span>` +
+        (showHint ? `<br><em style="opacity:.5;font-size:9px">clicca per i singoli paesi →</em>` : '')
+      );
+    }
 
     function drawPanelRows(rows, xLabel, xValue, startY) {
       let y = startY;
@@ -207,10 +231,44 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('text-anchor', 'middle').attr('font-size', compact ? 7.5 : 8.5).attr('fill', CHART_AXIS)
       .text(`${n} paesi · ponderato per base donne · ogni cella = 1%`);
 
-    drawWaffle(svg, afX, afY, af15, af18, afCS, afGap, 10, 10);
+    const africaTooltipHtml = buildOverviewTooltip({
+      continent: 'Africa',
+      titleColor: AFRICA,
+      by15Color: C_BY15,
+      by18Color: C_BY18,
+      pct15: af15,
+      pct18: af18,
+      n15Value: afN15,
+      n18Value: afN18,
+      covered: africa.length,
+      total: continentTotals.get('Africa')?.size || 0,
+      showHint: true,
+    });
+    const europeTooltipHtml = buildOverviewTooltip({
+      continent: 'Europa',
+      titleColor: EUROPE,
+      by15Color: C_EU_BY15,
+      by18Color: C_EU_BY18,
+      pct15: eu15,
+      pct18: eu18,
+      n15Value: euN15,
+      n18Value: euN18,
+      covered: europe.length,
+      total: continentTotals.get('Europe')?.size || 0,
+    });
+
+    drawWaffle(svg, afX, afY, af15, af18, afCS, afGap, 10, 10, {}, {
+      onMove: e => showTip(e, africaTooltipHtml),
+      onLeave: hideTip,
+      onClick: () => { selectedContinent = 'Africa'; drillDown = true; draw(); },
+    });
     drawWaffle(svg, euX, euY, eu15, eu18, euCS, euGap, 10, 10, {
       by15: C_EU_BY15,
       by18: C_EU_BY18
+    }, {
+      onMove: e => showTip(e, europeTooltipHtml),
+      onLeave: hideTip,
+      onClick: () => { selectedContinent = 'Europe'; drillDown = true; draw(); },
     });
 
     svg.append('text').attr('x', euX + euW / 2).attr('y', euY - 10)
@@ -218,23 +276,17 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .text('Europa');
 
     svg.append('rect').attr('x', afX).attr('y', afY).attr('width', afW).attr('height', afW)
-      .attr('fill', 'transparent').style('cursor', 'pointer')
-      .on('mousemove', e => showTip(e,
-        `<strong style="color:${AFRICA}">Africa</strong><br>` +
-        `<span style="color:${C_BY15}">●</span> Prima dei 15: <strong>${fmt(af15, '%')}</strong> (${fmtN(afN15)})<br>` +
-        `<span style="color:${C_BY18}">●</span> Prima dei 18: <strong>${fmt(af18, '%')}</strong> (${fmtN(afN18)})<br>` +
-        `<em style="opacity:.5;font-size:9px">clicca per i singoli paesi →</em>`
-      ))
+      .attr('fill', 'rgba(255,255,255,0.001)')
+      .style('pointer-events', 'all')
+      .style('cursor', 'pointer')
+      .on('mousemove', e => showTip(e, africaTooltipHtml))
       .on('mouseleave', hideTip)
       .on('click', () => { selectedContinent = 'Africa'; drillDown = true; draw(); });
 
     svg.append('rect').attr('x', euX).attr('y', euY).attr('width', euW).attr('height', euW)
-      .attr('fill', 'transparent')
-      .on('mousemove', e => showTip(e,
-        `<strong style="color:${EUROPE}">Europa</strong><br>` +
-        `<span style="color:${C_EU_BY15}">●</span> Prima dei 15: <strong>${fmt(eu15, '%')}</strong> (${fmtN(euN15)})<br>` +
-        `<span style="color:${C_EU_BY18}">●</span> Prima dei 18: <strong>${fmt(eu18, '%')}</strong> (${fmtN(euN18)})`
-      ))
+      .attr('fill', 'rgba(255,255,255,0.001)')
+      .style('pointer-events', 'all')
+      .on('mousemove', e => showTip(e, europeTooltipHtml))
       .on('mouseleave', hideTip)
       .style('cursor', 'pointer')
       .on('click', () => { selectedContinent = 'Europe'; drillDown = true; draw(); });
@@ -500,7 +552,9 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
       const hit = svg.append('rect').attr('x', bx).attr('y', frameY + PAD.top).attr('width', BAR_W).attr('height', chartH)
         .attr('rx', 3)
-        .attr('fill', 'transparent').style('cursor', 'default')
+        .attr('fill', 'rgba(255,255,255,0.001)')
+        .style('pointer-events', 'all')
+        .style('cursor', 'default')
         .on('mousemove', e => {
           activateColumn(i);
           showTip(e,

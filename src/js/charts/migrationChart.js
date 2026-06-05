@@ -284,7 +284,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       </div>
     `);
     return [
-      '<br><span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi</span>',
+      `<span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi: ${detailRows.length}</span>`,
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
   }
@@ -302,6 +302,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       </div>
     `);
     return [
+      `<div style="margin-top:6px;opacity:.5;font-size:9px;letter-spacing:.05em;text-transform:uppercase">Paesi inclusi: ${rows.length}</div>`,
       `<div style="margin-top:6px;opacity:.45;font-size:9px;letter-spacing:.05em;text-transform:uppercase">${title}</div>`,
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
@@ -554,10 +555,14 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         const col  = d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia);
         const hint = d.expandable ? ' <span style="opacity:.5;font-size:9px">· espandi</span>'
                    : d.collapsible ? ' <span style="opacity:.5;font-size:9px">· comprimi</span>' : '';
+        const countLine = d.countryCount && d.countryCount > 1
+          ? `<br><span style="opacity:.7;font-size:10px">Paesi inclusi: ${d.countryCount}</span>`
+          : '';
         showTip(e,
           `<strong style="color:${col}">${d.name}</strong>${hint}<br>` +
           (d.type==='src' ? 'Emigrati: ' : "Ricevuti dall'Africa: ") +
-          `<strong>${d3.format(',.0f')(d.total)}</strong>`
+          `<strong>${d3.format(',.0f')(d.total)}</strong>` +
+          countLine
         );
       })
       .on('mouseleave', () => { linkEls.attr('stroke',CHART_BASE_FILL).attr('opacity',0.55); hideTip(); });
@@ -644,6 +649,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         col: CONT_COLOR.Africa,
         role: 'africa',
         total: africaTotal,
+        countryCount: new Set(yearData.map(d => d.origin_code)).size,
       });
 
       if (sankeyDrillAfrica) {
@@ -665,12 +671,13 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
             return { name, val };
           });
           const srcOthersVal = d3.sum(srcHidden, d => d[1]);
-          nodes.push({ id: 'SRC_OTHERS', name: 'Altri', layer: 0, col: CONT_COLOR.Africa, role: 'src-country', parentId: 'AFRICA', detail });
+          nodes.push({ id: 'SRC_OTHERS', name: 'Altri', layer: 0, col: CONT_COLOR.Africa, role: 'src-country', parentId: 'AFRICA', detail, countryCount: srcHidden.length });
           links.push({ source: 'SRC_OTHERS', target: 'AFRICA', value: srcOthersVal });
         }
       }
 
       destConts.forEach(cont => {
+        const countryCount = new Set(yearData.filter(d => d.dest_continent === cont).map(d => d.dest_code)).size;
         nodes.push({
           id: cont,
           name: cont,
@@ -678,6 +685,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           col: CONT_COLOR[cont] || '#888',
           role: 'dest-cont',
           parentId: 'AFRICA',
+          countryCount,
         });
         links.push({ source: 'AFRICA', target: cont, value: destContStock.get(cont) });
       });
@@ -701,7 +709,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
             const name = contData.find(d => d.dest_code === code)?.dest_country || code;
             return { name, val };
           });
-          pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail });
+          pendingCountries.push({ id: `__others_${cont}__`, name: 'Altri', col: CONT_COLOR[cont] || '#888', source: cont, value: othVal, detail, countryCount: hidden.length });
         }
       });
       pendingCountries.sort((a, b) => {
@@ -1225,6 +1233,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           meta: 'Origine',
           bodyHtml: `
             <div><strong>Totale emigrati:</strong> ${fmt(total)}</div>
+            ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Paesi inclusi: ${rows.length}</div>` : ''}
             ${mapTooltipListHtml('Principali destinazioni', rows, 'dstName')}
           `,
           onClose: () => clearArcSelection(),
@@ -1240,6 +1249,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         meta: 'Destinazione',
         bodyHtml: `
           <div><strong>Totale migranti africani:</strong> ${fmt(total)}</div>
+          ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Paesi inclusi: ${rows.length}</div>` : ''}
           ${mapTooltipListHtml('Per paese di origine', rows, 'srcName')}
         `,
         onClose: () => clearArcSelection(),

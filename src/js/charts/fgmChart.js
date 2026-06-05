@@ -286,7 +286,8 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .attr('stroke-width', (d) => (isGrouped && d.variant === 'reference' ? 2 : 0))
       .attr('stroke-dasharray', (d) => (isGrouped && d.variant === 'reference' ? '6 4' : null))
       .on('mousemove', (event, d) => {
-        showTooltip(event, `<strong>${d.quintile}</strong><br>${d.series}: ${d.value.toFixed(1)}%`);
+        let html = `<strong>${d.quintile}</strong><br>${d.series}: ${d.value.toFixed(1)}%`;
+        showTooltip(event, html);
       })
       .on('mouseleave', hideTooltip)
       .transition()
@@ -341,16 +342,24 @@ async function renderFgmChart(selector, isFullscreen = false) {
         values: globalMean,
       }],
       maxValue: OVERVIEW_MAX_BAR_VALUE,
+      coverage: {
+        'Media africana': {
+          covered: rows.length,
+          total: africaCodes.size,
+          label: 'Copertura media africana',
+          includePercent: false,
+        },
+      },
     });
   }
 
   function drawLegendCard(svg, x, y, color, noDataPattern) {
     const rowsLegend = [
-      { label: '80%+', color: color(80) },
-      { label: '60-79%', color: color(60) },
-      { label: '40-59%', color: color(40) },
-      { label: '20-39%', color: color(20) },
-      { label: '0-19%', color: color(0) },
+      { label: '80+', color: color(80) },
+      { label: '79', color: color(60) },
+      { label: '59', color: color(40) },
+      { label: '39', color: color(20) },
+      { label: '19', color: color(0) },
     ];
     const sw = 14;
     const sh = 14;
@@ -372,7 +381,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .attr('width', cardW)
       .attr('height', cardH)
       .attr('rx', 8)
-      .attr('fill', 'rgba(255,255,255,0.94)')
+      .attr('fill', 'rgba(255,255,255,0.92)')
       .attr('stroke', UI_MUTED_BORDER)
       .attr('stroke-width', 1)
       .style('filter', 'drop-shadow(0 6px 14px rgba(17,15,12,0.08))');
@@ -399,7 +408,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
         .attr('x', valueX)
         .attr('y', yy + sh / 2)
         .attr('dominant-baseline', 'middle')
-        .attr('font-size', 10)
+        .attr('font-size', 9)
         .attr('font-weight', '500')
         .attr('fill', CHART_LABEL)
         .text(row.label);
@@ -419,7 +428,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .attr('x', valueX)
       .attr('y', ndY + sh / 2)
       .attr('dominant-baseline', 'middle')
-      .attr('font-size', 10)
+      .attr('font-size', 9)
       .attr('font-weight', '500')
       .attr('fill', CHART_AXIS)
       .text('No data');
@@ -488,6 +497,14 @@ async function renderFgmChart(selector, isFullscreen = false) {
         { label: 'Media africana', color: colorToRgba(CHART_LABEL, 0.7, CHART_LABEL), variant: 'reference', values: globalMean },
       ],
       maxValue: MAX_BAR_VALUE,
+      coverage: {
+        'Media africana': {
+          covered: rows.length,
+          total: africaCodes.size,
+          label: 'Copertura media africana',
+          includePercent: false,
+        },
+      },
     });
   }
 
