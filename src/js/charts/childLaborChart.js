@@ -14,13 +14,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     d3.csv('datasets/processed/child_labor.csv', d3.autoType),
   ]);
 
-  const RISK_STOPS = getMetricStops('risk', ['#FEE0D2', '#FDBBA1', '#FC9272', '#FB6A4A', '#DE2D26']);
-  const RISK_HIGH = RISK_STOPS[4];
-  const RISK_MID = RISK_STOPS[2];
-  const LOW_NEUTRAL = getUiColor('chartAxis', '#8a94a6');
-  const LOW_NEUTRAL_SOFT = typeof mixColors === 'function'
-    ? mixColors(LOW_NEUTRAL, '#ffffff', 0.45)
-    : '#c6ced6';
+  const RISK_HIGH = '#A25A43';
+  const RISK_MID = '#D4A24F';
+  const LOW_NEUTRAL = '#91AF72';
+  const LOW_NEUTRAL_SOFT = '#6F9DB7';
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
@@ -112,7 +109,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     const my = yS(medLabor);
 
     const svg = d3.select(containerNode).append('svg')
-      .attr('width', W).attr('height', H).style('display', 'block').style('font-family', 'inherit');
+      .attr('width', W).attr('height', H).style('display', 'block').style('font-family', 'inherit').style('background', '#ffffff');
     const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
     // Quadrant backgrounds
@@ -123,9 +120,13 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       { x: mx, y: my, w: iw-mx, h: ih-my, q: QUADRANT[3] },
     ];
     qBg.forEach(({ x, y, w, h, q }) => {
-      const opacity = q.ySide === 'top' ? 0.09 : 0.045;
-      g.append('rect').attr('x', x).attr('y', y).attr('width', w).attr('height', h)
-        .attr('fill', q.color).attr('opacity', opacity);
+      g.append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', w)
+        .attr('height', h)
+        .attr('fill', colorToRgba(q.color, 0.09, 'rgba(255,255,255,0.96)'))
+        .attr('opacity', 1);
     });
 
     // Median lines

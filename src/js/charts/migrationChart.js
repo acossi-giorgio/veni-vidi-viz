@@ -106,11 +106,11 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
   const CONT_COLOR = {
     'Africa': getContinentColor('Africa', '#c96a3d'),
-    'Asia': getContinentColor('Asia', '#4f97c8'),
-    'Europe': getContinentColor('Europe', '#5169b2'),
-    'North America': getContinentColor('North America', '#9a68c7'),
-    'South America': getContinentColor('South America', '#5f9c63'),
-    'Oceania': getContinentColor('Oceania', '#d39b3d'),
+    'Asia': '#6f86c9',
+    'Europe': '#58b86a',
+    'North America': '#d95c62',
+    'South America': '#d7a93a',
+    'Oceania': '#4f97c8',
   };
   const UI_ACTIVE = getActColor(4, getUiColor('controlActive', '#5169b2'));
   const UI_ACTIVE_STRONG = getActColorStrong(4, getUiColor('controlActiveStrong', '#314685'));
@@ -979,6 +979,15 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     );
 
     const stockByDest  = d3.rollup(yearData, v => d3.sum(v, d => d.stock), d => d.dest_code);
+    const continentByCode = new Map();
+    migRaw.forEach((d) => {
+      if (d.origin_code && d.origin_continent && !continentByCode.has(d.origin_code)) {
+        continentByCode.set(d.origin_code, d.origin_continent);
+      }
+      if (d.dest_code && d.dest_continent && !continentByCode.has(d.dest_code)) {
+        continentByCode.set(d.dest_code, d.dest_continent);
+      }
+    });
     const topicAfricaCodes = new Set(_MIG_AFRICA_TOPIC_COUNTRIES.map(d => d.code));
     const topicSrcCodes = new Set([...topicAfricaCodes, ...TOPIC_SRC_CODES_ALL_YEARS]);
     const topicDstCodes = TOPIC_DST_CODES_ALL_YEARS;
@@ -1053,7 +1062,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     const maxDest = d3.max(stockByDest.values()) || 1;
     const maxOrig = d3.max(origStockMap.values()) || 1;
-    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.18, 0.88]);
+    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.62, 0.98]);
     // Keep low-stock origins visibly distinguishable from true no-data countries.
     const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.38, 1.00]);
 
@@ -1072,6 +1081,32 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       if (!stock) return null;
       return hexToRgba(CONT_COLOR.Africa, origOpScale(stock));
     }
+    function continentFill(a3, opacity = 0.28) {
+      const cont = continentByCode.get(a3);
+      const base = CONT_COLOR[cont] || CHART_BASE_FILL;
+      if (!base || base === CHART_BASE_FILL) return CHART_BASE_FILL;
+      return hexToRgba(base, opacity);
+    }
+    function baseCountryFill(a3) {
+      if (!a3) return CHART_BASE_FILL;
+      if (topicSrcCodes.has(a3)) return continentFill(a3, 0.3);
+      if (topicDstCodes.has(a3)) return continentFill(a3, 0.26);
+      return continentFill(a3, 0.2);
+    }
+    function activeCountryFill(a3) {
+      if (!a3) return CHART_BASE_FILL;
+      if (countrySrcCodes.has(a3)) return origFill(a3) || hexToRgba(CONT_COLOR.Africa, 0.94);
+      if (countryDstCodes.has(a3)) return destFill(a3) || hexToRgba(CONT_COLOR[continentByCode.get(a3)] || '#607d8b', 0.92);
+      return hexToRgba(CONT_COLOR[continentByCode.get(a3)] || '#607d8b', 0.9);
+    }
+    function getLinkedCountryCodes(a3) {
+      const linked = new Set([a3]);
+      renderPairs.forEach((p) => {
+        if (p.srcCode === a3) linked.add(p.dstCode);
+        if (p.dstCode === a3) linked.add(p.srcCode);
+      });
+      return linked;
+    }
 
     // ── SVG + zoom ───────────────────────────────────────────────
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
@@ -1085,17 +1120,14 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     // Countries — destinations by destination color, African origins in orange.
     // Distinguish true no-flow African origins via no-data pattern.
-    g.selectAll('.cty').data(geoCountries).join('path')
+    const countriesSel = g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
       .attr('stroke', '#fff')
       .attr('stroke-width', 0.35)
       .attr('fill', f => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
-        if (!a3) return '#ccd8df';
-        if (topicSrcCodes.has(a3)) return countrySrcCodes.has(a3) ? (origFill(a3) || '#ccd8df') : '#ccd8df';
-        if (topicDstCodes.has(a3)) return countryDstCodes.has(a3) ? (destFill(a3) || '#ccd8df') : '#ccd8df';
-        return '#ccd8df';
+        return baseCountryFill(a3);
       })
       .style('cursor', f => {
         const a3 = _MIG_NUM_TO_A3[+f.id];
@@ -1131,6 +1163,15 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         clearArcSelection();
         openArcPopup(e, a3);
       });
+
+    function updateCountryHighlight(activeCodes = null) {
+      countriesSel.attr('fill', (f) => {
+        const a3 = _MIG_NUM_TO_A3[+f.id];
+        if (!a3) return CHART_BASE_FILL;
+        if (activeCodes && activeCodes.has(a3)) return activeCountryFill(a3);
+        return baseCountryFill(a3);
+      });
+    }
 
     // Arc click state
     let arcHoverA3 = null;
@@ -1212,6 +1253,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     const ARC_STROKE_WIDTH = 1.2;
 
     function revealArcs(a3) {
+      const activeCodes = getLinkedCountryCodes(a3);
+      updateCountryHighlight(activeCodes);
       const sel = arcSrcCodes.has(a3)
         ? g.selectAll(`.mig-arc[data-src="${a3}"]`)
         : g.selectAll(`.mig-arc[data-dest="${a3}"]`);
@@ -1233,12 +1276,14 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     }
     function clearArcHover() {
       arcHoverA3 = null;
+      updateCountryHighlight();
       g.selectAll('.mig-arc').interrupt()
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
     }
 
     function clearArcSelection() {
       arcHoverA3 = null;
+      updateCountryHighlight();
       g.selectAll('.mig-arc').interrupt()
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
     }

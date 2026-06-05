@@ -15,8 +15,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     Africa: getContinentColor('Africa', '#2a9d8f'),
     Europe: getContinentColor('Europe', '#4c78a8'),
   };
-  const COL_GIRLS = getUiColor('genderGirls', '#2f6f6d');   // GPI < 1
-  const COL_BOYS  = getUiColor('genderBoys', '#6f8da6');    // GPI > 1
+  const COL_GIRLS = '#7fc0f1';   // GPI < 1, invertito in azzurro pastello un po' piu acceso
+  const COL_BOYS  = '#eb95c0';   // GPI > 1, invertito in rosa pastello un po' piu acceso
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');

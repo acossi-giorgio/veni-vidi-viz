@@ -26,12 +26,12 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
   const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
 
-  const AFRICA = getThemeColor('childMarriage', getContinentColor('Africa', '#d46a4c'));
-  const EUROPE = getThemeColor('europe', getContinentColor('Europe', '#4c78a8'));
+  const AFRICA = getContinentColor('Africa', '#e66100');
+  const EUROPE = getContinentColor('Europe', '#2ca02c');
   const C_BY15  = shadeColor(AFRICA, 0.28);
   const C_BY18  = tintColor(AFRICA, 0.18);
-  const C_EU_BY15 = shadeColor(EUROPE, 0.18);
-  const C_EU_BY18 = tintColor(EUROPE, 0.24);
+  const C_EU_BY15 = shadeColor(EUROPE, 0.16);
+  const C_EU_BY18 = tintColor(EUROPE, 0.2);
   const C_EMPTY = getUiColor('chartBaseFill', '#d6d0c5');
   const UI_ACTIVE = getActColor(3, getUiColor('controlActive', '#525252'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');

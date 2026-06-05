@@ -14,10 +14,10 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     tintColor(AFRICA_BASE, 0.82),
     tintColor(AFRICA_BASE, 0.6),
     AFRICA_BASE,
-    shadeColor(AFRICA_BASE, 0.18),
-    shadeColor(AFRICA_BASE, 0.34),
+    '#99511d',
+    '#4a2b1a',
   ];
-  const COL_AFRICA = getThemeColor('mpi', getContinentColor('Africa', '#2a9d8f'));
+  const COL_AFRICA = AFRICA_BASE;
   const COL_GREY = getUiColor('chartBaseFill', '#d6d0c5');
   const UI_ACTIVE = getActColor(1, getUiColor('controlActive', '#525252'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');

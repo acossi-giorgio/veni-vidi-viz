@@ -56,7 +56,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const CHART_PANEL = getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)');
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
-  const CHORO_COLORS = ['#fbf2e1', '#e2c88f', '#c18f5a', '#8e5b3d', '#4f352a'];
+  const CHORO_COLORS = ['#e3f0ff', '#b8d8ff', '#79b5f2', '#3f8fda', '#145ea8'];
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
 

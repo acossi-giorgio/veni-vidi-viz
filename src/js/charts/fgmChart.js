@@ -17,11 +17,12 @@ async function renderFgmChart(selector, isFullscreen = false) {
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
   const CHART_PANEL = getUiColor('chartPanel', 'rgba(255,253,249,0.96)');
   const CHART_BASE = getUiColor('chartBaseFill', '#d6d0c5');
-  const CHART_WATER = getUiColor('chartWater', '#ece8e0');
+  const CHART_WATER = '#ffffff';
   const CHART_NODATA = getUiColor('chartNoDataFill', '#c3baad');
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
-  const RISK_STOPS = getMetricStops('fgm', ['#f3e3ec', '#e2bfd2', '#cc94b4', '#b05c91', '#7f3b68']);
+  // Manteniamo una scala arancione esplicita per la choropleth FGM.
+  const RISK_STOPS = ['#fff1df', '#fdc980', '#f59e42', '#e97817', '#b8550f'];
   const HIGHLIGHT = shadeColor(UI_ACTIVE, 0.2);
   const MAX_BAR_VALUE = 100;
   const OVERVIEW_MAX_BAR_VALUE = 25;
@@ -36,13 +37,12 @@ async function renderFgmChart(selector, isFullscreen = false) {
     { key: 'fourth', label: 'Fourth' },
     { key: 'richest', label: 'Richest' },
   ];
-  const quintileGradient = window.CHART_COLORS?.gradients?.fgmQuintiles || {};
   const QUINTILE_COLORS = new Map([
-    ['poorest', quintileGradient.poorest || '#7f3b68'],
-    ['second', quintileGradient.second || '#b05c91'],
-    ['middle', quintileGradient.middle || '#cc94b4'],
-    ['fourth', quintileGradient.fourth || '#e2bfd2'],
-    ['richest', quintileGradient.richest || '#f3e3ec'],
+    ['poorest', '#A25A43'],
+    ['second', '#C07A4E'],
+    ['middle', '#D4A24F'],
+    ['fourth', '#91AF72'],
+    ['richest', '#6F9DB7'],
   ]);
   const [rowsRaw, atlas, countryCodeRaw] = await Promise.all([
     d3.csv('datasets/processed/fgm_quintile_prevalence.csv', d3.autoType),
@@ -324,7 +324,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
   function drawOverview() {
     stage.html('');
-    stage.style('background', '#fffdf9');
+    stage.style('background', '#ffffff');
     addModeSelector(stage);
 
     const chartWrap = stage.append('div')
@@ -435,7 +435,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('transform', 'translate(-50%, -50%)')
       .style('width', 'min(420px, calc(100% - 32px))')
       .style('height', 'min(390px, calc(100% - 48px))')
-      .style('background', '#fffdf9')
+      .style('background', '#ffffff')
       .style('border', `1px solid ${UI_MUTED_BORDER}`)
       .style('border-radius', '8px')
       .style('box-shadow', '0 18px 38px rgba(17,15,12,0.22)')
@@ -493,7 +493,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
   function drawMapMode() {
     stage.html('');
-    stage.style('background', CHART_WATER);
+    stage.style('background', '#ffffff');
     hideTooltip();
     addModeSelector(stage);
 
@@ -531,7 +531,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
     svg.append('rect')
       .attr('width', width)
       .attr('height', height)
-      .attr('fill', CHART_WATER);
+      .attr('fill', '#ffffff');
 
     const mapGroup = svg.append('g').attr('clip-path', `url(#${clipId})`);
     const countryG = mapGroup.append('g');
