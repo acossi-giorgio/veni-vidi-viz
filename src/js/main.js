@@ -530,7 +530,7 @@ const CHART_HELP_NOTES = {
   ].join('\n'),
   'chart-3-3': [
     'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale dell\'Africa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
-    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. In entrambe le modalita\', l\'asse X usa la spesa in istruzione come % del PIL. Sull\'asse Y trovi sempre un tasso percentuale.',
+    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. L\'asse X usa la spesa in istruzione come valore assoluto stimato in USD. Sull\'asse Y trovi sempre un tasso percentuale.',
     'Pannello sotto: qui vedi l\'indice corretto su una finestra fissa di 5 anni. L\'indice confronta il trend dell\'outcome con il trend della spesa nella stessa finestra.',
     'Formula: I = slope(Outcome) / |slope(Spesa)|',
     'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate nella finestra selezionata. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
@@ -771,14 +771,14 @@ const CHART_HELP_BUILDERS = {
   }),
   'chart-3-3': ({ chart }) => {
     const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
-    const xLabel = 'spesa in istruzione come % del PIL';
+    const xLabel = 'spesa in istruzione come valore assoluto stimato in USD';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
     const windowYears = chart.aggregationWindow || 5;
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa resta sempre espressa come % del PIL, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa e' espressa come valore assoluto stimato in USD, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
         },
         {
           label: 'Grafico sopra',

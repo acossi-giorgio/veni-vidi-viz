@@ -1,7 +1,7 @@
 /* ============================================================
    Grafico 3-3 (Atto II) — Scatter: spesa × alfabetizzazione / fuori scuola
    Africa (corallo) / Europa (teal)  ·  2000–2023
-   X = spesa istruzione (% PIL)
+   X = spesa istruzione (USD assoluti stimati)
    Y = alfabetizzazione % OR bambini fuori scuola (%)
    Pannello sotto: rendimento marginale su finestra mobile quinquennale
    ============================================================ */
@@ -191,6 +191,10 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     if (b >= 1)    return b.toFixed(1) + ' B$';
     return (b * 1000).toFixed(0) + ' M$';
   }
+  function fmtSignedSpend(b) {
+    const sign = b >= 0 ? '+' : '-';
+    return `${sign}${fmtSpend(Math.abs(b))}`;
+  }
   const fmtSigned = (v, digits = 2) => `${v >= 0 ? '+' : ''}${v.toFixed(digits)}`;
   const fmtIndex = v => {
     const abs = Math.abs(v);
@@ -200,7 +204,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     return v.toFixed(3);
   };
   const SLOPE_EPSILON = 1e-6;
-  const currentXMode = () => 'pct';
+  const currentXMode = () => 'abs';
 
   function linearSlope(windowPoints, accessor) {
     const pts = windowPoints
@@ -408,7 +412,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     const botIw = W - bottomMargin.left - bottomMargin.right;
     const botIh = bottomPanelH - bottomMargin.top - bottomMargin.bottom;
 
-    const xVal = d => d.eduPct;
+    const xVal = d => d.spendB;
     const yVal = d => yMode === 'literacy' ? d.litPct : d.oosPct;
     const visiblePoints = points.filter(d => d.year >= DISPLAY_MIN_YEAR && d.year <= DISPLAY_MAX_YEAR);
     const scalePts = focusCont ? visiblePoints.filter(d => d.continent === focusCont) : visiblePoints;
@@ -421,14 +425,14 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .domain([Math.max(0, (xExt[0] ?? 0) - xPad), (xExt[1] ?? 1) + xPad])
       .range([0, topIw]).nice();
 
-    const xFmt = v => `${v.toFixed(1)}%`;
+    const xFmt = v => fmtSpend(v);
     const yFmt = v => v.toFixed(0) + '%';
-    const fmtXVal = v => `${v.toFixed(2)}%`;
+    const fmtXVal = v => fmtSpend(v);
     const fmtYVal = v => `${v.toFixed(2)}%`;
-    const xLabel = 'Spesa pubblica istruzione (% PIL)';
+    const xLabel = 'Spesa pubblica istruzione (USD totali stimati)';
     const yLabel = yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola primaria';
-    const slopeLabel = 'Trend spesa medio (% PIL)';
-    const fmtXSlope = v => `${fmtSigned(v, 2)} pp/anno`;
+    const slopeLabel = 'Trend spesa medio (USD stimati)';
+    const fmtXSlope = v => `${fmtSignedSpend(v)}/anno`;
     const tooltipContext = { xLabel, yLabel, fmtXVal, fmtYVal, xVal, yVal, slopeLabel, fmtXSlope };
     const metricKey = yMode === 'literacy' ? 'litPct' : 'oosPct';
     const metricSeriesAll = (focusCont ? points.filter(d => d.continent === focusCont) : points)
@@ -674,7 +678,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     /* ── Bottom panel: index computed on rolling multi-year trends ── */
     const indexSeriesByCont = new Map();
     CONTS.forEach((cont) => {
-      const xMetricKey = 'eduPct';
+      const xMetricKey = 'spendB';
       const series = points
         .filter(d => d.continent === cont && Number.isFinite(d[metricKey]) && Number.isFinite(d[xMetricKey]))
         .sort((a, b) => a.year - b.year);
