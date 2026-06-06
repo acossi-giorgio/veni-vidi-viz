@@ -529,8 +529,8 @@ const CHART_HELP_NOTES = {
     'Interazioni: hover per dettagli, click per drill-down e pulsante back per tornare alla vista aggregata.'
   ].join('\n'),
   'chart-3-3': [
-    'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale di Africa ed Europa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
-    'Pannello sopra: ogni punto corrisponde a un anno aggregato per continente. Sull\'asse X trovi la spesa in istruzione, espressa in % del PIL o in USD. Sull\'asse Y trovi alfabetizzazione o bambini fuori scuola, a seconda della metrica selezionata.',
+    'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale dell\'Africa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
+    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. Sull\'asse X trovi la spesa in istruzione in USD. Sull\'asse Y trovi alfabetizzazione o bambini fuori scuola, a seconda della metrica selezionata.',
     'Pannello sotto: qui vedi l\'indice corretto sulla finestra selezionata. L\'indice confronta il trend dell\'outcome con il trend della spesa su finestre di 1, 3 o 5 anni.',
     'Formula: I = slope(Outcome) / |slope(Spesa)|',
     'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate nella finestra selezionata. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
@@ -625,6 +625,9 @@ const CHART_LATEST_VALUE_MISSING_NOTE = new Set([
   'chart-4-2',
   'chart-4-3',
 ]);
+const CHART_MANUAL_MISSING_DATA_NOTES = new Set([
+  'chart-3-3',
+]);
 
 async function loadMissingDataNotesFromCsv() {
   try {
@@ -649,6 +652,10 @@ async function loadMissingDataNotesFromCsv() {
 
     const nextNotes = {};
     Object.entries(CHART_MISSING_DATASETS).forEach(([chartId, datasets]) => {
+      if (CHART_MANUAL_MISSING_DATA_NOTES.has(chartId)) {
+        nextNotes[chartId] = MISSING_DATA_NOTES[chartId];
+        return;
+      }
       const noDataSet = new Set();
       const incompleteSet = new Set();
       datasets.forEach((dataset) => {
@@ -771,11 +778,11 @@ const CHART_HELP_BUILDERS = {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto confronti la traiettoria annuale di Africa ed Europa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
         },
         {
           label: 'Grafico sopra',
-          text: `Asse X = ${xLabel}. Asse Y = ${outcome}. Ogni punto corrisponde a un anno e la linea unisce la sequenza temporale del continente, così puoi vedere insieme livello, distanza tra Africa ed Europa e direzione del cambiamento.`,
+          text: `Asse X = ${xLabel}. Asse Y = ${outcome}. Ogni punto corrisponde a un anno e la linea unisce la sequenza temporale dell'Africa, così puoi vedere insieme livello e direzione del cambiamento.`,
         },
         {
           label: 'Grafico sotto',

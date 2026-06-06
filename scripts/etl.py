@@ -467,19 +467,26 @@ def make_edu_spending():
 
 def make_literacy():
     try:
-        for fname in ("literacy_raw.csv",):
-            p = os.path.join(RAW, fname)
-            if os.path.exists(p):
-                df = pd.read_csv(p)
-                break
-        else:
-            raise FileNotFoundError("literacy raw file not found")
-        df = owid_rename(df)
-        df = filter_countries(df)
-        df = year_range(df, lo=HISTORY_MIN_YEAR, hi=YEAR_MAX_EDU)
-        df = df[df["value"].notna()]
+        p = os.path.join(RAW, "literacy_world_bank_raw.csv")
+        if not os.path.exists(p):
+            raise FileNotFoundError("literacy world bank raw file not found")
+        df = pd.read_csv(p, skiprows=4, encoding="utf-8-sig")
+        df = df.rename(columns={"Country Name": "country", "Country Code": "code"})
+        df = df[df["code"].notna() & df["code"].str.len().eq(3)]
+        year_cols = [c for c in df.columns if str(c).isdigit() and HISTORY_MIN_YEAR <= int(c) <= YEAR_MAX_EDU]
+        melted = df.melt(
+            id_vars=["code", "country"],
+            value_vars=year_cols,
+            var_name="year",
+            value_name="value",
+        )
+        melted["year"] = melted["year"].astype(int)
+        melted["value"] = pd.to_numeric(melted["value"], errors="coerce")
+        melted = melted.dropna(subset=["value"])
+        melted["continent"] = melted["code"].map(CODE_CONTINENT)
+        melted = melted[melted["continent"].notna()]
         save("youth_literacy.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+             melted[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
         report("youth_literacy.csv", pd.DataFrame(), str(e))
 

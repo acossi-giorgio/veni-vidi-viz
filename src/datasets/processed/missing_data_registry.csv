@@ -260,6 +260,7 @@ youth_literacy.csv,incomplete,COG,Congo
 youth_literacy.csv,incomplete,CIV,Cote d'Ivoire
 youth_literacy.csv,incomplete,HRV,Croatia
 youth_literacy.csv,incomplete,COD,DR Congo
+youth_literacy.csv,incomplete,DJI,Djibouti
 youth_literacy.csv,incomplete,EGY,Egypt
 youth_literacy.csv,incomplete,GNQ,Equatorial Guinea
 youth_literacy.csv,incomplete,ERI,Eritrea
@@ -503,7 +504,6 @@ youth_literacy.csv,no_data,AUT,Austria
 youth_literacy.csv,no_data,BEL,Belgium
 youth_literacy.csv,no_data,CZE,Czechia
 youth_literacy.csv,no_data,DNK,Denmark
-youth_literacy.csv,no_data,DJI,Djibouti
 youth_literacy.csv,no_data,FRO,Faroe Islands
 youth_literacy.csv,no_data,FIN,Finland
 youth_literacy.csv,no_data,FRA,France
