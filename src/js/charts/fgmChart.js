@@ -50,6 +50,22 @@ async function renderFgmChart(selector, isFullscreen = false) {
     d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType),
   ]);
 
+  function normalizeCountryCodeRow(row) {
+    const code = String(row['alpha-3'] || row.Three_Letter_Country_Code || '').trim();
+    const region = String(row.region || row.Continent_Name || '').trim();
+    const subRegion = String(row['sub-region'] || row.sub_region || '').trim();
+    const country = String(row.name || row.Country_Name || '').trim();
+    let continent = region;
+    if (region === 'Americas') continent = subRegion === 'South America' ? 'South America' : 'North America';
+    if (code === 'ATA' || country === 'Antarctica' || region === 'Antarctica') continent = 'Oceania';
+    return {
+      code,
+      country,
+      continent,
+      num: Number(row['country-code'] || row.Country_Number),
+    };
+  }
+
   if (!Array.isArray(rowsRaw) || !rowsRaw.length) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Dati FGM non disponibili.</p>';
     return;
@@ -129,12 +145,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   );
 
   const countryMeta = countryCodeRaw
-    .map((d) => ({
-      code: String(d.Three_Letter_Country_Code || '').trim(),
-      country: String(d.Country_Name || '').trim(),
-      continent: String(d.Continent_Name || '').trim(),
-      num: Number(d.Country_Number),
-    }))
+    .map(normalizeCountryCodeRow)
     .filter((d) => d.code && Number.isFinite(d.num));
   const numToCode = new Map(countryMeta.map((d) => [d.num, d.code]));
   numToCode.set(729, 'SDN');

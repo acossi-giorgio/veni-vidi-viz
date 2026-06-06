@@ -245,27 +245,16 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
     coverageByYear = new Map(allYears.map((year) => {
       const stats = CONTS.map((cont) => {
-        const lines = [];
         const seen = (rows) => new Set(rows.filter(d => d.continent === cont && d.year === year && d.value != null).map(d => d.code));
         const pctCovered = seen(spendData);
         const pctTotal = coverageEligibleByMetric.pct.get(cont)?.size || 0;
-        if (viewMetric === 'pct') {
-          lines.push({ label: 'Spesa istruzione', covered: pctCovered.size, total: pctTotal });
-        } else {
-          const absCovered = seen(absData);
-          const absTotal = coverageEligibleByMetric.abs.get(cont)?.size || 0;
-          const incomeCovered = seen(incomeRaw);
-          const incomeTotal = coverageEligibleByMetric.income.get(cont)?.size || 0;
-          const popCovered = seen(popRaw);
-          const popTotal = coverageEligibleByMetric.population.get(cont)?.size || 0;
-          lines.push(
-            { label: 'Spesa istruzione', covered: pctCovered.size, total: pctTotal },
-            { label: 'Reddito', covered: incomeCovered.size, total: incomeTotal },
-            { label: 'Popolazione', covered: popCovered.size, total: popTotal },
-            { label: 'Aggregazione effettiva', covered: absCovered.size, total: absTotal },
-          );
-        }
-        return { cont, lines };
+        const absCovered = seen(absData);
+        const absTotal = coverageEligibleByMetric.abs.get(cont)?.size || 0;
+        return {
+          cont,
+          covered: viewMetric === 'abs' ? absCovered.size : pctCovered.size,
+          total: viewMetric === 'abs' ? absTotal : pctTotal,
+        };
       });
       return [year, { year, stats }];
     }));
@@ -353,24 +342,31 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       });
 
       const coverage = coverageByYear.get(nearYear);
+      const titleHtml = `
+        <span style="color:${CONT_COLOR.Africa}">Africa</span>
+        <span style="color:#334155"> vs </span>
+        <span style="color:${CONT_COLOR.Europe}">Europa</span>
+      `;
       window.showHoverTooltip(tipEl, event, {
-        title: 'Spesa pubblica in istruzione',
+        titleHtml,
         meta: `Anno: ${nearYear}`,
         sections: [
+          ...CONTS.map(cont => ({
+            title: cont,
+            rows: [
+              {
+                label: 'Spesa media',
+                value: meanByContYear.get(nearYear)?.[cont] != null ? fmtY(meanByContYear.get(nearYear)[cont]) : 'N/D',
+              },
+            ],
+          })),
           {
-            title: 'Valori',
+            title: 'Copertura dati',
             rows: CONTS.map(cont => ({
               label: cont,
-              value: meanByContYear.get(nearYear)?.[cont] != null ? fmtY(meanByContYear.get(nearYear)[cont]) : 'N/D',
+              value: `${coverage?.stats?.find(item => item.cont === cont)?.covered ?? 0}/${coverage?.stats?.find(item => item.cont === cont)?.total ?? 0} paesi`,
             })),
           },
-          ...(coverage?.stats?.length ? coverage.stats.map(({ cont, lines }) => ({
-            title: cont,
-            rows: lines.map(line => ({
-              label: line.label,
-              value: `${line.covered}/${line.total} paesi`,
-            })),
-          })) : []),
         ],
       }, { offsetX: 14, offsetY: -28 });
     })

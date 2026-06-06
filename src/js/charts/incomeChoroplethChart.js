@@ -54,8 +54,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
   const CHART_PANEL = getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CHORO_COLORS = ['#e3f0ff', '#b8d8ff', '#79b5f2', '#3f8fda', '#145ea8'];
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
@@ -528,17 +526,10 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('width', '100%').style('height', '100%')
     .style('display', 'none').style('background', '#fff').style('border-radius', '10px');
 
-  let trendTip = document.getElementById('chm-trend-tip');
-  if (!trendTip) {
-    trendTip = document.createElement('div'); trendTip.id = 'chm-trend-tip';
-    Object.assign(trendTip.style, {
-      position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: TOOLTIP_BG, color: TOOLTIP_INK,
-      padding: '5px 10px', borderRadius: '5px', fontSize: '11px',
-      lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap',
-    });
-    document.body.appendChild(trendTip);
-  }
+  const trendTip = window.ensureHoverTooltip('chm-trend-tip', {
+    className: 'chart-hover-tooltip chart-hover-tooltip--light',
+    maxWidth: 'min(92vw, 18rem)',
+  });
 
   function drawTrend() {
     trendDiv.selectAll('*').remove();
@@ -672,28 +663,34 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
           }
         });
 
-        // Tooltip
-        let html = `<strong style="color:#fff">${nearYear}</strong>`;
-      CONT_ORDER.forEach(cont => {
-        const v = yearData[cont];
-        const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
-        const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
-        const total = incomeEligibleByCont.get(cont)?.size || 0;
-        html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
-        html += `<br>${formatCoverageCount(covered, total, { label: 'Copertura dati' })}`;
-      });
-
-        trendTip.innerHTML = html;
-        trendTip.style.display = 'block';
-        let tx = event.clientX + 14, ty = event.clientY - 28;
-        const r = trendTip.getBoundingClientRect();
-        if (tx + r.width > window.innerWidth - 8) tx = event.clientX - r.width - 14;
-        trendTip.style.left = tx + 'px'; trendTip.style.top = ty + 'px';
+        window.showHoverTooltip(trendTip, event, {
+          title: String(nearYear),
+          rows: CONT_ORDER.map(cont => {
+            const v = yearData[cont];
+            const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
+            const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
+            const total = incomeEligibleByCont.get(cont)?.size || 0;
+            return {
+              html: (
+                `<div class="chart-hover-tooltip__trend-item">` +
+                `<div class="chart-hover-tooltip__trend-head">` +
+                `<span class="chart-hover-tooltip__trend-label">` +
+                `<span class="chart-hover-tooltip__trend-swatch" style="background:${col}"></span>` +
+                `<span style="color:${col}">${escapeHtml(cont)}</span>` +
+                `</span>` +
+                `<strong class="chart-hover-tooltip__value">${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}</strong>` +
+                `</div>` +
+                `<div class="chart-hover-tooltip__trend-coverage">${formatCoverageCount(covered, total, { label: 'Copertura dati' })}</div>` +
+                `</div>`
+              ),
+            };
+          }),
+        }, { offsetX: 14, offsetY: -28 });
       })
       .on('mouseleave', () => {
         crossLine.attr('opacity', 0);
         crossDots.forEach(({ dot }) => dot.attr('opacity', 0));
-        trendTip.style.display = 'none';
+        window.hideHoverTooltip(trendTip);
       });
   }
 

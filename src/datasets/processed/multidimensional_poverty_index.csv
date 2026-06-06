@@ -16,7 +16,7 @@ BTN,Bhutan,Asia,2022,0.0386035
 BWA,Botswana,Africa,2015,0.0726387
 CAF,Central African Republic,Africa,2018,0.46134752
 CHN,China,Asia,2014,0.016066726
-CIV,Cote d'Ivoire,Africa,2021,0.2102151
+CIV,Côte d'Ivoire,Africa,2021,0.2102151
 CMR,Cameroon,Africa,2018,0.23206012
 COD,DR Congo,Africa,2017,0.33118874
 COG,Congo,Africa,2014,0.11167629
@@ -47,12 +47,12 @@ JAM,Jamaica,North America,2018,0.010810291
 JOR,Jordan,Asia,2023,0.0027735643
 KAZ,Kazakhstan,Asia,2015,0.0016106326
 KEN,Kenya,Africa,2022,0.11335198
-KGZ,Kyrgyz Republic,Asia,2023,0.0034202132
+KGZ,Kyrgyzstan,Asia,2023,0.0034202132
 KHM,Cambodia,Asia,2021,0.07036792
 KIR,Kiribati,Oceania,2018,0.08015741
 LAO,Laos,Asia,2023,0.082487345
 LBR,Liberia,Africa,2019,0.25929374
-LBY,Libyan Arab Jamahiriya,Africa,2014,0.0074214647
+LBY,Libya,Africa,2014,0.0074214647
 LKA,Sri Lanka,Asia,2016,0.011184699
 LSO,Lesotho,Africa,2023,0.10604715
 MAR,Morocco,Africa,2017,0.026696723
@@ -77,7 +77,7 @@ PER,Peru,South America,2023,0.021902395
 PHL,Philippines,Asia,2022,0.015788116
 PNG,Papua New Guinea,Oceania,2016,0.2632909
 PRY,Paraguay,South America,2016,0.018848581
-PSE,Palestinian Territory,Asia,2019,0.0019800924
+PSE,Palestine,Asia,2019,0.0019800924
 RWA,Rwanda,Africa,2019,0.23100196
 SDN,Sudan,Africa,2014,0.2794396
 SEN,Senegal,Africa,2023,0.22621569

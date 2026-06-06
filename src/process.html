@@ -33,8 +33,7 @@
         <div class="page-hero-inner page-hero-inner--narrow">
           <span class="page-eyebrow">Metodo</span>
           <h1>Processo e Lavoro</h1>
-          <p>Questa pagina racconta come abbiamo costruito il progetto, dalla scelta delle fonti al processo ETL, fino alle decisioni tecniche e narrative che hanno trasformato dataset eterogenei in una visualizzazione coerente.</p>
-        </div>
+         </div>
       </section>
 
       <div class="page-body page-body--narrow">
@@ -42,8 +41,9 @@
         <section class="dataset-section">
           <h2 class="page-section-title">Impostazione del progetto</h2>
           <div class="section-prose">
-            <p class="editorial-lead">Il lavoro è partito da una domanda narrativa: come mostrare in modo chiaro e progressivo il legame tra vulnerabilità economica, esclusione scolastica, costo umano e migrazione?</p>
-            <p>Da quella domanda abbiamo costruito una struttura in quattro capitoli, ognuno dei quali approfondisce una dimensione del problema con un set coerente di indicatori internazionali. L'obiettivo non è l'enciclopedia, ma la progressione: scoprire (<em>veni</em>), indagare (<em>vidi</em>), portare alla luce (<em>viz</em>) un fenomeno noto ma spesso raccontato in modo frammentato.</p>
+            <p>Il lavoro è partito da una domanda narrativa: come mostrare in modo chiaro e progressivo il legame tra vulnerabilità economica, esclusione scolastica, costo umano e migrazione?</p>
+            <p>Da quella domanda abbiamo costruito una struttura in quattro capitoli, ognuno dei quali approfondisce una dimensione del problema con un set coerente di indicatori internazionali. L'obiettivo è scoprire <em>(veni)</em>, indagare <em>(vidi)</em>, portare alla luce <em>(viz)</em> un fenomeno comunemente noto ma spesso raccontato in modo superficiale.</p>
+            <br>
           </div>
           <div class="methodology-flow">
             <article class="method-step">
@@ -67,56 +67,38 @@
 
         <section class="dataset-section">
           <h2 class="page-section-title">Processo ETL</h2>
-          <p class="page-section-intro">L'ETL e' stato il centro del lavoro sui dati: ogni fonte e' stata raccolta, verificata e trasformata in una struttura comune, cosi' da alimentare grafici diversi senza riscrivere ogni volta la logica di lettura.</p>
-          <div class="methodology-flow">
+            <div class="methodology-flow">
             <article class="method-step">
               <h3>Extract</h3>
-              <p>In questa fase abbiamo raccolto e verificato le fonti originali, mantenendo traccia del formato e della copertura disponibile per ciascun indicatore.</p>
-              <ul class="editorial-list">
-                <li>Selezione di dataset da World Bank, UNICEF, ILO, UNESCO UIS, UN DESA, Our World in Data e UN World Population Prospects.</li>
-                <li>Raccolta di sorgenti eterogenee in formati diversi, tra cui CSV, XLSX e tabelle pubblicate su portali istituzionali.</li>
-                <li>Controllo preliminare della disponibilita' per paese, anno e metrica, cosi' da capire fin dall'inizio i limiti reali di ogni serie.</li>
-              </ul>
+              <p>In questa fase abbiamo raccolto e verificato le fonti originali, mantenendo traccia del formato e della copertura disponibile per ciascun indicatore. Abbiamo selezionato dataset da World Bank, UNICEF, ILO, UNESCO UIS, UN DESA, Our World in Data e UN World Population Prospects, raccogliendo sorgenti eterogenee in formati diversi tra cui CSV, XLSX e tabelle pubblicate su portali istituzionali.</p>
             </article>
 
             <article class="method-step">
               <h3>Transform</h3>
-              <p>La fase di trasformazione e' servita a rendere confrontabili dataset nati con logiche diverse, preparando ogni tabella per un uso coerente nel racconto e nei grafici.</p>
-              <ul class="editorial-list">
-                <li>Pulizia dei valori, uniformazione dei nomi dei paesi e standardizzazione dei codici ISO3 per evitare duplicazioni e incoerenze tra fonti.</li>
-                <li>Normalizzazione dei campi temporali, distinzione tra serie storiche e snapshot e verifica della copertura effettiva, cosi' da usare per ogni indicatore solo gli anni davvero confrontabili.</li>
-                <li>Riorganizzazione delle colonne in una struttura comune, con variabili omogenee e casi limite esplicitati quando era necessario fermarsi all'ultimo anno disponibile.</li>
-              </ul>
-              <p>Il mapping ISO3 verso continente e macro-regione si basa su <a href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes" target="_blank" rel="noopener">ISO-3166 Countries with Regional Codes</a>, poi adattato alle esigenze del progetto per mantenere continuita' tra dataset diversi.</p>
+              <p>La fase di trasformazione e' servita a rendere confrontabili dataset nati con logiche diverse, preparando ogni tabella per un uso coerente nel racconto e nei grafici. Abbiamo effettuato la pulizia dei valori, uniformato i nomi dei paesi e standardizzato i codici ISO3 per evitare duplicazioni e incoerenze tra fonti. I campi temporali sono stati normalizzati distinguendo serie storiche da snapshot, usando per ogni indicatore solo gli anni davvero confrontabili. Le colonne sono state riorganizzate in una struttura comune, con variabili omogenee e casi limite esplicitati.</p>
             </article>
 
             <article class="method-step">
               <h3>Load</h3>
-              <p>La fase di load ha tradotto il lavoro di trasformazione in file finali realmente utilizzabili dal sito, senza ulteriori passaggi tecnici nel frontend.</p>
-              <ul class="editorial-list">
-                <li>Esportazione dei dataset finali in CSV leggeri e gia' pronti per il caricamento lato client.</li>
-                <li>Definizione di colonne semplici e consistenti tra file diversi, in modo che i moduli D3 potessero leggere strutture prevedibili.</li>
-                <li>Eliminazione della necessita' di trasformazioni aggiuntive nel browser, riducendo complessita', rischio di errore e logica duplicata nei grafici.</li>
-              </ul>
+              <p>La fase di load ha tradotto il lavoro di trasformazione in file finali realmente utilizzabili dal sito, senza ulteriori passaggi tecnici nel frontend. I dataset sono stati esportati in CSV leggeri e gia' pronti per il caricamento lato client, con colonne semplici e consistenti tra file diversi cosi' che i moduli D3 potessero leggere strutture prevedibili, eliminando la necessita' di trasformazioni aggiuntive nel browser e riducendo complessita', rischio di errore e logica duplicata nei grafici.</p>
             </article>
           </div>
         </section>
 
         <section class="dataset-section">
           <h2 class="page-section-title">Stack tecnico</h2>
-          <p class="page-section-intro">L'implementazione segue la stessa filosofia del progetto: un'infrastruttura semplice, leggibile e sufficiente per gestire sia la parte dati sia la parte visuale, senza introdurre complessità non necessarie.</p>
-          <div class="methodology-flow">
+          <div class="methodology-flow methodology-flow--row">
             <article class="method-step">
               <h3>Visualizzazione</h3>
-              <p><strong>D3.js v7</strong> per tutti i grafici interattivi e <strong>TopoJSON</strong> per le mappe. Dove necessario sono stati usati plugin dedicati come <strong>d3-sankey</strong> per i grafici a flusso.</p>
+              <p><strong>D3.js</strong> con eventuali plugin.</p>
             </article>
             <article class="method-step">
               <h3>Frontend</h3>
-              <p><strong>HTML5</strong>, <strong>CSS3</strong> e <strong>JavaScript ES6+</strong> vanilla. Nessun framework JS e nessun framework CSS: il sito è statico, portabile e facilmente distribuibile senza build step.</p>
+              <p><strong>HTML</strong>, <strong>CSS3</strong> e <strong>JavaScript</strong> vanilla.</p>
             </article>
             <article class="method-step">
               <h3>Data processing</h3>
-              <p><strong>Python</strong> con librerie come <strong>pandas</strong> e <strong>openpyxl</strong> per estrazione, pulizia, armonizzazione e produzione dei CSV finali usati nei grafici.</p>
+              <p><strong>Python</strong> con librerie dedicate all'elaborazione dati.</p>
             </article>
           </div>
         </section>

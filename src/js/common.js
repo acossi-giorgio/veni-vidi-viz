@@ -123,6 +123,24 @@ function formatCoverageBlock(lines = [], options = {}) {
   return `<section class="tooltip-coverage"><${titleTag} class="${titleClass}">${escapeHtml(title)}</${titleTag}>${body}</section>`;
 }
 
+function getTooltipContinentColor(value) {
+  const text = String(value ?? '').trim().toLowerCase();
+  if (text === 'africa') return CHART_COLORS.continents.Africa;
+  if (text === 'europe' || text === 'europa') return CHART_COLORS.continents.Europe;
+  return null;
+}
+
+function accentTooltipContinents(text) {
+  const safe = escapeHtml(text);
+  const africa = getTooltipContinentColor('Africa');
+  const europe = getTooltipContinentColor('Europe');
+  if (!safe) return safe;
+  return safe
+    .replace(/\bAfrica\b/g, `<span style="color:${africa}">Africa</span>`)
+    .replace(/\bEurope\b/g, `<span style="color:${europe}">Europe</span>`)
+    .replace(/\bEuropa\b/g, `<span style="color:${europe}">Europa</span>`);
+}
+
 function ensureHoverTooltip(id = 'chart-hover-tooltip', options = {}) {
   const {
     className = 'chart-hover-tooltip',
@@ -145,6 +163,7 @@ function ensureHoverTooltip(id = 'chart-hover-tooltip', options = {}) {
 function buildHoverTooltipHtml(config = {}) {
   const {
     title = '',
+    titleHtml = '',
     titleColor = '',
     meta = '',
     rows = [],
@@ -153,17 +172,19 @@ function buildHoverTooltipHtml(config = {}) {
   } = config;
 
   const titleStyle = titleColor ? ` style="color:${escapeHtml(titleColor)}"` : '';
+  const resolvedTitleColor = titleColor || getTooltipContinentColor(title);
+  const titleAccentStyle = resolvedTitleColor ? ` style="color:${escapeHtml(resolvedTitleColor)}"` : '';
   const safeRows = rows.filter(Boolean).map((row) => {
     if (typeof row === 'string') {
-      return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row}</div>`;
+      return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${accentTooltipContinents(row)}</div>`;
     }
     if (row.html) {
       return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row.html}</div>`;
     }
-    const label = escapeHtml(row.label || '');
+    const label = accentTooltipContinents(row.label || '');
     const value = row.valueHtml != null
       ? row.valueHtml
-      : escapeHtml(row.value ?? 'N/D');
+      : accentTooltipContinents(row.value ?? 'N/D');
     return (
       `<div class="chart-hover-tooltip__row">` +
       `<span class="chart-hover-tooltip__label">${label}</span>` +
@@ -175,15 +196,15 @@ function buildHoverTooltipHtml(config = {}) {
   const safeSections = sections.filter(Boolean).map((section) => {
     const sectionRows = (section.rows || []).map((row) => {
       if (typeof row === 'string') {
-        return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row}</div>`;
+        return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${accentTooltipContinents(row)}</div>`;
       }
       if (row.html) {
         return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row.html}</div>`;
       }
       return (
         `<div class="chart-hover-tooltip__row">` +
-        `<span class="chart-hover-tooltip__label">${escapeHtml(row.label || '')}</span>` +
-        `<strong class="chart-hover-tooltip__value">${row.valueHtml != null ? row.valueHtml : escapeHtml(row.value ?? 'N/D')}</strong>` +
+        `<span class="chart-hover-tooltip__label">${accentTooltipContinents(row.label || '')}</span>` +
+        `<strong class="chart-hover-tooltip__value">${row.valueHtml != null ? row.valueHtml : accentTooltipContinents(row.value ?? 'N/D')}</strong>` +
         `</div>`
       );
     }).join('');
@@ -197,7 +218,7 @@ function buildHoverTooltipHtml(config = {}) {
 
   return (
     `<div class="chart-hover-tooltip__panel">` +
-    `${title ? `<div class="chart-hover-tooltip__title"${titleStyle}>${escapeHtml(title)}</div>` : ''}` +
+    `${titleHtml ? `<div class="chart-hover-tooltip__title"${titleStyle || titleAccentStyle}>${titleHtml}</div>` : (title ? `<div class="chart-hover-tooltip__title"${titleStyle || titleAccentStyle}>${accentTooltipContinents(title)}</div>` : '')}` +
     `${meta ? `<div class="chart-hover-tooltip__meta">${escapeHtml(meta)}</div>` : ''}` +
     `${safeRows ? `<div class="chart-hover-tooltip__body">${safeRows}</div>` : ''}` +
     `${safeSections}` +
@@ -262,13 +283,14 @@ function mountChartWarningHint(host, message, options = {}) {
       pointerEvents: 'none',
       zIndex: '10030',
       maxWidth: '280px',
-      padding: '8px 10px',
-      borderRadius: '8px',
-      background: 'rgba(28, 25, 23, 0.94)',
-      color: '#fffdf8',
+      padding: '0.82rem 0.95rem 0.88rem',
+      borderRadius: '14px',
+      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 252, 0.96))',
+      color: '#1f2937',
       fontSize: '11px',
       lineHeight: '1.55',
-      boxShadow: '0 10px 28px rgba(16,18,34,0.35)',
+      boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
+      border: '1px solid rgba(148, 163, 184, 0.28)',
       whiteSpace: 'normal',
     });
     document.body.appendChild(tooltip);
@@ -303,7 +325,7 @@ function mountChartWarningHint(host, message, options = {}) {
 
   const safeHtml = escapeHtml(message).replace(/\n/g, '<br>');
   const show = () => {
-    tooltip.innerHTML = `<strong>Attenzione</strong><br>${safeHtml}`;
+    tooltip.innerHTML = `<strong style="display:block;margin-bottom:0.2rem;color:#0f172a">Attenzione</strong>${safeHtml}`;
     tooltip.style.display = 'block';
     const rect = btn.getBoundingClientRect();
     const box = tooltip.getBoundingClientRect();

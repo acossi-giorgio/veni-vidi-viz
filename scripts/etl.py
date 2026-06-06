@@ -143,19 +143,57 @@ def build_simple_country_names(code_name_official):
     simple.update(COUNTRY_NAME_CODE_OVERRIDES)
     return simple
 
-def load_mappings():
+def read_country_code_reference():
     path = os.path.join(RAW, "country_codes_raw.csv")
-    df = pd.read_csv(path).rename(columns={
-        "Three_Letter_Country_Code": "code",
-        "Continent_Name":            "continent",
-        "Country_Name":              "country_official",
-    })[["code", "country_official", "continent"]].dropna()
-    remap = {
-        "Asia": "Asia", "Europe": "Europe", "Africa": "Africa",
-        "North America": "North America", "South America": "South America",
-        "Oceania": "Oceania", "Antarctica": "Oceania",
-    }
-    df["continent"] = df["continent"].map(remap).fillna(df["continent"])
+    df = pd.read_csv(path)
+
+    if {"alpha-3", "name", "region"}.issubset(df.columns):
+        df = df.rename(columns={
+            "alpha-3": "code",
+            "name": "country_official",
+            "region": "region",
+            "sub-region": "sub_region",
+            "country-code": "num",
+        })
+
+        def pick_continent(row):
+            region = str(row.get("region", "")).strip()
+            sub_region = str(row.get("sub_region", "")).strip()
+            code = str(row.get("code", "")).strip()
+            country = str(row.get("country_official", "")).strip()
+
+            if code == "ATA" or country == "Antarctica":
+                return "Oceania"
+            if region == "Americas":
+                return "South America" if sub_region == "South America" else "North America"
+            if region in {"Africa", "Asia", "Europe", "Oceania"}:
+                return region
+            return region or None
+
+        df["continent"] = df.apply(pick_continent, axis=1)
+    else:
+        df = df.rename(columns={
+            "Three_Letter_Country_Code": "code",
+            "Continent_Name":            "continent",
+            "Country_Name":              "country_official",
+            "Country_Number":            "num",
+        })
+        remap = {
+            "Asia": "Asia", "Europe": "Europe", "Africa": "Africa",
+            "North America": "North America", "South America": "South America",
+            "Oceania": "Oceania", "Antarctica": "Oceania",
+        }
+        df["continent"] = df["continent"].map(remap).fillna(df["continent"])
+
+    df = df[["code", "country_official", "continent", "num"]].dropna(subset=["code", "country_official", "continent"])
+    df["code"] = df["code"].astype(str).str.strip()
+    df["country_official"] = df["country_official"].astype(str).str.strip()
+    df["continent"] = df["continent"].astype(str).str.strip()
+    df["num"] = pd.to_numeric(df["num"], errors="coerce")
+    return df
+
+def load_mappings():
+    df = read_country_code_reference()[["code", "country_official", "continent"]].copy()
     code_continent = df.set_index("code")["continent"].to_dict()
     code_name_official = df.set_index("code")["country_official"].to_dict()
     code_name_simple = build_simple_country_names(code_name_official)
@@ -719,10 +757,7 @@ def make_migration():
     try:
         import openpyxl
 
-        cc = pd.read_csv(os.path.join(RAW, "country_codes_raw.csv")).rename(columns={
-            "Three_Letter_Country_Code": "code",
-            "Country_Number": "num",
-        })[["code", "num"]].dropna()
+        cc = read_country_code_reference()[["code", "num"]].dropna()
         cc["num"] = cc["num"].astype(int)
         num_to_code = cc.set_index("num")["code"].to_dict()
         num_to_code[729] = "SDN"

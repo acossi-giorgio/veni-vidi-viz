@@ -602,24 +602,24 @@ CHL,Chile,South America,2022,19938.0
 CHN,China,Asia,1995,10102953.0
 CHN,China,Asia,1996,9464568.0
 CHN,China,Asia,1997,8248401.0
-CIV,Cote d'Ivoire,Africa,1996,1377153.0
-CIV,Cote d'Ivoire,Africa,1997,1404733.0
-CIV,Cote d'Ivoire,Africa,1999,1462823.0
-CIV,Cote d'Ivoire,Africa,2000,1525605.0
-CIV,Cote d'Ivoire,Africa,2001,1456005.0
-CIV,Cote d'Ivoire,Africa,2002,1485974.0
-CIV,Cote d'Ivoire,Africa,2003,1649807.0
-CIV,Cote d'Ivoire,Africa,2009,1923994.0
-CIV,Cote d'Ivoire,Africa,2013,1281399.0
-CIV,Cote d'Ivoire,Africa,2014,1121305.0
-CIV,Cote d'Ivoire,Africa,2015,1100220.0
-CIV,Cote d'Ivoire,Africa,2016,829318.0
-CIV,Cote d'Ivoire,Africa,2017,872398.0
-CIV,Cote d'Ivoire,Africa,2018,754999.0
-CIV,Cote d'Ivoire,Africa,2019,733513.0
-CIV,Cote d'Ivoire,Africa,2020,693368.0
-CIV,Cote d'Ivoire,Africa,2021,817120.0
-CIV,Cote d'Ivoire,Africa,2022,864826.0
+CIV,Côte d'Ivoire,Africa,1996,1377153.0
+CIV,Côte d'Ivoire,Africa,1997,1404733.0
+CIV,Côte d'Ivoire,Africa,1999,1462823.0
+CIV,Côte d'Ivoire,Africa,2000,1525605.0
+CIV,Côte d'Ivoire,Africa,2001,1456005.0
+CIV,Côte d'Ivoire,Africa,2002,1485974.0
+CIV,Côte d'Ivoire,Africa,2003,1649807.0
+CIV,Côte d'Ivoire,Africa,2009,1923994.0
+CIV,Côte d'Ivoire,Africa,2013,1281399.0
+CIV,Côte d'Ivoire,Africa,2014,1121305.0
+CIV,Côte d'Ivoire,Africa,2015,1100220.0
+CIV,Côte d'Ivoire,Africa,2016,829318.0
+CIV,Côte d'Ivoire,Africa,2017,872398.0
+CIV,Côte d'Ivoire,Africa,2018,754999.0
+CIV,Côte d'Ivoire,Africa,2019,733513.0
+CIV,Côte d'Ivoire,Africa,2020,693368.0
+CIV,Côte d'Ivoire,Africa,2021,817120.0
+CIV,Côte d'Ivoire,Africa,2022,864826.0
 CMR,Cameroon,Africa,2008,376363.0
 CMR,Cameroon,Africa,2009,303800.0
 CMR,Cameroon,Africa,2011,278416.0
@@ -684,29 +684,29 @@ COM,Comoros,Africa,2014,6657.0
 COM,Comoros,Africa,2017,10145.0
 COM,Comoros,Africa,2018,13856.0
 COM,Comoros,Africa,2021,30906.0
-CPV,Cape Verde,Africa,1998,2401.0
-CPV,Cape Verde,Africa,2000,2723.0
-CPV,Cape Verde,Africa,2001,3561.0
-CPV,Cape Verde,Africa,2002,3194.0
-CPV,Cape Verde,Africa,2003,3065.0
-CPV,Cape Verde,Africa,2004,4147.0
-CPV,Cape Verde,Africa,2005,3812.0
-CPV,Cape Verde,Africa,2006,3796.0
-CPV,Cape Verde,Africa,2007,4893.0
-CPV,Cape Verde,Africa,2008,5400.0
-CPV,Cape Verde,Africa,2009,5602.0
-CPV,Cape Verde,Africa,2010,5472.0
-CPV,Cape Verde,Africa,2011,5048.0
-CPV,Cape Verde,Africa,2012,3617.0
-CPV,Cape Verde,Africa,2013,3349.0
-CPV,Cape Verde,Africa,2014,3140.0
-CPV,Cape Verde,Africa,2015,2968.0
-CPV,Cape Verde,Africa,2016,3160.0
-CPV,Cape Verde,Africa,2017,3048.0
-CPV,Cape Verde,Africa,2018,2203.0
-CPV,Cape Verde,Africa,2019,2244.0
-CPV,Cape Verde,Africa,2020,3159.0
-CPV,Cape Verde,Africa,2021,2820.0
+CPV,Cabo Verde,Africa,1998,2401.0
+CPV,Cabo Verde,Africa,2000,2723.0
+CPV,Cabo Verde,Africa,2001,3561.0
+CPV,Cabo Verde,Africa,2002,3194.0
+CPV,Cabo Verde,Africa,2003,3065.0
+CPV,Cabo Verde,Africa,2004,4147.0
+CPV,Cabo Verde,Africa,2005,3812.0
+CPV,Cabo Verde,Africa,2006,3796.0
+CPV,Cabo Verde,Africa,2007,4893.0
+CPV,Cabo Verde,Africa,2008,5400.0
+CPV,Cabo Verde,Africa,2009,5602.0
+CPV,Cabo Verde,Africa,2010,5472.0
+CPV,Cabo Verde,Africa,2011,5048.0
+CPV,Cabo Verde,Africa,2012,3617.0
+CPV,Cabo Verde,Africa,2013,3349.0
+CPV,Cabo Verde,Africa,2014,3140.0
+CPV,Cabo Verde,Africa,2015,2968.0
+CPV,Cabo Verde,Africa,2016,3160.0
+CPV,Cabo Verde,Africa,2017,3048.0
+CPV,Cabo Verde,Africa,2018,2203.0
+CPV,Cabo Verde,Africa,2019,2244.0
+CPV,Cabo Verde,Africa,2020,3159.0
+CPV,Cabo Verde,Africa,2021,2820.0
 CRI,Costa Rica,North America,1995,52330.0
 CRI,Costa Rica,North America,1996,39709.0
 CRI,Costa Rica,North America,2011,14145.0
@@ -1696,31 +1696,31 @@ KEN,Kenya,Africa,2007,311609.0
 KEN,Kenya,Africa,2008,601767.0
 KEN,Kenya,Africa,2009,505601.0
 KEN,Kenya,Africa,2012,1249057.0
-KGZ,Kyrgyz Republic,Asia,1996,61830.0
-KGZ,Kyrgyz Republic,Asia,1999,32311.0
-KGZ,Kyrgyz Republic,Asia,2000,39256.0
-KGZ,Kyrgyz Republic,Asia,2001,38112.0
-KGZ,Kyrgyz Republic,Asia,2002,40255.0
-KGZ,Kyrgyz Republic,Asia,2003,43918.0
-KGZ,Kyrgyz Republic,Asia,2004,21705.0
-KGZ,Kyrgyz Republic,Asia,2005,33015.0
-KGZ,Kyrgyz Republic,Asia,2006,26008.0
-KGZ,Kyrgyz Republic,Asia,2007,28752.0
-KGZ,Kyrgyz Republic,Asia,2008,28506.0
-KGZ,Kyrgyz Republic,Asia,2009,26580.0
-KGZ,Kyrgyz Republic,Asia,2010,21192.0
-KGZ,Kyrgyz Republic,Asia,2011,24136.0
-KGZ,Kyrgyz Republic,Asia,2012,23777.0
-KGZ,Kyrgyz Republic,Asia,2013,23592.0
-KGZ,Kyrgyz Republic,Asia,2014,20258.0
-KGZ,Kyrgyz Republic,Asia,2015,22796.0
-KGZ,Kyrgyz Republic,Asia,2016,12987.0
-KGZ,Kyrgyz Republic,Asia,2017,13463.0
-KGZ,Kyrgyz Republic,Asia,2018,12165.0
-KGZ,Kyrgyz Republic,Asia,2019,15475.0
-KGZ,Kyrgyz Republic,Asia,2020,30936.0
-KGZ,Kyrgyz Republic,Asia,2021,25931.0
-KGZ,Kyrgyz Republic,Asia,2022,21412.0
+KGZ,Kyrgyzstan,Asia,1996,61830.0
+KGZ,Kyrgyzstan,Asia,1999,32311.0
+KGZ,Kyrgyzstan,Asia,2000,39256.0
+KGZ,Kyrgyzstan,Asia,2001,38112.0
+KGZ,Kyrgyzstan,Asia,2002,40255.0
+KGZ,Kyrgyzstan,Asia,2003,43918.0
+KGZ,Kyrgyzstan,Asia,2004,21705.0
+KGZ,Kyrgyzstan,Asia,2005,33015.0
+KGZ,Kyrgyzstan,Asia,2006,26008.0
+KGZ,Kyrgyzstan,Asia,2007,28752.0
+KGZ,Kyrgyzstan,Asia,2008,28506.0
+KGZ,Kyrgyzstan,Asia,2009,26580.0
+KGZ,Kyrgyzstan,Asia,2010,21192.0
+KGZ,Kyrgyzstan,Asia,2011,24136.0
+KGZ,Kyrgyzstan,Asia,2012,23777.0
+KGZ,Kyrgyzstan,Asia,2013,23592.0
+KGZ,Kyrgyzstan,Asia,2014,20258.0
+KGZ,Kyrgyzstan,Asia,2015,22796.0
+KGZ,Kyrgyzstan,Asia,2016,12987.0
+KGZ,Kyrgyzstan,Asia,2017,13463.0
+KGZ,Kyrgyzstan,Asia,2018,12165.0
+KGZ,Kyrgyzstan,Asia,2019,15475.0
+KGZ,Kyrgyzstan,Asia,2020,30936.0
+KGZ,Kyrgyzstan,Asia,2021,25931.0
+KGZ,Kyrgyzstan,Asia,2022,21412.0
 KHM,Cambodia,Asia,1997,290788.0
 KHM,Cambodia,Asia,1998,362398.0
 KHM,Cambodia,Asia,1999,337522.0
@@ -2662,30 +2662,30 @@ PRY,Paraguay,South America,2016,74167.0
 PRY,Paraguay,South America,2020,89739.0
 PRY,Paraguay,South America,2021,93002.0
 PRY,Paraguay,South America,2022,93829.0
-PSE,Palestinian Territory,Asia,1999,39479.0
-PSE,Palestinian Territory,Asia,2000,30037.0
-PSE,Palestinian Territory,Asia,2001,32623.0
-PSE,Palestinian Territory,Asia,2002,27903.0
-PSE,Palestinian Territory,Asia,2003,27650.0
-PSE,Palestinian Territory,Asia,2004,29594.0
-PSE,Palestinian Territory,Asia,2005,41192.0
-PSE,Palestinian Territory,Asia,2006,47080.0
-PSE,Palestinian Territory,Asia,2007,51885.0
-PSE,Palestinian Territory,Asia,2008,45526.0
-PSE,Palestinian Territory,Asia,2009,40965.0
-PSE,Palestinian Territory,Asia,2010,37435.0
-PSE,Palestinian Territory,Asia,2011,37547.0
-PSE,Palestinian Territory,Asia,2012,28659.0
-PSE,Palestinian Territory,Asia,2013,29864.0
-PSE,Palestinian Territory,Asia,2014,25322.0
-PSE,Palestinian Territory,Asia,2015,24957.0
-PSE,Palestinian Territory,Asia,2016,23310.0
-PSE,Palestinian Territory,Asia,2017,18834.0
-PSE,Palestinian Territory,Asia,2018,23505.0
-PSE,Palestinian Territory,Asia,2019,28806.0
-PSE,Palestinian Territory,Asia,2020,34346.0
-PSE,Palestinian Territory,Asia,2021,44449.0
-PSE,Palestinian Territory,Asia,2022,52382.0
+PSE,Palestine,Asia,1999,39479.0
+PSE,Palestine,Asia,2000,30037.0
+PSE,Palestine,Asia,2001,32623.0
+PSE,Palestine,Asia,2002,27903.0
+PSE,Palestine,Asia,2003,27650.0
+PSE,Palestine,Asia,2004,29594.0
+PSE,Palestine,Asia,2005,41192.0
+PSE,Palestine,Asia,2006,47080.0
+PSE,Palestine,Asia,2007,51885.0
+PSE,Palestine,Asia,2008,45526.0
+PSE,Palestine,Asia,2009,40965.0
+PSE,Palestine,Asia,2010,37435.0
+PSE,Palestine,Asia,2011,37547.0
+PSE,Palestine,Asia,2012,28659.0
+PSE,Palestine,Asia,2013,29864.0
+PSE,Palestine,Asia,2014,25322.0
+PSE,Palestine,Asia,2015,24957.0
+PSE,Palestine,Asia,2016,23310.0
+PSE,Palestine,Asia,2017,18834.0
+PSE,Palestine,Asia,2018,23505.0
+PSE,Palestine,Asia,2019,28806.0
+PSE,Palestine,Asia,2020,34346.0
+PSE,Palestine,Asia,2021,44449.0
+PSE,Palestine,Asia,2022,52382.0
 PYF,French Polynesia,Oceania,1995,718.0
 PYF,French Polynesia,Oceania,1996,1103.0
 QAT,Qatar,Asia,1998,471.0
@@ -3171,18 +3171,18 @@ TUN,Tunisia,Africa,2018,12473.0
 TUN,Tunisia,Africa,2020,21552.0
 TUN,Tunisia,Africa,2021,21414.0
 TUN,Tunisia,Africa,2022,19936.0
-TUR,Turkey,Asia,1995,866162.0
-TUR,Turkey,Asia,1997,784142.0
-TUR,Turkey,Asia,2013,411.0
-TUR,Turkey,Asia,2014,13915.0
-TUR,Turkey,Asia,2015,67914.0
-TUR,Turkey,Asia,2016,92179.0
-TUR,Turkey,Asia,2017,36009.0
-TUR,Turkey,Asia,2018,10494.0
-TUR,Turkey,Asia,2019,10253.0
-TUR,Turkey,Asia,2020,11545.0
-TUR,Turkey,Asia,2021,11341.0
-TUR,Turkey,Asia,2022,13955.0
+TUR,Türkiye,Asia,1995,866162.0
+TUR,Türkiye,Asia,1997,784142.0
+TUR,Türkiye,Asia,2013,411.0
+TUR,Türkiye,Asia,2014,13915.0
+TUR,Türkiye,Asia,2015,67914.0
+TUR,Türkiye,Asia,2016,92179.0
+TUR,Türkiye,Asia,2017,36009.0
+TUR,Türkiye,Asia,2018,10494.0
+TUR,Türkiye,Asia,2019,10253.0
+TUR,Türkiye,Asia,2020,11545.0
+TUR,Türkiye,Asia,2021,11341.0
+TUR,Türkiye,Asia,2022,13955.0
 TUV,Tuvalu,Oceania,2014,26.0
 TUV,Tuvalu,Oceania,2015,21.014925
 TUV,Tuvalu,Oceania,2016,36.0
@@ -3324,28 +3324,28 @@ VEN,Venezuela,South America,2015,244753.0
 VEN,Venezuela,South America,2016,329927.0
 VEN,Venezuela,South America,2017,399691.0
 VEN,Venezuela,South America,2022,17440.0
-VGB,British Virgin Islands,North America,1999,21.0
-VGB,British Virgin Islands,North America,2000,358.0
-VGB,British Virgin Islands,North America,2001,136.0
-VGB,British Virgin Islands,North America,2002,65.0
-VGB,British Virgin Islands,North America,2003,75.0
-VGB,British Virgin Islands,North America,2005,228.0
-VGB,British Virgin Islands,North America,2006,293.0
-VGB,British Virgin Islands,North America,2007,18.0
-VGB,British Virgin Islands,North America,2009,20.0
-VGB,British Virgin Islands,North America,2010,18.0
-VGB,British Virgin Islands,North America,2011,22.0
-VGB,British Virgin Islands,North America,2012,133.0
-VGB,British Virgin Islands,North America,2013,222.0
-VGB,British Virgin Islands,North America,2014,226.0
-VGB,British Virgin Islands,North America,2015,339.0
-VGB,British Virgin Islands,North America,2016,431.0
-VGB,British Virgin Islands,North America,2017,217.0
-VGB,British Virgin Islands,North America,2018,800.0
-VGB,British Virgin Islands,North America,2019,624.0
-VGB,British Virgin Islands,North America,2020,137.0
-VGB,British Virgin Islands,North America,2021,267.0
-VGB,British Virgin Islands,North America,2022,767.0
+VGB,Virgin Islands,North America,1999,21.0
+VGB,Virgin Islands,North America,2000,358.0
+VGB,Virgin Islands,North America,2001,136.0
+VGB,Virgin Islands,North America,2002,65.0
+VGB,Virgin Islands,North America,2003,75.0
+VGB,Virgin Islands,North America,2005,228.0
+VGB,Virgin Islands,North America,2006,293.0
+VGB,Virgin Islands,North America,2007,18.0
+VGB,Virgin Islands,North America,2009,20.0
+VGB,Virgin Islands,North America,2010,18.0
+VGB,Virgin Islands,North America,2011,22.0
+VGB,Virgin Islands,North America,2012,133.0
+VGB,Virgin Islands,North America,2013,222.0
+VGB,Virgin Islands,North America,2014,226.0
+VGB,Virgin Islands,North America,2015,339.0
+VGB,Virgin Islands,North America,2016,431.0
+VGB,Virgin Islands,North America,2017,217.0
+VGB,Virgin Islands,North America,2018,800.0
+VGB,Virgin Islands,North America,2019,624.0
+VGB,Virgin Islands,North America,2020,137.0
+VGB,Virgin Islands,North America,2021,267.0
+VGB,Virgin Islands,North America,2022,767.0
 VNM,Vietnam,Asia,1998,0.0
 VNM,Vietnam,Asia,1999,0.0
 VNM,Vietnam,Asia,2000,0.0

@@ -1,7 +1,7 @@
 code,country,continent,year,value
 AFG,Afghanistan,Asia,2023,13.3
 AGO,Angola,Africa,2016,9.7
-ARG,Argentina,South America,2017,1.8
+ARG,Argentina,North America,2017,1.8
 ARM,Armenia,Asia,2015,3.9
 AZE,Azerbaijan,Asia,2023,4.8
 BDI,Burundi,Africa,2020,53.5
@@ -10,19 +10,19 @@ BFA,Burkina Faso,Africa,2022,18.4
 BGD,Bangladesh,Asia,2022,7.0
 BLR,Belarus,Europe,2019,4.0
 BLZ,Belize,North America,2013,2.2
-BRA,Brazil,South America,2022,1.5
+BRA,Brazil,North America,2022,1.5
 CAF,Central African Republic,Africa,2019,18.4
-CHL,Chile,South America,2023,4.1
-CIV,Cote d'Ivoire,Africa,2022,12.8
+CHL,Chile,North America,2023,4.1
+CIV,Côte d'Ivoire,Africa,2022,12.8
 CMR,Cameroon,Africa,2014,33.4
 COD,DR Congo,Africa,2020,14.7
 COG,Congo,Africa,2015,10.8
-COL,Colombia,South America,2022,1.3
+COL,Colombia,North America,2022,1.3
 COM,Comoros,Africa,2022,5.8
 CRI,Costa Rica,North America,2018,3.4
 DOM,Dominican Republic,North America,2019,3.1
 DZA,Algeria,Africa,2019,1.9
-ECU,Ecuador,South America,2022,3.4
+ECU,Ecuador,North America,2022,3.4
 EGY,Egypt,Africa,2023,8.5
 ETH,Ethiopia,Africa,2021,18.7
 FJI,Fiji,Oceania,2021,15.6
@@ -32,7 +32,7 @@ GHA,Ghana,Africa,2022,5.5
 GIN,Guinea,Africa,2016,19.5
 GMB,Gambia,Africa,2023,15.1
 GNB,Guinea-Bissau,Africa,2022,30.4
-GUY,Guyana,South America,2020,4.9
+GUY,Guyana,North America,2020,4.9
 HND,Honduras,North America,2023,12.9
 IDN,Indonesia,Asia,2021,1.7
 IND,India,Asia,2023,1.0
@@ -40,7 +40,7 @@ IRQ,Iraq,Asia,2018,3.1
 JAM,Jamaica,North America,2022,2.6
 JOR,Jordan,Asia,2016,1.2
 KEN,Kenya,Africa,2021,4.3
-KGZ,Kyrgyz Republic,Asia,2023,18.0
+KGZ,Kyrgyzstan,Asia,2023,18.0
 KHM,Cambodia,Asia,2021,10.4
 KIR,Kiribati,Oceania,2019,7.1
 LAO,Laos,Asia,2023,21.8
@@ -61,17 +61,17 @@ NER,Niger,Africa,2022,42.4
 NGA,Nigeria,Africa,2022,28.1
 NPL,Nepal,Asia,2014,19.2
 NRU,Nauru,Oceania,2023,0.7
-PER,Peru,South America,2021,16.2
+PER,Peru,North America,2021,16.2
 PHL,Philippines,Asia,2022,1.2
 PRK,North Korea,Asia,2017,4.0
-PSE,Palestinian Territory,Asia,2020,6.3
+PSE,Palestine,Asia,2020,6.3
 SDN,Sudan,Africa,2022,15.0
 SEN,Senegal,Africa,2022,8.6
 SLE,Sierra Leone,Africa,2017,21.0
 SLV,El Salvador,North America,2023,2.9
 SRB,Serbia,Europe,2019,9.1
 STP,Sao Tome and Principe,Africa,2019,6.7
-SUR,Suriname,South America,2018,3.4
+SUR,Suriname,North America,2018,3.4
 SWZ,Eswatini,Africa,2022,11.3
 TCA,Turks and Caicos Islands,North America,2020,4.1
 TCD,Chad,Africa,2019,30.9
@@ -80,11 +80,11 @@ TKM,Turkmenistan,Asia,2016,0.3
 TON,Tonga,Oceania,2019,25.9
 TTO,Trinidad and Tobago,North America,2022,4.2
 TUN,Tunisia,Africa,2023,1.7
-TUR,Turkey,Asia,2022,5.6
+TUR,Türkiye,Asia,2022,5.6
 TUV,Tuvalu,Oceania,2020,3.7
 TZA,Tanzania,Africa,2021,15.0
 UGA,Uganda,Africa,2021,40.1
-URY,Uruguay,South America,2010,3.7
+URY,Uruguay,North America,2010,3.7
 UZB,Uzbekistan,Asia,2022,17.8
 VNM,Vietnam,Asia,2021,5.7
 VUT,Vanuatu,Oceania,2023,26.7

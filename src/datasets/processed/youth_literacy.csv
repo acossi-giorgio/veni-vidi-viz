@@ -19,8 +19,8 @@ ARE,United Arab Emirates,Asia,2005,95.0100021362305
 ARE,United Arab Emirates,Asia,2019,98.370002746582
 ARE,United Arab Emirates,Asia,2021,99.6600036621094
 ARE,United Arab Emirates,Asia,2022,99.6600036621094
-ARG,Argentina,South America,2001,98.9199981689453
-ARG,Argentina,South America,2020,99.6800003051758
+ARG,Argentina,North America,2001,98.9199981689453
+ARG,Argentina,North America,2020,99.6800003051758
 ARM,Armenia,Asia,2000,100.0
 ARM,Armenia,Asia,2001,99.8099975585938
 ARM,Armenia,Asia,2011,99.8499984741211
@@ -97,50 +97,50 @@ BLR,Belarus,Europe,2019,99.870002746582
 BLZ,Belize,North America,2000,84.2200012207031
 BLZ,Belize,North America,2015,97.9499969482422
 BLZ,Belize,North America,2022,96.1500015258789
-BOL,Bolivia,South America,2000,97.3
-BOL,Bolivia,South America,2001,97.3199996948242
-BOL,Bolivia,South America,2002,98.1
-BOL,Bolivia,South America,2003,98.3
-BOL,Bolivia,South America,2004,99.1
-BOL,Bolivia,South America,2005,98.8
-BOL,Bolivia,South America,2006,98.4
-BOL,Bolivia,South America,2007,99.4400024414062
-BOL,Bolivia,South America,2008,99.120002746582
-BOL,Bolivia,South America,2009,99.379997253418
-BOL,Bolivia,South America,2011,99.0100021362305
-BOL,Bolivia,South America,2012,99.0
-BOL,Bolivia,South America,2013,99.3
-BOL,Bolivia,South America,2014,99.4
-BOL,Bolivia,South America,2015,99.4000015258789
-BOL,Bolivia,South America,2016,99.4
-BOL,Bolivia,South America,2017,99.4
-BOL,Bolivia,South America,2018,99.6
-BOL,Bolivia,South America,2019,99.5
-BOL,Bolivia,South America,2020,99.5599975585938
-BOL,Bolivia,South America,2021,99.5
-BRA,Brazil,South America,2000,94.1800003051758
-BRA,Brazil,South America,2001,95.8
-BRA,Brazil,South America,2002,96.3
-BRA,Brazil,South America,2003,96.6
-BRA,Brazil,South America,2004,96.8399963378906
-BRA,Brazil,South America,2005,97.1
-BRA,Brazil,South America,2006,97.5800018310547
-BRA,Brazil,South America,2007,97.8000030517578
-BRA,Brazil,South America,2008,97.8399963378906
-BRA,Brazil,South America,2009,98.0699996948242
-BRA,Brazil,South America,2010,97.5100021362305
-BRA,Brazil,South America,2011,98.4899978637695
-BRA,Brazil,South America,2012,98.620002746582
-BRA,Brazil,South America,2013,98.7399978637695
-BRA,Brazil,South America,2014,98.8499984741211
-BRA,Brazil,South America,2015,98.9599990844727
-BRA,Brazil,South America,2016,99.1100006103516
-BRA,Brazil,South America,2017,99.1600036621094
-BRA,Brazil,South America,2018,99.1999969482422
-BRA,Brazil,South America,2019,99.1
-BRA,Brazil,South America,2020,99.2
-BRA,Brazil,South America,2021,99.3
-BRA,Brazil,South America,2022,99.3
+BOL,Bolivia,North America,2000,97.3
+BOL,Bolivia,North America,2001,97.3199996948242
+BOL,Bolivia,North America,2002,98.1
+BOL,Bolivia,North America,2003,98.3
+BOL,Bolivia,North America,2004,99.1
+BOL,Bolivia,North America,2005,98.8
+BOL,Bolivia,North America,2006,98.4
+BOL,Bolivia,North America,2007,99.4400024414062
+BOL,Bolivia,North America,2008,99.120002746582
+BOL,Bolivia,North America,2009,99.379997253418
+BOL,Bolivia,North America,2011,99.0100021362305
+BOL,Bolivia,North America,2012,99.0
+BOL,Bolivia,North America,2013,99.3
+BOL,Bolivia,North America,2014,99.4
+BOL,Bolivia,North America,2015,99.4000015258789
+BOL,Bolivia,North America,2016,99.4
+BOL,Bolivia,North America,2017,99.4
+BOL,Bolivia,North America,2018,99.6
+BOL,Bolivia,North America,2019,99.5
+BOL,Bolivia,North America,2020,99.5599975585938
+BOL,Bolivia,North America,2021,99.5
+BRA,Brazil,North America,2000,94.1800003051758
+BRA,Brazil,North America,2001,95.8
+BRA,Brazil,North America,2002,96.3
+BRA,Brazil,North America,2003,96.6
+BRA,Brazil,North America,2004,96.8399963378906
+BRA,Brazil,North America,2005,97.1
+BRA,Brazil,North America,2006,97.5800018310547
+BRA,Brazil,North America,2007,97.8000030517578
+BRA,Brazil,North America,2008,97.8399963378906
+BRA,Brazil,North America,2009,98.0699996948242
+BRA,Brazil,North America,2010,97.5100021362305
+BRA,Brazil,North America,2011,98.4899978637695
+BRA,Brazil,North America,2012,98.620002746582
+BRA,Brazil,North America,2013,98.7399978637695
+BRA,Brazil,North America,2014,98.8499984741211
+BRA,Brazil,North America,2015,98.9599990844727
+BRA,Brazil,North America,2016,99.1100006103516
+BRA,Brazil,North America,2017,99.1600036621094
+BRA,Brazil,North America,2018,99.1999969482422
+BRA,Brazil,North America,2019,99.1
+BRA,Brazil,North America,2020,99.2
+BRA,Brazil,North America,2021,99.3
+BRA,Brazil,North America,2022,99.3
 BRB,Barbados,North America,2012,100.0
 BRN,Brunei,Asia,2001,98.8899993896484
 BRN,Brunei,Asia,2011,99.370002746582
@@ -151,25 +151,25 @@ BTN,Bhutan,Asia,2022,97.7300033569336
 BWA,Botswana,Africa,2003,93.9599990844727
 CAF,Central African Republic,Africa,2000,60.810001373291
 CAF,Central African Republic,Africa,2019,50.5999984741211
-CHL,Chile,South America,2000,99.1
-CHL,Chile,South America,2002,98.9899978637695
-CHL,Chile,South America,2003,99.1
-CHL,Chile,South America,2006,99.1
-CHL,Chile,South America,2009,99.4
-CHL,Chile,South America,2011,99.4100036621094
-CHL,Chile,South America,2013,99.0500030517578
-CHL,Chile,South America,2015,99.3499984741211
-CHL,Chile,South America,2017,99.0100021362305
-CHL,Chile,South America,2022,99.3
+CHL,Chile,North America,2000,99.1
+CHL,Chile,North America,2002,98.9899978637695
+CHL,Chile,North America,2003,99.1
+CHL,Chile,North America,2006,99.1
+CHL,Chile,North America,2009,99.4
+CHL,Chile,North America,2011,99.4100036621094
+CHL,Chile,North America,2013,99.0500030517578
+CHL,Chile,North America,2015,99.3499984741211
+CHL,Chile,North America,2017,99.0100021362305
+CHL,Chile,North America,2022,99.3
 CHN,China,Asia,2000,98.8600006103516
 CHN,China,Asia,2010,99.6399993896484
 CHN,China,Asia,2020,99.7600021362305
-CIV,Cote d'Ivoire,Africa,1998,47.060001373291
-CIV,Cote d'Ivoire,Africa,2000,60.7200012207031
-CIV,Cote d'Ivoire,Africa,2014,53.0200004577637
-CIV,Cote d'Ivoire,Africa,2016,62.9900016784668
-CIV,Cote d'Ivoire,Africa,2019,68.1179517411164
-CIV,Cote d'Ivoire,Africa,2021,66.8399963378906
+CIV,Côte d'Ivoire,Africa,1998,47.060001373291
+CIV,Côte d'Ivoire,Africa,2000,60.7200012207031
+CIV,Côte d'Ivoire,Africa,2014,53.0200004577637
+CIV,Côte d'Ivoire,Africa,2016,62.9900016784668
+CIV,Côte d'Ivoire,Africa,2019,68.1179517411164
+CIV,Côte d'Ivoire,Africa,2021,66.8399963378906
 CMR,Cameroon,Africa,2000,83.0999984741211
 CMR,Cameroon,Africa,2004,75.11
 CMR,Cameroon,Africa,2007,83.1399993896484
@@ -183,35 +183,35 @@ COD,DR Congo,Africa,2013,85.98
 COD,DR Congo,Africa,2016,84.9899978637695
 COD,DR Congo,Africa,2018,84.0699996948242
 COG,Congo,Africa,2005,78.5699996948242
-COL,Colombia,South America,1996,97.0
-COL,Colombia,South America,2002,97.4
-COL,Colombia,South America,2003,97.5
-COL,Colombia,South America,2004,97.9899978637695
-COL,Colombia,South America,2005,97.9599990844727
-COL,Colombia,South America,2006,97.879997253418
-COL,Colombia,South America,2007,97.9700012207031
-COL,Colombia,South America,2008,97.9899978637695
-COL,Colombia,South America,2009,97.9400024414062
-COL,Colombia,South America,2010,98.0999984741211
-COL,Colombia,South America,2011,98.2399978637695
-COL,Colombia,South America,2012,98.2
-COL,Colombia,South America,2013,98.3
-COL,Colombia,South America,2014,98.5400009155273
-COL,Colombia,South America,2015,98.5299987792969
-COL,Colombia,South America,2016,98.6699981689453
-COL,Colombia,South America,2017,98.6
-COL,Colombia,South America,2018,98.8499984741211
-COL,Colombia,South America,2019,98.8300018310547
-COL,Colombia,South America,2020,99.0100021362305
-COL,Colombia,South America,2021,99.1
-COL,Colombia,South America,2022,98.9
+COL,Colombia,North America,1996,97.0
+COL,Colombia,North America,2002,97.4
+COL,Colombia,North America,2003,97.5
+COL,Colombia,North America,2004,97.9899978637695
+COL,Colombia,North America,2005,97.9599990844727
+COL,Colombia,North America,2006,97.879997253418
+COL,Colombia,North America,2007,97.9700012207031
+COL,Colombia,North America,2008,97.9899978637695
+COL,Colombia,North America,2009,97.9400024414062
+COL,Colombia,North America,2010,98.0999984741211
+COL,Colombia,North America,2011,98.2399978637695
+COL,Colombia,North America,2012,98.2
+COL,Colombia,North America,2013,98.3
+COL,Colombia,North America,2014,98.5400009155273
+COL,Colombia,North America,2015,98.5299987792969
+COL,Colombia,North America,2016,98.6699981689453
+COL,Colombia,North America,2017,98.6
+COL,Colombia,North America,2018,98.8499984741211
+COL,Colombia,North America,2019,98.8300018310547
+COL,Colombia,North America,2020,99.0100021362305
+COL,Colombia,North America,2021,99.1
+COL,Colombia,North America,2022,98.9
 COM,Comoros,Africa,2000,80.1900024414062
 COM,Comoros,Africa,2012,82.04
 COM,Comoros,Africa,2014,85.9944174133533
 COM,Comoros,Africa,2021,90.8369565887889
-CPV,Cape Verde,Africa,2009,96.7754203053301
-CPV,Cape Verde,Africa,2012,98.129997253418
-CPV,Cape Verde,Africa,2015,98.1100006103516
+CPV,Cabo Verde,Africa,2009,96.7754203053301
+CPV,Cabo Verde,Africa,2012,98.129997253418
+CPV,Cabo Verde,Africa,2015,98.1100006103516
 CRI,Costa Rica,North America,2000,97.6100006103516
 CRI,Costa Rica,North America,2011,99.129997253418
 CRI,Costa Rica,North America,2018,80.55
@@ -249,26 +249,26 @@ DOM,Dominican Republic,North America,2022,98.5
 DZA,Algeria,Africa,2002,90.1399993896484
 DZA,Algeria,Africa,2006,91.7799987792969
 DZA,Algeria,Africa,2008,93.7699966430664
-ECU,Ecuador,South America,2001,96.4400024414062
-ECU,Ecuador,South America,2003,96.9
-ECU,Ecuador,South America,2005,98.2
-ECU,Ecuador,South America,2006,98.2
-ECU,Ecuador,South America,2007,98.3899993896484
-ECU,Ecuador,South America,2008,98.4499969482422
-ECU,Ecuador,South America,2009,98.8000030517578
-ECU,Ecuador,South America,2010,98.6500015258789
-ECU,Ecuador,South America,2011,98.6900024414062
-ECU,Ecuador,South America,2012,98.8300018310547
-ECU,Ecuador,South America,2013,98.5999984741211
-ECU,Ecuador,South America,2014,99.0999984741211
-ECU,Ecuador,South America,2015,99.129997253418
-ECU,Ecuador,South America,2016,99.0599975585938
-ECU,Ecuador,South America,2017,99.2600021362305
-ECU,Ecuador,South America,2018,99.0
-ECU,Ecuador,South America,2019,98.5
-ECU,Ecuador,South America,2020,98.7699966430664
-ECU,Ecuador,South America,2021,99.0100021362305
-ECU,Ecuador,South America,2022,99.629997253418
+ECU,Ecuador,North America,2001,96.4400024414062
+ECU,Ecuador,North America,2003,96.9
+ECU,Ecuador,North America,2005,98.2
+ECU,Ecuador,North America,2006,98.2
+ECU,Ecuador,North America,2007,98.3899993896484
+ECU,Ecuador,North America,2008,98.4499969482422
+ECU,Ecuador,North America,2009,98.8000030517578
+ECU,Ecuador,North America,2010,98.6500015258789
+ECU,Ecuador,North America,2011,98.6900024414062
+ECU,Ecuador,North America,2012,98.8300018310547
+ECU,Ecuador,North America,2013,98.5999984741211
+ECU,Ecuador,North America,2014,99.0999984741211
+ECU,Ecuador,North America,2015,99.129997253418
+ECU,Ecuador,North America,2016,99.0599975585938
+ECU,Ecuador,North America,2017,99.2600021362305
+ECU,Ecuador,North America,2018,99.0
+ECU,Ecuador,North America,2019,98.5
+ECU,Ecuador,North America,2020,98.7699966430664
+ECU,Ecuador,North America,2021,99.0100021362305
+ECU,Ecuador,North America,2022,99.629997253418
 EGY,Egypt,Africa,1996,73.2200012207031
 EGY,Egypt,Africa,2005,84.8499984741211
 EGY,Egypt,Africa,2006,84.879997253418
@@ -352,8 +352,8 @@ GTM,Guatemala,North America,2014,94.3499984741211
 GTM,Guatemala,North America,2015,95.1800003051758
 GTM,Guatemala,North America,2018,94.5999984741211
 GTM,Guatemala,North America,2022,94.9800033569336
-GUY,Guyana,South America,2009,95.82
-GUY,Guyana,South America,2020,99.1399993896484
+GUY,Guyana,North America,2009,95.82
+GUY,Guyana,North America,2020,99.1399993896484
 HND,Honduras,North America,2001,88.9400024414062
 HND,Honduras,North America,2004,90.9
 HND,Honduras,North America,2005,91.8
@@ -437,8 +437,8 @@ KAZ,Kazakhstan,Asia,1999,99.8499984741211
 KAZ,Kazakhstan,Asia,2009,99.8300018310547
 KEN,Kenya,Africa,2000,92.5299987792969
 KEN,Kenya,Africa,2014,93.18
-KGZ,Kyrgyz Republic,Asia,1999,99.6999969482422
-KGZ,Kyrgyz Republic,Asia,2009,99.75
+KGZ,Kyrgyzstan,Asia,1999,99.6999969482422
+KGZ,Kyrgyzstan,Asia,2009,99.75
 KHM,Cambodia,Asia,1998,76.3199996948242
 KHM,Cambodia,Asia,2004,83.379997253418
 KHM,Cambodia,Asia,2005,77.96
@@ -674,29 +674,29 @@ PAN,Panama,North America,2018,99.0999984741211
 PAN,Panama,North America,2019,98.879997253418
 PAN,Panama,North America,2021,99.3
 PAN,Panama,North America,2022,99.3
-PER,Peru,South America,2000,97.6
-PER,Peru,South America,2001,97.2
-PER,Peru,South America,2002,96.8
-PER,Peru,South America,2003,96.8
-PER,Peru,South America,2004,96.7600021362305
-PER,Peru,South America,2005,97.120002746582
-PER,Peru,South America,2006,97.7600021362305
-PER,Peru,South America,2007,97.3600006103516
-PER,Peru,South America,2008,97.8
-PER,Peru,South America,2009,98.3
-PER,Peru,South America,2010,98.3
-PER,Peru,South America,2011,98.5
-PER,Peru,South America,2012,98.6999969482422
-PER,Peru,South America,2013,98.9
-PER,Peru,South America,2014,98.9800033569336
-PER,Peru,South America,2015,99.0100021362305
-PER,Peru,South America,2016,98.879997253418
-PER,Peru,South America,2017,99.0599975585938
-PER,Peru,South America,2018,99.0199966430664
-PER,Peru,South America,2019,99.1
-PER,Peru,South America,2020,99.4400024414062
-PER,Peru,South America,2021,99.1
-PER,Peru,South America,2022,99.3
+PER,Peru,North America,2000,97.6
+PER,Peru,North America,2001,97.2
+PER,Peru,North America,2002,96.8
+PER,Peru,North America,2003,96.8
+PER,Peru,North America,2004,96.7600021362305
+PER,Peru,North America,2005,97.120002746582
+PER,Peru,North America,2006,97.7600021362305
+PER,Peru,North America,2007,97.3600006103516
+PER,Peru,North America,2008,97.8
+PER,Peru,North America,2009,98.3
+PER,Peru,North America,2010,98.3
+PER,Peru,North America,2011,98.5
+PER,Peru,North America,2012,98.6999969482422
+PER,Peru,North America,2013,98.9
+PER,Peru,North America,2014,98.9800033569336
+PER,Peru,North America,2015,99.0100021362305
+PER,Peru,North America,2016,98.879997253418
+PER,Peru,North America,2017,99.0599975585938
+PER,Peru,North America,2018,99.0199966430664
+PER,Peru,North America,2019,99.1
+PER,Peru,North America,2020,99.4400024414062
+PER,Peru,North America,2021,99.1
+PER,Peru,North America,2022,99.3
 PHL,Philippines,Asia,2000,95.0899963378906
 PHL,Philippines,Asia,2003,95.0599975585938
 PHL,Philippines,Asia,2008,97.75
@@ -718,47 +718,47 @@ PRI,Puerto Rico,North America,2010,98.8300018310547
 PRI,Puerto Rico,North America,2017,92.3899993896484
 PRK,North Korea,Asia,2008,100.0
 PRT,Portugal,Europe,2011,99.4400024414062
-PRY,Paraguay,South America,2001,95.6
-PRY,Paraguay,South America,2002,97.4
-PRY,Paraguay,South America,2003,97.4
-PRY,Paraguay,South America,2004,97.2
-PRY,Paraguay,South America,2005,97.9
-PRY,Paraguay,South America,2006,98.1
-PRY,Paraguay,South America,2007,98.7900009155273
-PRY,Paraguay,South America,2008,97.9599990844727
-PRY,Paraguay,South America,2009,98.5
-PRY,Paraguay,South America,2010,98.6100006103516
-PRY,Paraguay,South America,2011,98.5
-PRY,Paraguay,South America,2012,98.1800003051758
-PRY,Paraguay,South America,2013,98.9000015258789
-PRY,Paraguay,South America,2014,98.7099990844727
-PRY,Paraguay,South America,2015,98.6500015258789
-PRY,Paraguay,South America,2016,98.4499969482422
-PRY,Paraguay,South America,2017,98.3
-PRY,Paraguay,South America,2018,98.2799987792969
-PRY,Paraguay,South America,2019,98.3600006103516
-PRY,Paraguay,South America,2020,98.6399993896484
-PRY,Paraguay,South America,2021,98.6
-PRY,Paraguay,South America,2022,98.6
-PSE,Palestinian Territory,Asia,1997,97.0500030517578
-PSE,Palestinian Territory,Asia,2004,98.9499969482422
-PSE,Palestinian Territory,Asia,2006,99.0899963378906
-PSE,Palestinian Territory,Asia,2007,99.0699996948242
-PSE,Palestinian Territory,Asia,2008,99.1600036621094
-PSE,Palestinian Territory,Asia,2009,99.2300033569336
-PSE,Palestinian Territory,Asia,2010,99.2200012207031
-PSE,Palestinian Territory,Asia,2011,99.3099975585938
-PSE,Palestinian Territory,Asia,2012,99.2900009155273
-PSE,Palestinian Territory,Asia,2013,99.3499984741211
-PSE,Palestinian Territory,Asia,2014,99.370002746582
-PSE,Palestinian Territory,Asia,2015,99.3399963378906
-PSE,Palestinian Territory,Asia,2016,99.379997253418
-PSE,Palestinian Territory,Asia,2017,99.3099975585938
-PSE,Palestinian Territory,Asia,2018,99.3399963378906
-PSE,Palestinian Territory,Asia,2019,99.3300018310547
-PSE,Palestinian Territory,Asia,2020,99.2300033569336
-PSE,Palestinian Territory,Asia,2021,99.3881807148556
-PSE,Palestinian Territory,Asia,2022,99.3600006103516
+PRY,Paraguay,North America,2001,95.6
+PRY,Paraguay,North America,2002,97.4
+PRY,Paraguay,North America,2003,97.4
+PRY,Paraguay,North America,2004,97.2
+PRY,Paraguay,North America,2005,97.9
+PRY,Paraguay,North America,2006,98.1
+PRY,Paraguay,North America,2007,98.7900009155273
+PRY,Paraguay,North America,2008,97.9599990844727
+PRY,Paraguay,North America,2009,98.5
+PRY,Paraguay,North America,2010,98.6100006103516
+PRY,Paraguay,North America,2011,98.5
+PRY,Paraguay,North America,2012,98.1800003051758
+PRY,Paraguay,North America,2013,98.9000015258789
+PRY,Paraguay,North America,2014,98.7099990844727
+PRY,Paraguay,North America,2015,98.6500015258789
+PRY,Paraguay,North America,2016,98.4499969482422
+PRY,Paraguay,North America,2017,98.3
+PRY,Paraguay,North America,2018,98.2799987792969
+PRY,Paraguay,North America,2019,98.3600006103516
+PRY,Paraguay,North America,2020,98.6399993896484
+PRY,Paraguay,North America,2021,98.6
+PRY,Paraguay,North America,2022,98.6
+PSE,Palestine,Asia,1997,97.0500030517578
+PSE,Palestine,Asia,2004,98.9499969482422
+PSE,Palestine,Asia,2006,99.0899963378906
+PSE,Palestine,Asia,2007,99.0699996948242
+PSE,Palestine,Asia,2008,99.1600036621094
+PSE,Palestine,Asia,2009,99.2300033569336
+PSE,Palestine,Asia,2010,99.2200012207031
+PSE,Palestine,Asia,2011,99.3099975585938
+PSE,Palestine,Asia,2012,99.2900009155273
+PSE,Palestine,Asia,2013,99.3499984741211
+PSE,Palestine,Asia,2014,99.370002746582
+PSE,Palestine,Asia,2015,99.3399963378906
+PSE,Palestine,Asia,2016,99.379997253418
+PSE,Palestine,Asia,2017,99.3099975585938
+PSE,Palestine,Asia,2018,99.3399963378906
+PSE,Palestine,Asia,2019,99.3300018310547
+PSE,Palestine,Asia,2020,99.2300033569336
+PSE,Palestine,Asia,2021,99.3881807148556
+PSE,Palestine,Asia,2022,99.3600006103516
 QAT,Qatar,Asia,1997,94.7900009155273
 QAT,Qatar,Asia,2004,95.9199981689453
 QAT,Qatar,Asia,2007,99.0599975585938
@@ -772,9 +772,9 @@ QAT,Qatar,Asia,2014,98.7099990844727
 ROU,Romania,Europe,2002,97.7600021362305
 ROU,Romania,Europe,2011,99.0
 ROU,Romania,Europe,2021,99.9400024414062
-RUS,Russia,Asia,2002,99.7200012207031
-RUS,Russia,Asia,2010,99.7099990844727
-RUS,Russia,Asia,2021,99.9199981689453
+RUS,Russia,Europe,2002,99.7200012207031
+RUS,Russia,Europe,2010,99.7099990844727
+RUS,Russia,Europe,2021,99.9199981689453
 RWA,Rwanda,Africa,2000,77.620002746582
 RWA,Rwanda,Africa,2005,70.46
 RWA,Rwanda,Africa,2010,80.19
@@ -860,11 +860,11 @@ SSD,South Sudan,Africa,2008,36.7000007629395
 STP,Sao Tome and Principe,Africa,2001,95.4199981689453
 STP,Sao Tome and Principe,Africa,2012,96.7399978637695
 STP,Sao Tome and Principe,Africa,2019,95.4899978637695
-SUR,Suriname,South America,2004,94.879997253418
-SUR,Suriname,South America,2008,99.4199981689453
-SUR,Suriname,South America,2010,98.379997253418
-SUR,Suriname,South America,2012,97.6699981689453
-SUR,Suriname,South America,2018,97.6900024414062
+SUR,Suriname,North America,2004,94.879997253418
+SUR,Suriname,North America,2008,99.4199981689453
+SUR,Suriname,North America,2010,98.379997253418
+SUR,Suriname,North America,2012,97.6699981689453
+SUR,Suriname,North America,2018,97.6900024414062
 SWZ,Eswatini,Africa,2000,91.8600006103516
 SWZ,Eswatini,Africa,2006,91.41
 SWZ,Eswatini,Africa,2022,98.6600036621094
@@ -926,23 +926,23 @@ TUN,Tunisia,Africa,2014,96.2099990844727
 TUN,Tunisia,Africa,2018,97.9800033569336
 TUN,Tunisia,Africa,2019,96.8300018310547
 TUN,Tunisia,Africa,2021,98.9400024414062
-TUR,Turkey,Asia,2004,95.5999984741211
-TUR,Turkey,Asia,2005,96.120002746582
-TUR,Turkey,Asia,2006,96.1800003051758
-TUR,Turkey,Asia,2007,96.3600006103516
-TUR,Turkey,Asia,2009,97.8099975585938
-TUR,Turkey,Asia,2010,98.2200012207031
-TUR,Turkey,Asia,2011,98.7099990844727
-TUR,Turkey,Asia,2012,99.0199966430664
-TUR,Turkey,Asia,2013,99.2300033569336
-TUR,Turkey,Asia,2014,99.3600006103516
-TUR,Turkey,Asia,2015,99.4899978637695
-TUR,Turkey,Asia,2016,99.620002746582
-TUR,Turkey,Asia,2017,99.75
-TUR,Turkey,Asia,2018,99.39
-TUR,Turkey,Asia,2019,99.9100036621094
-TUR,Turkey,Asia,2021,99.9599990844727
-TUR,Turkey,Asia,2022,92.23
+TUR,Türkiye,Asia,2004,95.5999984741211
+TUR,Türkiye,Asia,2005,96.120002746582
+TUR,Türkiye,Asia,2006,96.1800003051758
+TUR,Türkiye,Asia,2007,96.3600006103516
+TUR,Türkiye,Asia,2009,97.8099975585938
+TUR,Türkiye,Asia,2010,98.2200012207031
+TUR,Türkiye,Asia,2011,98.7099990844727
+TUR,Türkiye,Asia,2012,99.0199966430664
+TUR,Türkiye,Asia,2013,99.2300033569336
+TUR,Türkiye,Asia,2014,99.3600006103516
+TUR,Türkiye,Asia,2015,99.4899978637695
+TUR,Türkiye,Asia,2016,99.620002746582
+TUR,Türkiye,Asia,2017,99.75
+TUR,Türkiye,Asia,2018,99.39
+TUR,Türkiye,Asia,2019,99.9100036621094
+TUR,Türkiye,Asia,2021,99.9599990844727
+TUR,Türkiye,Asia,2022,92.23
 TUV,Tuvalu,Oceania,2019,98.8199996948242
 TUV,Tuvalu,Oceania,2022,99.9999999999999
 TZA,Tanzania,Africa,2002,78.4000015258789
@@ -959,24 +959,24 @@ UGA,Uganda,Africa,2014,80.3000030517578
 UGA,Uganda,Africa,2016,79.7799987792969
 UGA,Uganda,Africa,2021,89.6325197413627
 UKR,Ukraine,Europe,2001,99.8000030517578
-URY,Uruguay,South America,1996,98.5800018310547
-URY,Uruguay,South America,2006,98.7099990844727
-URY,Uruguay,South America,2007,98.7600021362305
-URY,Uruguay,South America,2008,98.9700012207031
-URY,Uruguay,South America,2009,98.8600006103516
-URY,Uruguay,South America,2010,98.7799987792969
-URY,Uruguay,South America,2011,98.8600006103516
-URY,Uruguay,South America,2012,98.9599990844727
-URY,Uruguay,South America,2013,98.9300003051758
-URY,Uruguay,South America,2014,98.8399963378906
-URY,Uruguay,South America,2015,98.9300003051758
-URY,Uruguay,South America,2016,99.1500015258789
-URY,Uruguay,South America,2017,98.9300003051758
-URY,Uruguay,South America,2018,98.879997253418
-URY,Uruguay,South America,2019,99.0199966430664
-URY,Uruguay,South America,2020,99.0304333878448
-URY,Uruguay,South America,2021,99.2
-URY,Uruguay,South America,2022,99.129997253418
+URY,Uruguay,North America,1996,98.5800018310547
+URY,Uruguay,North America,2006,98.7099990844727
+URY,Uruguay,North America,2007,98.7600021362305
+URY,Uruguay,North America,2008,98.9700012207031
+URY,Uruguay,North America,2009,98.8600006103516
+URY,Uruguay,North America,2010,98.7799987792969
+URY,Uruguay,North America,2011,98.8600006103516
+URY,Uruguay,North America,2012,98.9599990844727
+URY,Uruguay,North America,2013,98.9300003051758
+URY,Uruguay,North America,2014,98.8399963378906
+URY,Uruguay,North America,2015,98.9300003051758
+URY,Uruguay,North America,2016,99.1500015258789
+URY,Uruguay,North America,2017,98.9300003051758
+URY,Uruguay,North America,2018,98.879997253418
+URY,Uruguay,North America,2019,99.0199966430664
+URY,Uruguay,North America,2020,99.0304333878448
+URY,Uruguay,North America,2021,99.2
+URY,Uruguay,North America,2022,99.129997253418
 UZB,Uzbekistan,Asia,2000,99.870002746582
 UZB,Uzbekistan,Asia,2013,100.0
 UZB,Uzbekistan,Asia,2014,100.0
@@ -986,24 +986,24 @@ UZB,Uzbekistan,Asia,2018,100.0
 UZB,Uzbekistan,Asia,2019,100.0
 UZB,Uzbekistan,Asia,2021,100.0
 UZB,Uzbekistan,Asia,2022,100.0
-VEN,Venezuela,South America,2000,97.6
-VEN,Venezuela,South America,2001,97.1999969482422
-VEN,Venezuela,South America,2002,97.8
-VEN,Venezuela,South America,2003,97.8
-VEN,Venezuela,South America,2004,98.1
-VEN,Venezuela,South America,2005,98.1
-VEN,Venezuela,South America,2006,98.3
-VEN,Venezuela,South America,2007,98.4000015258789
-VEN,Venezuela,South America,2008,98.5
-VEN,Venezuela,South America,2009,98.5299987792969
-VEN,Venezuela,South America,2010,98.5
-VEN,Venezuela,South America,2011,97.5599975585938
-VEN,Venezuela,South America,2012,98.8
-VEN,Venezuela,South America,2013,98.7
-VEN,Venezuela,South America,2014,98.9
-VEN,Venezuela,South America,2015,99.0100021362305
-VEN,Venezuela,South America,2016,98.7600021362305
-VEN,Venezuela,South America,2017,98.748038069113
+VEN,Venezuela,North America,2000,97.6
+VEN,Venezuela,North America,2001,97.1999969482422
+VEN,Venezuela,North America,2002,97.8
+VEN,Venezuela,North America,2003,97.8
+VEN,Venezuela,North America,2004,98.1
+VEN,Venezuela,North America,2005,98.1
+VEN,Venezuela,North America,2006,98.3
+VEN,Venezuela,North America,2007,98.4000015258789
+VEN,Venezuela,North America,2008,98.5
+VEN,Venezuela,North America,2009,98.5299987792969
+VEN,Venezuela,North America,2010,98.5
+VEN,Venezuela,North America,2011,97.5599975585938
+VEN,Venezuela,North America,2012,98.8
+VEN,Venezuela,North America,2013,98.7
+VEN,Venezuela,North America,2014,98.9
+VEN,Venezuela,North America,2015,99.0100021362305
+VEN,Venezuela,North America,2016,98.7600021362305
+VEN,Venezuela,North America,2017,98.748038069113
 VNM,Vietnam,Asia,1999,94.5299987792969
 VNM,Vietnam,Asia,2000,94.8399963378906
 VNM,Vietnam,Asia,2009,97.0899963378906

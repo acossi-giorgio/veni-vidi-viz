@@ -28,14 +28,22 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType),
     d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType),
   ]);
+
+  function normalizeCountryCodeRow(row) {
+    const code = String(row['alpha-3'] || row.Three_Letter_Country_Code || '').trim();
+    const region = String(row.region || row.Continent_Name || '').trim();
+    const subRegion = String(row['sub-region'] || row.sub_region || '').trim();
+    const country = String(row.name || row.Country_Name || '').trim();
+    let continent = region;
+    if (region === 'Americas') continent = subRegion === 'South America' ? 'South America' : 'North America';
+    if (code === 'ATA' || country === 'Antarctica' || region === 'Antarctica') continent = 'Oceania';
+    return { code, continent };
+  }
   const latestYearMax = d3.max(raw.filter(d => Number.isFinite(d.year)), d => d.year) || 2024;
   const latestYearMin = latestYearMax - 9;
   const filteredRaw = raw.filter(d => Number.isFinite(d.year) && d.year >= latestYearMin);
   const continentUniverse = countryCodesRaw
-    .map(d => ({
-      code: String(d.Three_Letter_Country_Code || '').trim(),
-      continent: String(d.Continent_Name || '').trim(),
-    }))
+    .map(normalizeCountryCodeRow)
     .filter(d => d.code && d.continent);
   const continentTotals = new Map([
     ['Africa', new Set(continentUniverse.filter(d => d.continent === 'Africa').map(d => d.code))],
