@@ -69,27 +69,21 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     return QUADRANT.find(q => q.xSide === xSide && q.ySide === ySide);
   }
 
-  d3.select('body').selectAll('.tooltip-bubble').remove();
-  const tooltip = d3.select('body').append('div').attr('class', 'tooltip-bubble')
-    .style('position', 'absolute').style('background', TOOLTIP_BG)
-    .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '8px 12px')
-    .style('pointer-events', 'none').style('font-size', '10px').style('line-height', '1.55')
-    .style('z-index', '10000').style('display', 'none');
+  const tooltip = window.ensureHoverTooltip('child-labor-tooltip');
 
   function showTip(e, d) {
     const q = getQuadrant(d);
-    tooltip.style('display', 'block').html(
-      `<strong style="color:${q.color}">${d.country}</strong><br>` +
-      `Lavoro minorile: ${d.labor.toFixed(1)}% (${d.year})<br>` +
-      `Reddito: $${d3.format(',.0f')(d.income)}`
-    );
-    const r = tooltip.node().getBoundingClientRect();
-    let tx = e.pageX + 12, ty = e.pageY + 8;
-    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 12;
-    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 8;
-    tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+    window.showHoverTooltip(tooltip, e, {
+      title: d.country,
+      titleColor: q.color,
+      meta: `Anno: ${d.year}`,
+      rows: [
+        { label: 'Lavoro minorile', value: `${d.labor.toFixed(1)}%` },
+        { label: 'Reddito', value: `$${d3.format(',.0f')(d.income)}` },
+      ],
+    }, { offsetX: 12, offsetY: 8 });
   }
-  function hideTip() { tooltip.style('display', 'none'); }
+  function hideTip() { window.hideHoverTooltip(tooltip); }
 
   const containerNode = container.node();
 
@@ -169,15 +163,13 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       g.append('rect').attr('x', x).attr('y', y).attr('width', w).attr('height', h)
         .attr('fill', 'transparent').style('cursor', 'default')
         .on('mousemove', function(ev) {
-          tooltip.style('display', 'block').html(
-            `<strong style="color:${q.color}">${q.label}</strong><br>` +
-            `Copertura dati: ${n}/${data.length} paesi`
-          );
-          const r = tooltip.node().getBoundingClientRect();
-          let tx = ev.pageX + 12, ty = ev.pageY + 8;
-          if (tx + r.width  > window.innerWidth  - 8) tx = ev.pageX - r.width  - 12;
-          if (ty + r.height > window.innerHeight - 8) ty = ev.pageY - r.height - 8;
-          tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+          window.showHoverTooltip(tooltip, ev, {
+            title: q.label,
+            titleColor: q.color,
+            rows: [
+              { label: 'Copertura dati', value: `${n}/${data.length} paesi` },
+            ],
+          }, { offsetX: 12, offsetY: 8 });
         })
         .on('mouseleave', hideTip);
     });
@@ -311,10 +303,12 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         g.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 4)
           .attr('fill', UI_MUTED_BORDER).attr('opacity', 0.7)
           .on('mouseover', function(ev) {
-            tooltip.style('display','block').html(`<strong style="color:${CHART_AXIS}">${name}</strong><br><em style="color:${CHART_AXIS}">reddito non disponibile</em>`);
-            tooltip.style('left', (ev.pageX+12)+'px').style('top', (ev.pageY+8)+'px');
+            window.showHoverTooltip(tooltip, ev, {
+              title: name,
+              rows: [{ label: 'Reddito', value: 'N/D' }],
+            }, { offsetX: 12, offsetY: 8 });
           })
-          .on('mousemove', function(ev) { tooltip.style('left', (ev.pageX+12)+'px').style('top', (ev.pageY+8)+'px'); })
+          .on('mousemove', function(ev) { window.positionHoverTooltip(tooltip, ev, { offsetX: 12, offsetY: 8 }); })
           .on('mouseleave', hideTip);
       });
     }

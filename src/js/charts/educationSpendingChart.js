@@ -188,12 +188,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   }));
 
   // Tooltip
-  let tipEl = document.getElementById('edu-ml-tip');
-  if (!tipEl) {
-    tipEl = document.createElement('div'); tipEl.id = 'edu-ml-tip';
-    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: TOOLTIP_BG, color: TOOLTIP_INK, padding: '6px 11px', borderRadius: '5px', fontSize: '11px', lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap' });
-    document.body.appendChild(tipEl);
-  }
+  const tipEl = window.ensureHoverTooltip('edu-ml-tip', { maxWidth: 'min(92vw, 21rem)' });
 
   let currentYS = null;
   let meanByContYear = new Map();
@@ -357,31 +352,32 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         else dot.attr('opacity', 0);
       });
 
-      let html = `<strong style="color:${CHART_AXIS}">${nearYear}</strong>`;
-      CONTS.forEach(cont => {
-        const v = meanByContYear.get(nearYear)?.[cont];
-        const col = CONT_COLOR[cont];
-        html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? fmtY(v) : 'N/D'}`;
-      });
       const coverage = coverageByYear.get(nearYear);
-      if (coverage?.stats?.length) {
-        coverage.stats.forEach(({ cont, lines }) => {
-          html += `<br><span style="color:${CONT_COLOR[cont]};font-weight:600">${cont}</span>`;
-          lines.forEach((line) => {
-            html += `<br>${formatCoverageCount(line.covered, line.total, { label: line.label, includePercent: false })}`;
-          });
-        });
-      }
-      tipEl.innerHTML = html;
-      tipEl.style.display = 'block';
-      let tx = event.clientX + 14, ty = event.clientY - 28;
-      if (tx + 200 > window.innerWidth - 8) tx = event.clientX - 200 - 14;
-      tipEl.style.left = tx + 'px'; tipEl.style.top = ty + 'px';
+      window.showHoverTooltip(tipEl, event, {
+        title: 'Spesa pubblica in istruzione',
+        meta: `Anno: ${nearYear}`,
+        sections: [
+          {
+            title: 'Valori',
+            rows: CONTS.map(cont => ({
+              label: cont,
+              value: meanByContYear.get(nearYear)?.[cont] != null ? fmtY(meanByContYear.get(nearYear)[cont]) : 'N/D',
+            })),
+          },
+          ...(coverage?.stats?.length ? coverage.stats.map(({ cont, lines }) => ({
+            title: cont,
+            rows: lines.map(line => ({
+              label: line.label,
+              value: `${line.covered}/${line.total} paesi`,
+            })),
+          })) : []),
+        ],
+      }, { offsetX: 14, offsetY: -28 });
     })
     .on('mouseleave', () => {
       crossLine.attr('opacity', 0);
       crossDots.forEach(({ dot }) => dot.attr('opacity', 0));
-      tipEl.style.display = 'none';
+      window.hideHoverTooltip(tipEl);
     });
 
   // Initial draw

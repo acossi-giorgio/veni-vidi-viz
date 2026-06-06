@@ -145,19 +145,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   let mode = 'bar';
   let selectedCode = maxMeanRow.code;
 
-  const tip = d3.select('body').selectAll('.fgm-tip').data([0]).join('div')
-    .attr('class', 'fgm-tip')
-    .style('position', 'fixed')
-    .style('pointer-events', 'none')
-    .style('display', 'none')
-    .style('z-index', '10000')
-    .style('background', TOOLTIP_BG)
-    .style('color', TOOLTIP_INK)
-    .style('border-radius', '6px')
-    .style('padding', '7px 10px')
-    .style('font-size', '11px')
-    .style('line-height', '1.5')
-    .style('box-shadow', '0 4px 18px rgba(0,0,0,0.25)');
+  const tip = window.ensureHoverTooltip('fgm-hover-tooltip', { maxWidth: 'min(92vw, 20rem)' });
 
   const stage = d3.select(container).append('div')
     .style('position', 'relative')
@@ -168,17 +156,11 @@ async function renderFgmChart(selector, isFullscreen = false) {
     .style('background', CHART_WATER);
 
   function showTooltip(event, html) {
-    tip.html(html).style('display', 'block');
-    const box = tip.node().getBoundingClientRect();
-    let x = event.clientX + 12;
-    let y = event.clientY + 12;
-    if (x + box.width > window.innerWidth - 8) x = event.clientX - box.width - 14;
-    if (y + box.height > window.innerHeight - 8) y = event.clientY - box.height - 14;
-    tip.style('left', `${x}px`).style('top', `${y}px`);
+    window.showHoverTooltip(tip, event, html, { offsetX: 12, offsetY: 12 });
   }
 
   function hideTooltip() {
-    tip.style('display', 'none');
+    window.hideHoverTooltip(tip);
   }
 
   function getRiskColor(value) {
@@ -336,7 +318,12 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .attr('stroke-width', (d) => (isGrouped && d.variant === 'reference' ? 2 : 0))
       .attr('stroke-dasharray', (d) => (isGrouped && d.variant === 'reference' ? '6 4' : null))
       .on('mousemove', (event, d) => {
-        let html = `<strong>${d.quintile}</strong><br>${d.series}: ${d.value.toFixed(1)}%`;
+        const html = {
+          title: d.quintile,
+          rows: [
+            { label: d.series, value: `${d.value.toFixed(1)}%` },
+          ],
+        };
         showTooltip(event, html);
       })
       .on('mouseleave', hideTooltip)
@@ -628,16 +615,23 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .on('mousemove', (event, d) => {
         const code = numToCode.get(Number(d.id)) || '';
         const row = byCode.get(code);
-        const name = row?.country || codeToName.get(code) || code || 'No data';
+        const name = row?.country || codeToName.get(code) || code || 'N/D';
         if (!row) {
-          showTooltip(event, `<strong>${name}</strong><br>FGM: <em>No data</em>`);
+          showTooltip(event, {
+            title: name,
+            rows: [{ label: 'FGM', value: 'N/D' }],
+          });
           return;
         }
         showTooltip(
           event,
-          `<strong>${row.country}</strong><br>` +
-            `Media quintili: <strong>${row.quintile_mean.toFixed(1)}%</strong><br>` +
-            `Periodo riferimento: ${row.reference_year || 'n/d'}`,
+          {
+            title: row.country,
+            meta: `Anno: ${row.reference_year || 'N/D'}`,
+            rows: [
+              { label: 'Media quintili', value: `${row.quintile_mean.toFixed(1)}%` },
+            ],
+          },
         );
       })
       .on('mouseleave', hideTooltip)

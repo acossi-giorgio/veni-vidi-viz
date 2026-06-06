@@ -66,9 +66,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   };
 
   /* ── dati ───────────────────────────────────────────────── */
-  const [gpiRaw, oosRaw] = await Promise.all([
+  const [gpiRaw] = await Promise.all([
     d3.csv('datasets/processed/gender_parity_secondary.csv', d3.autoType),
-    d3.csv('datasets/processed/out_of_school_children.csv', d3.autoType),
   ]);
 
   const latestYearMax = d3.max(
@@ -97,14 +96,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     );
   }
 
-  const oosMap = new Map();
-  d3.group(oosRaw, d => d.code).forEach((rows, code) => {
-    const r = rows
-      .filter(d => d.value != null && d.year >= latestYearMin && d.year <= latestYearMax)
-      .sort((a, b) => b.year - a.year)[0];
-    if (r) oosMap.set(code, r.value);
-  });
-
   /* ── layout base ────────────────────────────────────────── */
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
@@ -115,20 +106,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   /* ── tooltip ────────────────────────────────────────────── */
   let tip = document.getElementById('qs-tip');
   if (!tip) {
-    tip = document.createElement('div'); tip.id = 'qs-tip';
-    Object.assign(tip.style, { position:'fixed', display:'none', pointerEvents:'none',
-      background:TOOLTIP_BG, color:TOOLTIP_INK, padding:'10px 14px',
-      borderRadius:'8px', border:'1px solid rgba(255,255,255,0.08)',
-      boxShadow:'0 10px 28px rgba(16,18,34,0.35)',
-      fontSize:'12px', lineHeight:'1.65',
-      zIndex:'10000', whiteSpace:'nowrap' });
-    document.body.appendChild(tip);
+    tip = window.ensureHoverTooltip('qs-tip');
   }
-  const hideTip = () => { tip.style.display = 'none'; };
+  const hideTip = () => { window.hideHoverTooltip(tip); };
   const moveTip = ev => {
-    let x = ev.clientX + 14, y = ev.clientY - 30;
-    if (x + 250 > window.innerWidth) x = ev.clientX - 264;
-    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+    window.positionHoverTooltip(tip, ev, { offsetY: -30 });
   };
 
   const svg = d3.select(container).append('svg')
@@ -351,23 +333,26 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       const nBelow = rows.filter(d => d.gpi < 1).length;
       const nAbove = rows.filter(d => d.gpi >= 1).length;
 
-      const showContTip = () => {
-        tip.innerHTML =
-          `<strong style="color:${color}">${cont}</strong><br>` +
-          `<span style="color:${CHART_AXIS}">Copertura dati: ${rows.length}/${continentTotals[cont]} paesi</span><br>` +
-          `<span style="color:${CHART_AXIS}">Media:</span> <strong>${cMean.toFixed(3)}</strong>&ensp;` +
-          `<span style="color:${CHART_AXIS}">Mediana:</span> <strong>${cMed.toFixed(3)}</strong><br>` +
-          `<span style="color:${CHART_AXIS}">Min:</span> ${cMin.toFixed(3)}&ensp;` +
-          `<span style="color:${CHART_AXIS}">Max:</span> ${cMax.toFixed(3)}<br>` +
-          `<span style="color:${COL_GIRLS}">▼ bambine escluse (GPI&lt;1):</span> ${nBelow}&ensp;` +
-          `<span style="color:${COL_BOYS}">▲ bambini esclusi (GPI&gt;1):</span> ${nAbove}`;
-        tip.style.display = 'block';
+      const showContTip = (ev) => {
+        window.showHoverTooltip(tip, ev, {
+          title: cont,
+          titleColor: color,
+          rows: [
+            { label: 'Copertura dati', value: `${rows.length}/${continentTotals[cont]} paesi` },
+            { label: 'Media', value: cMean.toFixed(3) },
+            { label: 'Mediana', value: cMed.toFixed(3) },
+            { label: 'Min', value: cMin.toFixed(3) },
+            { label: 'Max', value: cMax.toFixed(3) },
+            { label: 'Bambine escluse', value: `${nBelow}` },
+            { label: 'Bambini esclusi', value: `${nAbove}` },
+          ],
+        });
       };
 
       g.append('rect').attr('x',0).attr('y',i*bandH).attr('width',iw).attr('height',bandH)
         .attr('fill','transparent').style('cursor','pointer')
-        .on('mouseover', showContTip)
-        .on('mousemove', moveTip)
+        .on('mouseover', function(ev) { showContTip(ev); moveTip(ev); })
+        .on('mousemove', function(ev) { showContTip(ev); moveTip(ev); })
         .on('mouseleave', hideTip)
         .on('click', () => { drill = cont; draw(); });
 
@@ -405,14 +390,17 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
           .attr('cx', x).attr('cy', y)
           .attr('r', 0).attr('fill', fill).attr('opacity', 0)
           .style('cursor','pointer')
-          .on('mouseover', function() {
+          .on('mouseover', function(ev) {
             d3.select(this).attr('opacity',1).attr('r', DOT_R + 2);
-            tip.innerHTML =
-              `<strong style="color:${color}">${d.country}</strong><br>` +
-              `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
-              `<em style="color:${CHART_AXIS}">${dev<0?'bambine escluse':'bambini esclusi'}</em><br>` +
-              `<span style="color:${CHART_AXIS}">Anno:</span> ${d.year}`;
-            tip.style.display = 'block';
+            window.showHoverTooltip(tip, ev, {
+              title: d.country,
+              titleColor: color,
+              meta: `Anno: ${d.year}`,
+              rows: [
+                { label: 'GPI', value: d.gpi.toFixed(3) },
+                { label: 'Esclusione prevalente', value: dev < 0 ? 'Bambine' : 'Bambini' },
+              ],
+            }, { offsetY: -30 });
           })
           .on('mousemove', moveTip)
           .on('mouseleave', function() { d3.select(this).attr('opacity',0.68).attr('r', DOT_R); hideTip(); })
@@ -571,21 +559,22 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         .attr('font-weight', null);
     };
 
-    const showTipFor = (d) => {
+    const showTipFor = (ev, d) => {
       const fill = d.gpi < 1 ? COL_GIRLS : COL_BOYS;
-      const oos  = oosMap.get(d.code);
-      tip.innerHTML =
-        `<strong style="color:${fill}">${d.country}</strong><br>` +
-        `GPI: <strong>${d.gpi.toFixed(3)}</strong>&ensp;` +
-        `<em style="color:${CHART_AXIS}">${d.gpi<1?'bambine escluse':'bambini esclusi'}</em>` +
-        (oos != null ? `<br>Fuori scuola: ${d3.format(',.0f')(oos)}` : '') +
-        `<br><span style="color:${CHART_AXIS}">Anno:</span> ${d.year}`;
-      tip.style.display = 'block';
+      window.showHoverTooltip(tip, ev, {
+        title: d.country,
+        titleColor: fill,
+        meta: `Anno: ${d.year}`,
+        rows: [
+          { label: 'GPI', value: d.gpi.toFixed(3) },
+          { label: 'Esclusione prevalente', value: d.gpi < 1 ? 'Bambine' : 'Bambini' },
+        ],
+      }, { offsetY: -30 });
     };
 
     const onHover = (ev, d) => {
       highlightCode(d.code);
-      showTipFor(d);
+      showTipFor(ev, d);
       moveTip(ev);
     };
 

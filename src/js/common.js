@@ -89,7 +89,7 @@ function formatCoverageCount(covered, total, options = {}) {
   const {
     label = 'Copertura dati',
     unit = 'paesi',
-    includePercent = true,
+    includePercent = false,
     precision = 0,
   } = options;
   const safeCovered = Number.isFinite(covered) ? covered : 0;
@@ -121,6 +121,123 @@ function formatCoverageBlock(lines = [], options = {}) {
     return `<div class="${lineClass}">${formatCoverageCount(covered, total, { label, unit, includePercent, precision })}</div>`;
   }).join('');
   return `<section class="tooltip-coverage"><${titleTag} class="${titleClass}">${escapeHtml(title)}</${titleTag}>${body}</section>`;
+}
+
+function ensureHoverTooltip(id = 'chart-hover-tooltip', options = {}) {
+  const {
+    className = 'chart-hover-tooltip',
+    maxWidth = null,
+  } = options;
+  let tooltip = document.getElementById(id);
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = id;
+    document.body.appendChild(tooltip);
+  }
+  tooltip.className = className;
+  tooltip.style.display = 'none';
+  tooltip.style.pointerEvents = 'none';
+  if (maxWidth) tooltip.style.setProperty('--tooltip-max-width', maxWidth);
+  else tooltip.style.removeProperty('--tooltip-max-width');
+  return tooltip;
+}
+
+function buildHoverTooltipHtml(config = {}) {
+  const {
+    title = '',
+    titleColor = '',
+    meta = '',
+    rows = [],
+    sections = [],
+    footer = '',
+  } = config;
+
+  const titleStyle = titleColor ? ` style="color:${escapeHtml(titleColor)}"` : '';
+  const safeRows = rows.filter(Boolean).map((row) => {
+    if (typeof row === 'string') {
+      return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row}</div>`;
+    }
+    if (row.html) {
+      return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row.html}</div>`;
+    }
+    const label = escapeHtml(row.label || '');
+    const value = row.valueHtml != null
+      ? row.valueHtml
+      : escapeHtml(row.value ?? 'N/D');
+    return (
+      `<div class="chart-hover-tooltip__row">` +
+      `<span class="chart-hover-tooltip__label">${label}</span>` +
+      `<strong class="chart-hover-tooltip__value">${value}</strong>` +
+      `</div>`
+    );
+  }).join('');
+
+  const safeSections = sections.filter(Boolean).map((section) => {
+    const sectionRows = (section.rows || []).map((row) => {
+      if (typeof row === 'string') {
+        return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row}</div>`;
+      }
+      if (row.html) {
+        return `<div class="chart-hover-tooltip__row chart-hover-tooltip__row--text">${row.html}</div>`;
+      }
+      return (
+        `<div class="chart-hover-tooltip__row">` +
+        `<span class="chart-hover-tooltip__label">${escapeHtml(row.label || '')}</span>` +
+        `<strong class="chart-hover-tooltip__value">${row.valueHtml != null ? row.valueHtml : escapeHtml(row.value ?? 'N/D')}</strong>` +
+        `</div>`
+      );
+    }).join('');
+    return (
+      `<section class="chart-hover-tooltip__section">` +
+      `${section.title ? `<div class="chart-hover-tooltip__section-title">${escapeHtml(section.title)}</div>` : ''}` +
+      `${sectionRows}` +
+      `</section>`
+    );
+  }).join('');
+
+  return (
+    `<div class="chart-hover-tooltip__panel">` +
+    `${title ? `<div class="chart-hover-tooltip__title"${titleStyle}>${escapeHtml(title)}</div>` : ''}` +
+    `${meta ? `<div class="chart-hover-tooltip__meta">${escapeHtml(meta)}</div>` : ''}` +
+    `${safeRows ? `<div class="chart-hover-tooltip__body">${safeRows}</div>` : ''}` +
+    `${safeSections}` +
+    `${footer ? `<div class="chart-hover-tooltip__footer">${footer}</div>` : ''}` +
+    `</div>`
+  );
+}
+
+function positionHoverTooltip(tooltip, event, options = {}) {
+  if (!tooltip || !event) return;
+  const {
+    offsetX = 14,
+    offsetY = -28,
+    margin = 8,
+  } = options;
+  const clientX = Number.isFinite(event.clientX) ? event.clientX : 0;
+  const clientY = Number.isFinite(event.clientY) ? event.clientY : 0;
+  const box = tooltip.getBoundingClientRect();
+  let x = clientX + offsetX;
+  let y = clientY + offsetY;
+  if (x + box.width > window.innerWidth - margin) x = clientX - box.width - Math.abs(offsetX);
+  if (y + box.height > window.innerHeight - margin) y = clientY - box.height - Math.abs(offsetY);
+  if (y < margin) y = clientY + Math.abs(offsetX);
+  if (x < margin) x = margin;
+  if (x + box.width > window.innerWidth - margin) x = Math.max(margin, window.innerWidth - box.width - margin);
+  if (y + box.height > window.innerHeight - margin) y = Math.max(margin, window.innerHeight - box.height - margin);
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top = `${y}px`;
+}
+
+function showHoverTooltip(tooltip, event, content, options = {}) {
+  if (!tooltip) return;
+  tooltip.innerHTML = typeof content === 'string' ? content : buildHoverTooltipHtml(content);
+  tooltip.style.display = 'block';
+  positionHoverTooltip(tooltip, event, options);
+}
+
+function hideHoverTooltip(tooltip) {
+  if (!tooltip) return;
+  tooltip.style.display = 'none';
 }
 
 function mountChartWarningHint(host, message, options = {}) {
@@ -213,4 +330,9 @@ function mountChartWarningHint(host, message, options = {}) {
 window.escapeHtml = escapeHtml;
 window.formatCoverageCount = formatCoverageCount;
 window.formatCoverageBlock = formatCoverageBlock;
+window.ensureHoverTooltip = ensureHoverTooltip;
+window.buildHoverTooltipHtml = buildHoverTooltipHtml;
+window.positionHoverTooltip = positionHoverTooltip;
+window.showHoverTooltip = showHoverTooltip;
+window.hideHoverTooltip = hideHoverTooltip;
 window.mountChartWarningHint = mountChartWarningHint;

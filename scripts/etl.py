@@ -340,7 +340,7 @@ def make_missing_data_registry():
         mpi = pd.read_csv(os.path.join(OUT, "multidimensional_poverty_index.csv"))
         spend = pd.read_csv(os.path.join(OUT, "education_spending.csv"))
         gpi = pd.read_csv(os.path.join(OUT, "gender_parity_secondary.csv"))
-        oos = pd.read_csv(os.path.join(OUT, "out_of_school_children.csv"))
+        oos = pd.read_csv(os.path.join(OUT, "out_of_school_rate.csv"))
         literacy = pd.read_csv(os.path.join(OUT, "youth_literacy.csv"))
         child_labor = pd.read_csv(os.path.join(OUT, "child_labor.csv"))
         child_marriage = pd.read_csv(os.path.join(OUT, "child_marriage_prevalence.csv"))
@@ -380,10 +380,10 @@ def make_missing_data_registry():
         nd = coverage_snapshot_no_data(gpi, ae_codes)
         append_missing_rows(rows, "gender_parity_secondary.csv", "no_data", nd)
 
-        # out_of_school_children.csv — chart cap a 2022
+        # out_of_school_rate.csv — chart cap a 2022
         nd, inc = coverage_no_data_and_incomplete(oos, ae_codes, years_edu)
-        append_missing_rows(rows, "out_of_school_children.csv", "no_data", nd)
-        append_missing_rows(rows, "out_of_school_children.csv", "incomplete", inc)
+        append_missing_rows(rows, "out_of_school_rate.csv", "no_data", nd)
+        append_missing_rows(rows, "out_of_school_rate.csv", "incomplete", inc)
 
         # youth_literacy.csv — chart cap a 2022
         nd, inc = coverage_no_data_and_incomplete(literacy, ae_codes, years_edu)
@@ -644,22 +644,27 @@ def make_fgm_quintile_prevalence():
     except Exception as e:
         report("fgm_quintile_prevalence.csv", pd.DataFrame(), str(e))
 
-def make_out_of_school():
+def make_out_of_school_rate():
     try:
-        df = pd.read_csv(os.path.join(RAW, "out_of_school_children_raw.csv"))
-        df = df.rename(columns={
-            df.columns[0]: "country",
-            df.columns[1]: "code",
-            df.columns[2]: "year",
-            df.columns[3]: "value",
-        })
-        df = filter_countries(df)
-        df = year_range(df, lo=HISTORY_MIN_YEAR, hi=YEAR_MAX_EDU)
-        df = df[df["value"].notna()]
-        save("out_of_school_children.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
+        df = pd.read_csv(os.path.join(RAW, "out_of_school_rate_raw.csv"), skiprows=4, encoding="utf-8-sig")
+        df = df.rename(columns={"Country Name": "country", "Country Code": "code"})
+        df = df[df["code"].notna() & df["code"].str.len().eq(3)]
+        year_cols = [c for c in df.columns if str(c).isdigit() and HISTORY_MIN_YEAR <= int(c) <= YEAR_MAX_EDU]
+        melted = df.melt(
+            id_vars=["code", "country"],
+            value_vars=year_cols,
+            var_name="year",
+            value_name="value",
+        )
+        melted["year"] = melted["year"].astype(int)
+        melted["value"] = pd.to_numeric(melted["value"], errors="coerce")
+        melted = melted.dropna(subset=["value"])
+        melted["continent"] = melted["code"].map(CODE_CONTINENT)
+        melted = melted[melted["continent"].notna()]
+        save("out_of_school_rate.csv",
+             melted[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
     except Exception as e:
-        report("out_of_school_children.csv", pd.DataFrame(), str(e))
+        report("out_of_school_rate.csv", pd.DataFrame(), str(e))
 
 def make_poverty():
     try:
@@ -806,7 +811,7 @@ if __name__ == "__main__":
     make_population()
     make_child_labor()
     make_fgm_quintile_prevalence()
-    make_out_of_school()
+    make_out_of_school_rate()
     make_poverty()
     make_gini()
     make_gpi_secondary()

@@ -39,129 +39,162 @@
 
       <div class="page-body page-body--narrow">
 
-        <!-- Tabella dataset -->
+        <!-- Elenco fonti -->
         <section class="dataset-section">
           <h2 class="page-section-title">Fonti per grafico</h2>
-          <p class="page-section-intro">Questa tabella riassume le principali fonti usate nel progetto. Abbiamo selezionato dataset pubblici, aggiornati e comparabili tra paesi, privilegiando indicatori con copertura globale o quasi-globale.</p>
-          <div class="table-scroll">
-            <table class="dataset-table dataset-table--light">
-              <colgroup>
-                <col style="width: 28%">
-                <col style="width: 30%">
-                <col style="width: 42%">
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Dataset</th>
-                  <th>Fonte</th>
-                  <th>Indicatore</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Aspettativa di vita</td>
-                  <td><a href="https://ourworldindata.org/grapher/life-expectancy" target="_blank" rel="noopener">Our World in Data / UN WPP</a></td>
-                  <td>Aspettativa di vita alla nascita in anni</td>
-                </tr>
-                <tr>
-                  <td>Alfabetizzazione giovanile</td>
-                  <td><a href="https://data.worldbank.org/indicator/SE.ADT.1524.LT.ZS" target="_blank" rel="noopener">World Bank — SE.ADT.1524.LT.ZS</a></td>
-                  <td>Tasso di alfabetizzazione tra i giovani con fascia d'età compresa tra 15 e 24 anni espresso in percentuale sulla popolazione totale della stessa fascia di età</td>
-                </tr>
-                <tr>
-                  <td>Bambini fuori dalla scuola</td>
-                  <td><a href="https://ourworldindata.org/grapher/out-of-school-children-of-primary-school-age-by-world-region" target="_blank" rel="noopener">Our World in Data / UNESCO UIS</a></td>
-                  <td>Bambini fuori dalla scuola primaria espresso in numero assoluto</td>
-                </tr>
-                <tr>
-                  <td>Lavoro minorile</td>
-                  <td><a href="https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor" target="_blank" rel="noopener">Our World in Data / ILO</a></td>
-                  <td>Bambini con fascia d'età compresa tra 5 e 17 anni in attività lavorativa espresso in percentuale sulla popolazione totale della stessa fascia di età</td>
-                </tr>
-                <tr>
-                  <td>Parità di genere (GPI secondaria)</td>
-                  <td><a href="https://data.worldbank.org/indicator/SE.ENR.SECO.FM.ZS" target="_blank" rel="noopener">World Bank — Gender Parity Index</a></td>
-                  <td>Gender Parity Index relativo alle iscrizioni di alla scuola secondaria</td>
-                </tr>
-                <tr>
-                  <td>Disuguaglianza (Gini)</td>
-                  <td><a href="https://data.worldbank.org/indicator/SI.POV.GINI" target="_blank" rel="noopener">World Bank — SI.POV.GINI</a></td>
-                  <td>Gini Index</td>
-                </tr>
-                <tr>
-                  <td>Reddito pro capite</td>
-                  <td><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD" target="_blank" rel="noopener">World Bank — NY.GDP.PCAP.PP.KD</a></td>
-                  <td>GDP pro capite espresso in termini di parità di potere d'acquisto e in dollari</td>
-                </tr>
-                <tr>
-                  <td>Spesa pubblica in istruzione</td>
-                  <td><a href="https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS" target="_blank" rel="noopener">World Bank — SE.XPD.TOTL.GD.ZS</a></td>
-                  <td>Government expenditure on education espresso in percentuale sul PIL</td>
-                </tr>
-                <tr>
-                  <td>Matrimonio precoce</td>
-                  <td><a href="https://data.unicef.org/topic/child-protection/child-marriage/" target="_blank" rel="noopener">UNICEF — Child Marriage Dataset 2024</a></td>
-                  <td>Percentuale di donne compreso tra i 20 e i 24 anni sposate prima dei 15 e 18 anni</td>
-                </tr>
-                <tr>
-                  <td>Migrazione internazionale</td>
-                  <td><a href="https://www.un.org/development/desa/pd/data/international-migration-flows" target="_blank" rel="noopener">UN DESA — International Migration Stock 2020</a></td>
-                  <td>Stock migranti bilaterale per paese di origine e destinazione</td>
-                </tr>
-                <tr>
-                  <td>Mutilazione genitale femminile (FGM)</td>
-                  <td><a href="https://data.humdata.org/dataset/unicef-pt-chld-1-14-ps-psy-v-cgvr" target="_blank" rel="noopener">HDX / UNICEF — FGM dataset</a></td>
-                  <td>Prevalenza di FGM tra ragazze fino a 14 anni per quintile di ricchezza</td>
-                </tr>
-                <tr>
-                  <td>Popolazione</td>
-                  <td><a href="https://population.un.org/wpp/" target="_blank" rel="noopener">UN WPP 2024</a></td>
-                  <td>Popolazione per fasce d'età</td>
-                </tr>
-              </tbody>
-            </table>
+          <p class="page-section-intro">Qui sotto trovi le principali fonti usate nel progetto in formato elenco. Ogni dataset presenta una breve descrizione, l'indicatore di riferimento e un pulsante per aprire la fonte originale.</p>
+          <div class="dataset-list" role="list">
+            <article class="dataset-entry" role="listitem">
+              <h3>Aspettativa di vita</h3>
+              <p class="dataset-entry-source">Fonte: Our World in Data / UN WPP</p>
+              <p>Serie usata per osservare l'aspettativa di vita alla nascita su base internazionale, con riferimento al lavoro di Our World in Data e ai dati demografici delle Nazioni Unite.</p>
+              <p><strong>Indicatore:</strong> Aspettativa di vita alla nascita, espressa in anni.</p>
+              <a class="dataset-entry-button" href="https://ourworldindata.org/grapher/life-expectancy" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Alfabetizzazione giovanile</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — SE.ADT.1524.LT.ZS</p>
+              <p>Indicatore World Bank sul tasso di alfabetizzazione totale nella fascia 15-24 anni, utile per confrontare la capacita' dei sistemi educativi di garantire competenze di base tra i giovani.</p>
+              <p><strong>Indicatore:</strong> Literacy rate, youth total (% of people ages 15-24).</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/SE.ADT.1524.LT.ZS" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Bambini fuori dalla scuola</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — SE.PRM.UNER.ZS</p>
+              <p>Dataset World Bank dedicato alla quota di bambini in eta' da scuola primaria che non risultano iscritti, fondamentale per leggere l'esclusione scolastica nei diversi contesti nazionali.</p>
+              <p><strong>Indicatore:</strong> Children out of school (% of primary school age).</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/SE.PRM.UNER.ZS?year=2012" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Lavoro minorile</h3>
+              <p class="dataset-entry-source">Fonte: Our World in Data / ILO</p>
+              <p>La fonte misura la quota di bambini e adolescenti tra 5 e 17 anni coinvolti in attivita' lavorative, con soglie diverse per fascia d'eta' in base alla definizione internazionale di child labor.</p>
+              <p><strong>Indicatore:</strong> Share of children engaged in labor.</p>
+              <a class="dataset-entry-button" href="https://ourworldindata.org/grapher/children-aged-5-17-engaged-in-labor" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Parita' di genere (GPI secondaria)</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — Gender Parity Index</p>
+              <p>Indicatore World Bank sul Gender Parity Index nella scuola secondaria: consente di capire quanto l'accesso femminile e maschile alle iscrizioni sia vicino all'equilibrio.</p>
+              <p><strong>Indicatore:</strong> School enrollment, secondary (gross), gender parity index (GPI).</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/SE.ENR.SECO.FM.ZS" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Disuguaglianza (Gini)</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — SI.POV.GINI</p>
+              <p>Serie World Bank dedicata all'indice di Gini, usata per sintetizzare il livello di disuguaglianza nella distribuzione del reddito all'interno dei singoli paesi.</p>
+              <p><strong>Indicatore:</strong> Gini index.</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/SI.POV.GINI" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Reddito pro capite</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — NY.GDP.PCAP.PP.KD</p>
+              <p>Dato economico usato per confronti internazionali sul benessere materiale medio, espresso in dollari internazionali costanti e corretto per parita' di potere d'acquisto.</p>
+              <p><strong>Indicatore:</strong> GDP per capita, PPP (constant 2021 international $).</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.KD" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Spesa pubblica in istruzione</h3>
+              <p class="dataset-entry-source">Fonte: World Bank — SE.XPD.TOTL.GD.ZS</p>
+              <p>Indicatore World Bank che misura quanta parte del PIL viene destinata alla spesa pubblica totale in istruzione, utile per leggere le priorita' strutturali dei sistemi nazionali.</p>
+              <p><strong>Indicatore:</strong> Government expenditure on education, total (% of GDP).</p>
+              <a class="dataset-entry-button" href="https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Matrimonio precoce</h3>
+              <p class="dataset-entry-source">Fonte: UNICEF — Child Marriage</p>
+              <p>Pagina tematica UNICEF dedicata ai matrimoni precoci, usata come riferimento per i dataset che stimano la quota di donne tra 20 e 24 anni sposate prima dei 15 o dei 18 anni.</p>
+              <p><strong>Indicatore:</strong> Percentuale di donne 20-24 anni sposate prima dei 15 e dei 18 anni.</p>
+              <a class="dataset-entry-button" href="https://data.unicef.org/topic/child-protection/child-marriage/" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Migrazione internazionale</h3>
+              <p class="dataset-entry-source">Fonte: UN DESA — International Migration Flows</p>
+              <p>Risorsa UN DESA che raccoglie informazioni sui movimenti migratori internazionali; nel progetto viene usata per ricostruire la distribuzione dei migranti per paesi di origine e destinazione.</p>
+              <p><strong>Indicatore:</strong> Stock migranti bilaterale per paese di origine e destinazione.</p>
+              <a class="dataset-entry-button" href="https://www.un.org/development/desa/pd/data/international-migration-flows" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Mutilazione genitale femminile (FGM)</h3>
+              <p class="dataset-entry-source">Fonte: HDX / UNICEF</p>
+              <p>Riferimento HDX collegato al catalogo dati UNICEF. La scheda puo' essere rifinita ulteriormente, ma per ora resta il punto di accesso alla fonte usata per confrontare la prevalenza di FGM tra i diversi quintili di ricchezza.</p>
+              <p><strong>Indicatore:</strong> Prevalenza di FGM tra ragazze fino a 14 anni per quintile di ricchezza.</p>
+              <a class="dataset-entry-button" href="https://data.humdata.org/dataset/unicef-pt-chld-1-14-ps-psy-v-cgvr" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+
+            <article class="dataset-entry" role="listitem">
+              <h3>Popolazione</h3>
+              <p class="dataset-entry-source">Fonte: UN WPP 2024</p>
+              <p>World Population Prospects e' la base demografica usata per integrare il progetto con dati di popolazione, distribuzione per eta' e confronti coerenti tra paesi e anni.</p>
+              <p><strong>Indicatore:</strong> Popolazione per fasce d'eta'.</p>
+              <a class="dataset-entry-button" href="https://population.un.org/wpp/" target="_blank" rel="noopener">Apri la fonte</a>
+            </article>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Come abbiamo costruito il corpus</h2>
+          <div class="section-prose">
+            <p class="editorial-lead">Il progetto non usa un unico database centrale: mette insieme fonti istituzionali diverse, nate per scopi diversi e con coperture diverse.</p>
+            <p>Abbiamo selezionato solo indicatori con una base metodologica riconoscibile e con sufficiente comparabilita' internazionale. Poi li abbiamo ricondotti a una struttura comune: codici paese uniformati, anni normalizzati, continenti armonizzati e variabili rese coerenti per la lettura nei grafici.</p>
+            <p>Quando una serie non era continua o non arrivava allo stesso anno delle altre, non abbiamo riempito i vuoti con imputazioni statistiche. Abbiamo preferito mantenere visibile il limite del dato, usare l'ultimo anno disponibile quando necessario e segnalare esplicitamente i casi di copertura incompleta.</p>
+            <p>In altre parole, il lavoro non e' stato soltanto raccogliere dati, ma renderli leggibili senza nascondere le differenze di origine tra World Bank, UNICEF, ILO, UN DESA e Our World in Data.</p>
           </div>
         </section>
 
         <section class="dataset-section">
           <h2 class="page-section-title">Considerazioni sui dati</h2>
-          <p class="page-section-intro">Queste visualizzazioni servono a mostrare pattern e divari globali. Alcuni indicatori vanno letti con particolare cautela, soprattutto quando la copertura e' incompleta.</p>
+          <p class="page-section-intro">Queste visualizzazioni servono a far emergere pattern globali, non a produrre classifiche assolute. Il punto non e' eliminare l'incertezza del dato, ma renderla leggibile insieme ai fenomeni che osserviamo.</p>
           <div class="considerations-list">
             <article class="consideration-item">
-              <h3>Dati mancanti</h3>
-              <p>Non tutti i paesi riportano ogni indicatore con la stessa continuita'. In diversi grafici usiamo quindi l'anno piu' recente disponibile per quel paese, mentre i casi senza dato restano esplicitamente visibili.</p>
+              <h3>Copertura diseguale</h3>
+              <p>Non tutti i paesi compaiono con la stessa continuita' in tutte le serie. In molti casi il confronto internazionale e' quindi un confronto tra coperture realisticamente disponibili, non tra osservazioni perfettamente simmetriche.</p>
             </article>
             <article class="consideration-item">
-              <h3>Finestra temporale</h3>
-              <p>Il riferimento generale e' il periodo 2000-2024. Quando una serie non arriva al 2024, il grafico si ferma all'ultimo anno disponibile ed è specificato direttamente nel grafico. Nel caso di serie storiche incomplete, i dati mancanti sono chiaramente indicati. Nel caso di grafici che fanno riferimento a più dataset il grafico si ferma dove si ferma la serie più corta.</p>
+              <h3>Ultimo anno disponibile</h3>
+              <p>La finestra generale e' 2000-2024, ma molti indicatori si fermano prima. Quando i grafici combinano piu' fonti, la lettura si arresta dove finisce la serie piu' corta oppure usa per ciascun paese l'ultimo dato disponibile, sempre senza far passare questa scelta come aggiornamento completo al 2024.</p>
             </article>
             <article class="consideration-item">
-              <h3>PIL pro capite</h3>
-              <p>E' una media utile per confronti internazionali, ma non descrive da sola la distribuzione interna del reddito. Per questo va letto insieme ad altri indicatori di disuguaglianza e deprivazione.</p>
+              <h3>Comparabilita' non perfetta</h3>
+              <p>Anche quando due indicatori hanno lo stesso nome, i processi di raccolta possono cambiare tra paesi e tra anni: survey campionarie, registri amministrativi, stime modellate, revisioni metodologiche. Per questo usiamo i dati soprattutto per leggere ordini di grandezza, squilibri e tendenze.</p>
             </article>
             <article class="consideration-item">
-              <h3>Disuguaglianza (Gini)</h3>
-              <p>L'indice di Gini misura il livello di disuguaglianza nella distribuzione del reddito o della ricchezza ed è espresso su una scala da 0 a 1 (o 0-100%). Un valore di 0 (o 0%) rappresenta la perfetta uguaglianza, dove tutti gli individui percepiscono lo stesso reddito; un valore di 1 (o 100%) rappresenta la massima disuguaglianza, situazione teorica in cui una sola persona detiene l'intero reddito. Di conseguenza, più il valore è basso, più la società è equa e la ricchezza è distribuita uniformemente; al contrario, più il valore è alto, maggiore è la concentrazione del denaro nelle mani di poche persone.</p>
+              <h3>Bias di osservazione</h3>
+              <p>I dataset sociali piu' delicati tendono a sottorappresentare proprio i contesti piu' fragili: paesi con sistemi statistici deboli, aree rurali, popolazioni marginalizzate, pratiche poco denunciate. L'assenza di dato non equivale quindi all'assenza del fenomeno.</p>
             </article>
             <article class="consideration-item">
-              <h3>Lavoro minorile</h3>
-              <p>I dati ILO e UNICEF derivano da survey nazionali non sempre identiche per strumenti, periodicita' e definizioni operative. I confronti puntuali tra paesi richiedono cautela; i trend regionali sono in genere piu' solidi.</p>
+              <h3>Reddito e disuguaglianza</h3>
+              <p>PIL pro capite e indice di Gini sono utili per posizionare i paesi nello spazio economico, ma non esauriscono da soli il tema della vulnerabilita'. Il primo e' una media che puo' nascondere forti squilibri interni; il secondo dipende dalla qualita' delle indagini sui redditi e non cattura tutte le forme di deprivazione.</p>
             </article>
             <article class="consideration-item">
-              <h3>Matrimoni precoci</h3>
-              <p>La misura UNICEF e' retrospettiva e si basa sulle risposte di donne tra i 20 e i 24 anni. In alcuni contesti il fenomeno puo' quindi risultare sottostimato o meno tempestivo rispetto alla realta' corrente.</p>
+              <h3>Istruzione</h3>
+              <p>Indicatori come alfabetizzazione giovanile, spesa pubblica in istruzione, out-of-school rate e GPI raccontano dimensioni diverse dello stesso problema. Metterli nello stesso racconto aiuta la lettura, ma non implica che misurino lo stesso livello del sistema scolastico o che reagiscano con gli stessi tempi ai cambiamenti politici.</p>
+            </article>
+            <article class="consideration-item">
+              <h3>Lavoro minorile e matrimoni precoci</h3>
+              <p>Qui il limite principale e' metodologico: molte misure derivano da survey nazionali non perfettamente sincronizzate e, nel caso dei matrimoni precoci, da indicatori retrospettivi sulle donne tra 20 e 24 anni. Il dato e' prezioso, ma restituisce meglio la struttura del fenomeno che la sua fotografia in tempo reale.</p>
             </article>
             <article class="consideration-item">
               <h3>Migrazione internazionale</h3>
-              <p>Per questa sezione usiamo stock bilaterali di migranti, non flussi annuali. La lettura e' quindi strutturale: mostra come si distribuiscono le presenze migranti, non il numero di partenze o arrivi anno per anno.</p>
+              <p>Per la migrazione usiamo stock bilaterali, non flussi annuali. Questo significa che il grafico mostra dove si concentrano nel tempo le presenze migranti, non il numero di partenze o arrivi registrati anno per anno. E' quindi una lettura strutturale, non event-driven.</p>
             </article>
             <article class="consideration-item">
-              <h3>FGM</h3>
-              <p>Per la visualizzazione sulla mutilazione genitale femminile usiamo un dataset snapshot per paese, con copertura limitata ai contesti in cui UNICEF dispone di microdati comparabili. I valori per quintile non formano quindi una serie storica continua e vanno letti come confronto interno tra gruppi socioeconomici.</p>
+              <h3>FGM e dati snapshot</h3>
+              <p>La sezione sulla mutilazione genitale femminile usa una copertura molto piu' selettiva delle altre e lavora su snapshot per paese, spesso riferiti ad anni diversi. I quintili di ricchezza vanno quindi letti come confronto interno allo stesso contesto, non come ranking lineare tra tutti i paesi africani.</p>
             </article>
             <article class="consideration-item">
               <h3>Correlazioni, non causalita'</h3>
-              <p>Il progetto mette in relazione indicatori economici, scolastici e sociali per mostrare connessioni ricorrenti. Queste visualizzazioni non dimostrano pero' da sole un rapporto causale tra i fenomeni osservati.</p>
+              <p>Il progetto mette in relazione indicatori economici, scolastici e sociali per mostrare connessioni ricorrenti. Queste visualizzazioni non dimostrano da sole un rapporto causale: aiutano a formulare domande, non a chiuderle.</p>
             </article>
           </div>
         </section>

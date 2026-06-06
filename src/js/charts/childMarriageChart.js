@@ -74,41 +74,12 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   }
 
   /* ── Tooltip ────────────────────────────────────────────── */
-  d3.select('body').selectAll('.tooltip-marriage').remove();
-  const tooltip = d3.select('body').append('div').attr('class', 'tooltip-marriage')
-    .style('position', 'absolute').style('background', TOOLTIP_BG)
-    .style('color', TOOLTIP_INK).style('border-radius', '8px').style('padding', '10px 14px')
-    .style('border', '1px solid rgba(255,255,255,0.08)')
-    .style('box-shadow', '0 10px 28px rgba(16,18,34,0.35)')
-    .style('pointer-events', 'none').style('font-size', '12px').style('line-height', '1.65')
-    .style('z-index', '10000').style('display', 'none').style('max-width', '250px');
+  const tooltip = window.ensureHoverTooltip('child-marriage-tooltip', { maxWidth: 'min(92vw, 20rem)' });
 
   function showTip(e, html) {
-    tooltip.style('display', 'block').html(html);
-    const r = tooltip.node().getBoundingClientRect();
-    const scrollX = window.scrollX || window.pageXOffset || 0;
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const pageX = Number.isFinite(e?.pageX)
-      ? e.pageX
-      : (Number.isFinite(e?.clientX) ? e.clientX + scrollX : scrollX + 12);
-    const pageY = Number.isFinite(e?.pageY)
-      ? e.pageY
-      : (Number.isFinite(e?.clientY) ? e.clientY + scrollY : scrollY + 12);
-
-    let tx = pageX + 14;
-    let ty = pageY + 10;
-    const minX = scrollX + 8;
-    const maxX = scrollX + window.innerWidth - r.width - 8;
-    const minY = scrollY + 8;
-    const maxY = scrollY + window.innerHeight - r.height - 8;
-
-    if (tx + r.width > scrollX + window.innerWidth - 8) tx = pageX - r.width - 14;
-    if (ty + r.height > scrollY + window.innerHeight - 8) ty = pageY - r.height - 10;
-    tx = Math.max(minX, Math.min(tx, maxX));
-    ty = Math.max(minY, Math.min(ty, maxY));
-    tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
+    window.showHoverTooltip(tooltip, e, html, { offsetX: 14, offsetY: 10 });
   }
-  function hideTip() { tooltip.style('display', 'none'); }
+  function hideTip() { window.hideHoverTooltip(tooltip); }
 
   /* ── Viz container ──────────────────────────────────────── */
   const vizDiv = container.append('div')
@@ -194,13 +165,16 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .style('display', 'block').style('font-family', 'inherit');
 
     function buildOverviewTooltip({ continent, titleColor, by15Color, by18Color, pct15, pct18, n15Value, n18Value, covered, total, showHint = false }) {
-      return (
-        `<strong style="color:${titleColor}">${continent}</strong><br>` +
-        `<span style="color:${by15Color}">●</span> Prima dei 15: <strong>${fmt(pct15, '%')}</strong> (${fmtN(n15Value)})<br>` +
-        `<span style="color:${by18Color}">●</span> Prima dei 18: <strong>${fmt(pct18, '%')}</strong> (${fmtN(n18Value)})<br>` +
-        `<span style="color:${CHART_AXIS}">Copertura dati: ${covered}/${total} paesi</span>` +
-        (showHint ? `<br><em style="opacity:.5;font-size:8px">clicca per i singoli paesi →</em>` : '')
-      );
+      return {
+        title: continent,
+        titleColor,
+        rows: [
+          { label: 'Prima dei 15', value: `${fmt(pct15, '%')} (${fmtN(n15Value)})` },
+          { label: 'Prima dei 18', value: `${fmt(pct18, '%')} (${fmtN(n18Value)})` },
+          { label: 'Copertura dati', value: `${covered}/${total} paesi` },
+        ],
+        footer: showHint ? 'Clicca per esplorare i singoli paesi' : '',
+      };
     }
 
     function drawPanelRows(rows, xLabel, startY) {
@@ -574,14 +548,15 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         .style('cursor', 'default')
         .on('mousemove', e => {
           activateColumn(i);
-          showTip(e,
-          `<strong>${d.country}</strong> · ${d.year ?? '—'}<br>` +
-          (d.source ? `<em style="opacity:.6;font-size:9px">${d.source}</em><br>` : '') +
-          `<span style="color:${colorBy15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
-          (d.by15_n != null ? `  (${fmtN(d.by15_n)})` : '') + '<br>' +
-          `<span style="color:${colorBy18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
-          (d.by18_n != null ? `  (${fmtN(d.by18_n)})` : '')
-          );
+          showTip(e, {
+            title: d.country,
+            meta: `Anno: ${d.year ?? 'N/D'}`,
+            rows: [
+              { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
+              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` },
+              ...(d.source ? [{ label: 'Fonte', value: d.source }] : []),
+            ],
+          });
         })
         .on('mouseleave', () => {
           clearActiveColumn();
@@ -591,14 +566,15 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       if (coarsePointer) {
         hit.on('click', e => {
           activateColumn(i);
-          showTip(e,
-            `<strong>${d.country}</strong> · ${d.year ?? '—'}<br>` +
-            (d.source ? `<em style="opacity:.6;font-size:9px">${d.source}</em><br>` : '') +
-            `<span style="color:${colorBy15}">●</span> Prima dei 15: <strong>${fmt(d.by15_pct, '%')}</strong>` +
-            (d.by15_n != null ? `  (${fmtN(d.by15_n)})` : '') + '<br>' +
-            `<span style="color:${colorBy18}">●</span> Prima dei 18: <strong>${fmt(d.by18_pct, '%')}</strong>` +
-            (d.by18_n != null ? `  (${fmtN(d.by18_n)})` : '')
-          );
+          showTip(e, {
+            title: d.country,
+            meta: `Anno: ${d.year ?? 'N/D'}`,
+            rows: [
+              { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
+              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` },
+              ...(d.source ? [{ label: 'Fonte', value: d.source }] : []),
+            ],
+          });
         });
       }
 

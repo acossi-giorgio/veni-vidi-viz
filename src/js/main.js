@@ -530,13 +530,13 @@ const CHART_HELP_NOTES = {
   ].join('\n'),
   'chart-3-3': [
     'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale dell\'Africa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
-    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. Sull\'asse X trovi la spesa in istruzione in USD. Sull\'asse Y trovi alfabetizzazione o bambini fuori scuola, a seconda della metrica selezionata.',
-    'Pannello sotto: qui vedi l\'indice corretto sulla finestra selezionata. L\'indice confronta il trend dell\'outcome con il trend della spesa su finestre di 1, 3 o 5 anni.',
+    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. In entrambe le modalita\', l\'asse X usa la spesa in istruzione come % del PIL. Sull\'asse Y trovi sempre un tasso percentuale.',
+    'Pannello sotto: qui vedi l\'indice corretto su una finestra fissa di 5 anni. L\'indice confronta il trend dell\'outcome con il trend della spesa nella stessa finestra.',
     'Formula: I = slope(Outcome) / |slope(Spesa)|',
     'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate nella finestra selezionata. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
     'Direzione outcome: con Alfabetizzazione, un aumento è positivo. Con Fuori scuola, una diminuzione è positiva: il segno viene quindi corretto internamente.',
     'Interpretazione: se I > 0, l\'outcome migliora rispetto al trend della spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la dinamica media nella finestra. L\'asse dell\'indice usa una scala lineare centrata su zero.',
-    'Interazioni: usa i toggle per cambiare metrica e focus, e il selettore per cambiare l\'aggregazione tra 1, 3 e 5 anni. Passa sui punti, sopra e sotto, per leggere valori annuali, finestra considerata e indice calcolato.'
+    'Interazioni: usa i toggle per cambiare metrica e focus. Passa sui punti, sopra e sotto, per leggere valori annuali, finestra considerata e indice calcolato.'
   ].join('\n'),
   'chart-4-1': [
     'Scatter per paesi africani: ogni punto è un paese.',
@@ -566,44 +566,44 @@ const CHART_HELP_NOTES = {
 
 const DATASET_NOTES = {
   'chart-1-1': [
-    'Dataset principale: datasets/processed/income.csv',
-    'Base geografica: World Atlas TopoJSON (countries-110m)'
+    'Reddito pro capite'
   ].join('\n'),
   'chart-1-2': [
-    'Dataset principale: datasets/processed/income.csv',
-    'Dataset integrativi: datasets/processed/life_expectancy.csv, datasets/processed/population.csv'
+    'Reddito pro capite',
+    'Aspettativa di vita',
+    'Popolazione'
   ].join('\n'),
   'chart-2-1': [
-    'Dataset principale: datasets/processed/multidimensional_poverty_index.csv',
-    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
+    'Indice di Poverta Multidimensionale (MPI)'
   ].join('\n'),
   'chart-3-1': [
-    'Dataset principale: datasets/processed/education_spending.csv',
-    'Dataset integrativi: datasets/processed/income.csv, datasets/processed/population.csv'
+    'Spesa pubblica in istruzione',
+    'Reddito pro capite',
+    'Popolazione'
   ].join('\n'),
   'chart-3-2': [
-    'Dataset principale: datasets/processed/gender_parity_secondary.csv',
-    'Dataset integrativo: datasets/processed/out_of_school_children.csv'
+    'Parita\' di genere (GPI secondaria)',
+    'Bambini fuori dalla scuola'
   ].join('\n'),
   'chart-3-3': [
-    'Dataset principali: datasets/processed/education_spending.csv, datasets/processed/youth_literacy.csv',
-    'Dataset integrativi: datasets/processed/out_of_school_children.csv, datasets/processed/income.csv, datasets/processed/population.csv'
+    'Spesa pubblica in istruzione',
+    'Alfabetizzazione giovanile',
+    'Bambini fuori dalla scuola',
+    'Reddito pro capite',
+    'Popolazione'
   ].join('\n'),
   'chart-4-1': [
-    'Dataset principale: datasets/processed/child_labor.csv',
-    'Dataset integrativo: datasets/processed/income.csv'
+    'Lavoro minorile',
+    'Reddito pro capite'
   ].join('\n'),
   'chart-4-2': [
-    'Dataset principale: datasets/processed/child_marriage_prevalence.csv'
+    'Matrimonio precoce'
   ].join('\n'),
   'chart-4-3': [
-    'Dataset principale: datasets/processed/fgm_quintile_prevalence.csv',
-    'Dataset raw di origine: datasets/raw/fgm_quintile_prevalence_raw.xlsx',
-    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
+    'Mutilazione genitale femminile (FGM)'
   ].join('\n'),
   'chart-5-1': [
-    'Dataset principale: datasets/processed/migration.csv',
-    'Base geografica (vista mappa): World Atlas TopoJSON (countries-110m)'
+    'Migrazione internazionale'
   ].join('\n'),
 };
 
@@ -612,8 +612,8 @@ const CHART_MISSING_DATASETS = {
   'chart-1-2': ['income.csv', 'life_expectancy.csv', 'population.csv'],
   'chart-2-1': ['multidimensional_poverty_index.csv'],
   'chart-3-1': ['education_spending.csv', 'income.csv', 'population.csv'],
-  'chart-3-2': ['gender_parity_secondary.csv', 'out_of_school_children.csv'],
-  'chart-3-3': ['education_spending.csv', 'youth_literacy.csv', 'out_of_school_children.csv', 'income.csv', 'population.csv'],
+  'chart-3-2': ['gender_parity_secondary.csv', 'out_of_school_rate.csv'],
+  'chart-3-3': ['education_spending.csv', 'youth_literacy.csv', 'out_of_school_rate.csv', 'income.csv', 'population.csv'],
   'chart-4-1': ['child_labor.csv', 'income.csv'],
   'chart-4-2': ['child_marriage_prevalence.csv'],
   'chart-4-3': ['fgm_quintile_prevalence.csv'],
@@ -770,15 +770,15 @@ const CHART_HELP_BUILDERS = {
       : 'Passa sui punti per leggere il dettaglio e clicca su un continente per entrare nel drill-down per paese.',
   }),
   'chart-3-3': ({ chart }) => {
-    const outcome = chart.yMode === 'oos' ? 'bambini fuori scuola' : 'alfabetizzazione';
-    const xLabel = 'spesa in istruzione in USD assoluti';
+    const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
+    const xLabel = 'spesa in istruzione come % del PIL';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
     const windowYears = chart.aggregationWindow || 5;
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa con la spesa sempre in USD assoluti; in basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa resta sempre espressa come % del PIL, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
         },
         {
           label: 'Grafico sopra',
@@ -786,11 +786,11 @@ const CHART_HELP_BUILDERS = {
         },
         {
           label: 'Grafico sotto',
-          text: `Asse X = anno. Asse Y = indice corretto su ${windowYears} anni. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nella finestra che termina nell'anno t. In modalità Fuori scuola, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente.`,
+          text: `Asse X = anno. Asse Y = indice corretto su ${windowYears} anni. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nella finestra che termina nell'anno t. In modalità Fuori scuola primaria, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente.`,
         },
         {
           label: 'Interazioni possibili',
-          text: 'Puoi cambiare continente e metrica con i pulsanti in alto e scegliere l aggregazione tra 1, 3 e 5 anni. Passa sui punti del pannello sopra e sotto per leggere valori annuali, finestra considerata, trend stimato e indice calcolato.',
+          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, finestra considerata, trend stimato e indice calcolato.',
         },
       ],
     };

@@ -33,7 +33,7 @@
         <div class="page-hero-inner page-hero-inner--narrow">
           <span class="page-eyebrow">Metodo</span>
           <h1>Processo e Lavoro</h1>
-          <p>Questa pagina spiega come abbiamo costruito il progetto: selezione delle fonti, processo ETL, armonizzazione dei dati e scelte tecniche usate per trasformare dataset eterogenei in una visualizzazione coerente.</p>
+          <p>Questa pagina racconta come abbiamo costruito il progetto, dalla scelta delle fonti al processo ETL, fino alle decisioni tecniche e narrative che hanno trasformato dataset eterogenei in una visualizzazione coerente.</p>
         </div>
       </section>
 
@@ -42,80 +42,83 @@
         <section class="dataset-section">
           <h2 class="page-section-title">Impostazione del progetto</h2>
           <div class="section-prose">
-            <p class="editorial-lead">Il lavoro e' partito da una domanda narrativa: come mostrare in modo chiaro il legame tra vulnerabilita' economica, fallimento scolastico, costo umano e migrazione.</p>
-            <p>Da qui abbiamo selezionato un set limitato di indicatori globali, sufficientemente comparabili tra paesi e leggibili dentro una struttura in quattro atti. L'obiettivo non era accumulare il maggior numero possibile di variabili, ma costruire un sistema di dati solido e interpretabile.</p>
+            <p class="editorial-lead">Il lavoro è partito da una domanda narrativa: come mostrare in modo chiaro e progressivo il legame tra vulnerabilità economica, esclusione scolastica, costo umano e migrazione?</p>
+            <p>Da quella domanda abbiamo costruito una struttura in quattro capitoli, ognuno dei quali approfondisce una dimensione del problema con un set coerente di indicatori internazionali. L'obiettivo non è l'enciclopedia, ma la progressione: scoprire (<em>veni</em>), indagare (<em>vidi</em>), portare alla luce (<em>viz</em>) un fenomeno noto ma spesso raccontato in modo frammentato.</p>
+          </div>
+          <div class="methodology-flow">
+            <article class="method-step">
+              <h3>Le fondamenta della disuguaglianza</h3>
+              <p>Il punto di partenza è la distribuzione del reddito e della ricchezza a livello globale. Reddito pro capite, indice di Gini e aspettativa di vita mostrano come le condizioni di partenza siano radicalmente diverse tra paesi e continenti, e come questa disuguaglianza strutturale sia il contesto entro cui si sviluppano tutti gli altri fenomeni narrati.</p>
+            </article>
+            <article class="method-step">
+              <h3>La scuola come un lusso per pochi</h3>
+              <p>Il secondo capitolo entra nel sistema educativo: quante risorse vi vengono investite, quanti bambini ne rimangono esclusi, quanto è equo l'accesso tra maschi e femmine. La spesa pubblica in istruzione, il tasso di alfabetizzazione, i bambini fuori dalla scuola primaria e il gender parity index tracciano insieme un quadro di opportunità mancate, con un'attenzione particolare ai divari tra Africa ed Europa.</p>
+            </article>
+            <article class="method-step">
+              <h3>L'infanzia rubata</h3>
+              <p>Il terzo capitolo guarda alle forme più dirette di privazione dell'infanzia: il lavoro minorile, i matrimoni precoci e la mutilazione genitale femminile. Questi indicatori non sono accessori ma centrali: mostrano come la povertà si traduca in scelte forzate che interrompono la crescita, riproducono la vulnerabilità e colpiscono in modo sproporzionato le bambine.</p>
+            </article>
+            <article class="method-step">
+              <h3>La fuga e il paradosso</h3>
+              <p>Il capitolo conclusivo legge la migrazione internazionale come risposta alle condizioni documentate nei capitoli precedenti. I flussi migratori rivelano un paradosso: chi riesce a partire spesso lo fa verso i paesi con le maggiori disuguaglianze interne. La mobilità diventa così sia un segnale di speranza sia un indicatore della profondità del divario globale.</p>
+            </article>
           </div>
         </section>
 
         <section class="dataset-section">
           <h2 class="page-section-title">Processo ETL</h2>
-          <p class="page-section-intro">L'ETL e' stato il cuore del lavoro sui dati: ogni fonte e' stata raccolta, pulita e trasformata in una struttura comune per poter alimentare grafici diversi senza cambiare logica di base.</p>
+          <p class="page-section-intro">L'ETL e' stato il centro del lavoro sui dati: ogni fonte e' stata raccolta, verificata e trasformata in una struttura comune, cosi' da alimentare grafici diversi senza riscrivere ogni volta la logica di lettura.</p>
           <div class="methodology-flow">
             <article class="method-step">
-              <span class="method-step-index">01</span>
-              <div class="method-step-copy">
-                <h3>Extract</h3>
-                <p>Abbiamo raccolto dataset da World Bank, UNICEF, ILO, UNESCO UIS, WHO, UN DESA e Our World in Data. Le fonti originali arrivavano in formati diversi, tra cui CSV, XLSX e tabelle derivate da repository pubblici.</p>
-              </div>
+              <h3>Extract</h3>
+              <p>In questa fase abbiamo raccolto e verificato le fonti originali, mantenendo traccia del formato e della copertura disponibile per ciascun indicatore.</p>
+              <ul class="editorial-list">
+                <li>Selezione di dataset da World Bank, UNICEF, ILO, UNESCO UIS, UN DESA, Our World in Data e UN World Population Prospects.</li>
+                <li>Raccolta di sorgenti eterogenee in formati diversi, tra cui CSV, XLSX e tabelle pubblicate su portali istituzionali.</li>
+                <li>Controllo preliminare della disponibilita' per paese, anno e metrica, cosi' da capire fin dall'inizio i limiti reali di ogni serie.</li>
+              </ul>
             </article>
 
             <article class="method-step">
-              <span class="method-step-index">02</span>
-              <div class="method-step-copy">
-                <h3>Transform</h3>
-                <p>I dati sono stati ripuliti, uniformati nei codici paese, ricondotti a una struttura coerente e controllati rispetto alla copertura temporale. Dove necessario, gli indicatori sono stati aggregati per continente o riallineati all'ultimo anno disponibile.</p>
-                <p>Il mapping ISO3 verso continente e macro-regione si basa su <a href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes" target="_blank" rel="noopener">ISO-3166 Countries with Regional Codes</a>.</p>
-              </div>
+              <h3>Transform</h3>
+              <p>La fase di trasformazione e' servita a rendere confrontabili dataset nati con logiche diverse, preparando ogni tabella per un uso coerente nel racconto e nei grafici.</p>
+              <ul class="editorial-list">
+                <li>Pulizia dei valori, uniformazione dei nomi dei paesi e standardizzazione dei codici ISO3 per evitare duplicazioni e incoerenze tra fonti.</li>
+                <li>Normalizzazione dei campi temporali, distinzione tra serie storiche e snapshot e verifica della copertura effettiva, cosi' da usare per ogni indicatore solo gli anni davvero confrontabili.</li>
+                <li>Riorganizzazione delle colonne in una struttura comune, con variabili omogenee e casi limite esplicitati quando era necessario fermarsi all'ultimo anno disponibile.</li>
+              </ul>
+              <p>Il mapping ISO3 verso continente e macro-regione si basa su <a href="https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes" target="_blank" rel="noopener">ISO-3166 Countries with Regional Codes</a>, poi adattato alle esigenze del progetto per mantenere continuita' tra dataset diversi.</p>
             </article>
 
             <article class="method-step">
-              <span class="method-step-index">03</span>
-              <div class="method-step-copy">
-                <h3>Load</h3>
-                <p>I dataset finali sono stati preparati in una forma semplice e leggibile per il frontend, cosi' da poter essere caricati direttamente dai grafici D3 senza build complessi o trasformazioni ulteriori lato client.</p>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section class="dataset-section">
-          <h2 class="page-section-title">Scelte di lavoro</h2>
-          <p class="page-section-intro">Accanto al dato, abbiamo definito anche un metodo di progettazione: pochi strumenti, regole chiare, struttura narrativa costante e una separazione netta tra contenuto, interazione e visualizzazione.</p>
-          <div class="methodology-flow">
-            <article class="method-step">
-              <span class="method-step-index">04</span>
-              <div class="method-step-copy">
-                <h3>Selezione degli indicatori</h3>
-                <p>Abbiamo privilegiato indicatori riconosciuti a livello internazionale, con copertura ampia e leggibili in una progressione narrativa unica: reddito, scuola, infanzia, migrazione.</p>
-              </div>
-            </article>
-
-            <article class="method-step">
-              <span class="method-step-index">05</span>
-              <div class="method-step-copy">
-                <h3>Gestione dei valori mancanti</h3>
-                <p>Non abbiamo usato imputazioni statistiche. Quando un dato mancava, il limite restava visibile nel grafico oppure veniva usato l'ultimo anno disponibile, sempre esplicitato nella lettura.</p>
-              </div>
-            </article>
-
-            <article class="method-step">
-              <span class="method-step-index">06</span>
-              <div class="method-step-copy">
-                <h3>Integrazione con il frontend</h3>
-                <p>I grafici sono stati costruiti in HTML, CSS, JavaScript vanilla e D3.js, mantenendo una base tecnica leggera. Questo ha permesso di controllare direttamente interazione, narrativa e stile senza introdurre dipendenze superflue.</p>
-              </div>
+              <h3>Load</h3>
+              <p>La fase di load ha tradotto il lavoro di trasformazione in file finali realmente utilizzabili dal sito, senza ulteriori passaggi tecnici nel frontend.</p>
+              <ul class="editorial-list">
+                <li>Esportazione dei dataset finali in CSV leggeri e gia' pronti per il caricamento lato client.</li>
+                <li>Definizione di colonne semplici e consistenti tra file diversi, in modo che i moduli D3 potessero leggere strutture prevedibili.</li>
+                <li>Eliminazione della necessita' di trasformazioni aggiuntive nel browser, riducendo complessita', rischio di errore e logica duplicata nei grafici.</li>
+              </ul>
             </article>
           </div>
         </section>
 
         <section class="dataset-section">
           <h2 class="page-section-title">Stack tecnico</h2>
-          <p class="page-section-intro">L'implementazione segue la stessa filosofia del progetto: un'infrastruttura semplice, leggibile e sufficiente per gestire sia la parte dati sia la parte visuale.</p>
-          <ul class="editorial-list">
-            <li><strong>Visualizzazione:</strong> <strong>D3.js v7</strong> per tutti i grafici interattivi e <strong>TopoJSON</strong> per la mappa mondiale. Dove necessario, sono stati usati plugin D3 dedicati come <strong>d3-sankey</strong>.</li>
-            <li><strong>Frontend:</strong> <strong>HTML5</strong>, <strong>CSS3</strong> e <strong>JavaScript ES6+</strong> vanilla. Nessun framework JS e nessun framework CSS: il sito resta statico, portabile e facilmente distribuibile.</li>
-            <li><strong>Data processing:</strong> <strong>Python</strong> con librerie come pandas e openpyxl per estrazione, pulizia e armonizzazione delle fonti grezze prima dell'uso nei grafici.</li>
-          </ul>
+          <p class="page-section-intro">L'implementazione segue la stessa filosofia del progetto: un'infrastruttura semplice, leggibile e sufficiente per gestire sia la parte dati sia la parte visuale, senza introdurre complessità non necessarie.</p>
+          <div class="methodology-flow">
+            <article class="method-step">
+              <h3>Visualizzazione</h3>
+              <p><strong>D3.js v7</strong> per tutti i grafici interattivi e <strong>TopoJSON</strong> per le mappe. Dove necessario sono stati usati plugin dedicati come <strong>d3-sankey</strong> per i grafici a flusso.</p>
+            </article>
+            <article class="method-step">
+              <h3>Frontend</h3>
+              <p><strong>HTML5</strong>, <strong>CSS3</strong> e <strong>JavaScript ES6+</strong> vanilla. Nessun framework JS e nessun framework CSS: il sito è statico, portabile e facilmente distribuibile senza build step.</p>
+            </article>
+            <article class="method-step">
+              <h3>Data processing</h3>
+              <p><strong>Python</strong> con librerie come <strong>pandas</strong> e <strong>openpyxl</strong> per estrazione, pulizia, armonizzazione e produzione dei CSV finali usati nei grafici.</p>
+            </article>
+          </div>
         </section>
 
       </div>

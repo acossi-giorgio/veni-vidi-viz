@@ -176,26 +176,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   const g = svg.append('g');
 
-  let tipEl = document.getElementById('mpi-breakdown-tip');
-  if (!tipEl) {
-    tipEl = document.createElement('div');
-    tipEl.id = 'mpi-breakdown-tip';
-    Object.assign(tipEl.style, {
-      position: 'fixed',
-      display: 'none',
-      pointerEvents: 'none',
-      background: 'rgba(20,20,40,0.93)',
-      color: '#fff',
-      padding: '8px 12px',
-      borderRadius: '6px',
-      fontSize: '11px',
-      lineHeight: '1.65',
-      zIndex: '10000',
-      maxWidth: '240px',
-      whiteSpace: 'normal',
-    });
-    document.body.appendChild(tipEl);
-  }
+  const tipEl = window.ensureHoverTooltip('mpi-breakdown-tip', { maxWidth: 'min(92vw, 18rem)' });
 
   function getLegendRows() {
     const edges = [0, ...mpiThresholds, scaleMax];
@@ -286,7 +267,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   function draw() {
     g.selectAll('*').remove();
-    tipEl.style.display = 'none';
+    window.hideHoverTooltip(tipEl);
     svg.on('.zoom', null).style('cursor', 'default').style('background', null).style('border-radius', null);
 
     if (viewType === 'dist') {
@@ -426,22 +407,27 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         .attr('x', xS(bin.x0) + 1).attr('y', animateBars ? ih : targetY)
         .attr('width', Math.max(1, barW - 2)).attr('height', animateBars ? 0 : targetH)
         .attr('fill', fill).attr('opacity', opa).attr('rx', 2).style('cursor', 'pointer')
-        .on('mouseover', function () {
+        .on('mouseover', function (ev) {
           d3.select(this).attr('opacity', 1);
           const sorted = [...bin].sort((a, b) => b.value - a.value);
-          const listed = sorted
-            .map(d => `${d.country} <span style="opacity:.6">${d.value.toFixed(3)}</span>`)
-            .join('<br>');
-          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">MPI ${bin.x0.toFixed(2)}–${bin.x1.toFixed(2)}</strong><br>${listed}`;
-          tipEl.style.display = 'block';
+          window.showHoverTooltip(tipEl, ev, {
+            title: `MPI ${bin.x0.toFixed(2)}-${bin.x1.toFixed(2)}`,
+            titleColor: COL_AFRICA,
+            sections: [{
+              title: 'Paesi inclusi',
+              rows: sorted.map(d => ({
+                label: d.country,
+                value: d.value.toFixed(3),
+              })),
+            }],
+          });
         })
         .on('mousemove', ev => {
-          tipEl.style.left = (ev.clientX + 14) + 'px';
-          tipEl.style.top = (ev.clientY - 28) + 'px';
+          window.positionHoverTooltip(tipEl, ev);
         })
         .on('mouseleave', function () {
           d3.select(this).attr('opacity', opa);
-          tipEl.style.display = 'none';
+          window.hideHoverTooltip(tipEl);
         });
 
       if (animateBars) {
@@ -520,17 +506,24 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         const rec = latestRecentMap.get(code);
         const name = rec?.country || ALL_AFRICA.find(x => x.code === code)?.country || code || '?';
         if (!rec || rec.value == null) {
-          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: <em>No data</em>`;
+          window.showHoverTooltip(tipEl, ev, {
+            title: name,
+            titleColor: COL_AFRICA,
+            rows: [{ label: 'MPI', value: 'N/D' }],
+          });
         } else {
-          tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: ${rec.value.toFixed(3)}<br>Anno: ${rec.year}`;
+          window.showHoverTooltip(tipEl, ev, {
+            title: name,
+            titleColor: COL_AFRICA,
+            meta: `Anno: ${rec.year}`,
+            rows: [{ label: 'MPI', value: rec.value.toFixed(3) }],
+          });
         }
-        tipEl.style.display = 'block';
       })
       .on('mousemove', ev => {
-        tipEl.style.left = (ev.clientX + 14) + 'px';
-        tipEl.style.top = (ev.clientY - 28) + 'px';
+        window.positionHoverTooltip(tipEl, ev);
       })
-      .on('mouseleave', () => { tipEl.style.display = 'none'; });
+      .on('mouseleave', () => { window.hideHoverTooltip(tipEl); });
 
     const africaFeatures = countries.filter(d => {
       const code = numericToAlpha3[+d.id] || '';

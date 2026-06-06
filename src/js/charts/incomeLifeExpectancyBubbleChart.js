@@ -175,12 +175,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const bubblesG = g.append('g');
 
   // Tooltip
-  let tipEl = document.getElementById('gapminder-tip');
-  if (!tipEl) {
-    tipEl = document.createElement('div'); tipEl.id = 'gapminder-tip';
-    Object.assign(tipEl.style, { position: 'fixed', display: 'none', pointerEvents: 'none', background: TOOLTIP_BG, color: TOOLTIP_INK, padding: '7px 11px', borderRadius: '5px', fontSize: '12px', lineHeight: '1.5', zIndex: '10000', whiteSpace: 'nowrap' });
-    document.body.appendChild(tipEl);
-  }
+  const tipEl = window.ensureHoverTooltip('income-life-tooltip');
 
   function getFrame(year) {
     const incomeYear = incomeMap[year] || {};
@@ -215,16 +210,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   }
 
   function showTooltipAt(event, html) {
-    tipEl.innerHTML = html;
-    tipEl.style.display = 'block';
-    let x = event.clientX + 14;
-    let y = event.clientY - 28;
-    const box = tipEl.getBoundingClientRect();
-    if (x + box.width > window.innerWidth - 8) x = event.clientX - box.width - 14;
-    if (y + box.height > window.innerHeight - 8) y = event.clientY - box.height - 14;
-    if (y < 8) y = event.clientY + 14;
-    tipEl.style.left = x + 'px';
-    tipEl.style.top = y + 'px';
+    window.showHoverTooltip(tipEl, event, html);
   }
 
   function draw(animate) {
@@ -252,30 +238,51 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
     bubblesG.selectAll('circle')
       .on('mouseover', function(event, d) {
-        showTooltipAt(event, `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`);
+        showTooltipAt(event, {
+          title: d.country,
+          meta: `Anno: ${currentYear}`,
+          rows: [
+            { label: 'Reddito pro capite', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'Aspettativa di vita', value: `${d.lifeVal.toFixed(1)} anni` },
+            { label: 'Popolazione', value: d3.format(',.0f')(d.pop) },
+          ],
+        });
         d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
       })
       .on('mousemove', (event, d) => {
-        showTooltipAt(event, `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`);
+        showTooltipAt(event, {
+          title: d.country,
+          meta: `Anno: ${currentYear}`,
+          rows: [
+            { label: 'Reddito pro capite', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'Aspettativa di vita', value: `${d.lifeVal.toFixed(1)} anni` },
+            { label: 'Popolazione', value: d3.format(',.0f')(d.pop) },
+          ],
+        });
       })
-      .on('mouseleave', function() { tipEl.style.display = 'none'; d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.5); });
+      .on('mouseleave', function() { window.hideHoverTooltip(tipEl); d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.5); });
 
     bgHoverRect
       .on('mousemove', (event) => {
         if (event.target !== bgHoverRect.node()) return;
         const summary = getYearSummary(currentYear);
         const html = [
-          `<strong>${currentYear}</strong>`,
-          ...summary.map((item) => (
-            `<span style="color:${CONT_COLOR[item.continent]}"><strong>${item.continent}</strong></span>: ` +
-            `reddito medio <strong>$${item.meanIncome != null ? d3.format(',.0f')(item.meanIncome) : '—'}</strong>, ` +
-            `aspettativa media <strong>${item.meanLife != null ? item.meanLife.toFixed(1) + ' anni' : '—'}</strong><br>` +
-            `<span style="color:${CHART_AXIS}">Copertura dati: ${item.covered}/${item.total} paesi</span>`
-          )),
-        ].join('<br>');
+          {
+            title: 'Africa vs Europa',
+            meta: `Anno: ${currentYear}`,
+            sections: summary.map((item) => ({
+              title: item.continent,
+              rows: [
+                { label: 'Reddito medio', value: item.meanIncome != null ? `$${d3.format(',.0f')(item.meanIncome)}` : 'N/D' },
+                { label: 'Aspettativa media', value: item.meanLife != null ? `${item.meanLife.toFixed(1)} anni` : 'N/D' },
+                { label: 'Copertura dati', value: `${item.covered}/${item.total} paesi` },
+              ],
+            })),
+          },
+        ][0];
         showTooltipAt(event, html);
       })
-      .on('mouseleave', () => { tipEl.style.display = 'none'; });
+      .on('mouseleave', () => { window.hideHoverTooltip(tipEl); });
 
     sliderEl.property('value', currentYear);
     yearDisplay.text(currentYear);

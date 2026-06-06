@@ -441,16 +441,32 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.55);
 }
 .hero-cta {
-  display: inline-block;
-  margin-top: 1.3rem;
-  padding: 0.8rem 2.2rem;
-  background: var(--control-muted);
-  color: var(--ink);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: background 0.2s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1.8rem;
+  padding: 0.9rem 1.6rem;
+  border: 1px solid rgba(44, 62, 80, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--control-active);
+  text-decoration: none;
+  font-size: 0.96rem;
+  font-weight: 700;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.hero-cta:hover,
+.hero-cta:focus-visible {
+  background: rgba(246, 248, 250, 1);
+  border-color: rgba(44, 62, 80, 0.3);
+  transform: translateY(-1px);
+}
+
+.hero-cta:focus-visible {
+  outline: 2px solid rgba(44, 62, 80, 0.3);
+  outline-offset: 3px;
 }
 
 .hero-carousel {
@@ -1038,6 +1054,97 @@ input[type="range"]::-moz-range-thumb {
   line-height: 1.6;
   pointer-events: none;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chart-hover-tooltip {
+  --tooltip-max-width: min(92vw, 22rem);
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: none;
+  z-index: 10000;
+  max-width: var(--tooltip-max-width);
+  padding: 0.72rem 0.9rem 0.78rem;
+  border-radius: 10px;
+  background: var(--chart-tooltip-bg);
+  color: var(--chart-tooltip-ink);
+  box-shadow: 0 12px 28px rgba(16, 18, 34, 0.35);
+  font-size: 0.76rem;
+  line-height: 1.58;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: normal;
+}
+
+.chart-hover-tooltip__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.46rem;
+}
+
+.chart-hover-tooltip__title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--chart-tooltip-ink);
+}
+
+.chart-hover-tooltip__meta {
+  opacity: 0.66;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.chart-hover-tooltip__body,
+.chart-hover-tooltip__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.26rem;
+}
+
+.chart-hover-tooltip__section + .chart-hover-tooltip__section {
+  margin-top: 0.2rem;
+}
+
+.chart-hover-tooltip__section-title {
+  opacity: 0.54;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.08rem;
+}
+
+.chart-hover-tooltip__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: baseline;
+}
+
+.chart-hover-tooltip__row--text {
+  display: block;
+}
+
+.chart-hover-tooltip__label {
+  min-width: 0;
+  opacity: 0.78;
+  overflow-wrap: anywhere;
+}
+
+.chart-hover-tooltip__value {
+  color: var(--chart-tooltip-ink);
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.chart-hover-tooltip__footer {
+  margin-top: 0.1rem;
+  opacity: 0.68;
+  font-size: 0.68rem;
 }
 
 .tooltip-chord.is-pinned {
@@ -2234,58 +2341,76 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   margin-bottom: 0.75rem !important;
 }
 
-/* Dataset table */
-.dataset-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 0.94rem;
-  line-height: 1.6;
-  margin-top: 0;
+/* Dataset list */
+.dataset-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 860px;
+  align-items: start;
 }
-.dataset-table th {
-  text-align: left;
-  padding: 0.55rem 1rem 0.85rem;
-  background: transparent;
-  border-bottom: 1px solid rgba(26, 26, 26, 0.16);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
+
+.dataset-entry {
+  padding: 1.1rem 1.25rem 0;
+  border-top: 2px solid rgba(26, 26, 26, 0.08);
 }
-.dataset-table td {
-  padding: 1rem 1rem 1.05rem;
-  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
-  color: var(--ink-muted);
-  vertical-align: top;
-}
-.dataset-table tr:last-child td { border-bottom: none; }
-.dataset-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.24); }
-.dataset-table tr:hover td { background: rgba(163, 163, 163, 0.14); }
-.dataset-table td:first-child { color: var(--ink); font-weight: 600; }
-.dataset-table a {
+
+.dataset-entry h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1.05rem;
   color: var(--ink);
-  word-break: normal;
-  overflow-wrap: anywhere;
 }
-.dataset-table td:nth-child(2),
-.dataset-table td:nth-child(3) {
-  line-height: 1.65;
-}
-.table-scroll {
-  overflow-x: auto;
-  padding: 0.1rem 0 0.5rem;
-  -webkit-overflow-scrolling: touch;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
-.table-scroll-hint {
-  margin-top: 1rem;
-  font-size: 0.84rem;
+
+.dataset-entry p {
+  margin: 0 0 0.7rem;
   color: var(--ink-muted);
+  line-height: 1.8;
+}
+
+.dataset-entry p:last-of-type {
+  margin-bottom: 0;
+}
+
+.dataset-entry strong {
+  color: var(--ink);
+}
+
+.dataset-entry-source {
+  font-size: 0.92rem;
+  color: var(--control-active);
+}
+
+.dataset-entry-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(44, 62, 80, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--control-active);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+
+
+.dataset-entry-button:hover,
+.dataset-entry-button:focus-visible {
+  background: rgba(246, 248, 250, 1);
+  border-color: rgba(44, 62, 80, 0.3);
+  transform: translateY(-1px);
+}
+
+
+
+.dataset-entry-button:focus-visible {
+  outline: 2px solid rgba(44, 62, 80, 0.3);
+  outline-offset: 3px;
 }
 
 .page-section-title {
@@ -2294,27 +2419,21 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   color: var(--ink);
   margin-bottom: 0.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--border);
 }
 
 .methodology-flow {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
   max-width: 860px;
 }
 
 .method-step {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  gap: 1.25rem;
-  align-items: start;
-  padding: 0 0 1.5rem;
-  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+  padding: 1.1rem 1.25rem 0;
+  border-top: 2px solid rgba(26, 26, 26, 0.08);
 }
 
 .method-step:last-child {
   padding-bottom: 0;
-  border-bottom: none;
 }
 
 .method-step-index {
@@ -2332,20 +2451,20 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   letter-spacing: 0.12em;
 }
 
-.method-step-copy h3,
+.method-step h3,
 .consideration-item h3 {
   margin-bottom: 0.45rem;
   font-size: 1.05rem;
 }
 
-.method-step-copy p,
+.method-step p,
 .consideration-item p {
   margin: 0 0 0.7rem;
   color: var(--ink-muted);
   line-height: 1.8;
 }
 
-.method-step-copy p:last-child,
+.method-step p:last-child,
 .consideration-item p:last-child {
   margin-bottom: 0;
 }
@@ -2625,13 +2744,22 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     font-size: 0.74rem;
     line-height: 1.4;
   }
-  .table-scroll {
-    margin: 0 -0.25rem;
-    padding: 0 0.25rem 0.75rem;
+  .dataset-list {
+    gap: 0.85rem;
   }
-  .dataset-table {
-    min-width: 760px;
+  .dataset-entry {
+    padding: 0.95rem 0.95rem 0;
+  }
+  .dataset-entry-source {
     font-size: 0.88rem;
+  }
+  .dataset-entry p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .dataset-entry-button {
+    width: 100%;
+    margin-top: 0.9rem;
   }
 
   .chart-section {

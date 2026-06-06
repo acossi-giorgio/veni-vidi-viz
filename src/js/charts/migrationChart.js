@@ -1188,10 +1188,10 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       const fmt = d3.format(',.0f');
       const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
       if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
-        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>No data</em>`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>N/D</em>`;
       }
       if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
-        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>No data</em>`;
+        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>N/D</em>`;
       }
       if (countrySrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;

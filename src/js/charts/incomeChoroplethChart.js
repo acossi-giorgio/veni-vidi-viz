@@ -206,18 +206,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .on('end', () => svg.style('cursor', 'grab'));
   svg.call(zoom);
 
-  let tipEl = document.getElementById('chm-tooltip');
-  if (!tipEl) {
-    tipEl = document.createElement('div'); tipEl.id = 'chm-tooltip';
-    Object.assign(tipEl.style, {
-      position: 'fixed', display: 'none', pointerEvents: 'none',
-      background: TOOLTIP_BG, color: TOOLTIP_INK,
-      padding: '8px 12px', borderRadius: '5px', fontSize: '12px',
-      lineHeight: '1.55', zIndex: '10000', whiteSpace: 'nowrap',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-    });
-    document.body.appendChild(tipEl);
-  }
+  const tipEl = window.ensureHoverTooltip('income-choropleth-tooltip');
 
   const colorScale = d3.scaleQuantile().range(CHORO_COLORS);
 
@@ -426,7 +415,14 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     const pts = s.pts.filter(p => p.value != null && p.value > 0);
     if (!pts.length) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
 
-    const xS = d3.scaleLinear().domain(d3.extent(pts, p => p.year)).range([0, iw]);
+    const [minYear, maxYear] = d3.extent(pts, p => p.year);
+    const valueByYear = new Map(pts.map(p => [p.year, p.value]));
+    const panelSeries = d3.range(minYear, maxYear + 1).map(year => ({
+      year,
+      value: valueByYear.has(year) ? valueByYear.get(year) : null,
+    }));
+
+    const xS = d3.scaleLinear().domain([minYear, maxYear]).range([0, iw]);
     const yExt = d3.extent(pts, p => p.value);
     const yS = d3.scaleLinear().domain([yExt[0] * 0.9, yExt[1] * 1.05]).range([ih, 0]);
 
@@ -437,14 +433,14 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     pg.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(v => `$${d3.format('.2s')(v)}`)).attr('font-size', 8).call(ax => ax.select('.domain').remove());
 
     // Area fill
-    pg.append('path').datum(pts)
+    pg.append('path').datum(panelSeries)
       .attr('fill', UI_ACTIVE).attr('fill-opacity', 0.08)
-      .attr('d', d3.area().x(p => xS(p.year)).y0(ih).y1(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
+      .attr('d', d3.area().x(p => xS(p.year)).y0(ih).y1(p => yS(p.value)).defined(p => p.value != null && p.value > 0).curve(d3.curveMonotoneX));
 
-    pg.append('path').datum(pts)
+    pg.append('path').datum(panelSeries)
       .attr('fill', 'none').attr('stroke', UI_ACTIVE).attr('stroke-width', SERIES_STROKE_W)
       .attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round')
-      .attr('d', d3.line().x(p => xS(p.year)).y(p => yS(p.value)).defined(p => p.value > 0).curve(d3.curveMonotoneX));
+      .attr('d', d3.line().x(p => xS(p.year)).y(p => yS(p.value)).defined(p => p.value != null && p.value > 0).curve(d3.curveMonotoneX));
 
     const near = pts.reduce((a, b) => Math.abs(b.year - currentYear) < Math.abs(a.year - currentYear) ? b : a);
 
@@ -488,7 +484,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   paths
     .on('mouseover', function (event, d) {
       if (selectedCode) {
-        tipEl.style.display = 'none';
+        window.hideHoverTooltip(tipEl);
         return;
       }
       const code = numericToAlpha3[+d.id] || '';
@@ -496,24 +492,26 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       const data = getYearData(currentYear);
       const v    = data[code];
       const name = incomeSeries[code]?.country || code || '?';
-      const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'No data';
-      tipEl.innerHTML = `<strong>${name}</strong><br>PIL pro capite: ${fv}`;
-      tipEl.style.display = 'block';
+      const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'N/D';
+      window.showHoverTooltip(tipEl, event, {
+        title: name,
+        meta: `Anno: ${currentYear}`,
+        rows: [
+          { label: 'PIL pro capite', value: fv },
+        ],
+      });
     })
     .on('mousemove', event => {
       if (selectedCode) return;
-      let x = event.clientX + 14, y = event.clientY - 28;
-      const r = tipEl.getBoundingClientRect();
-      if (x + r.width > window.innerWidth - 8) x = event.clientX - r.width - 14;
-      tipEl.style.left = x + 'px'; tipEl.style.top = y + 'px';
+      window.positionHoverTooltip(tipEl, event);
     })
     .on('mouseleave', function () {
-      tipEl.style.display = 'none';
+      window.hideHoverTooltip(tipEl);
     })
     .on('click', function (event, d) {
       const code = numericToAlpha3[+d.id] || '';
       if (!isInteractiveCountry(code)) return;
-      tipEl.style.display = 'none';
+      window.hideHoverTooltip(tipEl);
       if (selectedCode === code) {
         closePanel();
       } else {
@@ -675,10 +673,10 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
         });
 
         // Tooltip
-        let html = `<strong style="color:#888">${nearYear}</strong>`;
+        let html = `<strong style="color:#fff">${nearYear}</strong>`;
       CONT_ORDER.forEach(cont => {
         const v = yearData[cont];
-        const col = CONT_COLOR[cont] || '#888';
+        const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
         const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
         const total = incomeEligibleByCont.get(cont)?.size || 0;
         html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
