@@ -786,6 +786,9 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 0.75rem;
   max-width: none;
 }
+#section-11 .chart-section-inner.section-11-wide .narrative-card:first-child {
+  grid-column: span 2;
+}
 #section-11 .chart-section-inner.section-11-wide .narrative-card {
   margin-bottom: 0;
   min-height: 100%;

@@ -144,6 +144,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
   let mode = 'bar';
   let selectedCode = maxMeanRow.code;
+  let mapFocusAfrica = false;
 
   const tip = window.ensureHoverTooltip('fgm-hover-tooltip', { maxWidth: 'min(92vw, 20rem)' });
 
@@ -651,7 +652,9 @@ async function renderFgmChart(selector, isFullscreen = false) {
     const africaBounds = path.bounds({ type: 'FeatureCollection', features: africaFeatures });
     const africaCx = (africaBounds[0][0] + africaBounds[1][0]) / 2;
     const africaCy = (africaBounds[0][1] + africaBounds[1][1]) / 2;
-    const zoomScale = width < 720 ? 1.18 : 1.42;
+    const zoomScale = mapFocusAfrica
+      ? (width < 720 ? 1.7 : 2.0)
+      : (width < 720 ? 1.18 : 1.42);
     const initialTransform = d3.zoomIdentity
       .translate(width / 2 - zoomScale * africaCx, height / 2 - zoomScale * africaCy + (width < 720 ? 4 : 10))
       .scale(zoomScale);
@@ -684,9 +687,11 @@ async function renderFgmChart(selector, isFullscreen = false) {
     render();
   };
   container._mortalityHighlightMarriage = () => {
+    mapFocusAfrica = true;
     mode = 'map';
     render();
   };
+  
   container._mortalitySlope = () => {
     mode = 'map';
     if (!selectedCode) selectedCode = maxMeanRow.code;

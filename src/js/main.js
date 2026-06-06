@@ -985,9 +985,9 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
   if (!el) return;
 
   if (chartId === 'chart-1-1') {
-    if (state === 0 && el._choroplethReset) el._choroplethReset();
-    else if (state === 1 && el._choroplethSetMetric) el._choroplethSetMetric('life_expectancy');
-    else if (state === 2 && el._choroplethSetMetric) el._choroplethSetMetric('poverty');
+    if (state === 0 && el._choroplethShowPlayMap) el._choroplethShowPlayMap();
+    else if (state === 1 && el._choroplethShowTrend) el._choroplethShowTrend();
+    else if (state === 2 && el._choroplethZoomAfrica) el._choroplethZoomAfrica();
   }
 
   if (chartId === 'chart-1-2') {
@@ -998,13 +998,12 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
   if (chartId === 'chart-2-1') {
     if (state === 0 && el._mpiReset) el._mpiReset();
     else if (state === 1 && el._mpiFilterContinent) el._mpiFilterContinent('Africa');
-    else if (state === 2 && el._mpiShowMap) el._mpiShowMap();
+    else if (state === 2 && el._mpiZoomAfrica) el._mpiZoomAfrica();
   }
 
   if (chartId === 'chart-3-1') {
     if (state === 0 && el._treemapReset) el._treemapReset();
-    else if (state === 1 && el._treemapHighlight) el._treemapHighlight('Europe');
-    else if (state === 2 && el._treemapHighlight) el._treemapHighlight('Africa');
+    else if (state === 1 && el._treemapSetMetric) el._treemapSetMetric('abs');
   }
 
   if (chartId === 'chart-3-2') {
@@ -1015,8 +1014,8 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
 
   if (chartId === 'chart-3-3') {
     if (state === 0 && el._exclusionShowBase) el._exclusionShowBase();
-    else if (state === 1 && el._exclusionFocusAfrica) el._exclusionFocusAfrica();
-    else if (state === 2 && el._exclusionFocusEurope) el._exclusionFocusEurope();
+    else if (state === 1 && el._exclusionFocusAfrica) el._exclusionShowBase();
+    else if (state === 2 && el._exclusionShowGpi) el._exclusionShowGpi();
   }
 
   if (chartId === 'chart-4-1') {
@@ -1039,7 +1038,7 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
 
   if (chartId === 'chart-5-1') {
     if (state === 0 && el._migrationShowYear) el._migrationShowYear(2020);
-    else if (state === 1 && el._migrationAnimate) el._migrationAnimate();
+    else if (state === 1 && el._migrationShowMap) el._migrationShowMap();
     else if (state === 2 && el._migrationShowMap) el._migrationShowMap();
   }
 
