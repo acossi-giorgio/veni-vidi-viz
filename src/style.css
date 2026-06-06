@@ -224,7 +224,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   color: rgba(245, 247, 250, 0.66);
   font-size: 1.02rem;
   font-weight: 600;
-  font-family: "Inter", sans-serif;
+  font-family: "Roboto Slab", serif;
   position: relative;
   background: transparent;
   border: 0;
@@ -331,7 +331,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   border: 0;
   background: transparent;
   color: rgba(245, 247, 250, 0.62);
-  font-family: "Inter", sans-serif;
+  font-family: "Roboto Slab", serif;
   transition: color 0.2s ease;
 }
 .story-nav-link-kicker {
