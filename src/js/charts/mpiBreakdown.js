@@ -63,7 +63,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     if (r) latestMap.set(code, r);
   });
 
-  const allLatest = Array.from(latestMap.values()).filter(d => d.value != null);
+  const allLatestUnfiltered = Array.from(latestMap.values()).filter(d => d.value != null);
+  const latestYearMax = d3.max(allLatestUnfiltered, d => d.year) || 2023;
+  const latestYearMin = latestYearMax - 9;
+  const allLatest = allLatestUnfiltered.filter(d => d.year >= latestYearMin);
+  const latestRecentMap = new Map(allLatest.map(d => [d.code, d]));
   const africa = allLatest
     .filter(d => d.continent === 'Africa')
     .sort((a, b) => b.value - a.value);
@@ -85,6 +89,10 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   let mode = 'africa'; // 'africa' | 'severe'
   let viewType = 'dist'; // 'dist' | 'map'
+
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(container, `I dati mostrano l'ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+  }
 
   const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
@@ -399,10 +407,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         .attr('x1', xS(severeCut)).attr('x2', xS(severeCut))
         .attr('y1', 0).attr('y2', ih)
         .attr('stroke', shadeColor(COL_AFRICA, 0.18)).attr('stroke-width', 1.5).attr('stroke-dasharray', '5,3');
-      g.append('text')
-        .attr('x', xS(severeCut) + 4).attr('y', 14)
-        .attr('font-size', 9).attr('fill', shadeColor(COL_AFRICA, 0.18))
-        .text('soglia grave ->');
     }
 
     const barW = africaBins[0] ? xS(africaBins[0].x1) - xS(africaBins[0].x0) : 20;
@@ -500,7 +504,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('fill', d => {
         const code = numericToAlpha3[+d.id] || '';
         if (!AFRICA_CODES.has(code)) return getUiColor('chartBaseFill', '#d6d0c5');
-        const rec = latestMap.get(code);
+        const rec = latestRecentMap.get(code);
         return rec && rec.value != null ? mpiColor(rec.value) : noDataPattern;
       })
       .attr('pointer-events', d => {
@@ -513,7 +517,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       })
       .on('mouseover', function (ev, d) {
         const code = numericToAlpha3[+d.id] || '';
-        const rec = latestMap.get(code);
+        const rec = latestRecentMap.get(code);
         const name = rec?.country || ALL_AFRICA.find(x => x.code === code)?.country || code || '?';
         if (!rec || rec.value == null) {
           tipEl.innerHTML = `<strong style="color:${COL_AFRICA}">${name}</strong><br>MPI: <em>No data</em>`;

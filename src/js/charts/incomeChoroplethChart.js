@@ -118,7 +118,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   ]));
 
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
-  let currentYear  = incomeYears[0];
+  const visibleYears = incomeYears.filter(y => y >= 2000 && y <= 2023);
+  let currentYear  = visibleYears[0];
   let selectedCode = null;
   let viewType     = 'map';
   let playing      = false;
@@ -555,7 +556,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .style('width', '100%').style('height', '100%').style('display', 'block');
     const g = tsvg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-    const allPts = Array.from(incomeStats.values()).flat();
+    const allPts = Array.from(incomeStats.values()).flat().filter(d => d.year >= 2000 && d.year <= 2023);
     const xDomain = d3.extent(allPts, d => d.year);
     const allYears = [...new Set(allPts.map(d => d.year))].sort((a, b) => a - b);
     const meanVals = allPts.map(d => d.mean).filter(v => v != null && isFinite(v) && v > 0);
@@ -566,7 +567,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     // Build per-year lookup for all continents
     const statsByContYear = new Map();
     CONT_ORDER.forEach(cont => {
-      const stats = incomeStats.get(cont) || [];
+      const stats = (incomeStats.get(cont) || []).filter(pt => pt.year >= 2000 && pt.year <= 2023);
       stats.forEach(pt => {
         if (!statsByContYear.has(pt.year)) statsByContYear.set(pt.year, {});
         statsByContYear.get(pt.year)[cont] = pt.mean;
@@ -601,7 +602,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     }
 
     CONT_ORDER.forEach((continent, ci) => {
-      const stats = incomeStats.get(continent) || [];
+      const stats = (incomeStats.get(continent) || []).filter(pt => pt.year >= 2000 && pt.year <= 2023);
       if (!stats.length) return;
       const color = CONT_COLOR[continent] || '#888';
       const path = g.append('path').datum(stats)
@@ -678,7 +679,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       CONT_ORDER.forEach(cont => {
         const v = yearData[cont];
         const col = CONT_COLOR[cont] || '#888';
-        const covered = (incomeStats.get(cont)?.find(pt => pt.year === nearYear)?.n) || 0;
+        const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
         const total = incomeEligibleByCont.get(cont)?.size || 0;
         html += `<br><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:4px;vertical-align:middle"></span><strong style="color:${col}">${cont}</strong>: ${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}`;
         html += `<br>${formatCoverageCount(covered, total, { label: 'Copertura dati' })}`;
@@ -743,11 +744,11 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     return btn;
   }
 
-  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = incomeYears[0]; updateColors(false); });
+  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = visibleYears[0]; updateColors(false); });
   const btnPrev  = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
     stopPlay();
-    const i = incomeYears.indexOf(currentYear);
-    if (i > 0) { currentYear = incomeYears[i - 1]; updateColors(); }
+    const i = visibleYears.indexOf(currentYear);
+    if (i > 0) { currentYear = visibleYears[i - 1]; updateColors(); }
   });
 
   const btnPlay = ctrlWrap.append('button')
@@ -762,17 +763,17 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
   const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
     stopPlay();
-    const i = incomeYears.indexOf(currentYear);
-    if (i < incomeYears.length - 1) { currentYear = incomeYears[i + 1]; updateColors(); }
+    const i = visibleYears.indexOf(currentYear);
+    if (i < visibleYears.length - 1) { currentYear = visibleYears[i + 1]; updateColors(); }
   });
 
   function startPlay() {
     playing = true;
     btnPlay.html('<span class="player-play-icon"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg></span>').style('background', CONT_COLOR.Africa);
     animTimer = setInterval(() => {
-      const i = incomeYears.indexOf(currentYear);
-      if (i >= incomeYears.length - 1) { stopPlay(); return; }
-      currentYear = incomeYears[i + 1];
+      const i = visibleYears.indexOf(currentYear);
+      if (i >= visibleYears.length - 1) { stopPlay(); return; }
+      currentYear = visibleYears[i + 1];
       updateColors();
     }, 600);
   }
@@ -793,13 +794,13 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
     .style('pointer-events', 'none');
 
-  const tickYears = incomeYears.filter((y, i) => i % 5 === 0 || i === incomeYears.length - 1);
+  const tickYears = visibleYears.filter((y, i) => i % 5 === 0 || i === visibleYears.length - 1);
   tickYears.forEach(y => labelRow.append('span').text(y));
 
   // Slider
   const sliderEl = timelineWrap.append('input')
     .attr('type', 'range')
-    .attr('min', incomeYears[0]).attr('max', incomeYears[incomeYears.length - 1])
+    .attr('min', visibleYears[0]).attr('max', visibleYears[visibleYears.length - 1])
     .attr('step', 1).attr('value', currentYear)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
     .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
@@ -843,7 +844,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   container._choroplethReset = () => {
     stopPlay();
     selectedCode = null;
-    currentYear  = incomeYears[0];
+    currentYear  = visibleYears[0];
     viewType     = 'map';
     paths.attr('opacity', 1).attr('stroke-width', 0.35);
     panel.style('display', 'none');

@@ -24,11 +24,26 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches;
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
-  const raw = await d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType);
-  const continentTotals = new Map([
-    ['Africa', new Set(raw.filter(d => d.continent === 'Africa' && d.code).map(d => d.code))],
-    ['Europe', new Set(raw.filter(d => d.continent === 'Europe' && d.code).map(d => d.code))],
+  const [raw, countryCodesRaw] = await Promise.all([
+    d3.csv('datasets/processed/child_marriage_prevalence.csv', d3.autoType),
+    d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType),
   ]);
+  const latestYearMax = d3.max(raw.filter(d => Number.isFinite(d.year)), d => d.year) || 2024;
+  const latestYearMin = latestYearMax - 9;
+  const filteredRaw = raw.filter(d => Number.isFinite(d.year) && d.year >= latestYearMin);
+  const continentUniverse = countryCodesRaw
+    .map(d => ({
+      code: String(d.Three_Letter_Country_Code || '').trim(),
+      continent: String(d.Continent_Name || '').trim(),
+    }))
+    .filter(d => d.code && d.continent);
+  const continentTotals = new Map([
+    ['Africa', new Set(continentUniverse.filter(d => d.continent === 'Africa').map(d => d.code))],
+    ['Europe', new Set(continentUniverse.filter(d => d.continent === 'Europe').map(d => d.code))],
+  ]);
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(container.node(), `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+  }
 
   const AFRICA = getContinentColor('Africa', '#e66100');
   const EUROPE = getContinentColor('Europe', '#2ca02c');
@@ -71,11 +86,26 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   function showTip(e, html) {
     tooltip.style('display', 'block').html(html);
     const r = tooltip.node().getBoundingClientRect();
-    let tx = e.pageX + 14, ty = e.pageY + 10;
-    if (tx + r.width  > window.innerWidth  - 8) tx = e.pageX - r.width  - 14;
-    if (ty + r.height > window.innerHeight - 8) ty = e.pageY - r.height - 10;
-    tx = Math.max(8, Math.min(tx, window.innerWidth - r.width - 8));
-    ty = Math.max(8, Math.min(ty, window.innerHeight - r.height - 8));
+    const scrollX = window.scrollX || window.pageXOffset || 0;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const pageX = Number.isFinite(e?.pageX)
+      ? e.pageX
+      : (Number.isFinite(e?.clientX) ? e.clientX + scrollX : scrollX + 12);
+    const pageY = Number.isFinite(e?.pageY)
+      ? e.pageY
+      : (Number.isFinite(e?.clientY) ? e.clientY + scrollY : scrollY + 12);
+
+    let tx = pageX + 14;
+    let ty = pageY + 10;
+    const minX = scrollX + 8;
+    const maxX = scrollX + window.innerWidth - r.width - 8;
+    const minY = scrollY + 8;
+    const maxY = scrollY + window.innerHeight - r.height - 8;
+
+    if (tx + r.width > scrollX + window.innerWidth - 8) tx = pageX - r.width - 14;
+    if (ty + r.height > scrollY + window.innerHeight - 8) ty = pageY - r.height - 10;
+    tx = Math.max(minX, Math.min(tx, maxX));
+    ty = Math.max(minY, Math.min(ty, maxY));
     tooltip.style('left', `${tx}px`).style('top', `${ty}px`);
   }
   function hideTip() { tooltip.style('display', 'none'); }
@@ -121,7 +151,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const scaledMobileOverview = mobileFullscreen;
     const layoutW = scaledMobileOverview ? Math.max(640, W) : W;
     const layoutH = scaledMobileOverview ? Math.max(380, Math.min(H, 440)) : H;
-    const africa = raw.filter(d => d.continent === 'Africa' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
+    const africa = filteredRaw.filter(d => d.continent === 'Africa' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
     const afN15  = d3.sum(africa, d => d.by15_n ?? 0);
     const afN18  = d3.sum(africa, d => d.by18_n ?? 0);
     const afNTot = d3.sum(africa, d => d.by18_n / (d.by18_pct / 100));
@@ -129,7 +159,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const af18   = afNTot > 0 ? afN18 / afNTot * 100 : 0;
     const n      = africa.length;
 
-    const europe = raw.filter(d => d.continent === 'Europe' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
+    const europe = filteredRaw.filter(d => d.continent === 'Europe' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
     const euN15  = d3.sum(europe, d => d.by15_n ?? 0);
     const euN18  = d3.sum(europe, d => d.by18_n ?? 0);
     const euNTot = d3.sum(europe, d => d.by18_n / (d.by18_pct / 100));
@@ -326,7 +356,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
   function drawDrillDown(W, H) {
     const mobileFullscreen = isFullscreen && compact;
-    const data = raw
+    const data = filteredRaw
       .filter(d => d.continent === selectedContinent && d.by18_pct != null)
       .sort((a, b) => b.by18_pct - a.by18_pct);
 

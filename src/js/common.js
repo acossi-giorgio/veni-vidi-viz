@@ -123,6 +123,94 @@ function formatCoverageBlock(lines = [], options = {}) {
   return `<section class="tooltip-coverage"><${titleTag} class="${titleClass}">${escapeHtml(title)}</${titleTag}>${body}</section>`;
 }
 
+function mountChartWarningHint(host, message, options = {}) {
+  if (!host || !message) return null;
+  const anchorHost = host.closest?.('.chart-box, .fullscreen-chart-wrap') || host;
+  const {
+    top = 'var(--header-controls-center-y, 33px)',
+    right = 'calc(var(--hint-right-3, 130px) + var(--hint-size, 34px) + var(--hint-gap, 6px))',
+    zIndex = '25',
+  } = options;
+
+  const existing = anchorHost.querySelector('.chart-warning-hint-inline');
+  if (existing) existing.remove();
+
+  let tooltip = document.getElementById('chart-warning-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'chart-warning-tooltip';
+    Object.assign(tooltip.style, {
+      position: 'fixed',
+      display: 'none',
+      pointerEvents: 'none',
+      zIndex: '10030',
+      maxWidth: '280px',
+      padding: '8px 10px',
+      borderRadius: '8px',
+      background: 'rgba(28, 25, 23, 0.94)',
+      color: '#fffdf8',
+      fontSize: '11px',
+      lineHeight: '1.55',
+      boxShadow: '0 10px 28px rgba(16,18,34,0.35)',
+      whiteSpace: 'normal',
+    });
+    document.body.appendChild(tooltip);
+  }
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'chart-warning-hint-inline';
+  btn.setAttribute('aria-label', 'Attenzione: dati da ultimo anno disponibile');
+  btn.innerHTML = '<span aria-hidden="true">!</span>';
+  Object.assign(btn.style, {
+    position: 'absolute',
+    top,
+    right,
+    zIndex,
+    width: 'var(--hint-size, 34px)',
+    height: 'var(--hint-size, 34px)',
+    borderRadius: '999px',
+    border: '1px solid rgba(191, 94, 24, 0.35)',
+    background: 'rgba(255, 248, 240, 0.96)',
+    color: '#bf5e18',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transform: 'translateY(-50%)',
+    cursor: 'help',
+    fontSize: '18px',
+    fontWeight: '700',
+    lineHeight: '1',
+    boxShadow: '0 1px 6px rgba(0,0,0,0.10)',
+  });
+
+  const safeHtml = escapeHtml(message).replace(/\n/g, '<br>');
+  const show = () => {
+    tooltip.innerHTML = `<strong>Attenzione</strong><br>${safeHtml}`;
+    tooltip.style.display = 'block';
+    const rect = btn.getBoundingClientRect();
+    const box = tooltip.getBoundingClientRect();
+    let x = rect.left - box.width - 10;
+    let y = rect.top + (rect.height - box.height) / 2;
+    if (x < 8) x = rect.right + 10;
+    if (x + box.width > window.innerWidth - 8) x = Math.max(8, window.innerWidth - box.width - 8);
+    if (y < 8) y = 8;
+    if (y + box.height > window.innerHeight - 8) y = Math.max(8, window.innerHeight - box.height - 8);
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+  };
+  const hide = () => { tooltip.style.display = 'none'; };
+
+  btn.addEventListener('mouseenter', show);
+  btn.addEventListener('focus', show);
+  btn.addEventListener('mouseleave', hide);
+  btn.addEventListener('blur', hide);
+
+  anchorHost.appendChild(btn);
+  return btn;
+}
+
 window.escapeHtml = escapeHtml;
 window.formatCoverageCount = formatCoverageCount;
 window.formatCoverageBlock = formatCoverageBlock;
+window.mountChartWarningHint = mountChartWarningHint;

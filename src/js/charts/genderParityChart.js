@@ -71,9 +71,17 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     d3.csv('datasets/processed/out_of_school_children.csv', d3.autoType),
   ]);
 
+  const latestYearMax = d3.max(
+    gpiRaw.filter(d => d.value != null && CONTS.includes(d.continent)),
+    d => d.year
+  ) || 2023;
+  const latestYearMin = latestYearMax - 9;
+
   const byCode = new Map();
   d3.group(gpiRaw, d => d.code).forEach((rows, code) => {
-    const r = rows.filter(d => d.value != null).sort((a, b) => b.year - a.year)[0];
+    const r = rows
+      .filter(d => d.value != null && d.year >= latestYearMin && d.year <= latestYearMax)
+      .sort((a, b) => b.year - a.year)[0];
     if (r) byCode.set(code, { code: r.code, country: r.country, continent: r.continent, gpi: r.value, year: r.year });
   });
   const countries = Array.from(byCode.values()).filter(d => CONTS.includes(d.continent));
@@ -82,9 +90,18 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     Europe: ALL_COUNTRIES.Europe.filter(({ code }) => !EUROPE_TOTAL_EXCLUDED.has(code)).length,
   };
 
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(
+      container,
+      `I dati mostrano l'ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`
+    );
+  }
+
   const oosMap = new Map();
   d3.group(oosRaw, d => d.code).forEach((rows, code) => {
-    const r = rows.filter(d => d.value != null).sort((a, b) => b.year - a.year)[0];
+    const r = rows
+      .filter(d => d.value != null && d.year >= latestYearMin && d.year <= latestYearMax)
+      .sort((a, b) => b.year - a.year)[0];
     if (r) oosMap.set(code, r.value);
   });
 

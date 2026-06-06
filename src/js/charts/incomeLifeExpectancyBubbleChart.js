@@ -51,8 +51,17 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const codeName = {};
   incomeRaw.forEach(d => { if (d.code && d.country) codeName[d.code] = d.country; });
 
+  const continentUniverse = {
+    Africa: new Set(),
+    Europe: new Set(),
+  };
+  Object.entries(codeContinent).forEach(([code, continent]) => {
+    if (continent === 'Africa' || continent === 'Europe') continentUniverse[continent].add(code);
+  });
+
   const incomeYears = Object.keys(incomeMap).map(Number).sort((a, b) => a - b);
-  const YEAR_MIN = incomeYears[0];
+  const visibleYears = incomeYears.filter(y => y >= 2000 && y <= 2023);
+  const YEAR_MIN = visibleYears[0];
   const YEAR_MAX = Math.min(2023, incomeYears[incomeYears.length - 1] || 2023);
 
   let currentYear = YEAR_MAX;
@@ -125,6 +134,14 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
   xLabelEl.text('PIL pro capite');
 
+  const bgHoverRect = g.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', iw)
+    .attr('height', ih)
+    .attr('fill', 'rgba(255,255,255,0.001)')
+    .style('pointer-events', 'all');
+
   // ── Legend (bottom-right above player, choropleth style) ─
   const LEG_W = compact ? 96 : 120, LEG_H = compact ? 84 : 106;
   const legDiv = d3.select(container).append('div')
@@ -181,6 +198,34 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     }).filter(Boolean).sort((a, b) => b.pop - a.pop);
   }
 
+  function getYearSummary(year) {
+    const frame = getFrame(year);
+    const byCont = d3.group(frame, d => d.continent);
+    return ['Africa', 'Europe'].map((continent) => {
+      const rows = byCont.get(continent) || [];
+      return {
+        continent,
+        covered: rows.length,
+        total: continentUniverse[continent]?.size || 0,
+        meanIncome: rows.length ? d3.mean(rows, d => d.income) : null,
+        meanLife: rows.length ? d3.mean(rows, d => d.lifeVal) : null,
+      };
+    });
+  }
+
+  function showTooltipAt(event, html) {
+    tipEl.innerHTML = html;
+    tipEl.style.display = 'block';
+    let x = event.clientX + 14;
+    let y = event.clientY - 28;
+    const box = tipEl.getBoundingClientRect();
+    if (x + box.width > window.innerWidth - 8) x = event.clientX - box.width - 14;
+    if (y + box.height > window.innerHeight - 8) y = event.clientY - box.height - 14;
+    if (y < 8) y = event.clientY + 14;
+    tipEl.style.left = x + 'px';
+    tipEl.style.top = y + 'px';
+  }
+
   function draw(animate) {
     const frame = getFrame(currentYear);
     const incomeYear = incomeMap[currentYear] || {};
@@ -206,12 +251,30 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
     bubblesG.selectAll('circle')
       .on('mouseover', function(event, d) {
-        tipEl.innerHTML = `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`;
-        tipEl.style.display = 'block';
+        showTooltipAt(event, `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`);
         d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
       })
-      .on('mousemove', ev => { tipEl.style.left = (ev.clientX + 14) + 'px'; tipEl.style.top = (ev.clientY - 28) + 'px'; })
+      .on('mousemove', (event, d) => {
+        showTooltipAt(event, `<strong>${d.country}</strong><br>Reddito: $${d3.format(',.0f')(d.income)}<br>Aspettativa: ${d.lifeVal.toFixed(1)} anni<br>Popolazione: ${d3.format(',.0f')(d.pop)}`);
+      })
       .on('mouseleave', function() { tipEl.style.display = 'none'; d3.select(this).attr('stroke', '#fff').attr('stroke-width', 0.5); });
+
+    bgHoverRect
+      .on('mousemove', (event) => {
+        if (event.target !== bgHoverRect.node()) return;
+        const summary = getYearSummary(currentYear);
+        const html = [
+          `<strong>${currentYear}</strong>`,
+          ...summary.map((item) => (
+            `<span style="color:${CONT_COLOR[item.continent]}"><strong>${item.continent}</strong></span>: ` +
+            `reddito medio <strong>$${item.meanIncome != null ? d3.format(',.0f')(item.meanIncome) : '—'}</strong>, ` +
+            `aspettativa media <strong>${item.meanLife != null ? item.meanLife.toFixed(1) + ' anni' : '—'}</strong><br>` +
+            `<span style="color:${CHART_AXIS}">Copertura dati: ${item.covered}/${item.total} paesi</span>`
+          )),
+        ].join('<br>');
+        showTooltipAt(event, html);
+      })
+      .on('mouseleave', () => { tipEl.style.display = 'none'; });
 
     sliderEl.property('value', currentYear);
     yearDisplay.text(currentYear);
@@ -277,8 +340,8 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = YEAR_MIN; draw(false); });
   mkCtrlBtn('&#8249;', 'Precedente').style('font-size', '18px').on('click', () => {
-    stopPlay(); const i = incomeYears.indexOf(currentYear);
-    if (i > 0) { currentYear = incomeYears[i - 1]; draw(false); }
+    stopPlay(); const i = visibleYears.indexOf(currentYear);
+    if (i > 0) { currentYear = visibleYears[i - 1]; draw(false); }
   });
 
   const btnPlay = ctrlWrap.append('button')
@@ -291,15 +354,15 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .on('click', () => playing ? stopPlay() : startPlay());
 
   mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
-    stopPlay(); const i = incomeYears.indexOf(currentYear);
-    if (i < incomeYears.length - 1) { currentYear = incomeYears[i + 1]; draw(false); }
+    stopPlay(); const i = visibleYears.indexOf(currentYear);
+    if (i < visibleYears.length - 1) { currentYear = visibleYears[i + 1]; draw(false); }
   });
 
   function startPlay() {
     playing = true;
     btnPlay.html('<span class="player-play-icon"><svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="0" y="0" width="3.5" height="14" rx="1"/><rect x="6.5" y="0" width="3.5" height="14" rx="1"/></svg></span>').style('background', CONT_COLOR.Africa);
     playTimer = setInterval(() => {
-      currentYear = currentYear < YEAR_MAX ? incomeYears[incomeYears.indexOf(currentYear) + 1] : YEAR_MIN;
+      currentYear = currentYear < YEAR_MAX ? visibleYears[visibleYears.indexOf(currentYear) + 1] : YEAR_MIN;
       draw(true);
     }, 600);
   }

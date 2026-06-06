@@ -55,6 +55,31 @@ async function renderFgmChart(selector, isFullscreen = false) {
     return;
   }
 
+  function parseReferenceYearRange(value) {
+    const matches = String(value || '').match(/\d{2,4}/g);
+    if (!matches || !matches.length) return { label: '', start: null, end: null };
+
+    let start = Number(matches[0]);
+    if (start < 100) start += start <= 30 ? 2000 : 1900;
+
+    let end = start;
+    if (matches.length > 1) {
+      let endRaw = Number(matches[matches.length - 1]);
+      if (endRaw < 100) {
+        end = Math.floor(start / 100) * 100 + endRaw;
+        if (end < start) end += 100;
+      } else {
+        end = endRaw;
+      }
+    }
+
+    return {
+      label: start === end ? String(start) : `${start}-${end}`,
+      start,
+      end,
+    };
+  }
+
   const rows = rowsRaw
     .map((d) => {
       const parsed = { ...d };
@@ -62,7 +87,16 @@ async function renderFgmChart(selector, isFullscreen = false) {
       parsed.quintile_mean = Number(parsed.quintile_mean);
       parsed.code = String(parsed.code || '').trim();
       parsed.country = String(parsed.country || '').trim();
-      parsed.reference_year = String(parsed.reference_year || '').trim();
+      const refLabelRaw = String(parsed.reference_year || '').trim();
+      const refRange = parseReferenceYearRange(refLabelRaw);
+      parsed.reference_year = refRange.label || refLabelRaw;
+      parsed.reference_year_start = Number.isFinite(Number(parsed.reference_year_start))
+        ? Number(parsed.reference_year_start)
+        : refRange.start;
+      parsed.reference_year_end = Number.isFinite(Number(parsed.reference_year_end))
+        ? Number(parsed.reference_year_end)
+        : refRange.end;
+      parsed.reference_year_max = parsed.reference_year_end;
       return parsed;
     })
     .filter((d) => d.code && quintiles.every((q) => Number.isFinite(d[q.key])) && Number.isFinite(d.quintile_mean));
@@ -72,10 +106,26 @@ async function renderFgmChart(selector, isFullscreen = false) {
     return;
   }
 
-  const byCode = new Map(rows.map((d) => [d.code, d]));
-  const maxMeanRow = rows.reduce((best, cur) => (cur.quintile_mean > best.quintile_mean ? cur : best), rows[0]);
+  const latestYearMax = d3.max(rows.filter(d => Number.isFinite(d.reference_year_max)), d => d.reference_year_max) || 2024;
+  const latestYearMin = latestYearMax - 9;
+  const recentRows = rows.filter((d) => {
+    const start = Number.isFinite(d.reference_year_start) ? d.reference_year_start : d.reference_year_max;
+    const end = Number.isFinite(d.reference_year_end) ? d.reference_year_end : d.reference_year_max;
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return false;
+    return start <= latestYearMax && end >= latestYearMin;
+  });
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(container, `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma il grafico considera solo gli ultimi 10 anni, nel range ${latestYearMin}-${latestYearMax}.`);
+  }
+  if (!recentRows.length) {
+    container.innerHTML = '<p style="padding:20px;color:#999;">Nessun valore FGM nel range recente disponibile.</p>';
+    return;
+  }
+
+  const byCode = new Map(recentRows.map((d) => [d.code, d]));
+  const maxMeanRow = recentRows.reduce((best, cur) => (cur.quintile_mean > best.quintile_mean ? cur : best), recentRows[0]);
   const globalMean = Object.fromEntries(
-    quintiles.map((q) => [q.key, d3.mean(rows, (d) => d[q.key]) || 0]),
+    quintiles.map((q) => [q.key, d3.mean(recentRows, (d) => d[q.key]) || 0]),
   );
 
   const countryMeta = countryCodeRaw
@@ -344,7 +394,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       maxValue: OVERVIEW_MAX_BAR_VALUE,
       coverage: {
         'Media africana': {
-          covered: rows.length,
+          covered: recentRows.length,
           total: africaCodes.size,
           label: 'Copertura media africana',
           includePercent: false,
@@ -484,7 +534,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('font-size', '12px')
       .style('font-weight', '600')
       .style('color', CHART_AXIS)
-      .text(`Media quintili: ${row.quintile_mean.toFixed(1)}% | Anno: ${row.reference_year || 'n/d'}`);
+      .text(`Media quintili: ${row.quintile_mean.toFixed(1)}% | Periodo: ${row.reference_year || 'n/d'}`);
 
     const chartWrap = popup.append('div')
       .style('min-height', '0')
@@ -499,7 +549,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       maxValue: MAX_BAR_VALUE,
       coverage: {
         'Media africana': {
-          covered: rows.length,
+          covered: recentRows.length,
           total: africaCodes.size,
           label: 'Copertura media africana',
           includePercent: false,
@@ -586,7 +636,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
           event,
           `<strong>${row.country}</strong><br>` +
             `Media quintili: <strong>${row.quintile_mean.toFixed(1)}%</strong><br>` +
-            `Anno riferimento: ${row.reference_year || 'n/d'}`,
+            `Periodo riferimento: ${row.reference_year || 'n/d'}`,
         );
       })
       .on('mouseleave', hideTooltip)

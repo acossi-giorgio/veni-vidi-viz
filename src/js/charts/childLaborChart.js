@@ -32,16 +32,24 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     const prev = clMap.get(d.code);
     if (!prev || d.year > prev.year) clMap.set(d.code, d);
   });
+  const latestRows = Array.from(clMap.values());
+  const latestYearMax = d3.max(latestRows, d => d.year) || 2024;
+  const latestYearMin = latestYearMax - 9;
 
   const incByYear = new Map();
   incRaw.forEach(d => { if (d.code && d.value != null) incByYear.set(`${d.code}|${d.year}`, d.value); });
 
   const data = [];
   clMap.forEach((cl, code) => {
+    if (cl.year < latestYearMin) return;
     const inc = incByYear.get(`${code}|${cl.year}`);
     if (!inc) return;
     data.push({ code, country: cl.country, labor: cl.value, income: inc, year: cl.year, continent: cl.continent });
   });
+
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(container.node(), `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+  }
 
   const medIncome = d3.median(data, d => d.income);
   const medLabor  = d3.median(data, d => d.labor);

@@ -27,6 +27,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const HISTORY_MIN_YEAR = 1995;
   const DISPLAY_MIN_YEAR = 2000;
   const DISPLAY_MAX_YEAR = 2022;
+  const FIXED_AGGREGATION_WINDOW = 5;
 
   /* ── Load data ──────────────────────────────────────────── */
   const [eduRaw, litRaw, oosRaw, incRaw, popRaw] = await Promise.all([
@@ -36,6 +37,13 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     d3.csv('datasets/processed/income.csv',        d3.autoType),
     d3.csv('datasets/processed/population.csv',    d3.autoType),
   ]);
+
+  if (typeof window.mountChartWarningHint === 'function') {
+    window.mountChartWarningHint(
+      container,
+      `Le serie usate per questo grafico possono essere incomplete anno per anno. Il pannello inferiore usa una finestra fissa di 5 anni e i punti aggregati riflettono solo i paesi con dati disponibili nella finestra considerata.`
+    );
+  }
 
   /* ── Index helpers ──────────────────────────────────────── */
   function idx(rows) {
@@ -151,7 +159,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const xMode   = 'absolute'; // fixed: absolute USD only
   let yMode     = 'literacy'; // 'literacy' | 'oos'
   let focusCont = 'Africa';
-  let aggregationWindow = 5;
+  const aggregationWindow = FIXED_AGGREGATION_WINDOW;
   const compact = isFullscreen && (
     (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
     (container.clientHeight || window.innerHeight * 0.82) < 420
@@ -352,39 +360,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const btnLit = mkBtn('Alfabetizzazione', () => { yMode = 'literacy'; updateBtns(); draw(); });
   const btnOos = mkBtn('Fuori scuola',     () => { yMode = 'oos';     updateBtns(); draw(); });
 
-  const aggWrap = topBar.append('div')
-    .style('display', 'flex')
-    .style('align-items', 'center')
-    .style('gap', compact ? '6px' : '8px')
-    .style('margin-left', compact ? '10px' : '12px')
-    .style('flex-wrap', compact ? 'wrap' : 'nowrap')
-    .style('padding-top', compact ? '2px' : '0');
-
-  const aggPillBar = aggWrap.append('div')
-    .style('display', 'flex').style('align-items', 'center')
-    .style('flex-wrap', 'nowrap')
-    .style('background', 'rgba(255,255,255,0.92)')
-    .style('border-radius', compact ? '8px' : '9px').style('border', `1px solid ${UI_MUTED_BORDER}`)
-    .style('padding', compact ? '2px' : '3px').style('gap', '2px')
-    .style('box-shadow', '0 1px 6px rgba(0,0,0,0.10)');
-
-  function mkAggBtn(label, value) {
-    return aggPillBar.append('button')
-      .style('font-size', compact ? '10px' : '11px').style('padding', compact ? '4px 8px' : '5px 12px').style('border-radius', compact ? '5px' : '6px')
-      .style('border', 'none').style('cursor', 'pointer').style('font-weight', '600')
-      .style('transition', 'all 0.15s')
-      .text(label)
-      .on('click', () => {
-        aggregationWindow = value;
-        updateBtns();
-        draw();
-      });
-  }
-
-  const aggBtn1 = mkAggBtn('1 anno', 1);
-  const aggBtn3 = mkAggBtn('3 anni', 3);
-  const aggBtn5 = mkAggBtn('5 anni', 5);
-
   function updateBtns() {
     const set = (btn, active) => btn
       .style('background', active ? UI_ACTIVE : 'transparent')
@@ -392,9 +367,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     set(btnLit, yMode === 'literacy');
     set(btnOos, yMode === 'oos');
-    set(aggBtn1, aggregationWindow === 1);
-    set(aggBtn3, aggregationWindow === 3);
-    set(aggBtn5, aggregationWindow === 5);
   }
   updateBtns();
 

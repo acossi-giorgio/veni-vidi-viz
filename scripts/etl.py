@@ -300,6 +300,34 @@ def migration_origin_coverage(migration_df, origin_codes, years):
             incomplete.append(code)
     return sorted(no_data), sorted(incomplete)
 
+def normalize_reference_year_label(value):
+    text = str(value or "").strip()
+    if not text or text.lower() == "nan":
+        return "", None, None
+
+    text = text.replace("–", "-").replace("—", "-").replace("/", "-")
+    matches = re.findall(r"\d{2,4}", text)
+    if not matches:
+        return text, None, None
+
+    start = int(matches[0])
+    if start < 100:
+        start += 2000 if start <= 30 else 1900
+
+    if len(matches) == 1:
+        return str(start), start, start
+
+    end_raw = int(matches[-1])
+    if end_raw < 100:
+        century = (start // 100) * 100
+        end = century + end_raw
+        if end < start:
+            end += 100
+    else:
+        end = end_raw
+
+    return f"{start}-{end}", start, end
+
 def make_missing_data_registry():
     try:
         rows = []
@@ -584,13 +612,14 @@ def make_fgm_quintile_prevalence():
         out = out[out["continent"] == "Africa"].copy()
         out = out[out["code"].isin(AFRICA_TOPIC_CODES)].copy()
 
-        out["reference_year"] = (
-            out["reference_year"]
-            .fillna("")
-            .astype(str)
-            .str.strip()
-            .str.replace(r"\.0$", "", regex=True)
+        ref_parts = out["reference_year"].apply(
+            lambda value: normalize_reference_year_label(
+                str(value).strip().replace(".0", "") if pd.notna(value) else ""
+            )
         )
+        out["reference_year"] = ref_parts.apply(lambda item: item[0])
+        out["reference_year_start"] = ref_parts.apply(lambda item: item[1])
+        out["reference_year_end"] = ref_parts.apply(lambda item: item[2])
         out[quintile_cols] = out[quintile_cols].round(1)
         out["quintile_mean"] = out[quintile_cols].mean(axis=1).round(2)
 
@@ -600,6 +629,8 @@ def make_fgm_quintile_prevalence():
                 "country",
                 "continent",
                 "reference_year",
+                "reference_year_start",
+                "reference_year_end",
                 "poorest",
                 "second",
                 "middle",
