@@ -1225,16 +1225,6 @@ input[type="range"]::-moz-range-thumb {
   font-size: 0.68rem;
 }
 
-.chart-hover-tooltip::before,
-.tooltip-chord::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(44, 62, 80, 0.34), rgba(44, 62, 80, 0.02));
-}
-
 .tooltip-chord.is-pinned {
   width: var(--tooltip-max-width);
   max-height: min(78vh, 40rem);

@@ -663,26 +663,25 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
           }
         });
 
+        const titleHtml = `
+          <span style="color:${CONT_COLOR.Africa}">Africa</span>
+          <span style="color:#334155"> vs </span>
+          <span style="color:${CONT_COLOR.Europe}">Europa</span>
+        `;
         window.showHoverTooltip(trendTip, event, {
-          title: String(nearYear),
-          rows: CONT_ORDER.map(cont => {
+          titleHtml,
+          meta: `Anno: ${nearYear}`,
+          sections: CONT_ORDER.map(cont => {
             const v = yearData[cont];
             const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
             const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
             const total = incomeEligibleByCont.get(cont)?.size || 0;
             return {
-              html: (
-                `<div class="chart-hover-tooltip__trend-item">` +
-                `<div class="chart-hover-tooltip__trend-head">` +
-                `<span class="chart-hover-tooltip__trend-label">` +
-                `<span class="chart-hover-tooltip__trend-swatch" style="background:${col}"></span>` +
-                `<span style="color:${col}">${escapeHtml(cont)}</span>` +
-                `</span>` +
-                `<strong class="chart-hover-tooltip__value">${v != null ? '$' + d3.format(',.0f')(v) : 'N/D'}</strong>` +
-                `</div>` +
-                `<div class="chart-hover-tooltip__trend-coverage">${formatCoverageCount(covered, total, { label: 'Copertura dati' })}</div>` +
-                `</div>`
-              ),
+              title: cont,
+              rows: [
+                { label: 'PIL pro capite', value: v != null ? `$${d3.format(',.0f')(v)}` : 'N/D' },
+                { label: 'Copertura dati', value: `${covered}/${total} paesi` },
+              ],
             };
           }),
         }, { offsetX: 14, offsetY: -28 });

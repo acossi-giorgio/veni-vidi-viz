@@ -338,13 +338,13 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
           title: cont,
           titleColor: color,
           rows: [
-            { label: 'Copertura dati', value: `${rows.length}/${continentTotals[cont]} paesi` },
             { label: 'Media', value: cMean.toFixed(3) },
             { label: 'Mediana', value: cMed.toFixed(3) },
             { label: 'Min', value: cMin.toFixed(3) },
             { label: 'Max', value: cMax.toFixed(3) },
             { label: 'Bambine escluse', value: `${nBelow}` },
             { label: 'Bambini esclusi', value: `${nAbove}` },
+            { label: 'Copertura dati', value: `${rows.length}/${continentTotals[cont]} paesi` },
           ],
         });
       };

@@ -1200,7 +1200,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       const total = stockByDest.get(a3) || 0;
       const cont = destContMap.get(a3);
       const col = CONT_COLOR[cont] || '#607d8b';
-      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti africani: <strong>${fmt(total)}</strong>`;
+      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti: <strong>${fmt(total)}</strong>`;
     }
 
     function buildArcPopupConfig(a3, anchor) {

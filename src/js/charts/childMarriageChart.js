@@ -180,8 +180,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
           { label: 'Prima dei 15', value: `${fmt(pct15, '%')} (${fmtN(n15Value)})` },
           { label: 'Prima dei 18', value: `${fmt(pct18, '%')} (${fmtN(n18Value)})` },
           { label: 'Copertura dati', value: `${covered}/${total} paesi` },
-        ],
-        footer: showHint ? 'Clicca per esplorare i singoli paesi' : '',
+        ]
       };
     }
 
@@ -561,8 +560,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
             meta: `Anno: ${d.year ?? 'N/D'}`,
             rows: [
               { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
-              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` },
-              ...(d.source ? [{ label: 'Fonte', value: d.source }] : []),
+              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
             ],
           });
         })
@@ -579,8 +577,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
             meta: `Anno: ${d.year ?? 'N/D'}`,
             rows: [
               { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
-              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` },
-              ...(d.source ? [{ label: 'Fonte', value: d.source }] : []),
+              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
             ],
           });
         });

@@ -533,7 +533,14 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('font-size', '12px')
       .style('font-weight', '600')
       .style('color', CHART_AXIS)
-      .text(`Media quintili: ${row.quintile_mean.toFixed(1)}% | Periodo: ${row.reference_year || 'n/d'}`);
+      .text(`Media quintili: ${row.quintile_mean.toFixed(1)}%`);
+    
+      popup.append('div')
+      .style('padding', '0 16px 4px')
+      .style('font-size', '12px')
+      .style('font-weight', '600')
+      .style('color', CHART_AXIS)
+      .text(`Anno: ${row.reference_year || 'n/d'}`);
 
     const chartWrap = popup.append('div')
       .style('min-height', '0')

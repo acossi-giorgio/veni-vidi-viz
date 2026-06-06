@@ -167,7 +167,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
             title: q.label,
             titleColor: q.color,
             rows: [
-              { label: 'Copertura dati', value: `${n}/${data.length} paesi` },
+              { label: 'Paesi', value: `${n}/${data.length}` },
             ],
           }, { offsetX: 12, offsetY: 8 });
         })

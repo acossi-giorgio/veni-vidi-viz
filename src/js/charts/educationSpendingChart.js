@@ -347,25 +347,42 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         <span style="color:#334155"> vs </span>
         <span style="color:${CONT_COLOR.Europe}">Europa</span>
       `;
+      const africaCoverage = coverage?.stats?.find(item => item.cont === 'Africa') || { covered: 0, total: 0 };
+      const europeCoverage = coverage?.stats?.find(item => item.cont === 'Europe') || { covered: 0, total: 0 };
       window.showHoverTooltip(tipEl, event, {
         titleHtml,
         meta: `Anno: ${nearYear}`,
         sections: [
-          ...CONTS.map(cont => ({
-            title: cont,
+          {
+            title: 'Africa',
             rows: [
               {
-                label: 'Spesa media',
-                value: meanByContYear.get(nearYear)?.[cont] != null ? fmtY(meanByContYear.get(nearYear)[cont]) : 'N/D',
+                label: 'Spesa totale',
+                value: meanByContYear.get(nearYear)?.Africa != null ? fmtY(meanByContYear.get(nearYear).Africa) : 'N/D',
               },
             ],
-          })),
+          },
+          {
+            title: 'Europa',
+            rows: [
+              {
+                label: 'Spesa totale',
+                value: meanByContYear.get(nearYear)?.Europe != null ? fmtY(meanByContYear.get(nearYear).Europe) : 'N/D',
+              },
+            ],
+          },
           {
             title: 'Copertura dati',
-            rows: CONTS.map(cont => ({
-              label: cont,
-              value: `${coverage?.stats?.find(item => item.cont === cont)?.covered ?? 0}/${coverage?.stats?.find(item => item.cont === cont)?.total ?? 0} paesi`,
-            })),
+            rows: [
+              {
+                label: 'Africa',
+                value: `${africaCoverage.covered}/${africaCoverage.total} paesi`,
+              },
+              {
+                label: 'Europa',
+                value: `${europeCoverage.covered}/${europeCoverage.total} paesi`,
+              },
+            ],
           },
         ],
       }, { offsetX: 14, offsetY: -28 });
