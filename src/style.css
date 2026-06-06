@@ -803,7 +803,8 @@ input[type="range"]::-moz-range-thumb {
   align-self: start;
 }
 
-.chart-box {
+.chart-box,
+.fullscreen-chart-wrap {
   --hint-size: 34px;
   --hint-top: 10px;
   --hint-gap: 6px;
@@ -815,6 +816,12 @@ input[type="range"]::-moz-range-thumb {
   --hint-tooltip-right: calc(var(--hint-size) + 8px);
   --hint-tooltip-max-w: 420px;
   --header-controls-center-y: 33px;
+  --chart-title-size: clamp(0.9rem, 0.18vw + 0.84rem, 1rem);
+  --chart-subtitle-size: clamp(0.78rem, 0.16vw + 0.72rem, 0.88rem);
+  --chart-legend-size: 10px;
+  --chart-legend-title-size: 10px;
+  --chart-legend-text-size: 10px;
+  --chart-svg-text-size: 10px;
   width: 100%;
   height: clamp(430px, 66vh, 780px);
   background: var(--surface-raised);
@@ -857,6 +864,57 @@ input[type="range"]::-moz-range-thumb {
   --hint-question-size: 16px;
   --hint-tooltip-right: calc(var(--hint-size) + 10px);
   --hint-tooltip-max-w: 460px;
+}
+
+.chart-box.chart-scale-default,
+.fullscreen-chart-wrap.chart-scale-default {
+  --chart-title-size: clamp(0.9rem, 0.18vw + 0.84rem, 1rem);
+  --chart-subtitle-size: clamp(0.78rem, 0.16vw + 0.72rem, 0.88rem);
+  --chart-legend-size: 10px;
+  --chart-legend-title-size: 10px;
+  --chart-legend-text-size: 10px;
+  --chart-svg-text-size: 10px;
+}
+
+/* Tipografia dei chart: aggiungi una di queste classi al wrapper `.chart-box` */
+.chart-box.chart-scale-xs,
+.fullscreen-chart-wrap.chart-scale-xs {
+  --chart-title-size: 0.84rem;
+  --chart-subtitle-size: 0.72rem;
+  --chart-legend-size: 8px;
+  --chart-legend-title-size: 8px;
+  --chart-legend-text-size: 8px;
+  --chart-svg-text-size: 8px;
+}
+
+.chart-box.chart-scale-sm,
+.fullscreen-chart-wrap.chart-scale-sm {
+  --chart-title-size: 0.88rem;
+  --chart-subtitle-size: 0.76rem;
+  --chart-legend-size: 9px;
+  --chart-legend-title-size: 9px;
+  --chart-legend-text-size: 9px;
+  --chart-svg-text-size: 9px;
+}
+
+.chart-box.chart-scale-lg,
+.fullscreen-chart-wrap.chart-scale-lg {
+  --chart-title-size: 0.98rem;
+  --chart-subtitle-size: 0.86rem;
+  --chart-legend-size: 11px;
+  --chart-legend-title-size: 11px;
+  --chart-legend-text-size: 11px;
+  --chart-svg-text-size: 11px;
+}
+
+.chart-box.chart-scale-xl,
+.fullscreen-chart-wrap.chart-scale-xl {
+  --chart-title-size: 1.06rem;
+  --chart-subtitle-size: 0.94rem;
+  --chart-legend-size: 12px;
+  --chart-legend-title-size: 12px;
+  --chart-legend-text-size: 12px;
+  --chart-svg-text-size: 12px;
 }
 
 /* Chart 2-1 (MPI): use a taller card to better exploit available space */
@@ -907,14 +965,14 @@ input[type="range"]::-moz-range-thumb {
 }
 .chart-title {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: var(--chart-title-size);
   font-weight: 700;
   line-height: 1.35;
   color: var(--ink);
 }
 .chart-subtitle {
   margin: 0.2rem 0 0;
-  font-size: 0.78rem;
+  font-size: var(--chart-subtitle-size);
   line-height: 1.45;
   color: var(--ink-muted);
 }
@@ -928,6 +986,39 @@ input[type="range"]::-moz-range-thumb {
 .chart-canvas > div {
   width: 100%;
   height: 100%;
+}
+
+.chart-box[class*="chart-scale-"] .chart-canvas svg text,
+.fullscreen-chart-wrap[class*="chart-scale-"] .chart-canvas svg text {
+  font-size: var(--chart-svg-text-size) !important;
+}
+
+.chart-box .chart-canvas svg .tick text,
+.fullscreen-chart-wrap .chart-canvas svg .tick text {
+  font-weight: 400 !important;
+}
+
+.chart-box .chart-canvas svg .chart-axis-label,
+.fullscreen-chart-wrap .chart-canvas svg .chart-axis-label {
+  font-weight: 700 !important;
+}
+
+.chart-box .chart-legend,
+.fullscreen-chart-wrap .chart-legend {
+  font-size: var(--chart-legend-size) !important;
+  line-height: 1.35;
+}
+
+.chart-box .chart-legend text,
+.chart-box .chart-legend tspan,
+.chart-box .chart-legend div,
+.chart-box .chart-legend span,
+.fullscreen-chart-wrap .chart-legend text,
+.fullscreen-chart-wrap .chart-legend tspan,
+.fullscreen-chart-wrap .chart-legend div,
+.fullscreen-chart-wrap .chart-legend span {
+  font-size: var(--chart-legend-size) !important;
+  line-height: inherit;
 }
 
 .tooltip-chord {
@@ -1985,7 +2076,7 @@ div[id^="fullscreen-chart-"] {
 .narrative-card h3 {
   margin-top: 0;
   margin-bottom: 0.58rem;
-  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
+  font-size: clamp(0.98rem, 0.24vw + 0.92rem, 1.12rem);
 }
 
 /* Paragraph always visible inside the card */
@@ -2001,8 +2092,8 @@ div[id^="fullscreen-chart-"] {
   pointer-events: auto;
   transition: none;
   z-index: auto;
-  font-size: clamp(0.84rem, 0.9vw, 0.92rem);
-  line-height: 1.58;
+  font-size: clamp(0.86rem, 0.22vw + 0.8rem, 0.96rem);
+  line-height: 1.62;
 }
 .narrative-card:hover p {
   opacity: 1;
@@ -2843,8 +2934,46 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   }
 }
 
-@media (min-width: 1920px) { :root { --page-max: 1800px; } }
-@media (min-width: 2560px) { :root { --page-max: 2200px; } }
+@media (min-width: 1440px) {
+  .chart-header {
+    padding: 0.92rem 1.05rem 0.58rem;
+  }
+
+  .chart-canvas svg text {
+    font-size: 1.06em;
+  }
+
+  .tooltip-chord,
+  .chart-info-intro,
+  .chart-info-text,
+  .chart-info-formula {
+    font-size: 0.96rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root { --page-max: 1800px; }
+
+  .chart-box {
+    height: clamp(470px, 67vh, 840px);
+  }
+
+  .chart-canvas svg text {
+    font-size: 1.1em;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root { --page-max: 2200px; }
+
+  .chart-box {
+    height: clamp(500px, 68vh, 900px);
+  }
+
+  .chart-canvas svg text {
+    font-size: 1.12em;
+  }
+}
 
 /* ── About Section ───────────────────────────────────────── */
 .about-section {

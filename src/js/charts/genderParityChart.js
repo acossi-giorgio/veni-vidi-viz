@@ -273,8 +273,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   ════════════════════════════════════════════════════════ */
   function drawOverview() {
     const M  = compact
-      ? { top: 42, right: 14, bottom: 64, left: veryCompact ? 62 : 76 }
-      : { top: 48, right: 28, bottom: 78, left: 110 };
+      ? { top: 42, right: 14, bottom: 38, left: veryCompact ? 62 : 76 }
+      : { top: 48, right: 28, bottom: 48, left: 110 };
     const iw = W - M.left - M.right;
     const ih = H - M.top - M.bottom;
     const g  = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
@@ -293,13 +293,13 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const parityLabelY = zoneLabelY - (compact ? 12 : 14);
 
     g.append('text').attr('x', parX / 2).attr('y', zoneLabelY)
-      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
-      .attr('fill', COL_GIRLS).attr('opacity', 0.7).style('pointer-events','none')
-      .text('meno ragazze iscritte');
+      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
+      .attr('fill', COL_GIRLS).style('pointer-events','none')
+      .text('← Piu ragazze escluse');
     g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', zoneLabelY)
-      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','600')
-      .attr('fill', COL_BOYS).attr('opacity', 0.7).style('pointer-events','none')
-      .text('meno ragazzi iscritti');
+      .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
+      .attr('fill', COL_BOYS).style('pointer-events','none')
+      .text('Piu ragazzi esclusi →');
 
     xS.ticks(8).forEach(t => {
       g.append('line').attr('x1',xS(t)).attr('x2',xS(t)).attr('y1',0).attr('y2',ih)
@@ -309,7 +309,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
       .attr('stroke',CHART_AXIS).attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
     g.append('text').attr('x',parX).attr('y',parityLabelY)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS).text('parità');
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('font-weight','700').attr('fill',CHART_AXIS).text('parità');
 
     const fmtGpiTick = d => {
       const gpi = d + 1;
@@ -326,8 +326,9 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       });
 
     g.append('text')
+      .attr('class', 'chart-axis-label')
       .attr('x', iw / 2)
-      .attr('y', ih + (compact ? 28 : 34))
+      .attr('y', ih + (compact ? 34 : 36))
       .attr('text-anchor', 'middle')
       .attr('font-size', compact ? 8.5 : 10)
       .attr('font-weight', '600')
@@ -467,9 +468,18 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     root.append('text').attr('x',W/2).attr('y',26)
       .attr('text-anchor','middle').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
       .text(cont);
-    root.append('text').attr('x',W/2).attr('y',40)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
-      .text('GPI < 1 → barra sotto (bambine escluse)   ·   GPI > 1 → barra sopra (bambini esclusi)');
+    const hintY = 40;
+    const hintGap = compact ? 18 : 24;
+    const hintLeftX = W / 2 - hintGap;
+    const hintRightX = W / 2 + hintGap;
+
+    root.append('text').attr('x', hintLeftX).attr('y', hintY)
+      .attr('text-anchor', 'end').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_GIRLS)
+      .text('← Piu ragazze escluse');
+
+    root.append('text').attr('x', hintRightX).attr('y', hintY)
+      .attr('text-anchor', 'start').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_BOYS)
+      .text('Piu ragazzi esclusi →');
 
     /* horizontal gridlines */
     yS.ticks(6).forEach(t => {
@@ -492,7 +502,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         ax.selectAll('.tick text').attr('font-size',8).attr('fill',CHART_AXIS);
         ax.selectAll('.tick line').attr('stroke',UI_MUTED_BORDER);
       });
-    g.append('text').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
+    g.append('text').attr('class', 'chart-axis-label').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
       .text('GPI (indice di parità di genere)');
 

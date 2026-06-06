@@ -1349,18 +1349,27 @@ function applyAdaptiveHintClass(box) {
   }
 }
 
+function applyChartScaleClass(box, scaleClass = 'chart-scale-default') {
+  if (!box) return;
+  const scales = ['chart-scale-default', 'chart-scale-xs', 'chart-scale-sm', 'chart-scale-lg', 'chart-scale-xl'];
+  scales.forEach(cls => box.classList.remove(cls));
+  box.classList.add(scaleClass);
+}
+
 function updateAdaptiveHintButtons() {
   document.querySelectorAll('.chart-box').forEach(applyAdaptiveHintClass);
 }
 
 function initAdaptiveHintButtons() {
   updateAdaptiveHintButtons();
+  document.querySelectorAll('.chart-box').forEach(box => applyChartScaleClass(box));
 
   if (typeof ResizeObserver === 'undefined') return;
   const ro = new ResizeObserver((entries) => {
     entries.forEach((entry) => {
       if (entry?.target?.classList?.contains('chart-box')) {
         applyAdaptiveHintClass(entry.target);
+        applyChartScaleClass(entry.target);
       }
     });
   });
@@ -1546,6 +1555,7 @@ function initFullscreenModal() {
     const wrap = document.createElement('div');
     wrap.className = 'fullscreen-chart-wrap';
     wrap.id = `fullscreen-${chartId}`;
+    applyChartScaleClass(wrap);
     stage.appendChild(wrap);
     container.appendChild(stage);
 

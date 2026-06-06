@@ -230,7 +230,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const ty = maxW && maxH
       ? Math.max(pad, Math.min(y, maxH - outerH - pad))
       : y;
-    const lg = parent.append('g').attr('transform', `translate(${tx},${ty})`);
+    const lg = parent.append('g').attr('class', 'chart-legend chart-legend--svg').attr('transform', `translate(${tx},${ty})`);
 
     lg.append('rect')
       .attr('x', -8).attr('y', -5)
@@ -353,11 +353,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       });
 
     g.append('text')
-      .attr('x', iw / 2).attr('y', ih + (compact ? 24 : 28))
+      .attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 24 : 28))
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('Indice di Poverta Multidimensionale (MPI)');
     g.append('text')
-      .attr('transform', 'rotate(-90)')
+      .attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)')
       .attr('x', -ih / 2).attr('y', compact ? -30 : -40)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('N° paesi');

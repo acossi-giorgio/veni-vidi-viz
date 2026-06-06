@@ -349,6 +349,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
     if (isGrouped) {
       const legend = svg.append('g')
+        .attr('class', 'chart-legend chart-legend--svg')
         .attr('transform', `translate(${margin.left},8)`);
 
       series.forEach((s, i) => {

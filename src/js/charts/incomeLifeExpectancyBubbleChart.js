@@ -126,9 +126,9 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   // Axes (X rebuilt on scale toggle)
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
-  const xLabelEl = g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
+  const xLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
   g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Aspettativa di vita (anni)');
+  g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Aspettativa di vita (anni)');
 
   xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
@@ -145,6 +145,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   // ── Legend (bottom-right above player, choropleth style) ─
   const LEG_W = compact ? 96 : 120, LEG_H = compact ? 84 : 106;
   const legDiv = d3.select(container).append('div')
+    .attr('class', 'chart-legend')
     .style('position', 'absolute')
     .style('bottom', (PLAYER_H + (compact ? 6 : 10)) + 'px').style('right', compact ? '8px' : '12px')
     .style('width', LEG_W + 'px').style('background', 'rgba(255,255,255,0.94)')

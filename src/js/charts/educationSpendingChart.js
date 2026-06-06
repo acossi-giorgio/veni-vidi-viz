@@ -79,6 +79,10 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         countries.set(code, { country: sorted[0].country, pts: sorted });
       });
       const byYear = d3.rollup(rows, v => {
+        if (viewMetric === 'abs') {
+          const total = d3.sum(v, d => d.value);
+          return { mean: total, lo: total, hi: total };
+        }
         const mean = d3.mean(v, d => d.value);
         const std  = d3.deviation(v, d => d.value) || 0;
         return { mean, lo: Math.max(0, mean - std), hi: mean + std };
@@ -173,8 +177,8 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Anno');
-  const yLabelEl = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
+  g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Anno');
+  const yLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
 
   // Crosshair
   const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)

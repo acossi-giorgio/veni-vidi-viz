@@ -285,7 +285,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   }
 
   // Legend — discrete stepped swatches
-  const legG = svg.append('g').attr('class', 'chm-legend');
+  const legG = svg.append('g').attr('class', 'chm-legend chart-legend');
   function updateLegend() {
     legG.selectAll('*').remove();
     const data = getYearData(currentYear);
@@ -545,8 +545,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   function drawTrend() {
     trendDiv.selectAll('*').remove();
     const MARGIN = compact
-      ? { top: 24, right: 36, bottom: 34, left: 44 }
-      : { top: 32, right: 72, bottom: 40, left: 58 };
+      ? { top: 24, right: 36, bottom: 34, left: 50 }
+      : { top: 32, right: 72, bottom: 40, left: 68 };
     const tw = container.clientWidth || W;
     const th = container.clientHeight || H + PLAYER_H;
     const iw = tw - MARGIN.left - MARGIN.right;
@@ -584,8 +584,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
       .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').remove(); });
-    g.append('text').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
-    g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite');
+    g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
+    g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
     const TREND_WINDOW = 5;

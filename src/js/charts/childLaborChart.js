@@ -73,7 +73,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   const tooltip = d3.select('body').append('div').attr('class', 'tooltip-bubble')
     .style('position', 'absolute').style('background', TOOLTIP_BG)
     .style('color', TOOLTIP_INK).style('border-radius', '6px').style('padding', '8px 12px')
-    .style('pointer-events', 'none').style('font-size', '11px').style('line-height', '1.6')
+    .style('pointer-events', 'none').style('font-size', '10px').style('line-height', '1.55')
     .style('z-index', '10000').style('display', 'none');
 
   function showTip(e, d) {
@@ -144,9 +144,9 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
 
     // Median labels
-    g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 8).attr('fill', CHART_AXIS)
+    g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 7).attr('fill', CHART_AXIS)
       .text(`mediana $${d3.format(',.0f')(medIncome)}`);
-    g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 8).attr('fill', CHART_AXIS)
+    g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 7).attr('fill', CHART_AXIS)
       .text(`mediana ${medLabor.toFixed(1)}%`);
 
     // Quadrant labels (corner)
@@ -154,7 +154,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
       g.append('text').attr('x', lx).attr('y', ly)
-        .attr('text-anchor', q.anchor).attr('font-size', compact ? 7.5 : 8.5).attr('font-weight', '600')
+        .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('font-weight', '600')
         .attr('fill', q.color).attr('opacity', q.ySide === 'top' ? 0.78 : 0.72)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
@@ -224,16 +224,16 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .filter(v => v >= xS.domain()[0] * 0.9 && v <= xS.domain()[1] * 1.1);
     g.append('g').attr('transform', `translate(0,${ih})`).call(
       d3.axisBottom(xS).tickValues(xTicks).tickFormat(d => `$${d3.format(',.0f')(d)}`)
-    ).call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9); });
+    ).call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 7.5 : 8.5); });
 
     g.append('g').call(d3.axisLeft(yS).ticks(5).tickFormat(d => `${d}%`))
-      .call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9); });
+      .call(ax => { ax.select('.domain').attr('stroke', UI_MUTED_BORDER); ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 7.5 : 8.5); });
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL)
+      .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
       .text(compact ? 'Reddito pro capite (USD, log)' : 'Reddito pro capite (USD, scala logaritmica) — Africa');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL)
+      .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
       .text('Lavoro minorile 5-17 anni (%)');
 
     // Count per quadrant (corners, below the quadrant label)
@@ -242,7 +242,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 25 : y + h - 18;
       g.append('text').attr('x', lx).attr('y', ly)
-        .attr('text-anchor', q.anchor).attr('font-size', compact ? 8 : 9).attr('fill', q.color).attr('opacity', 0.5)
+        .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
         .text(`${n} paesi`);
     });
@@ -251,7 +251,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     d3.select(containerNode).selectAll('.section-legend').remove();
     const LEG_W = compact ? 148 : 180;
     const legDiv = d3.select(containerNode).append('div')
-      .attr('class', 'section-legend')
+      .attr('class', 'section-legend chart-legend')
       .style('position', 'absolute')
       .style('top', compact ? '84px' : '92px')
       .style('right', compact ? '8px' : '12px')
@@ -264,7 +264,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
 
     legDiv.append('div')
-      .style('font-size', compact ? '7px' : '8px')
+      .style('font-size', compact ? '6.5px' : '7.5px')
       .style('font-weight', '700')
       .style('color', CHART_AXIS)
       .style('letter-spacing', '0.07em')
@@ -288,7 +288,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .style('flex-shrink', '0');
 
       row.append('div')
-        .style('font-size', compact ? '8px' : '9px')
+        .style('font-size', compact ? '7px' : '8px')
         .style('color', CHART_LABEL)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
@@ -302,7 +302,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     if (missingNames.length) {
       const mY = ih + 50;
       g.append('text').attr('x', 0).attr('y', mY - 10)
-        .attr('font-size', 8).attr('fill', CHART_AXIS).attr('font-style', 'italic')
+        .attr('font-size', 7).attr('fill', CHART_AXIS).attr('font-style', 'italic')
         .text(`Paesi senza dati reddito (${missingNames.length}):`);
       const DOT_GAP = 14, dotsPerRow = Math.floor(iw / DOT_GAP);
       missingNames.forEach((name, mi) => {

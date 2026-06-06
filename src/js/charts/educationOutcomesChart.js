@@ -542,10 +542,10 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
 
     /* Axis labels */
     g.append('text').attr('x', topIw / 2).attr('y', topIh + 32)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
+      .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text('Spesa pubblica istruzione (USD)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -topIh / 2).attr('y', -42)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
+      .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
       .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Bambini fuori scuola (M)');
 
     const line = d3.line()
@@ -631,10 +631,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         .attr('font-size', compact ? 8 : 9)
         .attr('font-weight', 600)
         .attr('fill', col)
-        .attr('paint-order', 'stroke')
-        .attr('stroke', '#f7f7f5')
-        .attr('stroke-width', 3)
-        .attr('stroke-linejoin', 'round')
         .attr('opacity', 0)
         .text(d => d.year);
 
@@ -731,11 +727,11 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
 
     gb.append('text')
       .attr('x', botIw / 2).attr('y', botIh + (compact ? 20 : 24))
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS)
+      .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS)
       .text('Anno');
     gb.append('text')
       .attr('transform', 'rotate(-90)')
-      .attr('x', -botIh / 2).attr('y', -42)
+      .attr('class', 'chart-axis-label').attr('x', -botIh / 2).attr('y', -42)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS)
       .text(`Indice corretto (${aggregationWindow} anni)`);
 
