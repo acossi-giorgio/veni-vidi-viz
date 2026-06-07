@@ -431,7 +431,7 @@ const DATASET_NOTES = {
     'Population'
   ].join('\n'),
   'chart-3-2': [
-    'Gender parity (secondary GPI)',
+    'Gender Parity Index (GPI)',
   ].join('\n'),
   'chart-3-3': [
     'Public spending on education',

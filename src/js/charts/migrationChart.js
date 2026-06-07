@@ -605,7 +605,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         .on('mousemove', (e, d) => showTip(e,
           `<strong style="color:${d.source.col||'#fff'}">${d.source.name}</strong>` +
           ` → <strong style="color:${d.target.col||'#fff'}">${d.target.name}</strong><br>` +
-          `Migranti: <strong>${d3.format(',.0f')(d.value)}</strong>`
+          `Emigrants: <strong>${d3.format(',.0f')(d.value)}</strong>`
         ))
         .on('mouseleave', function() {
           hideTip();

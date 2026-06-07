@@ -46,7 +46,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   });
 
   if (typeof window.mountChartWarningHint === 'function') {
-    window.mountChartWarningHint(container.node(), `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+    window.mountChartWarningHint(container.node(), `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range ${latestYearMin}-${latestYearMax}.`);
   }
 
   const medIncome = d3.median(data, d => d.income);
@@ -77,7 +77,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       meta: `Year: ${d.year}`,
       rows: [
         { label: 'Child labor', value: `${d.labor.toFixed(1)}%` },
-        { label: 'Income', value: `$${d3.format(',.0f')(d.income)}` },
+        { label: 'GDP per capita', value: `$${d3.format(',.0f')(d.income)}` },
       ],
     }, { offsetX: 12, offsetY: 8 });
   }
@@ -315,7 +315,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       g.append('text').datum({ q }).attr('class', 'quadrant-count').attr('x', lx).attr('y', ly)
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
-        .text(`${n} paesi`);
+        .text(`${n} countries`);
     });
 
     // ── Legend top-right — panel style ───────────────────────

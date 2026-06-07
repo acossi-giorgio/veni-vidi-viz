@@ -385,7 +385,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     legG.append('text')
       .attr('x', px).attr('y', py + 10)
       .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
-      .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE (USD)');
+      .attr('letter-spacing', '0.07em').text('GDP PER CAPITA (USD)');
 
     const q = colorScale.quantiles(); // ascending cut points, length STEPS-1
     const bins = [];

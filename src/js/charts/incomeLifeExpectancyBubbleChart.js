@@ -154,7 +154,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .style('padding', compact ? '8px 9px' : '10px 12px').style('z-index', '15')
     .style('box-shadow', '0 1px 6px rgba(0,0,0,0.08)');
 
-  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', compact ? '4px' : '6px').text('Continente');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-bottom', compact ? '4px' : '6px').text('Continent');
 
   ['Africa', 'Europe'].forEach(cont => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
@@ -166,7 +166,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .text(cont);
   });
 
-  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
+  legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Population');
 
   (compact ? [5e6, 50e6] : [5e6, 50e6, 100e6]).forEach(p => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
@@ -276,7 +276,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
           title: d.country,
           meta: `Year: ${currentYear}`,
           rows: [
-            { label: 'Income per capita', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'GDP per capita', value: `$${d3.format(',.0f')(d.income)}` },
             { label: 'Life expectancy', value: `${d.lifeVal.toFixed(1)} years` },
             { label: 'Population', value: d3.format(',.0f')(d.pop) },
           ],
@@ -288,7 +288,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
           title: d.country,
           meta: `Year: ${currentYear}`,
           rows: [
-            { label: 'Income per capita', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'GDP per capita', value: `$${d3.format(',.0f')(d.income)}` },
             { label: 'Life expectancy', value: `${d.lifeVal.toFixed(1)} years` },
             { label: 'Population', value: d3.format(',.0f')(d.pop) },
           ],

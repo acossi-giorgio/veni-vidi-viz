@@ -38,7 +38,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const status = getGpiStatus(gpi);
     if (status === 'girls') return 'More girls excluded';
     if (status === 'boys') return 'More boys excluded';
-    return 'Country in parity range';
+    return 'In parity range';
   }
 
   function getGpiStatusColor(gpi, fallbackColor = COL_PARITY) {
@@ -115,7 +115,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   if (typeof window.mountChartWarningHint === 'function') {
     window.mountChartWarningHint(
       container,
-      `The data show the latest available year for each country. The years are not perfectly aligned, but they remain within the ${latestYearMin}-${latestYearMax} range.`
+      `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range ${latestYearMin}-${latestYearMax}.`
     );
   }
 
@@ -423,7 +423,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
               meta: `Year: ${d.year}`,
               rows: [
                 { label: 'GPI', value: d.gpi.toFixed(3) },
-                { label: 'Classificazione', value: getGpiStatusLabel(d.gpi) },
+                { label: 'Classification', value: getGpiStatusLabel(d.gpi) },
               ],
             }, { offsetY: -30 });
           })
