@@ -24,6 +24,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
+  const INTERACTION_HINT = getUiColor('chartAxis', '#8a94a6');
   const CONTS = ['Europe', 'Africa'];
   const EUROPE_TOTAL_EXCLUDED = new Set(['AND', 'LIE', 'MCO', 'SMR']);
   const PARITY_MIN = 0.97;
@@ -279,8 +280,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   ════════════════════════════════════════════════════════ */
   function drawOverview() {
     const M  = compact
-      ? { top: 42, right: 14, bottom: 38, left: veryCompact ? 62 : 76 }
-      : { top: 48, right: 28, bottom: 48, left: 110 };
+      ? { top: 42, right: 56, bottom: 38, left: veryCompact ? 62 : 76 }
+      : { top: 48, right: 132, bottom: 48, left: 110 };
     const iw = W - M.left - M.right;
     const ih = H - M.top - M.bottom;
     const g  = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
@@ -353,6 +354,30 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('font-weight', '600')
       .attr('fill', CHART_AXIS)
       .text('Indice di parità di genere (GPI)');
+
+    const interactionHint = g.append('text')
+      .attr('x', iw + (compact ? 10 : 18))
+      .attr('y', ih / 2 - (compact ? 10 : 16))
+      .attr('text-anchor', 'start')
+      .attr('font-size', compact ? 8 : 10)
+      .attr('font-weight', '700')
+      .attr('fill', INTERACTION_HINT)
+      .style('pointer-events', 'none');
+
+    interactionHint.append('tspan')
+      .attr('x', iw + (compact ? 10 : 18))
+      .attr('dy', 0)
+      .text('Clicca');
+
+    interactionHint.append('tspan')
+      .attr('x', iw + (compact ? 10 : 18))
+      .attr('dy', compact ? 10 : 13)
+      .text('per');
+
+    interactionHint.append('tspan')
+      .attr('x', iw + (compact ? 10 : 18))
+      .attr('dy', compact ? 10 : 13)
+      .text('esplorare →');
 
     CONTS.forEach((cont, i) => {
       const rows  = countries.filter(d => d.continent === cont);

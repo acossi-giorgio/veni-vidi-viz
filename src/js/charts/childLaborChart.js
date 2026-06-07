@@ -15,8 +15,8 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   ]);
 
   const RISK_HIGH = '#A25A43';
-  const RISK_MID = '#D4A24F';
-  const LOW_NEUTRAL = '#91AF72';
+  const RISK_MID = '#91AF72';
+  const LOW_NEUTRAL = '#D4A24F';
   const LOW_NEUTRAL_SOFT = '#6F9DB7';
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
@@ -88,7 +88,8 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   const containerNode = container.node();
   let currentMode = 'base';
 
-  function animateModeChange(nextMode) {
+  function animateModeChange(nextMode, options = {}) {
+    const { animated = true } = options;
     currentMode = nextMode;
     const root = d3.select(containerNode);
     const svg = root.select('svg');
@@ -98,15 +99,20 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     const focusColor = QUADRANT.find(q => q.id === focusQuadrantId)?.color || RISK_HIGH;
     const isFocusMode = currentMode === 'cycle';
 
-    root.selectAll('.quadrant-bg')
-      .transition().duration(360).ease(d3.easeCubicOut)
-      .attr('fill-opacity', d => {
-        if (!isFocusMode) return 1;
-        return d.q.id === focusQuadrantId ? 0.24 : 0.05;
-      });
+    const quadrantBg = root.selectAll('.quadrant-bg').interrupt();
+    const quadrantLabel = root.selectAll('.quadrant-label').interrupt();
+    const quadrantCount = root.selectAll('.quadrant-count').interrupt();
+    const dots = root.selectAll('.dot').interrupt('mode').interrupt('pulse-in').interrupt('pulse-out').interrupt('pulse-reset').interrupt('reset-stroke');
+    const legendRows = root.selectAll('.section-legend-row').interrupt();
 
-    root.selectAll('.quadrant-label')
-      .transition().duration(320).ease(d3.easeCubicOut)
+    const bgSel = animated ? quadrantBg.transition().duration(360).ease(d3.easeCubicOut) : quadrantBg;
+    bgSel.attr('fill-opacity', d => {
+      if (!isFocusMode) return 1;
+      return d.q.id === focusQuadrantId ? 0.24 : 0.05;
+    });
+
+    const labelSel = animated ? quadrantLabel.transition().duration(320).ease(d3.easeCubicOut) : quadrantLabel;
+    labelSel
       .attr('opacity', d => {
         if (!isFocusMode) return d.q.ySide === 'top' ? 0.78 : 0.72;
         return d.q.id === focusQuadrantId ? 1 : 0.24;
@@ -116,16 +122,14 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         return isFocusMode && d.q.id === focusQuadrantId ? base + 1 : base;
       });
 
-    root.selectAll('.quadrant-count')
-      .transition().duration(320).ease(d3.easeCubicOut)
-      .attr('opacity', d => {
-        if (!isFocusMode) return 0.5;
-        return d.q.id === focusQuadrantId ? 0.85 : 0.16;
-      });
+    const countSel = animated ? quadrantCount.transition().duration(320).ease(d3.easeCubicOut) : quadrantCount;
+    countSel.attr('opacity', d => {
+      if (!isFocusMode) return 0.5;
+      return d.q.id === focusQuadrantId ? 0.85 : 0.16;
+    });
 
-    root.selectAll('.dot')
-      .interrupt('mode')
-      .transition('mode').duration(380).ease(d3.easeCubicOut)
+    const dotSel = animated ? dots.transition('mode').duration(380).ease(d3.easeCubicOut) : dots;
+    dotSel
       .attr('fill-opacity', d => {
         if (!isFocusMode) return 0.84;
         return getQuadrant(d).id === focusQuadrantId ? 0.98 : 0.18;
@@ -139,14 +143,13 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         return getQuadrant(d).id === focusQuadrantId ? 6.5 : 4;
       });
 
-    root.selectAll('.section-legend-row')
-      .transition().duration(280).ease(d3.easeCubicOut)
-      .style('opacity', d => {
-        if (!isFocusMode) return '1';
-        return d.id === focusQuadrantId ? '1' : '0.35';
-      });
+    const legendSel = animated ? legendRows.transition().duration(280).ease(d3.easeCubicOut) : legendRows;
+    legendSel.style('opacity', d => {
+      if (!isFocusMode) return '1';
+      return d.id === focusQuadrantId ? '1' : '0.35';
+    });
 
-    if (isFocusMode) {
+    if (isFocusMode && animated) {
       root.selectAll('.dot')
         .filter(d => getQuadrant(d).id === focusQuadrantId)
         .transition('pulse-in').delay((_, i) => i * 12).duration(180).ease(d3.easeCubicOut)
@@ -157,9 +160,8 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .transition('pulse-reset').duration(220)
         .attr('stroke', '#ffffff');
     } else {
-      root.selectAll('.dot')
-        .transition('reset-stroke').duration(220)
-        .attr('stroke', '#ffffff');
+      const resetSel = animated ? dots.transition('reset-stroke').duration(220) : dots;
+      resetSel.attr('stroke', '#ffffff');
     }
   }
 
@@ -319,7 +321,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     });
 
     // ── Legend top-right — panel style ───────────────────────
-    d3.select(containerNode).selectAll('.section-legend').remove();
+    d3.select(containerNode).selectAll('.section-legend, .section-interaction-hint').remove();
     const LEG_W = compact ? 160 : 196;
     const legDiv = d3.select(containerNode).append('div')
       .attr('class', 'section-legend chart-legend')
@@ -366,6 +368,20 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
     });
 
+    d3.select(containerNode).append('div')
+      .attr('class', 'section-interaction-hint')
+      .style('position', 'absolute')
+      .style('top', compact ? '60px' : '66px')
+      .style('right', compact ? '12px' : '16px')
+      .style('max-width', compact ? '170px' : '220px')
+      .style('text-align', 'right')
+      .style('font-size', compact ? '10px' : '11px')
+      .style('font-weight', '600')
+      .style('letter-spacing', '0.01em')
+      .style('color', CHART_AXIS)
+      .style('opacity', '0.88')
+      .style('pointer-events', 'none');
+
     // ── Missing countries (no matching data) ──────────────────
     const presentCodes = new Set(data.map(d => d.code));
     const allCl = clRaw.filter(d => d.continent === 'Africa' && d.value != null);
@@ -400,6 +416,6 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   draw();
 
   containerNode._bubbleReset = () => animateModeChange('base');
-  containerNode._bubbleHighlightContinent = () => animateModeChange('cycle');
+  containerNode._bubbleHighlightContinent = () => animateModeChange('cycle', { animated: false });
   containerNode._getHelpContext = () => ({ currentMode });
 }

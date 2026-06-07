@@ -358,31 +358,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('font-size', dirFont)
       .attr('font-weight', '600')
       .attr('fill', dirInk)
-      .text('Verso destra l’MPI peggiora');
-
-    g.append('line')
-      .attr('x1', arrowX1)
-      .attr('x2', arrowX2)
-      .attr('y1', arrowY)
-      .attr('y2', arrowY)
-      .attr('stroke', dirInk)
-      .attr('stroke-width', 1.8);
-
-    g.append('line')
-      .attr('x1', arrowX2)
-      .attr('x2', arrowX2 - arrowHead)
-      .attr('y1', arrowY)
-      .attr('y2', arrowY - arrowHead)
-      .attr('stroke', dirInk)
-      .attr('stroke-width', 1.8);
-
-    g.append('line')
-      .attr('x1', arrowX2)
-      .attr('x2', arrowX2 - arrowHead)
-      .attr('y1', arrowY)
-      .attr('y2', arrowY + arrowHead)
-      .attr('stroke', dirInk)
-      .attr('stroke-width', 1.8);
+      .text('Verso destra l’MPI peggiora →');
 
     if (severeCut) {
       g.append('line')

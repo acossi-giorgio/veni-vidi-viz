@@ -356,7 +356,6 @@ function initChartInteractionAnimations() {
     btn.classList.contains('chart-fullscreen-btn') ||
     btn.classList.contains('fullscreen-modal-close') ||
     btn.classList.contains('chart-info-modal-close') ||
-    btn.classList.contains('missing-data-hint') ||
     btn.classList.contains('chart-dataset-hint') ||
     btn.classList.contains('chart-help-hint') ||
     btn.classList.contains('player-control-btn') ||
@@ -442,8 +441,6 @@ const MOBILE_ROTATED_CHARTS = new Set([
   'chart-4-2', // map / regional trend hybrid
   'chart-5-1', // chord / migration flows
 ]);
-
-let MISSING_DATA_NOTES = {};
 
 const CHART_HELP_NOTES = {
   'chart-1-1': [
@@ -551,92 +548,11 @@ const DATASET_NOTES = {
   ].join('\n'),
 };
 
-const CHART_MISSING_DATASETS = {
-  'chart-1-1': ['income.csv'],
-  'chart-1-2': ['income.csv', 'life_expectancy.csv', 'population.csv'],
-  'chart-2-1': ['multidimensional_poverty_index.csv'],
-  'chart-3-1': ['education_spending.csv', 'income.csv', 'population.csv'],
-  'chart-3-2': ['gender_parity_secondary.csv', 'out_of_school_rate.csv'],
-  'chart-3-3': ['education_spending.csv', 'youth_literacy.csv', 'out_of_school_rate.csv', 'income.csv', 'population.csv'],
-  'chart-4-1': ['child_labor.csv', 'income.csv'],
-  'chart-4-2': ['child_marriage_prevalence.csv'],
-  'chart-4-3': ['fgm_quintile_prevalence.csv'],
-  'chart-5-1': ['migration.csv'],
-};
-
-async function loadMissingDataNotesFromCsv() {
-  try {
-    const [rows, countryCodes] = await Promise.all([
-      d3.csv('datasets/processed/missing_data_registry.csv', d3.autoType),
-      d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType).catch(() => []),
-    ]);
-    if (!Array.isArray(rows) || !rows.length) return;
-
-    const continentByCode = new Map();
-    countryCodes
-      .filter((row) => row && row['alpha-3'])
-      .forEach((row) => {
-        const code = String(row['alpha-3']).trim().toUpperCase();
-        const region = String(row.region || '').trim();
-        const subRegion = String(row['sub-region'] || '').trim();
-        let continent = null;
-        if (region === 'Africa' || region === 'Asia' || region === 'Europe' || region === 'Oceania') {
-          continent = region;
-        } else if (region === 'Americas') {
-          continent = subRegion === 'South America' ? 'South America' : 'North America';
-        }
-        if (code && continent) continentByCode.set(code, continent);
-      });
-
-    const byDataset = new Map();
-    const countryByCode = new Map();
-    rows
-      .filter(r => r && r.dataset && r.code && r.country && r.missing_type)
-      .forEach((r) => {
-        const dataset = String(r.dataset).trim();
-        const type = String(r.missing_type).trim().toLowerCase();
-        const code = String(r.code).trim().toUpperCase();
-        const country = String(r.country).trim();
-        if (!dataset || !code || !country || !type) return;
-        if (!countryByCode.has(code)) countryByCode.set(code, country);
-        if (!byDataset.has(dataset)) byDataset.set(dataset, { noData: new Set(), incomplete: new Set() });
-        const bucket = byDataset.get(dataset);
-        if (type === 'no_data') bucket.noData.add(code);
-        else if (type === 'incomplete') bucket.incomplete.add(code);
-      });
-
-    if (!byDataset.size) return;
-
-    const nextNotes = {};
-    Object.entries(CHART_MISSING_DATASETS).forEach(([chartId, datasets]) => {
-      const noDataSet = new Set();
-      const incompleteSet = new Set();
-      datasets.forEach((dataset) => {
-        const bucket = byDataset.get(dataset);
-        if (!bucket) return;
-        bucket.noData.forEach((country) => noDataSet.add(country));
-        bucket.incomplete.forEach((country) => incompleteSet.add(country));
-      });
-      noDataSet.forEach((country) => incompleteSet.delete(country));
-      const filterAfricaOnly = chartId === 'chart-3-3';
-      const isAfricaCode = (code) => continentByCode.get(code) === 'Africa';
-      const noData = Array.from(noDataSet)
-        .filter((code) => !filterAfricaOnly || isAfricaCode(code))
-        .map((code) => countryByCode.get(code) || code)
-        .sort((a, b) => a.localeCompare(b));
-      const incomplete = Array.from(incompleteSet)
-        .filter((code) => !filterAfricaOnly || isAfricaCode(code))
-        .map((code) => countryByCode.get(code) || code)
-        .sort((a, b) => a.localeCompare(b));
-      const line1 = `Paesi senza alcun dato: ${noData.length ? noData.join(', ') : 'Nessuno.'}`;
-      const line2 = `Paesi con serie incompleta: ${incomplete.length ? incomplete.join(', ') : 'Nessuno.'}`;
-      nextNotes[chartId] = [line1, line2].join('\n');
-    });
-
-    MISSING_DATA_NOTES = nextNotes;
-  } catch (err) {
-    console.warn('missing_data_registry.csv non disponibile, uso fallback hardcoded.', err);
-  }
+function getChartContext(chartId) {
+  const chartEl = document.getElementById(chartId);
+  return chartEl && typeof chartEl._getHelpContext === 'function'
+    ? (chartEl._getHelpContext() || {})
+    : {};
 }
 
 function getNarrativeState(chartId) {
@@ -649,11 +565,8 @@ function getNarrativeState(chartId) {
 
 function getChartHelpPayload(chartId) {
   const activeCard = getActiveNarrativeCard(chartId);
-  const chartEl = document.getElementById(chartId);
   const state = getNarrativeState(chartId);
-  const chart = chartEl && typeof chartEl._getHelpContext === 'function'
-    ? (chartEl._getHelpContext() || {})
-    : {};
+  const chart = getChartContext(chartId);
   const ctx = {
     chartId,
     state,
@@ -920,7 +833,6 @@ async function init() {
   initMobilePlaceholders();
   initFullscreenModal();
   initNarrativeCards();
-  await loadMissingDataNotesFromCsv();
   initMissingDataHints();
   initChartInfoModal();
   initAdaptiveHintButtons();
@@ -978,13 +890,10 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
 
   if (chartId === 'chart-4-1') {
     if (state === 0 && el._bubbleReset) el._bubbleReset();
-    else if (state === 1 && el._bubbleHighlightContinent) el._bubbleHighlightContinent('Africa');
-    else if (state === 2 && el._bubbleReset) el._bubbleReset();
   }
 
   if (chartId === 'chart-4-2') {
     if (state === 0 && el._marriageReset) el._marriageReset();
-    else if (state === 1 && el._marriageHighlight) el._marriageHighlight('Africa');
     else if (state === 2 && el._marriageShowTrend) el._marriageShowTrend();
   }
 
@@ -1078,19 +987,10 @@ function initMissingDataHints() {
   chartBoxes.forEach((box) => {
     const chartEl = box.querySelector('div[id^="chart-"]');
     if (!chartEl) return;
-    const missingNote = MISSING_DATA_NOTES[chartEl.id];
-    const helpBuilder = CHART_HELP_BUILDERS[chartEl.id];
     const datasetNote = DATASET_NOTES[chartEl.id];
 
-    if (missingNote && !box.querySelector('.missing-data-hint')) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'missing-data-hint';
-      btn.setAttribute('aria-label', 'Informazioni sui dati mancanti');
-      btn.innerHTML = MISSING_DATA_ICON;
-      setHintModalPayload(btn, 'Dati mancanti e copertura', missingNote);
-      box.appendChild(btn);
-    }
+    box.querySelectorAll('.chart-dataset-hint, .chart-help-hint')
+      .forEach((el) => el.remove());
 
     if (datasetNote && !box.querySelector('.chart-dataset-hint')) {
       const datasetBtn = document.createElement('button');
@@ -1100,19 +1000,6 @@ function initMissingDataHints() {
       datasetBtn.innerHTML = DATASET_ICON;
       setHintModalPayload(datasetBtn, 'Dataset utilizzati', datasetNote);
       box.appendChild(datasetBtn);
-    }
-
-    if (helpBuilder && !box.querySelector('.chart-help-hint')) {
-      const helpBtn = document.createElement('button');
-      helpBtn.type = 'button';
-      helpBtn.className = 'chart-help-hint';
-      helpBtn.setAttribute('aria-label', 'Come leggere il grafico');
-      helpBtn.innerHTML = '<span aria-hidden="true">?</span>';
-      helpBtn.dataset.chartId = chartEl.id;
-      helpBtn.dataset.modalTitle = 'Come leggere questo grafico';
-      helpBtn.dataset.modalKind = 'chart-help';
-      helpBtn.setAttribute('aria-haspopup', 'dialog');
-      box.appendChild(helpBtn);
     }
   });
 }
@@ -1152,11 +1039,11 @@ function initChartInfoModal() {
   const openModal = (triggerBtn) => {
     if (!triggerBtn) return;
     lastTrigger = triggerBtn;
-    const isChartHelp = triggerBtn.classList.contains('chart-help-hint');
+    const modalKind = triggerBtn.dataset.modalKind || '';
     const title = triggerBtn.dataset.modalTitle || triggerBtn.getAttribute('aria-label') || 'Informazioni';
     let payload;
 
-    if (isChartHelp) {
+    if (modalKind === 'chart-help') {
       payload = getChartHelpPayload(triggerBtn.dataset.chartId);
     } else {
       let lines = [];
@@ -1270,7 +1157,7 @@ function initChartInfoModal() {
   };
 
   document.addEventListener('click', (event) => {
-    const trigger = event.target.closest('.missing-data-hint, .chart-dataset-hint, .chart-help-hint');
+    const trigger = event.target.closest('.chart-dataset-hint, .chart-help-hint');
     if (!trigger) return;
     event.preventDefault();
     event.stopPropagation();

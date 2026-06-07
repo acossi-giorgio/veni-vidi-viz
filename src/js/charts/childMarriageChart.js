@@ -226,8 +226,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('text-anchor', 'middle').attr('font-size', compact ? 10 : 12).attr('font-weight', '700').attr('fill', AFRICA)
       .text('Africa');
     svg.append('text').attr('x', afX + afW / 2).attr('y', blockY + 28)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 6.5 : 7.5).attr('fill', CHART_AXIS)
-      .text(`${n} paesi · ponderato per base donne · ogni cella = 1%`);
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 6.5 : 7.5).attr('fill', CHART_AXIS);
 
     const africaTooltipHtml = buildOverviewTooltip({
       continent: 'Africa',
@@ -290,8 +289,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .on('click', () => { selectedContinent = 'Europe'; drillDown = true; draw(); });
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
-      .attr('text-anchor', 'middle').attr('font-size', compact ? 6 : 7).attr('fill', CHART_AXIS)
-      .text('clicca per esplorare i singoli paesi →');
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 6 : 7).attr('font-weight', '700').attr('fill', CHART_AXIS)
+      .text('Clicca per esplorare →');
 
     /* ── Pannello stats sinistra ────────────────────────────── */
     const px0    = panelX;

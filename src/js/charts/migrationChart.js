@@ -1234,7 +1234,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           bodyHtml: `
             <div><strong>Totale emigrati:</strong> ${fmt(total)}</div>
             ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Paesi inclusi: ${rows.length}</div>` : ''}
-            ${mapTooltipListHtml('Principali destinazioni', rows, 'dstName')}
+            ${mapTooltipListHtml('Destinazioni', rows, 'dstName')}
           `,
           onClose: () => clearArcSelection(),
         };

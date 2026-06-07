@@ -174,6 +174,34 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   }
   updateViewToggle();
 
+  function mountInteractionNote(hostSelection, lines) {
+    const noteCompact = compact || W < 720 || H < 360;
+    hostSelection.selectAll('.chart-interaction-note').remove();
+    return hostSelection.append('div')
+      .attr('class', 'chart-interaction-note')
+      .style('position', 'absolute')
+      .style('left', compact ? '10px' : '12px')
+      .style('bottom', compact ? '10px' : '12px')
+      .style('z-index', '25')
+      .style('pointer-events', 'none')
+      .style('background', 'rgba(255,255,255,0.94)')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`)
+      .style('border-radius', '8px')
+      .style('padding', noteCompact ? '9px 12px' : '12px 16px')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.11)')
+      .style('color', UI_MUTED_INK)
+      .style('font-size', noteCompact ? '10px' : '11.5px')
+      .style('font-weight', '600')
+      .style('line-height', '1.5')
+      .html(lines.map(line => `
+        <div style="display:flex;align-items:center;gap:${noteCompact ? '7px' : '9px'};">
+          <span>${line.label}</span>
+          <span style="color:${UI_MUTED_INK};font-size:${noteCompact ? '13px' : '15px'};line-height:1;">&rarr;</span>
+          <span>${line.value}</span>
+        </div>
+      `).join(''));
+  }
+
   const AFRICA_CODES = new Set(incomeRaw.filter(d => d.value != null && d.continent === 'Africa' && d.code).map(d => d.code));
   const africaFeatures = countries.filter(feature => AFRICA_CODES.has(numericToAlpha3[+feature.id] || ''));
   const focusFeatures = countries.filter(feature => mappableCodes.has(numericToAlpha3[+feature.id] || ''));
@@ -243,6 +271,10 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const mapDiv = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
+
+  mountInteractionNote(mapDiv, [
+    { label: 'Click sul paese', value: 'apre il dettaglio' },
+  ]);
 
   const svg = mapDiv.append('svg')
     .attr('width', W).attr('height', H)

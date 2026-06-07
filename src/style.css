@@ -1624,26 +1624,6 @@ div[id^="fullscreen-chart-"] {
   color: var(--control-active);
 }
 
-/* Missing-data hint (bottom-right info icon) */
-.missing-data-hint {
-  position: absolute;
-  top: var(--header-controls-center-y);
-  right: var(--hint-right-1);
-  z-index: 24;
-  width: var(--hint-size);
-  height: var(--hint-size);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  color: var(--ink-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
-}
-
 .chart-help-hint {
   position: absolute;
   top: var(--header-controls-center-y);
@@ -1666,7 +1646,7 @@ div[id^="fullscreen-chart-"] {
 .chart-dataset-hint {
   position: absolute;
   top: var(--header-controls-center-y);
-  right: var(--hint-right-2);
+  right: var(--hint-right-1);
   z-index: 24;
   width: var(--hint-size);
   height: var(--hint-size);
@@ -1682,8 +1662,6 @@ div[id^="fullscreen-chart-"] {
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 }
 
-.missing-data-hint:hover,
-.missing-data-hint:focus-visible,
 .chart-dataset-hint:hover,
 .chart-dataset-hint:focus-visible,
 .chart-help-hint:hover,
@@ -1691,13 +1669,6 @@ div[id^="fullscreen-chart-"] {
   z-index: 40;
 }
 
-.missing-data-hint:hover,
-.missing-data-hint:focus-visible {
-  border-color: var(--control-active);
-  color: var(--control-active);
-  background: #fff;
-}
-
 .chart-help-hint:hover,
 .chart-help-hint:focus-visible {
   border-color: var(--control-active);
@@ -1712,11 +1683,6 @@ div[id^="fullscreen-chart-"] {
   background: #fff;
 }
 
-.missing-data-hint:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--control-active) 55%, white);
-  outline-offset: 2px;
-}
-
 .chart-dataset-hint:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--control-active) 55%, white);
   outline-offset: 2px;
@@ -1725,13 +1691,6 @@ div[id^="fullscreen-chart-"] {
 .chart-help-hint:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--control-active) 55%, white);
   outline-offset: 2px;
-}
-
-.missing-data-hint svg {
-  width: var(--hint-icon-size);
-  height: var(--hint-icon-size);
-  stroke: currentColor;
-  fill: none;
 }
 
 .chart-dataset-hint svg {
@@ -3079,19 +3038,13 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     pointer-events: none;
   }
 
-  .missing-data-hint,
   .chart-dataset-hint,
-  .chart-help-hint {
+  .chart-help-hint,
+  .chart-warning-hint-inline {
     top: auto;
     bottom: var(--mobile-controls-y);
     transform: none;
     z-index: 18;
-  }
-
-  .missing-data-hint {
-    right: auto;
-    left: calc(50% + 36px);
-    transform: translateX(-50%);
   }
 
   .chart-dataset-hint {
@@ -3104,6 +3057,14 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     right: auto;
     left: calc(50% - 36px);
     transform: translateX(-50%);
+  }
+
+  .chart-warning-hint-inline {
+    top: auto !important;
+    right: auto !important;
+    left: calc(50% - 36px) !important;
+    bottom: var(--mobile-controls-y) !important;
+    transform: translateX(-50%) !important;
   }
 
   .chart-mobile-placeholder-rotate {

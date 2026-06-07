@@ -266,7 +266,7 @@ function mountChartWarningHint(host, message, options = {}) {
   const anchorHost = host.closest?.('.chart-box, .fullscreen-chart-wrap') || host;
   const {
     top = 'var(--header-controls-center-y, 33px)',
-    right = 'calc(var(--hint-right-3, 130px) + var(--hint-size, 34px) + var(--hint-gap, 6px))',
+    right = 'calc(var(--hint-right-1, 50px) + var(--hint-size, 34px) + var(--hint-gap, 6px))',
     zIndex = '25',
   } = options;
 

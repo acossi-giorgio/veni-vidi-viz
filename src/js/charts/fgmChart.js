@@ -565,6 +565,36 @@ async function renderFgmChart(selector, isFullscreen = false) {
     });
   }
 
+  function drawInteractionNote(hostSelection, lines) {
+    const noteCompact = (container.clientWidth || 0) < 720 || (container.clientHeight || 0) < 360;
+    hostSelection.selectAll('.chart-interaction-note').remove();
+    const note = hostSelection.append('div')
+      .attr('class', 'chart-interaction-note')
+      .style('position', 'absolute')
+      .style('left', '12px')
+      .style('bottom', '12px')
+      .style('z-index', '25')
+      .style('pointer-events', 'none')
+      .style('background', 'rgba(255,255,255,0.94)')
+      .style('border', `1px solid ${UI_MUTED_BORDER}`)
+      .style('border-radius', '8px')
+      .style('padding', noteCompact ? '9px 12px' : '12px 16px')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.11)')
+      .style('color', UI_MUTED_INK)
+      .style('font-size', noteCompact ? '10px' : '11.5px')
+      .style('font-weight', '600')
+      .style('line-height', '1.5')
+      .html(lines.map(line => `
+        <div style="display:flex;align-items:center;gap:${noteCompact ? '7px' : '9px'};">
+          <span>${line.label}</span>
+          <span style="color:${UI_MUTED_INK};font-size:${noteCompact ? '13px' : '15px'};line-height:1;">&rarr;</span>
+          <span>${line.value}</span>
+        </div>
+      `).join(''));
+
+    return note;
+  }
+
   function drawMapMode() {
     stage.html('');
     stage.style('background', '#ffffff');
@@ -691,6 +721,9 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .on('click', () => stage.selectAll('.fgm-country-popup').remove());
 
     drawLegendCard(svg, width - 158, height - 204, getRiskColor, noDataPattern);
+    drawInteractionNote(stage, [
+      { label: 'Click sul paese', value: 'apre il dettaglio' },
+    ]);
   }
 
   function render() {

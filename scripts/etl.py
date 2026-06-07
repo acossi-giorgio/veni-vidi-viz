@@ -117,6 +117,12 @@ AFRICA_TOPIC_CODES = [
     "TZA","TGO","TUN","UGA","ZMB","ZWE",
 ]
 
+EUROPE_CHART_CODES = [
+    "ALB","AND","AUT","BEL","BIH","BGR","BLR","HRV","CYP","CZE","DNK","EST","FIN","FRA","DEU","GRC",
+    "HUN","ISL","IRL","ITA","XKX","LVA","LIE","LTU","LUX","MLT","MDA","MCO","MNE","NLD","MKD","NOR",
+    "POL","PRT","ROU","RUS","SMR","SRB","SVK","SVN","ESP","SWE","CHE","UKR","GBR",
+]
+
 FGM_COUNTRY_ALIASES = {
     "cote d'ivoire": "CIV",
     "cote d’ivoire": "CIV",
@@ -261,95 +267,6 @@ def harmonize_all_processed_country_names():
         df = harmonize_country_columns(df)
         df.to_csv(path, index=False)
 
-def scope_universe_codes(scope):
-    if scope == "africa_europe":
-        return sorted([c for c, cont in CODE_CONTINENT.items() if cont in {"Africa", "Europe"}])
-    if scope == "africa":
-        return sorted([c for c, cont in CODE_CONTINENT.items() if cont == "Africa"])
-    return sorted(CODE_CONTINENT.keys())
-
-def coverage_no_data_and_incomplete(df, universe_codes, years, value_col="value"):
-    if df.empty:
-        return sorted(universe_codes), []
-    work = df.copy()
-    work = work[work["code"].isin(universe_codes)]
-    work = work[work["year"].between(min(years), max(years))]
-    if value_col in work.columns:
-        work = work[work[value_col].notna()]
-    present = {}
-    for code, grp in work.groupby("code"):
-        ys = set(int(y) for y in grp["year"].dropna().astype(int).tolist())
-        present[code] = ys
-    no_data = []
-    incomplete = []
-    target_years = set(int(y) for y in years)
-    for code in universe_codes:
-        ys = present.get(code, set())
-        if not ys:
-            no_data.append(code)
-        elif ys != target_years:
-            incomplete.append(code)
-    return sorted(no_data), sorted(incomplete)
-
-def append_missing_rows(rows, dataset_name, missing_type, codes):
-    for code in sorted(set(codes)):
-        rows.append({
-            "dataset": dataset_name,
-            "missing_type": missing_type,
-            "code": code,
-            "country": CODE_NAME.get(code, code),
-        })
-
-def coverage_snapshot_no_data(df, universe_codes, value_col="value"):
-    if df.empty:
-        return sorted(universe_codes)
-    f = df.copy()
-    f = f[f["code"].isin(universe_codes)]
-    if value_col in f.columns:
-        f = f[f[value_col].notna()]
-    present = set(f["code"].dropna().astype(str).tolist())
-    return sorted([c for c in universe_codes if c not in present])
-
-def income_missing_for_child_labor_year(income_df, child_labor_df, africa_codes):
-    inc_pairs = set(
-        income_df[["code", "year"]]
-        .dropna()
-        .assign(code=lambda d: d["code"].astype(str), year=lambda d: d["year"].astype(int))
-        .apply(lambda r: f"{r['code']}|{r['year']}", axis=1)
-        .tolist()
-    )
-    cl = child_labor_df.copy()
-    cl = cl[(cl["code"].isin(africa_codes)) & (cl["value"].notna())]
-    latest = cl.sort_values(["code", "year"]).groupby("code", as_index=False).tail(1)
-    missing = []
-    for _, row in latest.iterrows():
-        key = f"{str(row['code'])}|{int(row['year'])}"
-        if key not in inc_pairs:
-            missing.append(str(row["code"]))
-    return sorted(set(missing))
-
-def migration_origin_coverage(migration_df, origin_codes, years):
-    f = migration_df.copy()
-    f = f[
-        (f["origin_continent"] == "Africa")
-        & (f["dest_continent"] != "Africa")
-        & f["year"].isin(years)
-        & (f["stock"] > 0)
-    ]
-    target = set(int(y) for y in years)
-    present_years = {
-        c: set(int(y) for y in grp["year"].dropna().astype(int).tolist())
-        for c, grp in f.groupby("origin_code")
-    }
-    no_data, incomplete = [], []
-    for code in origin_codes:
-        ys = present_years.get(code, set())
-        if not ys:
-            no_data.append(code)
-        elif ys != target:
-            incomplete.append(code)
-    return sorted(no_data), sorted(incomplete)
-
 def normalize_reference_year_label(value):
     text = str(value or "").strip()
     if not text or text.lower() == "nan":
@@ -377,103 +294,6 @@ def normalize_reference_year_label(value):
         end = end_raw
 
     return f"{start}-{end}", start, end
-
-def make_missing_data_registry():
-    try:
-        rows = []
-        ae_codes = scope_universe_codes("africa_europe")
-        af_codes = scope_universe_codes("africa")
-
-        income = pd.read_csv(os.path.join(OUT, "income.csv"))
-        life = pd.read_csv(os.path.join(OUT, "life_expectancy.csv"))
-        pop = pd.read_csv(os.path.join(OUT, "population.csv"))
-        mpi = pd.read_csv(os.path.join(OUT, "multidimensional_poverty_index.csv"))
-        spend = pd.read_csv(os.path.join(OUT, "education_spending.csv"))
-        gpi = pd.read_csv(os.path.join(OUT, "gender_parity_secondary.csv"))
-        oos = pd.read_csv(os.path.join(OUT, "out_of_school_rate.csv"))
-        literacy = pd.read_csv(os.path.join(OUT, "youth_literacy.csv"))
-        child_labor = pd.read_csv(os.path.join(OUT, "child_labor.csv"))
-        child_marriage = pd.read_csv(os.path.join(OUT, "child_marriage_prevalence.csv"))
-        migration = pd.read_csv(os.path.join(OUT, "migration.csv"))
-        fgm = pd.read_csv(os.path.join(OUT, "fgm_quintile_prevalence.csv"))
-
-        years_income = list(range(MIN_YEAR, MAX_YEAR + 1))
-        years_life   = list(range(MIN_YEAR, YEAR_MAX_LIFE + 1))
-        years_pop    = list(range(MIN_YEAR, YEAR_MAX_POP + 1))
-        years_edu    = list(range(MIN_YEAR, YEAR_MAX_EDU + 1))
-
-        # income.csv — choropleth usa tutti gli anni disponibili
-        nd, inc = coverage_no_data_and_incomplete(income, ae_codes, years_income)
-        append_missing_rows(rows, "income.csv", "no_data", nd)
-        append_missing_rows(rows, "income.csv", "incomplete", inc)
-
-        # life_expectancy.csv — bubble chart cap a 2023
-        nd, inc = coverage_no_data_and_incomplete(life, ae_codes, years_life)
-        append_missing_rows(rows, "life_expectancy.csv", "no_data", nd)
-        append_missing_rows(rows, "life_expectancy.csv", "incomplete", inc)
-
-        # population.csv — bubble chart cap a 2023
-        nd, inc = coverage_no_data_and_incomplete(pop, ae_codes, years_pop)
-        append_missing_rows(rows, "population.csv", "no_data", nd)
-        append_missing_rows(rows, "population.csv", "incomplete", inc)
-
-        # multidimensional_poverty_index.csv
-        nd = coverage_snapshot_no_data(mpi, af_codes)
-        append_missing_rows(rows, "multidimensional_poverty_index.csv", "no_data", nd)
-
-        # education_spending.csv — chart cap a 2022
-        nd, inc = coverage_no_data_and_incomplete(spend, ae_codes, years_edu)
-        append_missing_rows(rows, "education_spending.csv", "no_data", nd)
-        append_missing_rows(rows, "education_spending.csv", "incomplete", inc)
-
-        # gender_parity_secondary.csv — chart usa solo ultimo anno per paese (snapshot)
-        nd = coverage_snapshot_no_data(gpi, ae_codes)
-        append_missing_rows(rows, "gender_parity_secondary.csv", "no_data", nd)
-
-        # out_of_school_rate.csv — chart cap a 2022
-        nd, inc = coverage_no_data_and_incomplete(oos, ae_codes, years_edu)
-        append_missing_rows(rows, "out_of_school_rate.csv", "no_data", nd)
-        append_missing_rows(rows, "out_of_school_rate.csv", "incomplete", inc)
-
-        # youth_literacy.csv — chart cap a 2022
-        nd, inc = coverage_no_data_and_incomplete(literacy, ae_codes, years_edu)
-        append_missing_rows(rows, "youth_literacy.csv", "no_data", nd)
-        append_missing_rows(rows, "youth_literacy.csv", "incomplete", inc)
-
-        # child_labor.csv
-        nd = coverage_snapshot_no_data(child_labor, af_codes)
-        append_missing_rows(rows, "child_labor.csv", "no_data", nd)
-        append_missing_rows(rows, "child_labor.csv", "incomplete", [])
-
-        # income join missing for child_labor year (used by chart-4-1 merge)
-        nd_inc_income = income_missing_for_child_labor_year(income, child_labor, af_codes)
-        append_missing_rows(rows, "income.csv", "no_data", nd_inc_income)
-
-        # child_marriage_prevalence.csv
-        cm = child_marriage.copy()
-        if "by18_pct" in cm.columns:
-            cm = cm[cm["by18_pct"].notna()].rename(columns={"by18_pct": "value"})
-        nd = coverage_snapshot_no_data(cm, ae_codes)
-        append_missing_rows(rows, "child_marriage_prevalence.csv", "no_data", nd)
-        append_missing_rows(rows, "child_marriage_prevalence.csv", "incomplete", [])
-
-        # migration.csv
-        nd, inc = migration_origin_coverage(migration, AFRICA_TOPIC_CODES, [2000, 2005, 2010, 2015, 2020])
-        append_missing_rows(rows, "migration.csv", "no_data", nd)
-        append_missing_rows(rows, "migration.csv", "incomplete", inc)
-
-        # fgm_quintile_prevalence.csv
-        nd = coverage_snapshot_no_data(fgm, af_codes, value_col="quintile_mean")
-        append_missing_rows(rows, "fgm_quintile_prevalence.csv", "no_data", nd)
-        append_missing_rows(rows, "fgm_quintile_prevalence.csv", "incomplete", [])
-
-        registry = pd.DataFrame(
-            rows,
-            columns=["dataset", "missing_type", "code", "country"]
-        ).drop_duplicates().sort_values(["missing_type", "dataset", "country"])
-        save("missing_data_registry.csv", registry)
-    except Exception as e:
-        report("missing_data_registry.csv", pd.DataFrame(), str(e))
 
 def owid_rename(df):
     return df.rename(columns={
@@ -820,4 +640,3 @@ if __name__ == "__main__":
     make_migration()
     make_mpi()
     harmonize_all_processed_country_names()
-    make_missing_data_registry()
