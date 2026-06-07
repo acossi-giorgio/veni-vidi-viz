@@ -423,11 +423,9 @@ function initHeroCarousel() {
     if (prefersReducedMotion()) return;
     timerId = window.setInterval(() => {
       setActiveSlide(activeIndex + 1);
-    }, 5500);
+    }, 3000);
   };
 
-  carousel.addEventListener('mouseenter', stopAutoRotate);
-  carousel.addEventListener('mouseleave', startAutoRotate);
   carousel.addEventListener('focusin', stopAutoRotate);
   carousel.addEventListener('focusout', () => {
     window.setTimeout(() => {
