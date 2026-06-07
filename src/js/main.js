@@ -568,21 +568,43 @@ const CHART_MISSING_DATASETS = {
 
 async function loadMissingDataNotesFromCsv() {
   try {
-    const rows = await d3.csv('datasets/processed/missing_data_registry.csv', d3.autoType);
+    const [rows, countryCodes] = await Promise.all([
+      d3.csv('datasets/processed/missing_data_registry.csv', d3.autoType),
+      d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType).catch(() => []),
+    ]);
     if (!Array.isArray(rows) || !rows.length) return;
 
+    const continentByCode = new Map();
+    countryCodes
+      .filter((row) => row && row['alpha-3'])
+      .forEach((row) => {
+        const code = String(row['alpha-3']).trim().toUpperCase();
+        const region = String(row.region || '').trim();
+        const subRegion = String(row['sub-region'] || '').trim();
+        let continent = null;
+        if (region === 'Africa' || region === 'Asia' || region === 'Europe' || region === 'Oceania') {
+          continent = region;
+        } else if (region === 'Americas') {
+          continent = subRegion === 'South America' ? 'South America' : 'North America';
+        }
+        if (code && continent) continentByCode.set(code, continent);
+      });
+
     const byDataset = new Map();
+    const countryByCode = new Map();
     rows
-      .filter(r => r && r.dataset && r.country && r.missing_type)
+      .filter(r => r && r.dataset && r.code && r.country && r.missing_type)
       .forEach((r) => {
         const dataset = String(r.dataset).trim();
         const type = String(r.missing_type).trim().toLowerCase();
+        const code = String(r.code).trim().toUpperCase();
         const country = String(r.country).trim();
-        if (!dataset || !country || !type) return;
+        if (!dataset || !code || !country || !type) return;
+        if (!countryByCode.has(code)) countryByCode.set(code, country);
         if (!byDataset.has(dataset)) byDataset.set(dataset, { noData: new Set(), incomplete: new Set() });
         const bucket = byDataset.get(dataset);
-        if (type === 'no_data') bucket.noData.add(country);
-        else if (type === 'incomplete') bucket.incomplete.add(country);
+        if (type === 'no_data') bucket.noData.add(code);
+        else if (type === 'incomplete') bucket.incomplete.add(code);
       });
 
     if (!byDataset.size) return;
@@ -598,8 +620,16 @@ async function loadMissingDataNotesFromCsv() {
         bucket.incomplete.forEach((country) => incompleteSet.add(country));
       });
       noDataSet.forEach((country) => incompleteSet.delete(country));
-      const noData = Array.from(noDataSet).sort((a, b) => a.localeCompare(b));
-      const incomplete = Array.from(incompleteSet).sort((a, b) => a.localeCompare(b));
+      const filterAfricaOnly = chartId === 'chart-3-3';
+      const isAfricaCode = (code) => continentByCode.get(code) === 'Africa';
+      const noData = Array.from(noDataSet)
+        .filter((code) => !filterAfricaOnly || isAfricaCode(code))
+        .map((code) => countryByCode.get(code) || code)
+        .sort((a, b) => a.localeCompare(b));
+      const incomplete = Array.from(incompleteSet)
+        .filter((code) => !filterAfricaOnly || isAfricaCode(code))
+        .map((code) => countryByCode.get(code) || code)
+        .sort((a, b) => a.localeCompare(b));
       const line1 = `Paesi senza alcun dato: ${noData.length ? noData.join(', ') : 'Nessuno.'}`;
       const line2 = `Paesi con serie incompleta: ${incomplete.length ? incomplete.join(', ') : 'Nessuno.'}`;
       nextNotes[chartId] = [line1, line2].join('\n');

@@ -414,38 +414,42 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 .hero-copy {
   position: relative;
   z-index: 2;
-  max-width: 860px;
+  max-width: 1280px;
   margin-left: max(0px, calc((100% - var(--page-max)) / 2));
+  margin-top: 0;
+  margin-bottom: 0;
   padding: 0;
 }
 .hero-title {
+  font-size: clamp(2.9rem, 5.4vw, 5.1rem);
+  white-space: nowrap;
   color: #fffdf8;
-  margin-bottom: 1.05rem;
+  margin-bottom: 2rem;
   text-shadow: 0 4px 18px rgba(17, 15, 12, 0.55);
+  font-weight: 700;
 }
 .hero-subtitle {
-  font-size: clamp(1.02rem, 1.5vw, 1.25rem);
-  max-width: 720px;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 700;
+  max-width: 1280px;
   color: rgba(255, 253, 248, 0.88);
-  font-weight: 400;
-  margin-bottom: 1.8rem;
+  margin-bottom: 2rem;
   line-height: 1.42;
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.5);
 }
 .hero-body {
   font-size: clamp(0.95rem, 1.05vw, 1.08rem);
-  max-width: 720px;
+  max-width: 980px;
   margin-bottom: 0.95rem;
   line-height: 1.58;
   color: rgba(255, 253, 248, 0.86);
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.55);
 }
 .hero-cta-wrap {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(2rem, 5vh, 3.5rem);
-  transform: translateX(-50%);
-  z-index: 2;
+  margin-top: 1.9rem;
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 .hero-cta {
   display: inline-flex;
@@ -2690,6 +2694,9 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     max-width: none;
     margin-left: 0;
   }
+  .hero-title {
+    white-space: normal;
+  }
   .hero-inner {
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -2833,6 +2840,11 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   .hero-inner {
     padding-top: calc(var(--navbar-h) + 1.2rem);
     padding-bottom: 1.9rem;
+    align-items: flex-start;
+  }
+  .hero-copy {
+    margin-top: 3.5rem;
+    margin-bottom: 0;
   }
   .hero-subtitle br {
     display: none;
@@ -2844,11 +2856,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     min-height: 340px;
   }
   .hero-cta-wrap {
-    left: 50%;
-    right: auto;
     width: min(100%, 24rem);
-    padding-inline: 1rem;
-    transform: translateX(-50%);
   }
   .hero-cta {
     width: 100%;

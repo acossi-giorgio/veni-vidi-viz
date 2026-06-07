@@ -123,6 +123,18 @@ FGM_COUNTRY_ALIASES = {
     "united republic of tanzania": "TZA",
 }
 
+MPI_COUNTRY_ALIASES = {
+    "bolivia (plurinational state of)": "BOL",
+    "congo (democratic republic of the)": "COD",
+    "eswatini (kingdom of)": "SWZ",
+    "tanzania (united republic of)": "TZA",
+}
+
+MPI_SOUTH_AMERICA_CODES = {
+    "ARG", "BOL", "BRA", "CHL", "COL", "ECU",
+    "GUY", "PER", "PRY", "SUR", "URY", "VEN",
+}
+
 
 def simplify_official_country_name(name):
     s = str(name).strip()
@@ -484,36 +496,6 @@ def year_range(df, lo=MIN_YEAR, hi=MAX_YEAR):
 def normalise(s):
     return unicodedata.normalize("NFKD", str(s)).lower().strip()
 
-def fetch_income_history_from_world_bank(start_year=HISTORY_MIN_YEAR, end_year=MIN_YEAR - 1):
-    url = (
-        "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.CD"
-        f"?format=json&per_page=25000&date={start_year}:{end_year}"
-    )
-    with urllib.request.urlopen(url, timeout=60) as response:
-        payload = json.load(response)
-
-    rows = []
-    for item in payload[1]:
-        code = item.get("countryiso3code")
-        year = item.get("date")
-        value = item.get("value")
-        if not code or code not in CODE_CONTINENT or value is None:
-            continue
-        try:
-            year_int = int(year)
-        except (TypeError, ValueError):
-            continue
-        if not (start_year <= year_int <= end_year):
-            continue
-        rows.append({
-            "Country Name": CODE_NAME.get(code, item.get("country", {}).get("value", code)),
-            "Code": code,
-            "Year": year_int,
-            "GDP_Per_Capita (USD)": value,
-            "Continent": CODE_CONTINENT.get(code),
-        })
-    return pd.DataFrame(rows)
-
 def make_edu_spending():
     try:
         df = pd.read_csv(os.path.join(RAW, "education_spending_raw.csv"), skiprows=4, encoding="utf-8-sig")
@@ -559,11 +541,6 @@ def make_literacy():
 def make_income():
     try:
         df = pd.read_csv(os.path.join(RAW, "income_raw.csv"))
-        if df["Year"].min() > HISTORY_MIN_YEAR:
-            hist_df = fetch_income_history_from_world_bank()
-            if not hist_df.empty:
-                df = pd.concat([df, hist_df], ignore_index=True)
-                df = df.drop_duplicates(subset=["Code", "Year"], keep="first")
         df = df.rename(columns={
             "Country Name": "country", "Code": "code",
             "Year": "year", "GDP_Per_Capita (USD)": "value",
@@ -589,6 +566,8 @@ def make_population():
         df.columns = ["variant", "code", "year", "pop_5_9", "pop_10_14", "pop_15_19"]
         df = df[df["variant"] == "Estimates"].copy()
         df = df[df["code"].notna() & (df["code"] != "")]
+        for col in ["pop_5_9", "pop_10_14", "pop_15_19"]:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
         df["value"] = (
             df["pop_5_9"].fillna(0) + df["pop_10_14"].fillna(0) + df["pop_15_19"].fillna(0) * 0.6
         ) * 1000
@@ -704,28 +683,6 @@ def make_out_of_school_rate():
     except Exception as e:
         report("out_of_school_rate.csv", pd.DataFrame(), str(e))
 
-def make_poverty():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "extreme_poverty_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("extreme_poverty.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("extreme_poverty.csv", pd.DataFrame(), str(e))
-
-def make_gini():
-    try:
-        df = owid_rename(pd.read_csv(os.path.join(RAW, "gini_index_raw.csv")))
-        df = filter_countries(df)
-        df = year_range(df)
-        df = df[df["value"].notna()]
-        save("gini_index.csv",
-             df[["code", "country", "continent", "year", "value"]].sort_values(["code", "year"]))
-    except Exception as e:
-        report("gini_index.csv", pd.DataFrame(), str(e))
-
 def make_gpi_secondary():
     try:
         df = owid_rename(pd.read_csv(os.path.join(RAW, "gender_parity_secondary_raw.csv")))
@@ -822,17 +779,29 @@ def make_migration():
 
 def make_mpi():
     try:
-        df = pd.read_csv(os.path.join(RAW, "multidimensional_poverty_index_raw.csv"))
+        df = pd.read_excel(os.path.join(RAW, "mpi_index_raw.xlsx"), sheet_name="gMPI_Table1", header=5)
         df = df.rename(columns={
-            "Code": "code",
-            "Entity": "country",
-            "Year": "year",
-            "Multidimensional Poverty Index (MPI)": "value",
-            "World region according to OWID": "continent",
+            "Country": "country",
+            "2013-2024": "reference_year",
+            "Value": "value",
         })
-        df = df[df["code"].notna() & (df["code"].str.strip() != "")]
-        df = df[df["value"].notna() & (df["value"] > 0)]
-        out = df[["code", "country", "continent", "year", "value"]].copy()
+        df = df[["country", "reference_year", "value"]].copy()
+        df["country"] = df["country"].astype(str).str.strip()
+        df = df[df["country"].ne("") & df["country"].ne("nan")]
+        df["value"] = pd.to_numeric(df["value"], errors="coerce")
+        df = df[df["value"].notna()]
+
+        code_aliases = {**NAME_CODE, **MPI_COUNTRY_ALIASES}
+        df["code"] = df["country"].map(lambda name: code_aliases.get(normalise(name)))
+        df["year"] = df["reference_year"].map(lambda value: normalize_reference_year_label(value)[1])
+        df = df[df["code"].notna() & df["year"].notna()].copy()
+        df["year"] = df["year"].astype(int)
+        df["continent"] = df["code"].map(CODE_CONTINENT)
+        df.loc[df["code"].isin(MPI_SOUTH_AMERICA_CODES), "continent"] = "South America"
+        df = df[df["continent"].notna()]
+        df["country"] = df["code"].map(CODE_NAME).fillna(df["country"])
+
+        out = df[["code", "country", "continent", "year", "value"]].drop_duplicates()
         out = out.sort_values(["code", "year"])
         save("multidimensional_poverty_index.csv", out)
     except Exception as e:
@@ -847,8 +816,6 @@ if __name__ == "__main__":
     make_child_labor()
     make_fgm_quintile_prevalence()
     make_out_of_school_rate()
-    make_poverty()
-    make_gini()
     make_gpi_secondary()
     make_migration()
     make_mpi()

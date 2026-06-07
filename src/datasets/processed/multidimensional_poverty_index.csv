@@ -1,110 +1,110 @@
 code,country,continent,year,value
 AFG,Afghanistan,Asia,2022,0.3603053
-AGO,Angola,Africa,2015,0.28243506
-ALB,Albania,Europe,2017,0.0027478787
-ARG,Argentina,South America,2019,0.0014692951
+AGO,Angola,Africa,2015,0.282435048
+ALB,Albania,Europe,2017,0.002747879
+ARG,Argentina,South America,2019,0.001469295
 ARM,Armenia,Asia,2015,0.000690069
-AZE,Azerbaijan,Asia,2023,0.000661152
-BDI,Burundi,Africa,2016,0.4088611
+AZE,Azerbaijan,Asia,2023,0.00066115
+BDI,Burundi,Africa,2016,0.408861094
 BEN,Benin,Africa,2021,0.2895098
-BFA,Burkina Faso,Africa,2021,0.34289196
-BGD,Bangladesh,Asia,2022,0.066509075
-BLZ,Belize,North America,2015,0.017108832
-BOL,Bolivia,South America,2023,0.023168242
+BFA,Burkina Faso,Africa,2021,0.342892
+BGD,Bangladesh,Asia,2022,0.06650907
+BLZ,Belize,North America,2015,0.017108831
+BOL,Bolivia,South America,2023,0.02316824
 BRA,Brazil,South America,2015,0.016346041
 BTN,Bhutan,Asia,2022,0.0386035
-BWA,Botswana,Africa,2015,0.0726387
-CAF,Central African Republic,Africa,2018,0.46134752
-CHN,China,Asia,2014,0.016066726
+BWA,Botswana,Africa,2015,0.072638699
+CAF,Central African Republic,Africa,2018,0.461347524
+CHN,China,Asia,2014,0.016066725
 CIV,Côte d'Ivoire,Africa,2021,0.2102151
-CMR,Cameroon,Africa,2018,0.23206012
-COD,DR Congo,Africa,2017,0.33118874
-COG,Congo,Africa,2014,0.11167629
+CMR,Cameroon,Africa,2018,0.232060113
+COD,DR Congo,Africa,2017,0.331188736
+COG,Congo,Africa,2014,0.111676294
 COL,Colombia,South America,2015,0.019657273
-COM,Comoros,Africa,2022,0.08429893
+COM,Comoros,Africa,2022,0.0842989
 CRI,Costa Rica,North America,2018,0.002006301
 CUB,Cuba,North America,2019,0.002688705
-DOM,Dominican Republic,North America,2019,0.008786188
+DOM,Dominican Republic,North America,2019,0.008786189
 DZA,Algeria,Africa,2018,0.005409093
-ECU,Ecuador,South America,2018,0.00793744
-EGY,Egypt,Africa,2014,0.019681796
-ETH,Ethiopia,Africa,2019,0.36660424
-FJI,Fiji,Oceania,2021,0.0057576634
-GAB,Gabon,Africa,2019,0.03665673
-GEO,Georgia,Asia,2018,0.0012446003
-GHA,Ghana,Africa,2022,0.112784564
-GIN,Guinea,Africa,2018,0.37322164
-GMB,Gambia,Africa,2019,0.19802307
-GNB,Guinea-Bissau,Africa,2018,0.34068874
+ECU,Ecuador,South America,2018,0.007937439
+EGY,Egypt,Africa,2014,0.019681797
+ETH,Ethiopia,Africa,2019,0.366604242
+FJI,Fiji,Oceania,2021,0.005757663
+GAB,Gabon,Africa,2019,0.0366567
+GEO,Georgia,Asia,2018,0.0012446
+GHA,Ghana,Africa,2022,0.1127846
+GIN,Guinea,Africa,2018,0.373221634
+GMB,Gambia,Africa,2019,0.198023065
+GNB,Guinea-Bissau,Africa,2018,0.340688723
 GTM,Guatemala,North America,2014,0.13351782
-GUY,Guyana,South America,2019,0.0071647093
-HND,Honduras,North America,2019,0.05115417
-HTI,Haiti,North America,2016,0.19958769
+GUY,Guyana,South America,2019,0.007164709
+HND,Honduras,North America,2019,0.051154169
+HTI,Haiti,North America,2016,0.199587694
 IDN,Indonesia,Asia,2017,0.014010749
-IND,India,Asia,2019,0.06881057
-IRQ,Iraq,Asia,2018,0.03269432
-JAM,Jamaica,North America,2018,0.010810291
-JOR,Jordan,Asia,2023,0.0027735643
-KAZ,Kazakhstan,Asia,2015,0.0016106326
-KEN,Kenya,Africa,2022,0.11335198
-KGZ,Kyrgyzstan,Asia,2023,0.0034202132
-KHM,Cambodia,Asia,2021,0.07036792
-KIR,Kiribati,Oceania,2018,0.08015741
-LAO,Laos,Asia,2023,0.082487345
-LBR,Liberia,Africa,2019,0.25929374
-LBY,Libya,Africa,2014,0.0074214647
+IND,India,Asia,2019,0.068810564
+IRQ,Iraq,Asia,2018,0.032694322
+JAM,Jamaica,North America,2018,0.010810292
+JOR,Jordan,Asia,2023,0.00277356
+KAZ,Kazakhstan,Asia,2015,0.001610633
+KEN,Kenya,Africa,2022,0.113352
+KGZ,Kyrgyzstan,Asia,2023,0.00342021
+KHM,Cambodia,Asia,2021,0.070367915
+KIR,Kiribati,Oceania,2018,0.080157405
+LAO,Laos,Asia,2023,0.08248735
+LBR,Liberia,Africa,2019,0.259293731
+LBY,Libya,Africa,2014,0.007421465
 LKA,Sri Lanka,Asia,2016,0.011184699
 LSO,Lesotho,Africa,2023,0.10604715
 MAR,Morocco,Africa,2017,0.026696723
-MDG,Madagascar,Africa,2021,0.3859274
-MDV,Maldives,Asia,2016,0.0026540936
-MEX,Mexico,North America,2023,0.019894723
-MKD,North Macedonia,Europe,2018,0.0014220629
-MLI,Mali,Africa,2018,0.37606293
-MMR,Myanmar,Asia,2015,0.17584622
-MNE,Montenegro,Europe,2018,0.0048989006
+MDG,Madagascar,Africa,2021,0.385927412
+MDV,Maldives,Asia,2016,0.002654094
+MEX,Mexico,North America,2023,0.01989472
+MKD,North Macedonia,Europe,2018,0.001422063
+MLI,Mali,Africa,2018,0.376062922
+MMR,Myanmar,Asia,2015,0.175846225
+MNE,Montenegro,Europe,2018,0.0048989
 MNG,Mongolia,Asia,2018,0.02812682
-MOZ,Mozambique,Africa,2022,0.33437392
-MRT,Mauritania,Africa,2019,0.32703725
-MWI,Malawi,Africa,2019,0.23109521
-NAM,Namibia,Africa,2013,0.18473454
-NER,Niger,Africa,2021,0.4703161
-NGA,Nigeria,Africa,2021,0.17481731
-NPL,Nepal,Asia,2022,0.08520436
+MOZ,Mozambique,Africa,2022,0.3343739
+MRT,Mauritania,Africa,2019,0.327037248
+MWI,Malawi,Africa,2019,0.231095204
+NAM,Namibia,Africa,2013,0.184734535
+NER,Niger,Africa,2021,0.4703162
+NGA,Nigeria,Africa,2021,0.174817302
+NPL,Nepal,Asia,2022,0.0852044
 NRU,Nauru,Oceania,2023,0.02708145
-PAK,Pakistan,Asia,2017,0.19824739
-PER,Peru,South America,2023,0.021902395
-PHL,Philippines,Asia,2022,0.015788116
+PAK,Pakistan,Asia,2017,0.198247395
+PER,Peru,South America,2023,0.02190239
+PHL,Philippines,Asia,2022,0.0157881
 PNG,Papua New Guinea,Oceania,2016,0.2632909
 PRY,Paraguay,South America,2016,0.018848581
-PSE,Palestine,Asia,2019,0.0019800924
-RWA,Rwanda,Africa,2019,0.23100196
-SDN,Sudan,Africa,2014,0.2794396
+PSE,Palestine,Asia,2019,0.001980092
+RWA,Rwanda,Africa,2019,0.231001962
+SDN,Sudan,Africa,2014,0.279439589
 SEN,Senegal,Africa,2023,0.22621569
-SLE,Sierra Leone,Africa,2019,0.2928993
-SLV,El Salvador,North America,2014,0.03246251
-SRB,Serbia,Europe,2019,0.00043311415
+SLE,Sierra Leone,Africa,2019,0.292899307
+SLV,El Salvador,North America,2014,0.032462509
+SRB,Serbia,Europe,2019,0.000433114
 STP,Sao Tome and Principe,Africa,2019,0.047923375
 SUR,Suriname,South America,2018,0.011232468
-SWZ,Eswatini,Africa,2021,0.032648794
+SWZ,Eswatini,Africa,2021,0.0326488
 SYC,Seychelles,Africa,2019,0.002963461
-TCD,Chad,Africa,2019,0.5170112
-TGO,Togo,Africa,2017,0.17961626
-THA,Thailand,Asia,2022,0.0018171865
-TJK,Tajikistan,Asia,2017,0.029005922
-TKM,Turkmenistan,Asia,2019,0.00084917736
+TCD,Chad,Africa,2019,0.517011207
+TGO,Togo,Africa,2017,0.179616257
+THA,Thailand,Asia,2022,0.0018172
+TJK,Tajikistan,Asia,2017,0.029005923
+TKM,Turkmenistan,Asia,2019,0.000849177
 TLS,Timor-Leste,Asia,2016,0.22151424
-TON,Tonga,Oceania,2019,0.0033361549
-TTO,Trinidad and Tobago,North America,2022,0.002072984
-TUN,Tunisia,Africa,2023,0.0034418495
+TON,Tonga,Oceania,2019,0.003336155
+TTO,Trinidad and Tobago,North America,2022,0.002073
+TUN,Tunisia,Africa,2023,0.0034418
 TUV,Tuvalu,Oceania,2019,0.008084608
-TZA,Tanzania,Africa,2022,0.22133659
-UGA,Uganda,Africa,2016,0.28102848
-UZB,Uzbekistan,Asia,2021,0.0061037554
+TZA,Tanzania,Africa,2022,0.2213366
+UGA,Uganda,Africa,2016,0.281028478
+UZB,Uzbekistan,Asia,2021,0.006103756
 VNM,Vietnam,Asia,2020,0.007729395
-VUT,Vanuatu,Oceania,2023,0.116763316
-WSM,Samoa,Oceania,2019,0.024600489
-YEM,Yemen,Asia,2022,0.18783963
+VUT,Vanuatu,Oceania,2023,0.11676331
+WSM,Samoa,Oceania,2019,0.02460049
+YEM,Yemen,Asia,2022,0.1878396
 ZAF,South Africa,Africa,2016,0.024890643
-ZMB,Zambia,Africa,2018,0.23168507
-ZWE,Zimbabwe,Africa,2019,0.10994179
+ZMB,Zambia,Africa,2018,0.231685073
+ZWE,Zimbabwe,Africa,2019,0.109941785
