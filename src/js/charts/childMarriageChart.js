@@ -434,57 +434,92 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     yG.selectAll('.tick line').attr('stroke', UI_MUTED_BORDER);
     yG.selectAll('.tick text').attr('font-size', compact ? 7 : 8).attr('fill', CHART_AXIS);
 
-    svg.append('text').attr('x', mobileFullscreen ? axisX : frameX + frameW / 2).attr('y', frameY + PAD.top - 12)
-      .attr('text-anchor', mobileFullscreen ? 'start' : 'middle')
-      .attr('font-size', mobileFullscreen ? 9 : 10).attr('fill', titleColor)
-      .text(mobileFullscreen
-        ? `${continentLabel} · ${data.length} paesi`
-        : `${continentLabel} · ${data.length} paesi · ordinati per % prima dei 18`);
-
     const BASE_OPACITY_BY15 = 0.9;
     const BASE_OPACITY_BY18 = 0.88;
-    const INACTIVE_FADE = 0.28;
+    const INACTIVE_FADE = 0.16;
+    const INACTIVE_LABEL_OPACITY = 0.28;
     const HOVER_BY15 = isEurope ? shadeColor(EUROPE, 0.34) : shadeColor(AFRICA, 0.5);
     const HOVER_BY18 = isEurope ? tintColor(EUROPE, 0.4) : tintColor(AFRICA, 0.4);
     const columns = [];
     let activeColumnIndex = -1;
     let animating = !prefersReducedMotion;
+    const animationUnlockDelay = prefersReducedMotion ? 0 : ((Math.max(0, data.length - 1) * 12) + 120 + 520);
 
     function styleColumn(c, { active = false, dimmed = false } = {}) {
-      if (animating) return;
       if (!c) return;
       const fade = dimmed ? INACTIVE_FADE : 1;
       const o18 = active ? 1 : BASE_OPACITY_BY18 * fade;
       const o15 = active ? 1 : BASE_OPACITY_BY15 * fade;
+      const textOpacity = active ? 1 : (dimmed ? INACTIVE_LABEL_OPACITY : 0.92);
+      const transition = animating ? null : d3.transition('marriage-hover').duration(140);
 
       if (c.bar18) {
-        c.bar18.interrupt().transition().duration(140)
-          .attr('fill', active ? HOVER_BY18 : colorBy18)
-          .attr('opacity', o18)
-          .attr('stroke', active ? '#ffffff' : 'none')
-          .attr('stroke-width', active ? 1.2 : 0);
+        if (transition) {
+          c.bar18
+            .interrupt('marriage-hover')
+            .transition(transition)
+            .attr('fill', active ? HOVER_BY18 : colorBy18)
+            .attr('opacity', o18)
+            .attr('stroke', active ? '#ffffff' : 'none')
+            .attr('stroke-width', active ? 1.2 : 0);
+        } else {
+          c.bar18
+            .attr('fill', active ? HOVER_BY18 : colorBy18)
+            .attr('opacity', o18)
+            .attr('stroke', active ? '#ffffff' : 'none')
+            .attr('stroke-width', active ? 1.2 : 0);
+        }
       }
       if (c.bar15) {
-        c.bar15.interrupt().transition().duration(140)
-          .attr('fill', active ? HOVER_BY15 : colorBy15)
-          .attr('opacity', o15)
-          .attr('stroke', active ? '#ffffff' : 'none')
-          .attr('stroke-width', active ? 1.2 : 0);
+        if (transition) {
+          c.bar15
+            .interrupt('marriage-hover')
+            .transition(transition)
+            .attr('fill', active ? HOVER_BY15 : colorBy15)
+            .attr('opacity', o15)
+            .attr('stroke', active ? '#ffffff' : 'none')
+            .attr('stroke-width', active ? 1.2 : 0);
+        } else {
+          c.bar15
+            .attr('fill', active ? HOVER_BY15 : colorBy15)
+            .attr('opacity', o15)
+            .attr('stroke', active ? '#ffffff' : 'none')
+            .attr('stroke-width', active ? 1.2 : 0);
+        }
       }
 
-      c.label.interrupt().transition().duration(140)
-        .attr('fill', active ? shadeColor(titleColor, 0.4) : CHART_LABEL)
-        .attr('opacity', active ? 1 : (dimmed ? 0.68 : 0.92))
-        .attr('font-weight', active ? '700' : null);
+      if (transition) {
+        c.label
+          .interrupt('marriage-hover')
+          .transition(transition)
+          .attr('fill', active ? shadeColor(titleColor, 0.4) : CHART_LABEL)
+          .attr('opacity', textOpacity)
+          .attr('font-weight', active ? '700' : null);
+      } else {
+        c.label
+          .attr('fill', active ? shadeColor(titleColor, 0.4) : CHART_LABEL)
+          .attr('opacity', textOpacity)
+          .attr('font-weight', active ? '700' : null);
+      }
 
-      c.hit.interrupt().transition().duration(140)
-        .attr('fill', 'transparent')
-        .attr('stroke', 'none')
-        .attr('stroke-width', 0);
+      if (transition) {
+        c.hit
+          .interrupt('marriage-hover')
+          .transition(transition)
+          .attr('fill', 'transparent')
+          .attr('stroke', 'none')
+          .attr('stroke-width', 0);
+      } else {
+        c.hit
+          .attr('fill', 'transparent')
+          .attr('stroke', 'none')
+          .attr('stroke-width', 0);
+      }
     }
 
-    function activateColumn(idx) {
-      if (activeColumnIndex === idx) return;
+    function activateColumn(idx, options = {}) {
+      const { force = false } = options;
+      if (!force && activeColumnIndex === idx) return;
       columns.forEach((c, i) => {
         styleColumn(c, { active: i === idx, dimmed: i !== idx });
       });
@@ -524,16 +559,15 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       if (!prefersReducedMotion) {
         const delay = i * 12;
         if (bar15) {
-          bar15.transition()
+          bar15.transition('marriage-grow')
             .delay(delay)
             .duration(520)
             .ease(d3.easeCubicOut)
             .attr('y', barBottom - h15)
-            .attr('height', h15)
-            .on('end', () => { if (i === data.length - 1) animating = false; });
+            .attr('height', h15);
         }
         if (bar18) {
-          bar18.transition()
+          bar18.transition('marriage-grow')
             .delay(delay + 120)
             .duration(520)
             .ease(d3.easeCubicOut)
@@ -585,6 +619,13 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
       columns.push({ bar18, bar15, label, hit });
     });
+
+    if (!prefersReducedMotion) {
+      window.setTimeout(() => {
+        animating = false;
+        if (activeColumnIndex >= 0) activateColumn(activeColumnIndex, { force: true });
+      }, animationUnlockDelay + 30);
+    }
 
     svg.on('mouseleave', () => {
       clearActiveColumn();

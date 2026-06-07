@@ -1,9 +1,10 @@
 /* ============================================================
    Grafico 3-2 — GPI gap di genere nell'istruzione secondaria
    Overview : dot strip Africa / Europe (X = GPI deviation da 1)
-   Drill-down: barre verticali per paese, linea parità a GPI = 1
-               GPI < 1 → barra SOTTO la linea  (bambine escluse)
-               GPI > 1 → barra SOPRA la linea  (bambini esclusi)
+   Drill-down: barre verticali per paese, fascia di parità tra 0.97 e 1.03
+               GPI < 0.97 → svantaggio per le bambine
+               0.97 ≤ GPI ≤ 1.03 → situazione di parità
+               GPI > 1.03 → svantaggio per i bambini
    ============================================================ */
 async function renderGenderParityChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -17,6 +18,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   };
   const COL_GIRLS = '#7fc0f1';   // GPI < 1, invertito in azzurro pastello un po' piu acceso
   const COL_BOYS  = '#eb95c0';   // GPI > 1, invertito in rosa pastello un po' piu acceso
+  const COL_PARITY = '#f3ddb3';
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
@@ -24,6 +26,28 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const CONTS = ['Europe', 'Africa'];
   const EUROPE_TOTAL_EXCLUDED = new Set(['AND', 'LIE', 'MCO', 'SMR']);
+  const PARITY_MIN = 0.97;
+  const PARITY_MAX = 1.03;
+
+  function getGpiStatus(gpi) {
+    if (gpi < PARITY_MIN) return 'girls';
+    if (gpi > PARITY_MAX) return 'boys';
+    return 'parity';
+  }
+
+  function getGpiStatusLabel(gpi) {
+    const status = getGpiStatus(gpi);
+    if (status === 'girls') return 'Piu bambine escluse';
+    if (status === 'boys') return 'Piu bambini esclusi';
+    return 'Paese in situazione di parità';
+  }
+
+  function getGpiStatusColor(gpi, fallbackColor = COL_PARITY) {
+    const status = getGpiStatus(gpi);
+    if (status === 'girls') return COL_GIRLS;
+    if (status === 'boys') return COL_BOYS;
+    return fallbackColor;
+  }
 
   const ALL_COUNTRIES = {
     Africa: [
@@ -270,15 +294,28 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const bandH = ih / CONTS.length;
     const DOT_R = compact ? 3.6 : 4.1;
     const parX = xS(0);
+    const parityMinX = xS(PARITY_MIN - 1);
+    const parityMaxX = xS(PARITY_MAX - 1);
 
     const zoneLabelY = compact ? -8 : -10;
     const parityLabelY = zoneLabelY - (compact ? 12 : 14);
 
-    g.append('text').attr('x', parX / 2).attr('y', zoneLabelY)
+    g.append('rect')
+      .attr('x', parityMinX)
+      .attr('y', 0)
+      .attr('width', Math.max(0, parityMaxX - parityMinX))
+      .attr('height', ih)
+      .attr('fill', colorToRgba(COL_PARITY, 0.1));
+
+    g.append('text').attr('x', parityMinX / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
       .attr('fill', COL_GIRLS).style('pointer-events','none')
       .text('← Piu bambine escluse');
-    g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', zoneLabelY)
+    g.append('text').attr('x', (parityMinX + parityMaxX) / 2).attr('y', parityLabelY)
+      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('font-weight','700')
+      .attr('fill', COL_PARITY).style('pointer-events','none')
+      .text('parità');
+    g.append('text').attr('x', parityMaxX + (iw - parityMaxX) / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
       .attr('fill', COL_BOYS).style('pointer-events','none')
       .text('Piu bambini esclusi →');
@@ -288,10 +325,10 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         .attr('stroke',colorToRgba(getCssToken('ink', '#1f1d1a'), 0.08)).attr('stroke-width',1);
     });
 
-    g.append('line').attr('x1',parX).attr('x2',parX).attr('y1',0).attr('y2',ih)
+    g.append('line').attr('x1',parityMinX).attr('x2',parityMinX).attr('y1',0).attr('y2',ih)
       .attr('stroke',CHART_AXIS).attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
-    g.append('text').attr('x',parX).attr('y',parityLabelY)
-      .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('font-weight','700').attr('fill',CHART_AXIS).text('parità');
+    g.append('line').attr('x1',parityMaxX).attr('x2',parityMaxX).attr('y1',0).attr('y2',ih)
+      .attr('stroke',CHART_AXIS).attr('stroke-dasharray','4,3').attr('stroke-width',1.5);
 
     const fmtGpiTick = d => {
       const gpi = d + 1;
@@ -330,8 +367,9 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       const cMed   = d3.median(gpis);
       const cMin   = d3.min(gpis);
       const cMax   = d3.max(gpis);
-      const nBelow = rows.filter(d => d.gpi < 1).length;
-      const nAbove = rows.filter(d => d.gpi >= 1).length;
+      const nBelow = rows.filter(d => d.gpi < PARITY_MIN).length;
+      const nParity = rows.filter(d => d.gpi >= PARITY_MIN && d.gpi <= PARITY_MAX).length;
+      const nAbove = rows.filter(d => d.gpi > PARITY_MAX).length;
 
       const showContTip = (ev) => {
         window.showHoverTooltip(tip, ev, {
@@ -343,7 +381,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
             { label: 'Min', value: cMin.toFixed(3) },
             { label: 'Max', value: cMax.toFixed(3) },
             { label: 'Piu bambine escluse', value: `${nBelow}` },
-            { label: 'Piu bambini escluse', value: `${nAbove}` },
+            { label: 'In situazione di parità', value: `${nParity}` },
+            { label: 'Piu bambini esclusi', value: `${nAbove}` },
             { label: 'Copertura dati', value: `${rows.length}/${continentTotals[cont]} paesi` },
           ],
         });
@@ -394,11 +433,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
             d3.select(this).attr('opacity',1).attr('r', DOT_R + 2);
             window.showHoverTooltip(tip, ev, {
               title: d.country,
-              titleColor: color,
+              titleColor: fill,
               meta: `Anno: ${d.year}`,
               rows: [
                 { label: 'GPI', value: d.gpi.toFixed(3) },
-                { label: 'Esclusione prevalente', value: dev < 0 ? 'Bambine' : 'Bambini' },
+                { label: 'Classificazione', value: getGpiStatusLabel(d.gpi) },
               ],
             }, { offsetY: -30 });
           })
@@ -416,7 +455,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   }
 
   /* ════════════════════════════════════════════════════════
-     DRILL-DOWN — barre verticali con parità a 1
+     DRILL-DOWN — barre verticali con baseline a 1 e soglia di parità 0.97–1.03
   ════════════════════════════════════════════════════════ */
   function drawDrill(cont, options = {}) {
     const { animateBars: shouldAnimateBars = true } = options;
@@ -434,7 +473,9 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const yS = d3.scaleLinear()
       .domain([0.6, 1.4])
       .range([ih, 0]);
-    const parY = yS(1.0); // parity line = centro esatto
+    const parY = yS(1.0);
+    const parityTopY = yS(PARITY_MAX);
+    const parityBottomY = yS(PARITY_MIN);
 
     const xS = d3.scaleBand().domain(rows.map(d => d.code)).range([0, iw]).padding(0.12);
     const bw  = xS.bandwidth();
@@ -457,13 +498,17 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('text-anchor','middle').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
       .text(cont);
     const hintY = 40;
-    const hintGap = compact ? 18 : 24;
-    const hintLeftX = W / 2 - hintGap;
-    const hintRightX = W / 2 + hintGap;
+    const hintSpread = compact ? Math.min(78, iw * 0.12) : Math.min(210, Math.max(132, iw * 0.14));
+    const hintLeftX = W / 2 - hintSpread;
+    const hintRightX = W / 2 + hintSpread;
 
     root.append('text').attr('x', hintLeftX).attr('y', hintY)
       .attr('text-anchor', 'end').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_GIRLS)
       .text('← Piu bambine escluse');
+
+    root.append('text').attr('x', W / 2).attr('y', hintY + (compact ? 0 : 1))
+      .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', CHART_AXIS)
+      .text('parità');
 
     root.append('text').attr('x', hintRightX).attr('y', hintY)
       .attr('text-anchor', 'start').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_BOYS)
@@ -471,16 +516,18 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
 
     /* horizontal gridlines */
     yS.ticks(6).forEach(t => {
-      const isPar = Math.abs(t - 1.0) < 1e-9;
       g.append('line').attr('x1',0).attr('x2',iw).attr('y1',yS(t)).attr('y2',yS(t))
-        .attr('stroke', isPar ? CHART_AXIS : CHART_GRID)
-        .attr('stroke-width', isPar ? 1.5 : 1)
-        .attr('stroke-dasharray', isPar ? '6,3' : null);
+        .attr('stroke', CHART_GRID)
+        .attr('stroke-width', 1);
     });
 
-    /* parity label */
-    g.append('text').attr('x', iw + 5).attr('y', parY + 4)
-      .attr('font-size',compact ? 7.5 : 8.5).attr('fill',CHART_AXIS).text('');
+    g.append('line').attr('x1',0).attr('x2',iw).attr('y1',parY).attr('y2',parY)
+      .attr('stroke',CHART_AXIS).attr('stroke-width',1.5);
+    g.append('line').attr('x1',0).attr('x2',iw).attr('y1',parityBottomY).attr('y2',parityBottomY)
+      .attr('stroke', CHART_AXIS).attr('stroke-width',1.5).attr('stroke-dasharray','6,3');
+    g.append('line').attr('x1',0).attr('x2',iw).attr('y1',parityTopY).attr('y2',parityTopY)
+      .attr('stroke', CHART_AXIS).attr('stroke-width',1.5).attr('stroke-dasharray','6,3');
+
 
     /* Y axis */
     g.append('g')
@@ -503,7 +550,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('y', animateBars ? d => d.gpi >= 1 ? parY - 1 : parY : d => Math.min(yS(d.gpi), parY))
       .attr('width', bw)
       .attr('height', animateBars ? 1 : d => Math.max(1, Math.abs(yS(d.gpi) - parY)))
-      .attr('fill', d => d.gpi < 1 ? COL_GIRLS : COL_BOYS)
+      .attr('fill', d => getGpiStatusColor(d.gpi))
       .attr('opacity', BASE_BAR_OPACITY).attr('rx', 1)
       .style('cursor','pointer');
 
@@ -521,7 +568,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('transform', d => `translate(${xS(d.code) + bw / 2},${ih + 4}) rotate(-90)`)
       .attr('text-anchor','end').attr('dominant-baseline','middle')
       .attr('font-size', labelFsz)
-      .attr('fill', d => d.gpi < 1 ? COL_GIRLS : COL_BOYS)
+      .attr('fill', d => getGpiStatusColor(d.gpi))
       .attr('opacity', 0.9)
       .style('pointer-events','none')
       .text(d => d.country.length > 16 ? d.country.slice(0,15)+'…' : d.country);
@@ -560,14 +607,14 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     };
 
     const showTipFor = (ev, d) => {
-      const fill = d.gpi < 1 ? COL_GIRLS : COL_BOYS;
+      const fill = getGpiStatusColor(d.gpi);
       window.showHoverTooltip(tip, ev, {
         title: d.country,
         titleColor: fill,
         meta: `Anno: ${d.year}`,
         rows: [
           { label: 'GPI', value: d.gpi.toFixed(3) },
-          { label: 'Esclusione prevalente', value: d.gpi < 1 ? 'Bambine' : 'Bambini' },
+          { label: 'Classificazione', value: getGpiStatusLabel(d.gpi) },
         ],
       }, { offsetY: -30 });
     };

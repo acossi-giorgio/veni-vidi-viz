@@ -479,14 +479,11 @@ const CHART_HELP_NOTES = {
     'Interazioni: hover per dettagli, click per drill-down e pulsante back per tornare alla vista aggregata.'
   ].join('\n'),
   'chart-3-3': [
-    'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale dell\'Africa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
-    'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. L\'asse X usa la spesa in istruzione come valore assoluto stimato in USD. Sull\'asse Y trovi sempre un tasso percentuale.',
-    'Pannello sotto: qui vedi l\'indice corretto cumulativo dal 2000 all\'anno osservato. L\'indice confronta il trend medio dell\'outcome con il trend medio della spesa nello stesso periodo cumulato. La serie mostrata parte dal 2005, quando sono disponibili almeno 5 anni di storico.',
-    'Formula: I = slope(Outcome) / |slope(Spesa)|',
-    'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate dal 2000 all\'anno t. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
-    'Direzione outcome: con Alfabetizzazione, un aumento è positivo. Con Fuori scuola, una diminuzione è positiva: il segno viene quindi corretto internamente.',
-    'Interpretazione: se I > 0, l\'outcome migliora rispetto al trend della spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la dinamica media nel cumulato. L\'asse dell\'indice usa una scala lineare centrata su zero.',
-    'Interazioni: usa i toggle per cambiare metrica e focus. Passa sui punti, sopra e sotto, per leggere valori annuali, periodo cumulato e indice calcolato.'
+    'Il grafico mostra una sola traiettoria annuale aggregata per l\'Africa.',
+    'Ogni punto corrisponde a un anno aggregato. L\'asse X usa la spesa in istruzione come valore assoluto stimato in USD. Sull\'asse Y trovi l\'outcome selezionato: alfabetizzazione o fuori scuola primaria.',
+    'La linea collega il percorso nel tempo, mentre la diagonale tratteggiata riassume la tendenza media complessiva con una regressione lineare.',
+    'Se la traiettoria si avvolge o cambia direzione, significa che gli aumenti di spesa non si traducono sempre in miglioramenti regolari e stabili.',
+    'Interazioni: usa i toggle per cambiare metrica. Passa sui punti per leggere valori annuali e copertura dati.'
   ].join('\n'),
   'chart-4-1': [
     'Scatter per paesi africani: ogni punto è un paese.',
@@ -533,7 +530,6 @@ const DATASET_NOTES = {
   ].join('\n'),
   'chart-3-2': [
     'Parita\' di genere (GPI secondaria)',
-    'Bambini fuori dalla scuola'
   ].join('\n'),
   'chart-3-3': [
     'Spesa pubblica in istruzione',
@@ -695,11 +691,11 @@ const CHART_HELP_BUILDERS = {
   },
   'chart-3-2': ({ chart }) => ({
     description: chart.drill
-      ? `La vista attuale è il drill-down su ${chart.drill}. Mostra i singoli paesi, così puoi vedere dove il gap di genere è più lontano dalla parità.`
+      ? `La vista attuale è il drill-down su ${chart.drill}. Mostra i singoli paesi, così puoi vedere chi è sotto la fascia di parità, chi vi rientra e chi la supera.`
       : 'La vista attuale confronta Africa ed Europa sul GPI della scuola secondaria. Serve a leggere se il divario penalizza di più bambine o bambini.',
     reading: chart.drill
-      ? 'Asse X = paesi della regione selezionata. Asse Y = valore del GPI. La linea di parità è a 1: sotto 1 c\'è svantaggio per le bambine, sopra 1 c\'è svantaggio per i bambini.'
-      : 'Asse X = distanza dalla parità. Il valore 1 è la linea di equilibrio: a sinistra prevale lo svantaggio per le bambine, a destra quello per i bambini.',
+      ? 'Asse X = paesi della regione selezionata. Asse Y = valore del GPI. La parità è rappresentata come fascia tra 0.97 e 1.03: sotto 0.97 c\'è svantaggio per le bambine, sopra 1.03 per i bambini.'
+      : 'Asse X = valore del GPI rispetto alla fascia di parità. A sinistra di 0.97 prevale lo svantaggio per le bambine, tra 0.97 e 1.03 il paese è in parità, oltre 1.03 prevale lo svantaggio per i bambini.',
     interactions: chart.drill
       ? 'Usa hover per leggere il valore del singolo paese e il pulsante back per tornare al confronto aggregato.'
       : 'Passa sui punti per leggere il dettaglio e clicca su un continente per entrare nel drill-down per paese.',
@@ -708,24 +704,23 @@ const CHART_HELP_BUILDERS = {
     const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
     const xLabel = 'spesa in istruzione come valore assoluto stimato in USD';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
-    const cumulativeStartYear = chart.cumulativeStartYear || 2000;
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa e' espressa come valore assoluto stimato in USD, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa nel cumulato ${cumulativeStartYear}-t.`,
+          text: `Il grafico mostra una sola traiettoria annuale aggregata${focus}. La spesa e' espressa come valore assoluto stimato in USD e viene messa in relazione con ${outcome}.`,
         },
         {
-          label: 'Grafico sopra',
-          text: `Asse X = ${xLabel}. Asse Y = ${outcome}. Ogni punto corrisponde a un anno e la linea unisce la sequenza temporale dell'Africa, così puoi vedere insieme livello e direzione del cambiamento.`,
+          label: 'Come si legge',
+          text: `Asse X = ${xLabel}. Asse Y = ${outcome}. Ogni punto corrisponde a un anno e la linea unisce la sequenza temporale dell'Africa, cosi puoi vedere insieme livello, direzione e irregolarita del cambiamento.`,
         },
         {
-          label: 'Grafico sotto',
-          text: `Asse X = anno. Asse Y = indice cumulativo corretto ${cumulativeStartYear}-t. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nel periodo che va dal ${cumulativeStartYear} all'anno t. In modalità Fuori scuola primaria, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente. La serie visualizzata parte dal 2005, quando il cumulato raggiunge almeno 5 anni completi.`,
+          label: 'Retta di regressione',
+          text: 'La diagonale tratteggiata riassume la tendenza media complessiva. Serve a distinguere la direzione generale del fenomeno dalle oscillazioni locali del percorso.',
         },
         {
           label: 'Interazioni possibili',
-          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, periodo cumulato, trend stimato e indice calcolato.',
+          text: 'Puoi cambiare metrica con i pulsanti in alto. Passa sui punti per leggere anno, valori e copertura dati disponibile.',
         },
       ],
     };
@@ -949,7 +944,7 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
 
   if (chartId === 'chart-3-3') {
     if (state === 0 && el._exclusionShowBase) el._exclusionShowBase();
-    else if (state === 1 && el._exclusionFocusAfrica) el._exclusionShowBase();
+    else if (state === 1 && el._exclusionShowGpi) el._exclusionShowGpi();
     else if (state === 2 && el._exclusionShowGpi) el._exclusionShowGpi();
   }
 

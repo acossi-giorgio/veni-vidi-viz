@@ -210,7 +210,7 @@ function buildHoverTooltipHtml(config = {}) {
     }).join('');
     return (
       `<section class="chart-hover-tooltip__section">` +
-      `${section.title ? `<div class="chart-hover-tooltip__section-title">${escapeHtml(section.title)}</div>` : ''}` +
+      `${section.title ? `<div class="chart-hover-tooltip__section-title">${accentTooltipContinents(section.title)}</div>` : ''}` +
       `${sectionRows}` +
       `</section>`
     );

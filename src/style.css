@@ -747,37 +747,6 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 0;
 }
 
-/* Section 5 custom: extra-wide horizontal chart, narrative cards below in 3 columns */
-#section-5 {
-  padding: clamp(4.6rem, 8.2vh, 7.4rem) 0;
-}
-#section-5 .chart-section-inner.section-5-wide .chart-box {
-  height: clamp(560px, 74vh, 880px);
-}
-#section-5 .chart-section-inner.section-5-wide .chart-text {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem 1rem;
-  margin-top: 0.75rem;
-  max-width: none;
-}
-#section-5 .chart-section-inner.section-5-wide .narrative-card {
-  margin-bottom: 0;
-  min-height: 100%;
-}
-
-@media (max-width: 1240px) {
-  #section-5 .chart-section-inner.section-5-wide .chart-text {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 840px) {
-  #section-5 .chart-section-inner.section-5-wide .chart-text {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Section 11 custom: horizontal full-width chart with narrative cards below */
 #section-11 {
   padding: clamp(4.6rem, 8.2vh, 7.4rem) 0;
@@ -1093,12 +1062,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .chart-hover-tooltip--light::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(44, 62, 80, 0.34), rgba(44, 62, 80, 0.02));
+  content: none;
 }
 
 .chart-hover-tooltip--light .chart-hover-tooltip__title {
@@ -2997,7 +2961,6 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   }
   .chart-section-inner.layout-stacked .chart-box,
   #section-3 .chart-box,
-  #section-5 .chart-section-inner.section-5-wide .chart-box,
   #section-11 .chart-section-inner.section-11-wide .chart-box {
     height: 376px;
   }

@@ -86,6 +86,82 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   function hideTip() { window.hideHoverTooltip(tooltip); }
 
   const containerNode = container.node();
+  let currentMode = 'base';
+
+  function animateModeChange(nextMode) {
+    currentMode = nextMode;
+    const root = d3.select(containerNode);
+    const svg = root.select('svg');
+    if (svg.empty()) return;
+
+    const focusQuadrantId = 'q1';
+    const focusColor = QUADRANT.find(q => q.id === focusQuadrantId)?.color || RISK_HIGH;
+    const isFocusMode = currentMode === 'cycle';
+
+    root.selectAll('.quadrant-bg')
+      .transition().duration(360).ease(d3.easeCubicOut)
+      .attr('fill-opacity', d => {
+        if (!isFocusMode) return 1;
+        return d.q.id === focusQuadrantId ? 0.24 : 0.05;
+      });
+
+    root.selectAll('.quadrant-label')
+      .transition().duration(320).ease(d3.easeCubicOut)
+      .attr('opacity', d => {
+        if (!isFocusMode) return d.q.ySide === 'top' ? 0.78 : 0.72;
+        return d.q.id === focusQuadrantId ? 1 : 0.24;
+      })
+      .attr('font-size', d => {
+        const base = d.compact ? 7 : 8;
+        return isFocusMode && d.q.id === focusQuadrantId ? base + 1 : base;
+      });
+
+    root.selectAll('.quadrant-count')
+      .transition().duration(320).ease(d3.easeCubicOut)
+      .attr('opacity', d => {
+        if (!isFocusMode) return 0.5;
+        return d.q.id === focusQuadrantId ? 0.85 : 0.16;
+      });
+
+    root.selectAll('.dot')
+      .interrupt('mode')
+      .transition('mode').duration(380).ease(d3.easeCubicOut)
+      .attr('fill-opacity', d => {
+        if (!isFocusMode) return 0.84;
+        return getQuadrant(d).id === focusQuadrantId ? 0.98 : 0.18;
+      })
+      .attr('stroke-width', d => {
+        if (!isFocusMode) return 0.9;
+        return getQuadrant(d).id === focusQuadrantId ? 1.3 : 0.7;
+      })
+      .attr('r', d => {
+        if (!isFocusMode) return 5;
+        return getQuadrant(d).id === focusQuadrantId ? 6.5 : 4;
+      });
+
+    root.selectAll('.section-legend-row')
+      .transition().duration(280).ease(d3.easeCubicOut)
+      .style('opacity', d => {
+        if (!isFocusMode) return '1';
+        return d.id === focusQuadrantId ? '1' : '0.35';
+      });
+
+    if (isFocusMode) {
+      root.selectAll('.dot')
+        .filter(d => getQuadrant(d).id === focusQuadrantId)
+        .transition('pulse-in').delay((_, i) => i * 12).duration(180).ease(d3.easeCubicOut)
+        .attr('r', 7.4)
+        .transition('pulse-out').duration(260).ease(d3.easeCubicInOut)
+        .attr('r', 6.5)
+        .attr('stroke', focusColor)
+        .transition('pulse-reset').duration(220)
+        .attr('stroke', '#ffffff');
+    } else {
+      root.selectAll('.dot')
+        .transition('reset-stroke').duration(220)
+        .attr('stroke', '#ffffff');
+    }
+  }
 
   function draw() {
     d3.select(containerNode).selectAll('svg').remove();
@@ -123,11 +199,14 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     ];
     qBg.forEach(({ x, y, w, h, q }) => {
       g.append('rect')
+        .datum({ q })
+        .attr('class', 'quadrant-bg')
         .attr('x', x)
         .attr('y', y)
         .attr('width', w)
         .attr('height', h)
         .attr('fill', colorToRgba(q.color, 0.09, 'rgba(255,255,255,0.96)'))
+        .attr('fill-opacity', 1)
         .attr('opacity', 1);
     });
 
@@ -147,7 +226,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     qBg.forEach(({ x, y, w, h, q }) => {
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
-      g.append('text').attr('x', lx).attr('y', ly)
+      g.append('text').datum({ q, compact }).attr('class', 'quadrant-label').attr('x', lx).attr('y', ly)
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('font-weight', '600')
         .attr('fill', q.color).attr('opacity', q.ySide === 'top' ? 0.78 : 0.72)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
@@ -233,9 +312,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       const n = data.filter(d => getQuadrant(d).id === q.id).length;
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 25 : y + h - 18;
-      g.append('text').attr('x', lx).attr('y', ly)
+      g.append('text').datum({ q }).attr('class', 'quadrant-count').attr('x', lx).attr('y', ly)
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
+        .text(`${n} paesi`);
     });
 
     // ── Legend top-right — panel style ───────────────────────
@@ -265,6 +345,8 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
 
     QUADRANT.forEach((q) => {
       const row = legDiv.append('div')
+        .datum(q)
+        .attr('class', 'section-legend-row')
         .style('display', 'flex')
         .style('align-items', 'center')
         .style('gap', '8px')
@@ -311,11 +393,13 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
           .on('mouseleave', hideTip);
       });
     }
+
+    animateModeChange(currentMode);
   }
 
   draw();
 
-  containerNode._bubbleReset             = () => draw();
-  containerNode._bubbleHighlightContinent = () => draw();
-  containerNode._getHelpContext = () => ({});
+  containerNode._bubbleReset = () => animateModeChange('base');
+  containerNode._bubbleHighlightContinent = () => animateModeChange('cycle');
+  containerNode._getHelpContext = () => ({ currentMode });
 }

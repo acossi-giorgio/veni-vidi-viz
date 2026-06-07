@@ -23,12 +23,16 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
   const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const BASE_PLAYER_H = 72;
+  const EXCLUDED_CODES = new Set(['RUS']);
 
-  const [incomeRaw, lifeRaw, popRaw] = await Promise.all([
+  const [incomeRows, lifeRows, popRows] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
     d3.csv('datasets/processed/life_expectancy.csv', d3.autoType),
     d3.csv('datasets/processed/population.csv', d3.autoType),
   ]);
+  const incomeRaw = incomeRows.filter(d => d?.code && !EXCLUDED_CODES.has(d.code));
+  const lifeRaw = lifeRows.filter(d => d?.code && !EXCLUDED_CODES.has(d.code));
+  const popRaw = popRows.filter(d => d?.code && !EXCLUDED_CODES.has(d.code));
 
   function buildMap(raw) {
     const m = {};
@@ -157,8 +161,12 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   ['Africa', 'Europe'].forEach(cont => {
     const row = legDiv.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('margin-bottom', '4px');
-    row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', CONT_COLOR[cont]).style('flex-shrink', '0').style('opacity', '0.8');
-    row.append('div').style('font-size', compact ? '8px' : '9px').style('color', CHART_LABEL).text(cont);
+    row.append('div').style('width', '10px').style('height', '10px').style('border-radius', '50%').style('background', CONT_COLOR[cont]).style('flex-shrink', '0').style('opacity', '0.9');
+    row.append('div')
+      .style('font-size', compact ? '8px' : '9px')
+      .style('font-weight', '600')
+      .style('color', CONT_COLOR[cont])
+      .text(cont);
   });
 
   legDiv.append('div').style('font-size', compact ? '7px' : '8px').style('font-weight', '700').style('color', CHART_AXIS).style('letter-spacing', '0.07em').style('text-transform', 'uppercase').style('margin-top', compact ? '6px' : '8px').style('margin-bottom', compact ? '4px' : '6px').text('Popolazione');
@@ -172,6 +180,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     row.append('div').style('font-size', compact ? '8px' : '9px').style('color', UI_MUTED_INK).text(p >= 1e6 ? `${(p/1e6).toFixed(0)}M` : p);
   });
 
+  const backgroundBubblesG = g.append('g');
   const bubblesG = g.append('g');
 
   // Tooltip
@@ -205,12 +214,34 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
         total: continentUniverse[continent]?.size || 0,
         meanIncome: rows.length ? d3.mean(rows, d => d.income) : null,
         meanLife: rows.length ? d3.mean(rows, d => d.lifeVal) : null,
+        totalPopulation: rows.length ? d3.sum(rows, d => d.pop) : null,
       };
     });
   }
 
   function showTooltipAt(event, html) {
     window.showHoverTooltip(tipEl, event, html);
+  }
+
+  function formatPopulationTotal(value) {
+    if (value == null || !Number.isFinite(value)) return 'N/D';
+    if (value >= 1e9) return `${(value / 1e9).toFixed(2)} mld`;
+    if (value >= 1e6) return `${(value / 1e6).toFixed(1)} M`;
+    if (value >= 1e3) return `${(value / 1e3).toFixed(1)} k`;
+    return d3.format(',.0f')(Math.round(value));
+  }
+
+  function getForegroundOpacity(d) {
+    if (!highlightContinent) return 0.72;
+    return d.continent === highlightContinent ? 0.9 : 0;
+  }
+
+  function syncBubbleLayerStyles(duration = 0) {
+    const selection = bubblesG.selectAll('circle');
+    const target = duration > 0
+      ? selection.transition().duration(duration)
+      : selection;
+    target.attr('opacity', d => getForegroundOpacity(d));
   }
 
   function draw(animate) {
@@ -224,17 +255,30 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     const excludedCount = Math.max(0, eligibleCountries.length - coverageCount);
     const dur = animate ? 450 : 0;
 
+    backgroundBubblesG.selectAll('circle').data(frame, d => d.code).join(
+      enter => enter.append('circle')
+        .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', 0)
+        .attr('fill', '#c9d2dc')
+        .attr('opacity', 0.28)
+        .attr('stroke', '#ffffff').attr('stroke-width', 0.35)
+        .style('pointer-events', 'none'),
+      update => update,
+      exit => exit.transition().duration(dur).attr('r', 0).remove()
+    ).transition().duration(dur)
+      .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', d => rS(d.pop))
+      .attr('opacity', highlightContinent ? 0.22 : 0.18);
+
     bubblesG.selectAll('circle').data(frame, d => d.code).join(
       enter => enter.append('circle')
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', 0)
         .attr('fill', d => CONT_COLOR[d.continent] || '#888')
-        .attr('opacity', d => highlightContinent ? (d.continent === highlightContinent ? 0.82 : 0.07) : 0.65)
+        .attr('opacity', d => getForegroundOpacity(d))
         .attr('stroke', '#fff').attr('stroke-width', 0.5).style('cursor', 'pointer'),
       update => update,
       exit => exit.transition().duration(dur).attr('r', 0).remove()
     ).transition().duration(dur)
       .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.lifeVal)).attr('r', d => rS(d.pop))
-      .attr('opacity', d => highlightContinent ? (d.continent === highlightContinent ? 0.82 : 0.07) : 0.65);
+      .attr('opacity', d => getForegroundOpacity(d));
 
     bubblesG.selectAll('circle')
       .on('mouseover', function(event, d) {
@@ -275,6 +319,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
               rows: [
                 { label: 'Reddito medio', value: item.meanIncome != null ? `$${d3.format(',.0f')(item.meanIncome)}` : 'N/D' },
                 { label: 'Aspettativa media', value: item.meanLife != null ? `${item.meanLife.toFixed(1)} anni` : 'N/D' },
+                { label: 'Popolazione totale', value: formatPopulationTotal(item.totalPopulation) },
                 { label: 'Copertura dati', value: `${item.covered}/${item.total} paesi` },
               ],
             })),
@@ -433,7 +478,8 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   container._gapminderAnimate = () => { stopPlay(); currentYear = YEAR_MIN; draw(false); startPlay(); };
   container._gapminderHighlightContinent = (c) => {
     highlightContinent = c;
-    bubblesG.selectAll('circle').attr('opacity', d => c ? (d.continent === c ? 0.82 : 0.07) : 0.65);
+    backgroundBubblesG.selectAll('circle').transition().duration(260).attr('opacity', c ? 0.22 : 0.18);
+    syncBubbleLayerStyles(260);
   };
   container._gapminderSwitchY = () => {};
   container._getHelpContext = () => ({

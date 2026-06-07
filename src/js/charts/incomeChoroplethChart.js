@@ -57,11 +57,13 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const CHORO_COLORS = ['#e3f0ff', '#b8d8ff', '#79b5f2', '#3f8fda', '#145ea8'];
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
+  const EXCLUDED_CODES = new Set(['RUS']);
 
-  const [incomeRaw, geoData] = await Promise.all([
+  const [incomeRows, geoData] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
   ]);
+  const incomeRaw = incomeRows.filter(d => d?.code && !EXCLUDED_CODES.has(d.code));
 
   const countries = topojson.feature(geoData, geoData.objects.countries).features;
 
@@ -269,11 +271,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .on('zoom', e => { mapGroup.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
     .on('end', () => svg.style('cursor', 'grab'));
   svg.call(zoom);
-
-  const africaFeatures = countries.filter((feature) => {
-    const code = numericToAlpha3[+feature.id] || '';
-    return code && codeToContinent[code] === 'Africa';
-  });
 
   function zoomToFeatureSet(features, options = {}) {
     if (!features?.length) return;
