@@ -1026,14 +1026,14 @@ input[type="range"]::-moz-range-thumb {
   background: linear-gradient(180deg, color-mix(in srgb, var(--control-muted) 28%, var(--surface-raised)) 0%, color-mix(in srgb, var(--surface-raised) 96%, var(--bg)) 100%);
 }
 .chart-title {
-  margin: 0;
+  margin: 0.3rem 0 0;
   font-size: var(--chart-title-size);
   font-weight: 700;
   line-height: 1.35;
   color: var(--ink);
 }
 .chart-subtitle {
-  margin: 0.2rem 0 0;
+  margin: 0.7rem 0 0;
   font-size: var(--chart-subtitle-size);
   line-height: 1.45;
   color: var(--ink-muted);
