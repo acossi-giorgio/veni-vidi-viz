@@ -122,6 +122,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   let viewType     = 'map';
   let playing      = false;
   let animTimer    = null;
+  let africaZoomTimer = null;
 
   const rawW = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 800);
   const rawH = container.clientHeight || (isFullscreen ? window.innerHeight * 0.8 : 480);
@@ -170,6 +171,71 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     });
   }
   updateViewToggle();
+
+  const AFRICA_CODES = new Set(incomeRaw.filter(d => d.value != null && d.continent === 'Africa' && d.code).map(d => d.code));
+  const africaFeatures = countries.filter(feature => AFRICA_CODES.has(numericToAlpha3[+feature.id] || ''));
+  const focusFeatures = countries.filter(feature => mappableCodes.has(numericToAlpha3[+feature.id] || ''));
+
+  function getFocusZoomTransform() {
+    if (!focusFeatures.length) return d3.zoomIdentity;
+    const bounds = geoPath.bounds({ type: 'FeatureCollection', features: focusFeatures });
+    const dx = bounds[1][0] - bounds[0][0];
+    const dy = bounds[1][1] - bounds[0][1];
+    const cx = (bounds[0][0] + bounds[1][0]) / 2;
+    const cy = (bounds[0][1] + bounds[1][1]) / 2;
+    const scale = Math.min(1.45, 0.88 / Math.max(dx / W, dy / H));
+    return d3.zoomIdentity.translate(W / 2 - scale * cx, H / 2 - scale * cy).scale(scale);
+  }
+
+  function getAfricaZoomTransform() {
+    if (!africaFeatures.length) return d3.zoomIdentity;
+    const bounds = geoPath.bounds({ type: 'FeatureCollection', features: africaFeatures });
+    const dx = bounds[1][0] - bounds[0][0];
+    const dy = bounds[1][1] - bounds[0][1];
+    const cx = (bounds[0][0] + bounds[1][0]) / 2;
+    const cy = (bounds[0][1] + bounds[1][1]) / 2;
+    const scale = Math.min(5.5, 0.9 / Math.max(dx / W, dy / H));
+    return d3.zoomIdentity.translate(W / 2 - scale * cx, H / 2 - scale * cy).scale(scale);
+  }
+
+  function cancelAfricaZoom() {
+    if (africaZoomTimer) {
+      clearTimeout(africaZoomTimer);
+      africaZoomTimer = null;
+    }
+  }
+
+  function showMapView({ autoplay = false, zoomAfrica = false, year = visibleYears[0] } = {}) {
+    cancelAfricaZoom();
+    stopPlay();
+    closePanel();
+    selectedCode = null;
+    currentYear = visibleYears.includes(year) ? year : visibleYears[0];
+    viewType = 'map';
+    updateViewToggle();
+    updateColors(false);
+    renderView();
+
+    if (zoomAfrica) {
+      africaZoomTimer = window.setTimeout(() => {
+        africaZoomTimer = null;
+        svg.transition().duration(500).call(zoom.transform, getAfricaZoomTransform());
+      }, 240);
+    } else {
+      svg.transition().duration(350).call(zoom.transform, getFocusZoomTransform());
+    }
+
+    if (autoplay) startPlay();
+  }
+
+  function showTrendView() {
+    cancelAfricaZoom();
+    stopPlay();
+    closePanel();
+    viewType = 'trend';
+    updateViewToggle();
+    renderView();
+  }
 
   // ── Map SVG ───────────────────────────────────────────────
   const mapDiv = d3.select(container).append('div')
@@ -886,40 +952,23 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   }
 
   updateColors(false);
+  svg.call(zoom.transform, getFocusZoomTransform());
 
   // ── DOM API ───────────────────────────────────────────────
   container._choroplethSetMetric = () => {};
   container._choroplethSetYear = (y) => { currentYear = y; updateColors(); };
-  container._choroplethShowMap = () => {
-    if (viewType === 'map') return;
-    viewType = 'map';
-    updateViewToggle();
-    renderView();
-  };
-  container._choroplethFocusAfrica = () => {
-    selectedCode = null;
-    viewType = 'map';
-    paths.attr('opacity', 1).attr('stroke-width', 0.35);
-    panel.style('display', 'none');
-    updateViewToggle();
-    renderView();
-    window.setTimeout(() => zoomToFeatureSet(africaFeatures), 220);
-  };
-  container._choroplethShowTrend = () => {
-    if (viewType === 'trend') return;
-    stopPlay();
-    viewType = 'trend';
-    updateViewToggle();
-    renderView();
-  };
+  container._choroplethShowPlayMap = () => showMapView({ autoplay: true });
+  container._choroplethShowTrend = () => showTrendView();
+  container._choroplethZoomAfrica = () => showMapView({ zoomAfrica: true, year: 2023 });
   container._choroplethReset = () => {
     stopPlay();
+    cancelAfricaZoom();
     selectedCode = null;
     currentYear  = visibleYears[0];
     viewType     = 'map';
     paths.attr('opacity', 1).attr('stroke-width', 0.35);
     panel.style('display', 'none');
-    svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
+    svg.transition().duration(400).call(zoom.transform, getFocusZoomTransform());
     updateColors(false);
     updateViewToggle();
     renderView();

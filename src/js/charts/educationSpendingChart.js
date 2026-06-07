@@ -397,6 +397,12 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   container._treemapShowPct   = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
   container._treemapShowAbs   = () => { viewMetric = 'abs'; updateMetricPills(); redraw(); };
   container._treemapHighlight = () => redraw();
+  container._treemapSetMetric = (m) => {
+    if (!['pct', 'abs'].includes(m)) return;
+    viewMetric = m;
+    updateMetricPills();
+    redraw();
+  };
   container._getHelpContext = () => ({
     viewMetric,
   });

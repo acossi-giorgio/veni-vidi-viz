@@ -89,6 +89,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
   let mode = 'africa'; // 'africa' | 'severe'
   let viewType = 'dist'; // 'dist' | 'map'
+  let mapFocusAfrica = false;
 
   if (typeof window.mountChartWarningHint === 'function') {
     window.mountChartWarningHint(container, `I dati mostrano l'ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
@@ -532,7 +533,9 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     const africaBounds = pathGen.bounds({ type: 'FeatureCollection', features: africaFeatures });
     const africaCx = (africaBounds[0][0] + africaBounds[1][0]) / 2;
     const africaCy = (africaBounds[0][1] + africaBounds[1][1]) / 2;
-    const zoomScale = compact ? 1.28 : 1.42;
+    const zoomScale = mapFocusAfrica
+      ? (compact ? 1.85 : 2.05)
+      : (compact ? 1.28 : 1.42);
     const initialTransform = d3.zoomIdentity
       .translate(iw / 2 - zoomScale * africaCx, ih / 2 - zoomScale * africaCy + (compact ? 6 : 10))
       .scale(zoomScale);
@@ -589,6 +592,13 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     draw();
   };
   container._mpiShowMap = () => {
+    mapFocusAfrica = false;
+    viewType = 'map';
+    updateToggle();
+    draw();
+  };
+  container._mpiZoomAfrica = () => {
+    mapFocusAfrica = true;
     viewType = 'map';
     updateToggle();
     draw();
