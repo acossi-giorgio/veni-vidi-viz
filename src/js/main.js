@@ -359,6 +359,7 @@ function initChartInteractionAnimations() {
     btn.classList.contains('missing-data-hint') ||
     btn.classList.contains('chart-dataset-hint') ||
     btn.classList.contains('chart-help-hint') ||
+    btn.classList.contains('player-control-btn') ||
     btn.classList.contains('act-segment');
 
   document.addEventListener('click', (event) => {
@@ -444,58 +445,7 @@ const MOBILE_ROTATED_CHARTS = new Set([
   'chart-5-1', // chord / migration flows
 ]);
 
-let MISSING_DATA_NOTES = {
-  'chart-1-1': [
-    'Paesi senza alcun dato — Reddito pro capite (2000-2023, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Reddito pro capite (2000-2023, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
-  ].join('\n'),
-  'chart-1-2': [
-    'Paesi senza alcun dato — Reddito pro capite (2000-2023, Africa+Europa): Gibraltar; Guernsey; Holy See; Jersey; Mayotte; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Reddito pro capite (2000-2023, Africa+Europa): Eritrea; Isle of Man; Liechtenstein; San Marino; South Sudan.',
-    'Paesi senza alcun dato — Aspettativa di vita (2000-2023, Africa+Europa): Svalbard & Jan Mayen Islands; Åland Islands.',
-    'Paesi con serie incompleta — Aspettativa di vita (2000-2023, Africa+Europa): nessuno.',
-    'Paesi senza alcun dato — Popolazione (2000-2023, Africa+Europa): Svalbard & Jan Mayen Islands; Åland Islands.',
-    'Paesi con serie incompleta — Popolazione (2000-2023, Africa+Europa): nessuno.',
-  ].join('\n'),
-  'chart-2-1': [
-    'Paesi senza alcun dato MPI (ultimo anno disponibile, Africa): Cape Verde; Djibouti; Equatorial Guinea; Eritrea; Mauritius; Somalia; South Sudan.',
-    'Paesi con serie incompleta: non applicabile (il grafico usa l\'ultimo valore disponibile per paese).',
-  ].join('\n'),
-  'chart-3-1': [
-    'Nota: la popolazione viene usata solo nella modalità "$ Assoluto" per stimare la spesa totale (spesa % PIL × reddito pro capite × popolazione).',
-    'Paesi senza alcun dato — Spesa istruzione % PIL (2000-2022, Africa+Europa): Equatorial Guinea; Faroe Islands; Gibraltar; Guernsey; Holy See; Isle of Man; Jersey; Libyan Arab Jamahiriya; Mayotte; Montenegro; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Spesa istruzione % PIL (2000-2022, Africa+Europa): Albania; Algeria; Andorra; Angola; Belarus; Belgium; Benin; Bosnia and Herzegovina; Botswana; Bulgaria; Burkina Faso; Burundi; Cameroon; Cape Verde; Central African Republic; Chad; Comoros; Congo; Croatia; Cyprus; Denmark; Djibouti; DR Congo; Egypt; Eritrea; Estonia; Eswatini; Ethiopia; France; Gabon; Germany; Ghana; Greece; Guinea; Guinea-Bissau; Ireland; Kazakhstan; Kenya; Latvia; Lesotho; Liberia; Liechtenstein; Lithuania; Luxembourg; Malawi; Mali; Malta; Mauritania; Monaco; Morocco; Mozambique; Namibia; Niger; Nigeria; North Macedonia; Portugal; Russia; Rwanda; San Marino; Sao Tome and Principe; Senegal; Serbia; Seychelles; Sierra Leone; Slovenia; Somalia; South Sudan; Sudan; Tanzania; Tunisia; Turkey; Uganda; Ukraine; United Kingdom; Zambia; Zimbabwe.',
-    'Paesi senza alcun dato — Vista assoluta (join spesa+reddito+popolazione, 2000-2022, Africa+Europa): Equatorial Guinea; Faroe Islands; Gibraltar; Guernsey; Holy See; Isle of Man; Jersey; Libyan Arab Jamahiriya; Mayotte; Montenegro; Reunion; Saint Helena; Svalbard & Jan Mayen Islands; Western Sahara; Åland Islands.',
-    'Paesi con serie incompleta — Vista assoluta (join spesa+reddito+popolazione, 2000-2022, Africa+Europa): Albania; Algeria; Andorra; Angola; Belarus; Belgium; Benin; Bosnia and Herzegovina; Botswana; Bulgaria; Burkina Faso; Burundi; Cameroon; Cape Verde; Central African Republic; Chad; Comoros; Congo; Croatia; Cyprus; Denmark; Djibouti; DR Congo; Egypt; Eritrea; Estonia; Eswatini; Ethiopia; France; Gabon; Germany; Ghana; Greece; Guinea; Guinea-Bissau; Ireland; Kazakhstan; Kenya; Latvia; Lesotho; Liberia; Liechtenstein; Lithuania; Luxembourg; Malawi; Mali; Malta; Mauritania; Monaco; Morocco; Mozambique; Namibia; Niger; Nigeria; North Macedonia; Portugal; Russia; Rwanda; San Marino; Sao Tome and Principe; Senegal; Serbia; Seychelles; Sierra Leone; Slovenia; Somalia; South Sudan; Sudan; Tanzania; Tunisia; Turkey; Uganda; Ukraine; United Kingdom; Zambia; Zimbabwe.',
-  ].join('\n'),
-  'chart-3-2': [
-    'Paesi senza alcun dato — GPI secondaria (2000-2024, Africa+Europa): Croatia; Djibouti; DR Congo; Equatorial Guinea; Ireland; Kosovo; Libyan Arab Jamahiriya; Monaco; Nigeria; Somalia; Tunisia; Zambia.',
-    'Paesi con serie incompleta — GPI secondaria (2000-2024, Africa+Europa): Albania; Algeria; Andorra; Angola; Austria; Belarus; Belgium; Benin; Bosnia and Herzegovina; Botswana; Bulgaria; Burkina Faso; Burundi; Cameroon; Cape Verde; Central African Republic; Chad; Comoros; Congo; Cote d\'Ivoire; Cyprus; Czechia; Denmark; Egypt; Eritrea; Estonia; Eswatini; Ethiopia; Finland; France; Gabon; Gambia; Germany; Ghana; Greece; Guinea; Guinea-Bissau; Hungary; Iceland; Italy; Kenya; Latvia; Lesotho; Liberia; Liechtenstein; Lithuania; Luxembourg; Madagascar; Malawi; Mali; Malta; Mauritania; Mauritius; Moldova; Montenegro; Morocco; Mozambique; Namibia; Netherlands; Niger; North Macedonia; Norway; Poland; Portugal; Romania; Russia; Rwanda; San Marino; Sao Tome and Principe; Senegal; Serbia; Seychelles; Sierra Leone; Slovakia; Slovenia; South Africa; South Sudan; Spain; Sudan; Sweden; Switzerland; Tanzania; Togo; Uganda; Ukraine; United Kingdom; Zimbabwe.',
-  ].join('\n'),
-  'chart-3-3': [
-    'Paesi senza alcun dato utile al grafico (join spesa+reddito+popolazione+alfabetizzazione, 2000-2022, solo Africa): Djibouti; Libyan Arab Jamahiriya.',
-    'Paesi con serie incompleta (almeno un anno mancante nello stesso join 2000-2022, solo Africa): Angola; Burundi; Benin; Burkina Faso; Botswana; Central African Republic; Cote d\'Ivoire; Cameroon; DR Congo; Congo; Comoros; Cape Verde; Algeria; Egypt; Eritrea; Ethiopia; Gabon; Ghana; Guinea; Gambia; Guinea-Bissau; Equatorial Guinea; Kenya; Liberia; Lesotho; Morocco; Madagascar; Mali; Mozambique; Mauritania; Mauritius; Malawi; Namibia; Niger; Nigeria; Rwanda; Sudan; Senegal; Sierra Leone; Somalia; South Sudan; Sao Tome and Principe; Eswatini; Seychelles; Chad; Togo; Tunisia; Tanzania; Uganda; South Africa; Zambia; Zimbabwe.',
-    'Nota: con questo join nessun paese africano ha copertura completa per tutti gli anni 2000-2022.',
-  ].join('\n'),
-  'chart-4-1': [
-    'Paesi senza alcun dato — Lavoro minorile (Africa): Botswana; Cape Verde; Djibouti; Equatorial Guinea; Eritrea; Libyan Arab Jamahiriya; Mauritius; Morocco; Namibia; Rwanda; Seychelles; Somalia; South Africa; South Sudan.',
-    'Paesi con dato lavoro minorile ma senza reddito nello stesso anno (join grafico): nessuno.',
-    'Paesi con serie incompleta: non applicabile (il grafico usa l\'ultimo dato survey disponibile per paese).',
-  ].join('\n'),
-  'chart-4-2': [
-    'Paesi senza alcun dato — Matrimoni precoci by18 (2000-2024, Africa+Europa): Andorra; Austria; Botswana; Bulgaria; Croatia; Cyprus; Czechia; Estonia; France; Germany; Greece; Hungary; Iceland; Ireland; Italy; Latvia; Libyan Arab Jamahiriya; Liechtenstein; Luxembourg; Malta; Mauritius; Monaco; Netherlands; Poland; Portugal; San Marino; Seychelles; Slovakia; Slovenia; Spain; Sweden; Switzerland.',
-    'Paesi con serie incompleta — Matrimoni precoci by18 (2000-2024, Africa+Europa): Albania; Algeria; Angola; Belarus; Belgium; Benin; Bosnia and Herzegovina; Burkina Faso; Burundi; Cameroon; Cape Verde; Central African Republic; Chad; Comoros; Congo; Cote d\'Ivoire; Denmark; Djibouti; DR Congo; Egypt; Equatorial Guinea; Eritrea; Eswatini; Ethiopia; Finland; Gabon; Gambia; Ghana; Guinea; Guinea-Bissau; Kenya; Kosovo; Lesotho; Liberia; Lithuania; Madagascar; Malawi; Mali; Mauritania; Moldova; Montenegro; Morocco; Mozambique; Namibia; Niger; Nigeria; North Macedonia; Norway; Romania; Russia; Rwanda; Sao Tome and Principe; Senegal; Serbia; Sierra Leone; Somalia; South Africa; South Sudan; Sudan; Tanzania; Togo; Tunisia; Uganda; Ukraine; United Kingdom; Zambia; Zimbabwe.',
-  ].join('\n'),
-  'chart-4-3': [
-    'Paesi senza alcun dato - FGM quintili (ultimo valore disponibile, Africa): in caricamento dal registro automatico.',
-    'Paesi con serie incompleta: non applicabile (dataset snapshot per paese).',
-  ].join('\n'),
-  'chart-5-1': [
-    'Paesi africani senza stock migratorio registrato verso destinazioni non africane nel 2020: Cape Verde; Comoros; Mauritius; Sao Tome and Principe; Seychelles.',
-    'Paesi africani con dato incompleto nel 2020: nessuno.',
-    'Codici non mappabili nella base geografica (scala 110m): nessuno (risolto in ETL).',
-  ].join('\n'),
-};
+let MISSING_DATA_NOTES = {};
 
 const CHART_HELP_NOTES = {
   'chart-1-1': [
@@ -531,12 +481,12 @@ const CHART_HELP_NOTES = {
   'chart-3-3': [
     'Il grafico si legge in due parti. Il pannello sopra mostra la traiettoria annuale dell\'Africa. Il pannello sotto sintetizza, anno per anno, il rapporto tra trend dell\'outcome e trend della spesa sulla finestra di aggregazione selezionata.',
     'Pannello sopra: ogni punto corrisponde a un anno aggregato per l\'Africa. L\'asse X usa la spesa in istruzione come valore assoluto stimato in USD. Sull\'asse Y trovi sempre un tasso percentuale.',
-    'Pannello sotto: qui vedi l\'indice corretto su una finestra fissa di 5 anni. L\'indice confronta il trend dell\'outcome con il trend della spesa nella stessa finestra.',
+    'Pannello sotto: qui vedi l\'indice corretto cumulativo dal 2000 all\'anno osservato. L\'indice confronta il trend medio dell\'outcome con il trend medio della spesa nello stesso periodo cumulato. La serie mostrata parte dal 2005, quando sono disponibili almeno 5 anni di storico.',
     'Formula: I = slope(Outcome) / |slope(Spesa)|',
-    'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate nella finestra selezionata. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
+    'Definizioni: slope(Outcome) e slope(Spesa) sono le pendenze medie stimate dal 2000 all\'anno t. Il valore assoluto al denominatore evita inversioni di segno quando la spesa diminuisce.',
     'Direzione outcome: con Alfabetizzazione, un aumento è positivo. Con Fuori scuola, una diminuzione è positiva: il segno viene quindi corretto internamente.',
-    'Interpretazione: se I > 0, l\'outcome migliora rispetto al trend della spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la dinamica media nella finestra. L\'asse dell\'indice usa una scala lineare centrata su zero.',
-    'Interazioni: usa i toggle per cambiare metrica e focus. Passa sui punti, sopra e sotto, per leggere valori annuali, finestra considerata e indice calcolato.'
+    'Interpretazione: se I > 0, l\'outcome migliora rispetto al trend della spesa. Se I < 0, peggiora. Più il valore si allontana da zero, più intensa è la dinamica media nel cumulato. L\'asse dell\'indice usa una scala lineare centrata su zero.',
+    'Interazioni: usa i toggle per cambiare metrica e focus. Passa sui punti, sopra e sotto, per leggere valori annuali, periodo cumulato e indice calcolato.'
   ].join('\n'),
   'chart-4-1': [
     'Scatter per paesi africani: ogni punto è un paese.',
@@ -619,15 +569,6 @@ const CHART_MISSING_DATASETS = {
   'chart-4-3': ['fgm_quintile_prevalence.csv'],
   'chart-5-1': ['migration.csv'],
 };
-const CHART_LATEST_VALUE_MISSING_NOTE = new Set([
-  'chart-2-1',
-  'chart-4-1',
-  'chart-4-2',
-  'chart-4-3',
-]);
-const CHART_MANUAL_MISSING_DATA_NOTES = new Set([
-  'chart-3-3',
-]);
 
 async function loadMissingDataNotesFromCsv() {
   try {
@@ -652,10 +593,6 @@ async function loadMissingDataNotesFromCsv() {
 
     const nextNotes = {};
     Object.entries(CHART_MISSING_DATASETS).forEach(([chartId, datasets]) => {
-      if (CHART_MANUAL_MISSING_DATA_NOTES.has(chartId)) {
-        nextNotes[chartId] = MISSING_DATA_NOTES[chartId];
-        return;
-      }
       const noDataSet = new Set();
       const incompleteSet = new Set();
       datasets.forEach((dataset) => {
@@ -667,10 +604,8 @@ async function loadMissingDataNotesFromCsv() {
       noDataSet.forEach((country) => incompleteSet.delete(country));
       const noData = Array.from(noDataSet).sort((a, b) => a.localeCompare(b));
       const incomplete = Array.from(incompleteSet).sort((a, b) => a.localeCompare(b));
-      const line1 = `PAESI SENZA DATI: ${noData.length ? noData.join(', ') : 'Nessuno.'}`;
-      const line2 = CHART_LATEST_VALUE_MISSING_NOTE.has(chartId)
-        ? 'PAESI CON DATI INCOMPLETI: Non necessario per questa visualizzazione. Il grafico mostra l\'ultimo valore disponibile per ciascun paese e i dati non sono necessariamente allineati allo stesso anno.'
-        : `PAESI CON DATI INCOMPLETI: ${incomplete.length ? incomplete.join(', ') : 'Nessuno.'}`;
+      const line1 = `Paesi senza alcun dato: ${noData.length ? noData.join(', ') : 'Nessuno.'}`;
+      const line2 = `Paesi con serie incompleta: ${incomplete.length ? incomplete.join(', ') : 'Nessuno.'}`;
       nextNotes[chartId] = [line1, line2].join('\n');
     });
 
@@ -773,12 +708,12 @@ const CHART_HELP_BUILDERS = {
     const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
     const xLabel = 'spesa in istruzione come valore assoluto stimato in USD';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
-    const windowYears = chart.aggregationWindow || 5;
+    const cumulativeStartYear = chart.cumulativeStartYear || 2000;
     return {
       sections: [
         {
           label: 'Descrizione del grafico',
-          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa e' espressa come valore assoluto stimato in USD, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa su una finestra di ${windowYears} anni.`,
+          text: `Il grafico si legge in due pannelli${focus}. In alto osservi la traiettoria annuale dell'Africa; la spesa e' espressa come valore assoluto stimato in USD, mentre cambia l'outcome selezionato. In basso leggi un indice che riassume come cambia ${outcome} rispetto al trend della spesa nel cumulato ${cumulativeStartYear}-t.`,
         },
         {
           label: 'Grafico sopra',
@@ -786,11 +721,11 @@ const CHART_HELP_BUILDERS = {
         },
         {
           label: 'Grafico sotto',
-          text: `Asse X = anno. Asse Y = indice corretto su ${windowYears} anni. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nella finestra che termina nell'anno t. In modalità Fuori scuola primaria, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente.`,
+          text: `Asse X = anno. Asse Y = indice cumulativo corretto ${cumulativeStartYear}-t. Formula: I = slope(Outcome) / |slope(Spesa)|. Il grafico confronta la pendenza media dell'outcome con la pendenza media della spesa nel periodo che va dal ${cumulativeStartYear} all'anno t. In modalità Fuori scuola primaria, una diminuzione viene trattata come miglioramento, quindi il segno viene corretto internamente. La serie visualizzata parte dal 2005, quando il cumulato raggiunge almeno 5 anni completi.`,
         },
         {
           label: 'Interazioni possibili',
-          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, finestra considerata, trend stimato e indice calcolato.',
+          text: 'Puoi cambiare continente e metrica con i pulsanti in alto. Passa sui punti del pannello sopra e sotto per leggere valori annuali, periodo cumulato, trend stimato e indice calcolato.',
         },
       ],
     };
@@ -1002,9 +937,15 @@ function triggerChartState(chartId, state, targetEl = null, options = {}) {
   }
 
   if (chartId === 'chart-3-1') {
-    if (state === 0 && el._treemapReset) el._treemapReset();
-    else if (state === 1 && el._treemapHighlight) el._treemapHighlight('Europe');
-    else if (state === 2 && el._treemapHighlight) el._treemapHighlight('Africa');
+    if (state === 0 && el._treemapShowPct) el._treemapShowPct();
+    else if (state === 1 && el._treemapShowAbs) el._treemapShowAbs();
+    else if (state === 2 && el._treemapShowPct) el._treemapShowPct();
+  }
+
+  if (chartId === 'chart-1-1') {
+    if (state === 1 && el._choroplethShowTrend) el._choroplethShowTrend();
+    else if (state === 2 && el._choroplethFocusAfrica) el._choroplethFocusAfrica();
+    else if (el._choroplethShowMap) el._choroplethShowMap();
   }
 
   if (chartId === 'chart-3-2') {

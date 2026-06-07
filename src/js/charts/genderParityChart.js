@@ -277,11 +277,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     g.append('text').attr('x', parX / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
       .attr('fill', COL_GIRLS).style('pointer-events','none')
-      .text('← Piu ragazze escluse');
+      .text('← Piu bambine escluse');
     g.append('text').attr('x', parX + (iw - parX) / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
       .attr('fill', COL_BOYS).style('pointer-events','none')
-      .text('Piu ragazzi esclusi →');
+      .text('Piu bambini esclusi →');
 
     xS.ticks(8).forEach(t => {
       g.append('line').attr('x1',xS(t)).attr('x2',xS(t)).attr('y1',0).attr('y2',ih)
@@ -342,8 +342,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
             { label: 'Mediana', value: cMed.toFixed(3) },
             { label: 'Min', value: cMin.toFixed(3) },
             { label: 'Max', value: cMax.toFixed(3) },
-            { label: 'Bambine escluse', value: `${nBelow}` },
-            { label: 'Bambini esclusi', value: `${nAbove}` },
+            { label: 'Piu bambine escluse', value: `${nBelow}` },
+            { label: 'Piu bambini escluse', value: `${nAbove}` },
             { label: 'Copertura dati', value: `${rows.length}/${continentTotals[cont]} paesi` },
           ],
         });
@@ -463,11 +463,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
 
     root.append('text').attr('x', hintLeftX).attr('y', hintY)
       .attr('text-anchor', 'end').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_GIRLS)
-      .text('← Piu ragazze escluse');
+      .text('← Piu bambine escluse');
 
     root.append('text').attr('x', hintRightX).attr('y', hintY)
       .attr('text-anchor', 'start').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_BOYS)
-      .text('Piu ragazzi esclusi →');
+      .text('Piu bambini esclusi →');
 
     /* horizontal gridlines */
     yS.ticks(6).forEach(t => {

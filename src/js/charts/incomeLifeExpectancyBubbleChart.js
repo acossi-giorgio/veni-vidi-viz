@@ -353,6 +353,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   });
 
   const btnPlay = ctrlWrap.append('button')
+    .attr('class', 'player-control-btn')
     .style('width', compact ? '32px' : '36px').style('height', compact ? '32px' : '36px').style('border-radius', '50%')
     .style('border', 'none').style('background', UI_ACTIVE).style('cursor', 'pointer')
     .style('display', 'flex').style('align-items', 'center').style('justify-content', 'center')

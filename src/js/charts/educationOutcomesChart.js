@@ -3,7 +3,7 @@
    Africa (corallo) / Europa (teal)  ·  2000–2023
    X = spesa istruzione (USD assoluti stimati)
    Y = alfabetizzazione % OR bambini fuori scuola (%)
-   Pannello sotto: rendimento marginale su finestra mobile quinquennale
+   Pannello sotto: rendimento marginale cumulativo 2000-t
    ============================================================ */
 async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
@@ -27,7 +27,8 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const HISTORY_MIN_YEAR = 1995;
   const DISPLAY_MIN_YEAR = 2000;
   const DISPLAY_MAX_YEAR = 2022;
-  const FIXED_AGGREGATION_WINDOW = 5;
+  const MIN_CUMULATIVE_SPAN_YEARS = 5;
+  const INDEX_START_YEAR = DISPLAY_MIN_YEAR + MIN_CUMULATIVE_SPAN_YEARS;
 
   /* ── Load data ──────────────────────────────────────────── */
   const [eduRaw, litRaw, oosRaw, incRaw, popRaw] = await Promise.all([
@@ -41,7 +42,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   if (typeof window.mountChartWarningHint === 'function') {
     window.mountChartWarningHint(
       container,
-      `Le serie usate per questo grafico possono essere incomplete anno per anno. Il pannello inferiore usa una finestra fissa di 5 anni e i punti aggregati riflettono solo i paesi con dati disponibili nella finestra considerata.`
+      `Le serie usate per questo grafico possono essere incomplete anno per anno. Il pannello inferiore usa un indice cumulativo dal 2000 all'anno osservato e i punti aggregati riflettono solo i paesi con dati disponibili nel periodo considerato.`
     );
   }
 
@@ -169,7 +170,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   /* ── State ──────────────────────────────────────────────── */
   let yMode     = 'literacy'; // 'literacy' | 'oos'
   let focusCont = 'Africa';
-  const aggregationWindow = FIXED_AGGREGATION_WINDOW;
   const compact = isFullscreen && (
     (container.clientWidth  || window.innerWidth  * 0.85) < 760 ||
     (container.clientHeight || window.innerHeight * 0.82) < 420
@@ -218,6 +218,58 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     const numer = d3.sum(pts, d => (d.year - meanX) * (d.value - meanY));
     const slope = numer / denom;
     return Number.isFinite(slope) ? slope : null;
+  }
+
+  function linearFit(windowPoints, accessor) {
+    const pts = windowPoints
+      .map(d => ({ year: d.year, value: accessor(d) }))
+      .filter(d => Number.isFinite(d.year) && Number.isFinite(d.value));
+    if (pts.length < 2) return null;
+    const meanX = d3.mean(pts, d => d.year);
+    const meanY = d3.mean(pts, d => d.value);
+    const denom = d3.sum(pts, d => (d.year - meanX) ** 2);
+    if (!Number.isFinite(denom) || denom < SLOPE_EPSILON) return null;
+    const numer = d3.sum(pts, d => (d.year - meanX) * (d.value - meanY));
+    const slope = numer / denom;
+    const intercept = meanY - (slope * meanX);
+    if (!Number.isFinite(slope) || !Number.isFinite(intercept)) return null;
+    return { slope, intercept };
+  }
+
+  function linearFitXY(series, xAccessor, yAccessor) {
+    const pts = series
+      .map(d => ({ x: xAccessor(d), y: yAccessor(d) }))
+      .filter(d => Number.isFinite(d.x) && Number.isFinite(d.y));
+    if (pts.length < 2) return null;
+    const meanX = d3.mean(pts, d => d.x);
+    const meanY = d3.mean(pts, d => d.y);
+    const denom = d3.sum(pts, d => (d.x - meanX) ** 2);
+    if (!Number.isFinite(denom) || denom < SLOPE_EPSILON) return null;
+    const numer = d3.sum(pts, d => (d.x - meanX) * (d.y - meanY));
+    const slope = numer / denom;
+    const intercept = meanY - (slope * meanX);
+    if (!Number.isFinite(slope) || !Number.isFinite(intercept)) return null;
+    return { slope, intercept };
+  }
+
+  function extendTrendSegment(fitStart, fitEnd, actualStart, actualEnd) {
+    const dx = fitEnd.x - fitStart.x;
+    const dy = fitEnd.y - fitStart.y;
+    const lenSq = (dx * dx) + (dy * dy);
+    if (!Number.isFinite(lenSq) || lenSq < SLOPE_EPSILON) return null;
+
+    const projectScalar = (pt) => (((pt.x - fitStart.x) * dx) + ((pt.y - fitStart.y) * dy)) / lenSq;
+    const scalars = [0, 1, projectScalar(actualStart), projectScalar(actualEnd)].filter(Number.isFinite);
+    const minScalar = d3.min(scalars);
+    const maxScalar = d3.max(scalars);
+    const pad = 0.08;
+
+    return {
+      startX: fitStart.x + ((minScalar - pad) * dx),
+      startY: fitStart.y + ((minScalar - pad) * dy),
+      endX: fitStart.x + ((maxScalar + pad) * dx),
+      endY: fitStart.y + ((maxScalar + pad) * dy),
+    };
   }
 
   function hideTip() { window.hideHoverTooltip(tooltip); }
@@ -313,7 +365,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       `${compactCoverage('Reddito', incomeLine.covered, incomeLine.total)}<br>` +
       `${compactCoverage('Popolazione', populationLine.covered, populationLine.total)}<br>` +
       `${compactCoverage(yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola primaria', outcomeLine.covered, outcomeLine.total)}<br>` +
-      `${compactCoverage('Aggregazione finale', effectiveLine.covered, effectiveLine.total)}`
+      `${compactCoverage('Aggregazione', effectiveLine.covered, effectiveLine.total)}`
     );
   }
 
@@ -329,7 +381,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       rows: [
         { label: 'Spesa', value: fmtXVal(xVal(point)) },
         { label: outcomeLabel, value: fmtYVal(yVal(point)) },
-        { label: 'Copertura dati finale', value: `${effectiveLine.covered}/${effectiveLine.total} paesi` },
+        { label: 'Copertura dati', value: `${effectiveLine.covered}/${effectiveLine.total} paesi` },
       ],
     };
   }
@@ -341,9 +393,9 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       titleColor: color,
       meta: `Anno: ${point.year}`,
       rows: [
-        { label: 'Finestra', value: `${point.prevYear}-${point.year}` },
+        { label: 'Periodo', value: `${point.startYear}-${point.year}` },
         { label: 'Indice I', value: fmtIndex(point.indexValue) },
-        { label: 'Aggregazione finale', value: `${effectiveLine.covered}/${effectiveLine.total} paesi` },
+        { label: 'Aggregazione', value: `${effectiveLine.covered}/${effectiveLine.total} paesi` },
       ],
     };
   }
@@ -398,8 +450,8 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       ? 'Traiettoria della spesa e dell alfabetizzazione in Africa'
       : 'Traiettoria della spesa e del tasso di fuori scuola primaria in Africa';
     const bottomPanelTitle = yMode === 'literacy'
-      ? `Indice di trend ${aggregationWindow}-annuale di spesa e alfabetizzazione in Africa`
-      : `Indice di trend ${aggregationWindow}-annuale di spesa e fuori scuola primaria in Africa`;
+      ? 'Indice cumulativo di spesa e alfabetizzazione in Africa'
+      : 'Indice cumulativo di spesa e fuori scuola primaria in Africa';
 
     const topMargin = compact
       ? { top: 30, right: 12, bottom: 42, left: 58 }
@@ -462,7 +514,8 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     const HOVER_LINE_DIM = 0.16;
     let activeHoverKey = null;
 
-    function setLinkedHover(keyOrKeys = null, bottomKey = null) {
+    let topTrendPreview = null;
+    function setLinkedHover(keyOrKeys = null, bottomKey = null, trendPoint = null) {
       const topKeys = Array.isArray(keyOrKeys)
         ? keyOrKeys.filter(Boolean)
         : (keyOrKeys ? [keyOrKeys] : []);
@@ -529,10 +582,39 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         const labelKey = el.attr('data-key');
         el.attr('opacity', showTopLabels && topKeySet.has(labelKey) ? 0.96 : 0);
       });
+
+      if (topTrendPreview) {
+        topTrendPreview.remove();
+        topTrendPreview = null;
+      }
+
+      if (trendPoint && Number.isFinite(trendPoint.trendStartX) && Number.isFinite(trendPoint.trendEndX) && Number.isFinite(trendPoint.trendStartY) && Number.isFinite(trendPoint.trendEndY)) {
+        topTrendPreview = g.append('line')
+          .attr('class', 'excl-top-trend-preview')
+          .attr('clip-path', `url(#${topClipId})`)
+          .attr('x1', xScale(trendPoint.trendStartX))
+          .attr('y1', yScale(trendPoint.trendStartY))
+          .attr('x2', xScale(trendPoint.trendEndX))
+          .attr('y2', yScale(trendPoint.trendEndY))
+          .attr('stroke', COLORS[trendPoint.continent] || CHART_AXIS)
+          .attr('stroke-width', compact ? 2 : 2.4)
+          .attr('stroke-dasharray', '7,5')
+          .attr('stroke-linecap', 'round')
+          .attr('opacity', 0.95)
+          .style('pointer-events', 'none');
+      }
     }
 
+    const topClipId = `edu-outcomes-top-clip-${isFullscreen ? 'fs' : 'sm'}-${yMode}`;
     const topSvg = vizDiv.append('svg').attr('width', W).attr('height', topPanelH)
       .style('display', 'block').style('font-family', 'inherit');
+    topSvg.append('defs').append('clipPath')
+      .attr('id', topClipId)
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', topIw)
+      .attr('height', topIh);
 
     const g = topSvg.append('g').attr('transform', `translate(${topMargin.left},${topMargin.top})`);
 
@@ -580,6 +662,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       const lineOpacity = focusCont ? (isFocus ? 0.82 : 0.18) : 0.74;
       const dotOpacity = focusCont ? (isFocus ? 1 : 0.22) : 1;
       const strokeOpacity = focusCont ? (isFocus ? 1 : 0.4) : 1;
+      const regressionOpacity = focusCont ? (isFocus ? 0.7 : 0.14) : 0.55;
 
       const pathEl = g.append('path').datum(pts).attr('d', line)
         .attr('class', 'excl-hover-line')
@@ -596,6 +679,26 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         .attr('stroke-dashoffset', totalLen)
         .transition().duration(TOP_LINE_DRAW_MS).ease(d3.easeCubicInOut)
         .attr('stroke-dashoffset', 0);
+
+      const regression = linearFitXY(pts, xVal, yVal);
+      if (regression) {
+        const [xStart, xEnd] = xScale.domain();
+        if (Number.isFinite(xStart) && Number.isFinite(xEnd)) {
+          g.append('line')
+            .attr('class', 'excl-top-regression-line')
+            .attr('clip-path', `url(#${topClipId})`)
+            .attr('x1', xScale(xStart))
+            .attr('y1', yScale(regression.intercept + (regression.slope * xStart)))
+            .attr('x2', xScale(xEnd))
+            .attr('y2', yScale(regression.intercept + (regression.slope * xEnd)))
+            .attr('stroke', col)
+            .attr('stroke-width', compact ? 1.6 : 1.9)
+            .attr('stroke-dasharray', '9,6')
+            .attr('stroke-linecap', 'round')
+            .attr('opacity', regressionOpacity)
+            .style('pointer-events', 'none');
+        }
+      }
 
       const R = SERIES_DOT_R;
       const hoverR = SERIES_DOT_R + (compact ? 3 : 4);
@@ -675,46 +778,72 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
 
     });
 
-    /* ── Bottom panel: index computed on rolling multi-year trends ── */
+    /* ── Bottom panel: cumulative index computed from 2000 to year t ── */
     const indexSeriesByCont = new Map();
     CONTS.forEach((cont) => {
       const xMetricKey = 'spendB';
       const series = points
         .filter(d => d.continent === cont && Number.isFinite(d[metricKey]) && Number.isFinite(d[xMetricKey]))
         .sort((a, b) => a.year - b.year);
+      const cumulativeSeries = series.filter(d => d.year >= DISPLAY_MIN_YEAR && d.year <= DISPLAY_MAX_YEAR);
       const indexSeries = [];
-      for (let i = aggregationWindow; i < series.length; i += 1) {
-        const prev = series[i - aggregationWindow];
-        const curr = series[i];
-        if (curr.year < DISPLAY_MIN_YEAR || curr.year > DISPLAY_MAX_YEAR) continue;
-        const windowPoints = series.slice(i - aggregationWindow, i + 1);
+      for (let i = 1; i < cumulativeSeries.length; i += 1) {
+        const start = cumulativeSeries[0];
+        const curr = cumulativeSeries[i];
+        const windowPoints = cumulativeSeries.slice(0, i + 1);
         const xSlope = linearSlope(windowPoints, d => d[xMetricKey]);
         const outcomeSlopeRaw = linearSlope(windowPoints, d => d[metricKey]);
+        const xFit = linearFit(windowPoints, d => d[xMetricKey]);
+        const outcomeFit = linearFit(windowPoints, d => d[metricKey]);
         if (!Number.isFinite(xSlope) || Math.abs(xSlope) < SLOPE_EPSILON || !Number.isFinite(outcomeSlopeRaw)) continue;
+        if (!xFit || !outcomeFit) continue;
         const outcomeSlopeCorrected = yMode === 'literacy' ? outcomeSlopeRaw : -outcomeSlopeRaw;
         const indexValue = outcomeSlopeCorrected / Math.abs(xSlope);
         if (!Number.isFinite(indexValue)) continue;
         const coverageWindow = buildCoverageLines(curr, windowPoints);
-        indexSeries.push({
+        const fitStart = {
+          x: xFit.intercept + (xFit.slope * start.year),
+          y: outcomeFit.intercept + (outcomeFit.slope * start.year),
+        };
+        const fitEnd = {
+          x: xFit.intercept + (xFit.slope * curr.year),
+          y: outcomeFit.intercept + (outcomeFit.slope * curr.year),
+        };
+        const extendedTrend = extendTrendSegment(
+          fitStart,
+          fitEnd,
+          { x: start[xMetricKey], y: start[metricKey] },
+          { x: curr[xMetricKey], y: curr[metricKey] },
+        );
+        if (!extendedTrend) continue;
+        const indexPoint = {
           continent: cont,
           year: curr.year,
+          startYear: start.year,
           eduPct: curr.eduPct,
           spendB: curr.spendB,
           litPct: curr.litPct,
           oosPct: curr.oosPct,
           rawOutcome: curr[metricKey],
-          prevOutcome: prev[metricKey],
-          prevYear: prev.year,
+          prevOutcome: start[metricKey],
+          prevYear: start.year,
           xMetricValue: curr[xMetricKey],
-          deltaXMetric: curr[xMetricKey] - prev[xMetricKey],
-          deltaOutcomeRaw: curr[metricKey] - prev[metricKey],
-          deltaOutcomeCorrected: yMode === 'literacy' ? (curr[metricKey] - prev[metricKey]) : -(curr[metricKey] - prev[metricKey]),
+          deltaXMetric: curr[xMetricKey] - start[xMetricKey],
+          deltaOutcomeRaw: curr[metricKey] - start[metricKey],
+          deltaOutcomeCorrected: yMode === 'literacy' ? (curr[metricKey] - start[metricKey]) : -(curr[metricKey] - start[metricKey]),
           xSlope,
           outcomeSlopeRaw,
           outcomeSlopeCorrected,
           indexValue,
           coverageWindow,
-        });
+          trendStartX: extendedTrend.startX,
+          trendEndX: extendedTrend.endX,
+          trendStartY: extendedTrend.startY,
+          trendEndY: extendedTrend.endY,
+        };
+        if (curr.year >= INDEX_START_YEAR) {
+          indexSeries.push(indexPoint);
+        }
       }
       indexSeriesByCont.set(cont, indexSeries);
     });
@@ -726,7 +855,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     if (!indexSeriesAll.length) return;
 
     const xYearExtent = d3.extent(indexSeriesAll, d => d.year);
-    const xYearMin = xYearExtent[0] ?? (2000 + aggregationWindow);
+    const xYearMin = INDEX_START_YEAR;
     const xYearMax = xYearExtent[1] ?? xYearMin;
     const xYearPad = xYearMin === xYearMax ? 1 : 0.2;
     const xYearScale = d3.scaleLinear()
@@ -775,7 +904,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .attr('transform', 'rotate(-90)')
       .attr('class', 'chart-axis-label').attr('x', -botIh / 2).attr('y', -42)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS)
-      .text(`Indice corretto (${aggregationWindow} anni)`);
+      .text('Indice cumulativo corretto (2000-t)');
 
     const lineTrend = d3.line()
       .defined(d => Number.isFinite(d.indexValue))
@@ -847,7 +976,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
         .attr('fill', 'rgba(255,255,255,0.001)')
         .style('pointer-events', 'all')
         .style('cursor', 'default')
-        .on('mouseenter', (e, d) => setLinkedHover([`${d.continent}|${d.prevYear}`, `${d.continent}|${d.year}`], `${d.continent}|${d.year}`))
+        .on('mouseenter', (e, d) => setLinkedHover([`${d.continent}|${d.prevYear}`, `${d.continent}|${d.year}`], `${d.continent}|${d.year}`, d))
         .on('mousemove', (e, d) => showTipHtml(e, buildBottomTooltipHtml(d, col, tooltipContext)))
         .on('mouseleave', () => { hideTip(); setLinkedHover(null); });
     });
@@ -869,6 +998,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
     xMode: currentXMode(),
     yMode,
     focusCont,
-    aggregationWindow,
+    cumulativeStartYear: DISPLAY_MIN_YEAR,
   });
 }

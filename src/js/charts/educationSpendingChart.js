@@ -349,6 +349,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       `;
       const africaCoverage = coverage?.stats?.find(item => item.cont === 'Africa') || { covered: 0, total: 0 };
       const europeCoverage = coverage?.stats?.find(item => item.cont === 'Europe') || { covered: 0, total: 0 };
+      const metricLabel = viewMetric === 'abs' ? 'Spesa totale' : 'Spesa media';
       window.showHoverTooltip(tipEl, event, {
         titleHtml,
         meta: `Anno: ${nearYear}`,
@@ -357,8 +358,12 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
             title: 'Africa',
             rows: [
               {
-                label: 'Spesa totale',
+                label: metricLabel,
                 value: meanByContYear.get(nearYear)?.Africa != null ? fmtY(meanByContYear.get(nearYear).Africa) : 'N/D',
+              },
+              {
+                label: 'Copertura dati',
+                value: `${africaCoverage.covered}/${africaCoverage.total} paesi`,
               },
             ],
           },
@@ -366,20 +371,11 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
             title: 'Europa',
             rows: [
               {
-                label: 'Spesa totale',
+                label: metricLabel,
                 value: meanByContYear.get(nearYear)?.Europe != null ? fmtY(meanByContYear.get(nearYear).Europe) : 'N/D',
               },
-            ],
-          },
-          {
-            title: 'Copertura dati',
-            rows: [
               {
-                label: 'Africa',
-                value: `${africaCoverage.covered}/${africaCoverage.total} paesi`,
-              },
-              {
-                label: 'Europa',
+                label: 'Copertura dati',
                 value: `${europeCoverage.covered}/${europeCoverage.total} paesi`,
               },
             ],
@@ -398,6 +394,8 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
   // ── DOM API ───────────────────────────────────────────────
   container._treemapReset     = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
+  container._treemapShowPct   = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
+  container._treemapShowAbs   = () => { viewMetric = 'abs'; updateMetricPills(); redraw(); };
   container._treemapHighlight = () => redraw();
   container._getHelpContext = () => ({
     viewMetric,

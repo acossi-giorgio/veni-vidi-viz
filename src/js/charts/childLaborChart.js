@@ -57,10 +57,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   // label all countries with data
 
   const QUADRANT = [
-    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero · alto lavoro minorile', color: RISK_HIGH, anchor: 'start'  },
-    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco · alto lavoro minorile',  color: RISK_MID, anchor: 'end'    },
-    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero · basso lavoro minorile',color: LOW_NEUTRAL, anchor: 'start'  },
-    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco · basso lavoro minorile', color: LOW_NEUTRAL_SOFT, anchor: 'end'    },
+    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero - alto lavoro minorile', color: RISK_HIGH, anchor: 'start'  },
+    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco - alto lavoro minorile',  color: RISK_MID, anchor: 'end'    },
+    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero - basso lavoro minorile',color: LOW_NEUTRAL, anchor: 'start'  },
+    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco - basso lavoro minorile', color: LOW_NEUTRAL_SOFT, anchor: 'end'    },
   ];
 
   function getQuadrant(d) {
@@ -236,12 +236,11 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       g.append('text').attr('x', lx).attr('y', ly)
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
-        .text(`${n} paesi`);
     });
 
     // ── Legend top-right — panel style ───────────────────────
     d3.select(containerNode).selectAll('.section-legend').remove();
-    const LEG_W = compact ? 148 : 180;
+    const LEG_W = compact ? 160 : 196;
     const legDiv = d3.select(containerNode).append('div')
       .attr('class', 'section-legend chart-legend')
       .style('position', 'absolute')
