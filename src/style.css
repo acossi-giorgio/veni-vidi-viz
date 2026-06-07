@@ -2896,7 +2896,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     pointer-events: auto;
     transform: translateY(0);
     max-height: calc(100dvh - 5.9rem);
-    margin-top: 0.75rem;
+    margin-top: 2.5rem;
     padding: 0.8rem;
     overflow-y: auto;
   }
