@@ -1,32 +1,32 @@
 # Veni Vidi Viz
 
-Progetto accademico di **Data Visualization** sviluppato nel **2026**.
+Academic **Data Visualization** project developed in **2026**.
 
-Il repository raccoglie una story-driven data visualization incentrata sul rapporto tra disuguaglianza economica, istruzione, infanzia e migrazione.  
-Il sito è costruito come applicazione statica con grafici interattivi realizzati principalmente con **HTML**, **CSS**, **JavaScript** e **D3.js**.
+This repository contains a story-driven data visualization focused on the relationship between economic inequality, education, childhood, and migration.  
+The website is built as a static application with interactive charts created mainly with **HTML**, **CSS**, **JavaScript**, and **D3.js**.
 
-## Progetto
+## Project
 
-- **Nome progetto:** Veni Vidi Viz
-- **Ambito:** progetto accademico per il corso di Data Visualization
-- **Anno:** 2026
+- **Project name:** Veni Vidi Viz
+- **Scope:** academic project for the Data Visualization course
+- **Year:** 2026
 - **Team:** Veni Vidi Viz
-- **Persone nel team:**
+- **Team members:**
   - Giorgio Acossi
   - Eleonora Ventura
 
-## Obiettivo
+## Objective
 
-Il progetto presenta una narrazione in quattro atti:
+The project presents a narrative in four acts:
 
-1. contesto economico e disuguaglianza
-2. istruzione e gap di genere
-3. costo umano della povertà
-4. migrazione come conseguenza sistemica
+1. economic context and inequality
+2. education and the gender gap
+3. the human cost of poverty
+4. migration as a systemic consequence
 
-L’obiettivo tecnico non è solo mostrare grafici, ma costruire una pipeline chiara che trasformi fonti eterogenee in dataset coerenti e pronti per il frontend.
+The technical goal is not only to show charts, but also to build a clear pipeline that transforms heterogeneous sources into consistent datasets ready for the frontend.
 
-## Stack Tecnico
+## Tech Stack
 
 - **Frontend**
   - HTML
@@ -39,31 +39,31 @@ L’obiettivo tecnico non è solo mostrare grafici, ma costruire una pipeline ch
   - pandas
   - openpyxl
 
-- **Esecuzione locale**
+- **Local run**
   - `live-server`
 
-## Avvio Locale
+## Local Setup
 
-Il progetto è statico: i file HTML/CSS/JS vengono serviti localmente senza build step.
+The project is static: the HTML/CSS/JS files are served locally without a build step.
 
-### Requisiti
+### Requirements
 
 - Node.js
 - Python
 
-### Avviare il sito
+### Run the website
 
 ```bash
 npm start
 ```
 
-Lo script apre il sito su:
+The script opens the website at:
 
 ```text
 http://localhost:5500/src/
 ```
 
-Se preferisci avviarlo manualmente:
+If you prefer to start it manually:
 
 ```bash
 npx live-server --port=5500 --open=/src/
@@ -71,31 +71,31 @@ npx live-server --port=5500 --open=/src/
 
 ## ETL
 
-I dataset **processati sono già storicizzati** nel repository sotto `src/datasets/processed/`, quindi per la consultazione normale non è necessario rieseguire l’ETL.
+The **processed datasets are already versioned** in the repository under `src/datasets/processed/`, so for normal use you do not need to run the ETL again.
 
-Se però vuoi rigenerare la pipeline, puoi lanciare lo script Python:
+If you want to regenerate the pipeline, you can run the Python script:
 
 ```bash
 python scripts/etl.py
 ```
 
-### Cosa fa lo script
+### What the script does
 
-- legge i file grezzi da `src/datasets/raw/`
-- pulisce e armonizza le variabili
-- normalizza i codici paese e le etichette geografiche
-- produce i CSV finali in `src/datasets/processed/`
+- reads the raw files from `src/datasets/raw/`
+- cleans and harmonizes the variables
+- normalizes country codes and geographic labels
+- produces the final CSV files in `src/datasets/processed/`
 
-### Nota operativa
+### Operational note
 
-Lo script ETL sovrascrive i file processati esistenti.  
-Se vuoi rifare la pipeline completa, assicurati di avere installato le dipendenze Python richieste:
+The ETL script overwrites the existing processed files.  
+If you want to rebuild the full pipeline, make sure the required Python dependencies are installed:
 
 ```bash
 pip install pandas openpyxl
 ```
 
-## Struttura Del Repository
+## Repository Structure
 
 ```text
 .
@@ -119,36 +119,36 @@ pip install pandas openpyxl
         └── processed
 ```
 
-### Dettaglio Cartelle
+### Folder Details
 
 - `src/`
-  - contiene il sito statico
-  - include le pagine HTML principali
-  - include lo stile globale
-  - include gli asset grafici e le immagini
+  - contains the static website
+  - includes the main HTML pages
+  - includes the global styling
+  - includes visual assets and images
 
 - `src/js/`
-  - contiene la logica applicativa del frontend
-  - `main.js` gestisce interazioni, narrativa e comportamento generale
-  - `common.js` centralizza la palette colori usata dai grafici
-  - `charts/` contiene i singoli moduli D3 per ciascuna visualizzazione
+  - contains the frontend application logic
+  - `main.js` handles interactions, narrative flow, and general behavior
+  - `common.js` centralizes the color palette used by the charts
+  - `charts/` contains the individual D3 modules for each visualization
 
 - `src/datasets/raw/`
-  - contiene le fonti grezze originali
-  - formati presenti: CSV e XLSX
+  - contains the original raw data sources
+  - available formats: CSV and XLSX
 
 - `src/datasets/processed/`
-  - contiene i dataset già trasformati e pronti per il frontend
-  - questi file sono quelli consumati dai grafici
+  - contains datasets that have already been transformed and are ready for the frontend
+  - these are the files consumed by the charts
 
 - `scripts/`
-  - contiene gli script di preparazione dati
-  - al momento il punto centrale è `etl.py`
+  - contains the data preparation scripts
+  - currently the main entry point is `etl.py`
 
-## Pipeline Dati
+## Data Pipeline
 
-La pipeline segue una logica semplice:
+The pipeline follows a simple logic:
 
-1. **Extract**: lettura delle fonti da `src/datasets/raw/`
-2. **Transform**: pulizia, standardizzazione, mapping dei paesi, controllo copertura temporale
-3. **Load**: scrittura dei CSV finali in `src/datasets/processed/`
+1. **Extract**: read the sources from `src/datasets/raw/`
+2. **Transform**: cleaning, standardization, country mapping, and temporal coverage checks
+3. **Load**: write the final CSV files to `src/datasets/processed/`
