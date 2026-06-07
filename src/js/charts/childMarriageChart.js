@@ -50,7 +50,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     ['Europe', new Set(continentUniverse.filter(d => d.continent === 'Europe').map(d => d.code))],
   ]);
   if (typeof window.mountChartWarningHint === 'function') {
-    window.mountChartWarningHint(container.node(), `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+    window.mountChartWarningHint(container.node(), `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range ${latestYearMin}-${latestYearMax}.`);
   }
 
   const AFRICA = getContinentColor('Africa', '#e66100');
@@ -179,7 +179,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         rows: [
           { label: 'Before 15', value: `${fmt(pct15, '%')} (${fmtN(n15Value)})` },
           { label: 'Before 18', value: `${fmt(pct18, '%')} (${fmtN(n18Value)})` },
-          { label: 'Data coverage', value: `${covered}/${total} countries` },
+          { label: 'Countries involved', value: `${covered}/${total} countries` },
         ]
       };
     }
@@ -357,14 +357,16 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         : { top: 44 + CONTROL_LANE_H, bottom: 96, left: 66, right: 8 };
     const chartH = frameH - PAD.top - PAD.bottom;
     const BAR_G  = mobileFullscreen ? 1 : 2;
-    const availW = frameW - PAD.left - PAD.right;
-    const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(22, (availW - BAR_G * (data.length - 1)) / data.length));
+    const LEGEND_W = mobileFullscreen ? 0 : (compact ? 136 : 156);
+    const LEGEND_GAP = mobileFullscreen ? 0 : (compact ? 12 : 18);
+    const plotAvailW = Math.max(220, frameW - PAD.left - PAD.right - LEGEND_W - LEGEND_GAP);
+    const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(22, (plotAvailW - BAR_G * (data.length - 1)) / data.length));
     const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
-    const totalW = PAD.left + barsW + PAD.right;
+    const contentW = PAD.left + barsW + PAD.right + LEGEND_GAP + LEGEND_W;
 
-    /* center bars if they fit within the container */
-    const svgW        = Math.max(frameW, totalW);
-    const barsOffsetX = svgW > totalW ? (svgW - totalW) / 2 : 0;
+    // Center the full block (axis + bars + legend), not only the bars.
+    const svgW = Math.max(frameW, contentW);
+    const contentOffsetX = svgW > contentW ? (svgW - contentW) / 2 : 0;
 
     vizDiv
       .style('overflow-x', svgW > W ? 'auto' : 'hidden')
@@ -425,7 +427,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       ? v => v >= 1e6 ? (v / 1e6).toFixed(0) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(0) + 'K' : v
       : v => v + '%';
 
-    const axisX = frameX + barsOffsetX + PAD.left;
+    const axisX = frameX + contentOffsetX + PAD.left;
+    const barsRightX = axisX + barsW;
 
     const yG = svg.append('g').attr('transform', `translate(${axisX},${frameY + PAD.top})`)
       .call(d3.axisLeft(yScale).ticks(5).tickFormat(yFmt).tickSize(-barsW));
@@ -651,7 +654,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .text(yLabelText);
 
     const xLabelText = 'Country';
-    const xLabelX = axisX + barsW / 2 + barsOffsetX;
+    const xLabelX = axisX + barsW / 2;
     // force X label to sit lower (closer to bottom edge) while staying inside svg
     const xLabelY = Math.min(H - 4, frameY + frameH - 6);
 
@@ -671,9 +674,9 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         { color: colorBy15, label: 'Before 15 years' },
         { color: colorBy18, label: 'Between 15 and 18 years'  },
       ];
-      const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
+      const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = LEGEND_W;
       const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
-      const LX = Math.min(frameX + svgW, axisX + barsW) - 4;
+      const LX = barsRightX + LEGEND_GAP + LW;
       const LY = frameY + PAD.top + 4;
       const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
       legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)

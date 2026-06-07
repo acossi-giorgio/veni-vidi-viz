@@ -408,7 +408,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
             { label: 'More girls excluded', value: `${nBelow}` },
             { label: 'In parity range', value: `${nParity}` },
             { label: 'More boys excluded', value: `${nAbove}` },
-            { label: 'Data coverage', value: `${rows.length}/${continentTotals[cont]} countries` },
+            { label: 'Countries involved', value: `${rows.length}/${continentTotals[cont]} countries` },
           ],
         });
       };

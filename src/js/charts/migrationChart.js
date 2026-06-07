@@ -1328,8 +1328,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     const noteCompact = W < 720 || H < 360;
     const noteLines = [
-      { label: 'Hover sul paese', value: 'mostra i flussi' },
-      { label: 'Click sul paese', value: 'apre il dettaglio' },
+      { label: 'Hover on the country', value: 'show the flows' },
+      { label: 'Click on the country', value: 'opens the details' },
     ];
     const note = wrap.append('div')
       .attr('class', 'migration-scale-note')

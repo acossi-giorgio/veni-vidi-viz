@@ -320,7 +320,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
                 { label: 'Average income', value: item.meanIncome != null ? `$${d3.format(',.0f')(item.meanIncome)}` : 'N/A' },
                 { label: 'Average life expectancy', value: item.meanLife != null ? `${item.meanLife.toFixed(1)} years` : 'N/A' },
                 { label: 'Total population', value: formatPopulationTotal(item.totalPopulation) },
-                { label: 'Data coverage', value: `${item.covered}/${item.total} countries` },
+                { label: 'Countries involved', value: `${item.covered}/${item.total} countries` },
               ],
             })),
           },

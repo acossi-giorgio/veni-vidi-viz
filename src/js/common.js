@@ -87,7 +87,7 @@ function escapeHtml(value) {
 
 function formatCoverageCount(covered, total, options = {}) {
   const {
-    label = 'Data coverage',
+    label = 'Countries involved',
     unit = 'countries',
     includePercent = false,
     precision = 0,
@@ -101,7 +101,7 @@ function formatCoverageCount(covered, total, options = {}) {
 
 function formatCoverageBlock(lines = [], options = {}) {
   const {
-    title = 'Data coverage',
+    title = 'Countries involved',
     titleTag = 'div',
     titleClass = 'tooltip-coverage__title',
     lineClass = 'tooltip-coverage__line',

@@ -131,7 +131,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
     return start <= latestYearMax && end >= latestYearMin;
   });
   if (typeof window.mountChartWarningHint === 'function') {
-    window.mountChartWarningHint(container, `I dati mostrano l'ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate, ma il grafico considera solo gli ultimi 10 anni, nel range ${latestYearMin}-${latestYearMax}.`);
+    window.mountChartWarningHint(container, `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range${latestYearMin}-${latestYearMax}.`);
   }
   if (!recentRows.length) {
     container.innerHTML = '<p style="padding:20px;color:#999;">Nessun valore FGM nel range recente disponibile.</p>';
@@ -745,7 +745,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
     drawLegendCard(svg, width - 158, height - 204, getRiskColor, noDataPattern);
     drawInteractionNote(stage, [
-      { label: 'Click sul paese', value: 'apre il dettaglio' },
+      { label: 'Click on the country', value: 'opens the details' },
     ]);
   }
 

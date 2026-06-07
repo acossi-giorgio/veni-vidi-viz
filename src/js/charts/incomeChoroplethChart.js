@@ -273,7 +273,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
 
   mountInteractionNote(mapDiv, [
-    { label: 'Click on a country', value: 'opens the detail view' },
+    { label: 'Click on a country', value: 'opens the details' },
   ]);
 
   const svg = mapDiv.append('svg')
@@ -829,7 +829,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
               title: cont,
               rows: [
                 { label: 'GDP per capita', value: v != null ? `$${d3.format(',.0f')(v)}` : 'N/A' },
-                { label: 'Data coverage', value: `${covered}/${total} countries` },
+                { label: 'Countries involved', value: `${covered}/${total} countries` },
               ],
             };
           }),

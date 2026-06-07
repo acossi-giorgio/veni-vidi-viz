@@ -92,7 +92,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   let mapFocusAfrica = false;
 
   if (typeof window.mountChartWarningHint === 'function') {
-    window.mountChartWarningHint(container, `I dati mostrano l'ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate, ma restano nel range ${latestYearMin}-${latestYearMax}.`);
+    window.mountChartWarningHint(container, `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range ${latestYearMin}-${latestYearMax}.`);
   }
 
   const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);

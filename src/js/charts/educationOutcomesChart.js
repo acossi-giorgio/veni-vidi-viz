@@ -33,7 +33,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   if (typeof window.mountChartWarningHint === 'function') {
     window.mountChartWarningHint(
       container,
-      'Le serie usate per questo grafico possono essere incomplete anno per anno. I punti aggregati riflettono solo i paesi africani con dati disponibili nello stesso anno.'
+      'The data series used for this chart may be incomplete for some years. The aggregated points reflect only those African countries for which data is available for that specific year.'
     );
   }
 
@@ -195,7 +195,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       rows: [
         { label: 'Spending', value: spendValue },
         { label: outcomeLabel, value: outcomeValue },
-        { label: 'Data coverage', value: coverage },
+        { label: 'Countries involved', value: coverage },
       ],
     }), {
       offsetX: 14,

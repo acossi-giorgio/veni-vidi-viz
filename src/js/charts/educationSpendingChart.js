@@ -362,7 +362,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
                 value: meanByContYear.get(nearYear)?.Africa != null ? fmtY(meanByContYear.get(nearYear).Africa) : 'N/D',
               },
               {
-                label: 'Data coverage',
+                label: 'Countries involved',
                 value: `${africaCoverage.covered}/${africaCoverage.total} countries`,
               },
             ],
@@ -375,7 +375,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
                 value: meanByContYear.get(nearYear)?.Europe != null ? fmtY(meanByContYear.get(nearYear).Europe) : 'N/D',
               },
               {
-                label: 'Data coverage',
+                label: 'Countries involved',
                 value: `${europeCoverage.covered}/${europeCoverage.total} countries`,
               },
             ],
