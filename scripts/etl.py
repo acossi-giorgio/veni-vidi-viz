@@ -169,19 +169,23 @@ def read_country_code_reference():
             "name": "country_official",
             "region": "region",
             "sub-region": "sub_region",
+            "intermediate-region": "intermediate_region",
             "country-code": "num",
         })
 
         def pick_continent(row):
             region = str(row.get("region", "")).strip()
             sub_region = str(row.get("sub_region", "")).strip()
+            intermediate_region = str(row.get("intermediate_region", "")).strip()
             code = str(row.get("code", "")).strip()
             country = str(row.get("country_official", "")).strip()
 
             if code == "ATA" or country == "Antarctica":
                 return "Oceania"
             if region == "Americas":
-                return "South America" if sub_region == "South America" else "North America"
+                if sub_region == "South America" or intermediate_region == "South America":
+                    return "South America"
+                return "North America"
             if region in {"Africa", "Asia", "Europe", "Oceania"}:
                 return region
             return region or None

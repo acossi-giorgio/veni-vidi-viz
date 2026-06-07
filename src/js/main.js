@@ -1299,6 +1299,7 @@ function initNavbar() {
   const actAnchors = Array.from(document.querySelectorAll('.act-header[data-act], .chart-section[data-act]'));
   const isHome = document.body.classList.contains('home-page');
   const hero = document.querySelector('.hero');
+  const isMobileNavbar = () => window.innerWidth <= 760;
   const homeTitle = isHome
     ? document.querySelector('.hero-title')?.textContent?.trim() || 'The weight of being born here'
     : '';
@@ -1343,7 +1344,9 @@ function initNavbar() {
   const closeMenu = () => {
     if (!toggle) return;
     navbar.classList.remove('is-open');
+    document.body.classList.remove('nav-open');
     toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Apri navigazione');
   };
 
   const closeStoryNav = () => {
@@ -1375,7 +1378,7 @@ function initNavbar() {
 
     if (!storyNav || !sectionLinks.length || !actAnchors.length) return;
 
-    const showStoryNav = isHome && !isInHero;
+    const showStoryNav = isHome && !isInHero && !isMobileNavbar();
     storyNav.hidden = !showStoryNav;
     if (!showStoryNav) {
       closeStoryNav();
@@ -1395,7 +1398,9 @@ function initNavbar() {
     toggle.addEventListener('click', () => {
       const nextExpanded = toggle.getAttribute('aria-expanded') !== 'true';
       navbar.classList.toggle('is-open', nextExpanded);
+      document.body.classList.toggle('nav-open', nextExpanded);
       toggle.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
+      toggle.setAttribute('aria-label', nextExpanded ? 'Chiudi navigazione' : 'Apri navigazione');
     });
 
     menu.querySelectorAll('a').forEach((link) => {
