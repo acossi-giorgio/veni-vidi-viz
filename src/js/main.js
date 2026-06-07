@@ -448,7 +448,7 @@ const DATASET_NOTES = {
     'Child marriage'
   ].join('\n'),
   'chart-4-3': [
-    'Female genital mutilation (FGM)'
+    'Female Genital Mutilation (FGM)'
   ].join('\n'),
   'chart-5-1': [
     'International migration'
