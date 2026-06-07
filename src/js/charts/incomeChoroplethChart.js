@@ -421,7 +421,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     legG.append('text')
       .attr('x', px).attr('y', py + 10)
       .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
-      .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE');
+      .attr('letter-spacing', '0.07em').text('PIL PRO CAPITE (USD)');
 
     const q = colorScale.quantiles(); // ascending cut points, length STEPS-1
     const bins = [];
@@ -526,7 +526,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .style('flex-shrink', '0').text('×').on('click', closePanel);
 
     if (!s) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
-    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite');
+    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite (USD)');
 
     const pw = PANEL_W - 28, ph = 170, pm = { top: 8, right: 22, bottom: 24, left: 48 };
     const iw = pw - pm.left - pm.right, ih = ph - pm.top - pm.bottom;
@@ -723,7 +723,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
       .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').remove(); });
     g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
-    g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite');
+    g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite (USD)');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
     const TREND_WINDOW = 5;

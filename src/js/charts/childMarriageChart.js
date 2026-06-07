@@ -351,14 +351,14 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const frameX = 0;
     const frameY = mobileFullscreen ? 8 : 0;
     const PAD    = mobileFullscreen
-      ? { top: 28 + CONTROL_LANE_H, bottom: 82, left: 36, right: 10 }
+      ? { top: 28 + CONTROL_LANE_H, bottom: 90, left: 58, right: 10 }
       : compact
-        ? { top: 40 + CONTROL_LANE_H, bottom: 76, left: 34, right: 6 }
-        : { top: 44 + CONTROL_LANE_H, bottom: 82, left: 42, right: 8 };
+        ? { top: 40 + CONTROL_LANE_H, bottom: 88, left: 56, right: 6 }
+        : { top: 44 + CONTROL_LANE_H, bottom: 96, left: 66, right: 8 };
     const chartH = frameH - PAD.top - PAD.bottom;
     const BAR_G  = mobileFullscreen ? 1 : 2;
     const availW = frameW - PAD.left - PAD.right;
-    const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(28, (availW - BAR_G * (data.length - 1)) / data.length));
+    const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(22, (availW - BAR_G * (data.length - 1)) / data.length));
     const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
     const totalW = PAD.left + barsW + PAD.right;
 
@@ -630,6 +630,40 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       clearActiveColumn();
       hideTip();
     });
+
+    /* ── Axis labels ─────────────────────────────────────── */
+    const yLabelText = dotMode
+      ? 'Donne sposate prima dei 15 e 18 anni (valore assoluto)'
+      : 'Donne sposate prima dei 15 e 18 anni (%)';
+    const yLabelOffset = compact ? 34 : 44;
+    // ensure Y label is inside the visible SVG area
+    const tentativeYLabelX = axisX - yLabelOffset;
+    const yLabelX = Math.max(12, tentativeYLabelX);
+    const yLabelY = frameY + PAD.top + chartH / 2;
+
+    svg.append('text')
+      .attr('class', 'chart-axis-label-y')
+      .attr('transform', `translate(${yLabelX},${yLabelY}) rotate(-90)`)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', compact ? 9 : 10)
+      .attr('font-weight', '600')
+      .attr('fill', CHART_AXIS)
+      .text(yLabelText);
+
+    const xLabelText = 'Paese';
+    const xLabelX = axisX + barsW / 2 + barsOffsetX;
+    // force X label to sit lower (closer to bottom edge) while staying inside svg
+    const xLabelY = Math.min(H - 4, frameY + frameH - 6);
+
+    svg.append('text')
+      .attr('class', 'chart-axis-label-x')
+      .attr('x', xLabelX)
+      .attr('y', xLabelY)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', compact ? 9 : 10)
+      .attr('font-weight', '600')
+      .attr('fill', CHART_AXIS)
+      .text(xLabelText);
 
     /* ── Legenda top-right ──────────────────────────────────── */
     if (!mobileFullscreen) {

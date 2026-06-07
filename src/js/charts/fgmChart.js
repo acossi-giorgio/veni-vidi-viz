@@ -225,6 +225,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
     const rect = target.getBoundingClientRect();
     const W = Math.max(300, rect.width || 420);
     const H = Math.max(260, rect.height || 320);
+    const showAxisLabels = Boolean(options.showAxisLabels);
     const isGrouped = Array.isArray(options.series) && options.series.length > 1;
     const series = isGrouped
       ? options.series
@@ -237,10 +238,10 @@ async function renderFgmChart(selector, isFullscreen = false) {
         }];
     const maxValue = options.maxValue || MAX_BAR_VALUE;
     const margin = {
-      top: 26,
+      top: showAxisLabels ? 26 : 26,
       right: isGrouped ? 20 : 12,
-      bottom: 52,
-      left: 54,
+      bottom: showAxisLabels ? 52 : 52,
+      left: showAxisLabels ? 54 : 54,
     };
     const innerW = Math.max(160, W - margin.left - margin.right);
     const innerH = Math.max(140, H - margin.top - margin.bottom);
@@ -287,6 +288,27 @@ async function renderFgmChart(selector, isFullscreen = false) {
         .attr('fill', CHART_LABEL)
         .attr('font-size', 10)
         .attr('font-weight', '700'));
+
+    if (showAxisLabels) {
+      chartG.append('text')
+        .attr('class', 'chart-axis-label-y')
+        .attr('transform', `translate(${-margin.left + 12},${innerH / 2}) rotate(-90)`)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 11)
+        .attr('font-weight', 600)
+        .attr('fill', CHART_AXIS)
+        .text('Ragazze africane minori di 14 anni che hanno subito FGM (%)');
+
+      chartG.append('text')
+        .attr('class', 'chart-axis-label-x')
+        .attr('x', innerW / 2)
+        .attr('y', innerH + Math.max(34, margin.bottom - 10))
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 11)
+        .attr('font-weight', 600)
+        .attr('fill', CHART_AXIS)
+        .text('Quintile di reddito');
+    }
 
     chartG.append('g')
       .call(d3.axisLeft(y).ticks(Math.min(6, Math.max(4, Math.floor(innerH / 50)))))
@@ -392,6 +414,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
         values: globalMean,
       }],
       maxValue: OVERVIEW_MAX_BAR_VALUE,
+      showAxisLabels: true,
       coverage: {
         'Media africana': {
           covered: recentRows.length,
@@ -444,7 +467,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .attr('font-weight', '700')
       .attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.04em')
-      .text('FGM MEDIA');
+      .text('FGM (%)');
 
     rowsLegend.forEach((row, i) => {
       const yy = rowsTop + i * (sh + gap);

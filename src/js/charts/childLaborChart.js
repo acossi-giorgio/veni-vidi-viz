@@ -304,10 +304,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
       .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-      .text(compact ? 'Reddito pro capite (USD, log)' : 'Reddito pro capite (USD, scala logaritmica) — Africa');
+      .text(compact ? 'Reddito pro capite (USD, log)' : 'PIL pro capite (USD, scala logaritmica)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
       .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-      .text('Lavoro minorile 5-17 anni (%)');
+      .text('Lavoro minorile (%)');
 
     // Count per quadrant (corners, below the quadrant label)
     qBg.forEach(({ x, y, w, h, q }) => {
