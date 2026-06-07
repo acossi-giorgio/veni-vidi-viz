@@ -22,8 +22,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const INTERACTION_HINT = getUiColor('chartAxis', '#8a94a6');
   const CONTS = ['Europe', 'Africa'];
   const EUROPE_TOTAL_EXCLUDED = new Set(['AND', 'LIE', 'MCO', 'SMR']);
@@ -216,43 +214,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         placed.push(placedNode);
         return placedNode;
       });
-  }
-
-  function computeOrderedDotplotLayout(items, xAccessor, centerY, radius, minY, maxY, options = {}) {
-    const padding = options.padding ?? 2;
-    const step = options.step ?? ((radius * 2) + padding);
-    const snap = options.snap ?? Math.max(0.008, (options.domainStep ?? 0.012));
-    const maxRows = Math.max(1, Math.floor((maxY - minY) / step));
-    const columns = new Map();
-
-    const sorted = items
-      .map(item => ({ item, rawX: xAccessor(item) }))
-      .sort((a, b) => a.rawX - b.rawX || String(a.item.code || '').localeCompare(String(b.item.code || '')));
-
-    sorted.forEach(node => {
-      const bucket = Math.round(node.rawX / snap) * snap;
-      if (!columns.has(bucket)) columns.set(bucket, []);
-      columns.get(bucket).push(node);
-    });
-
-    const layout = [];
-    columns.forEach((nodes, bucket) => {
-      const colX = bucket;
-      const slots = [centerY];
-      for (let level = 1; level <= maxRows; level += 1) {
-        const up = centerY - (level * step);
-        const down = centerY + (level * step);
-        if (up >= minY) slots.push(up);
-        if (down <= maxY) slots.push(down);
-      }
-
-      nodes.forEach((node, index) => {
-        const y = slots[index] ?? Math.max(minY, Math.min(maxY, centerY));
-        layout.push({ item: node.item, x: colX, y });
-      });
-    });
-
-    return layout;
   }
 
   function renderCurrentView(options = {}) {
@@ -486,7 +447,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const { animateBars: shouldAnimateBars = true } = options;
     const rows  = countries.filter(d => d.continent === cont).sort((a,b) => a.gpi - b.gpi);
     const color = COL[cont];
-    const gpis  = rows.map(d => d.gpi);
 
     const M  = compact
       ? { top: 44, right: 14, bottom: 92, left: 42 }

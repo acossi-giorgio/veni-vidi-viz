@@ -18,7 +18,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     '#4a2b1a',
   ];
   const COL_AFRICA = AFRICA_BASE;
-  const COL_GREY = getUiColor('chartBaseFill', '#d6d0c5');
   const UI_ACTIVE = getActColor(1, getUiColor('controlActive', '#525252'));
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
@@ -72,7 +71,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     .filter(d => d.continent === 'Africa')
     .sort((a, b) => b.value - a.value);
 
-  const africaCodes = new Set(africa.map(d => d.code));
   const maxValue = d3.max(allLatest, d => d.value) || 0.3;
   const scaleMax = Math.max(0.3, Math.ceil(maxValue * 20) / 20);
   const MPI_STEP = 0.05;
@@ -98,7 +96,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
-  const veryCompact = isFullscreen && (W < 620 || H < 360);
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
   // ── Toggle pills (top-left) ────────────────────────────────
@@ -140,10 +137,6 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const MARGIN_DIST = compact
     ? { top: 14, right: 24, bottom: 38, left: 52 }
     : { top: 16, right: 40, bottom: 44, left: 68 };
-  const MARGIN_MAP = compact
-    ? { top: 12, right: 24, bottom: 42, left: 24 }
-    : { top: 18, right: 32, bottom: 52, left: 32 };
-
   // Scrollable area
   const scrollWrap = d3.select(container).append('div')
     .style('position', 'absolute').style('top', PILL_H + 'px').style('left', '0')
@@ -346,10 +339,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
 
     const dirInk = shadeColor(COL_AFRICA, 0.18);
     const dirFont = compact ? 9 : 10;
-    const arrowY = compact ? 14 : 16;
     const arrowX2 = iw - 8;
-    const arrowX1 = arrowX2 - (compact ? 108 : 140);
-    const arrowHead = compact ? 6 : 7;
 
     g.append('text')
       .attr('x', arrowX2)

@@ -19,9 +19,6 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
-  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   const BASE_PLAYER_H = 72;
   const EXCLUDED_CODES = new Set(['RUS']);
 
@@ -147,7 +144,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .style('pointer-events', 'all');
 
   // ── Legend (bottom-right above player, choropleth style) ─
-  const LEG_W = compact ? 96 : 120, LEG_H = compact ? 84 : 106;
+  const LEG_W = compact ? 96 : 120;
   const legDiv = d3.select(container).append('div')
     .attr('class', 'chart-legend')
     .style('position', 'absolute')
@@ -246,13 +243,6 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   function draw(animate) {
     const frame = getFrame(currentYear);
-    const incomeYear = incomeMap[currentYear] || {};
-    const eligibleCountries = Object.keys(incomeYear).filter((code) => {
-      const cont = codeContinent[code];
-      return cont === 'Africa' || cont === 'Europe';
-    });
-    const coverageCount = frame.length;
-    const excludedCount = Math.max(0, eligibleCountries.length - coverageCount);
     const dur = animate ? 450 : 0;
 
     backgroundBubblesG.selectAll('circle').data(frame, d => d.code).join(

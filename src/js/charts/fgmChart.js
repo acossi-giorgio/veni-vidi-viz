@@ -9,18 +9,14 @@ async function renderFgmChart(selector, isFullscreen = false) {
   container.style.cssText += ';position:relative;font-family:inherit;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;width:100%;height:100%;min-width:0;min-height:0;align-items:stretch;justify-content:flex-start;';
 
   const UI_ACTIVE = getActColor(3, getUiColor('controlActive', '#525252'));
-  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
-  const CHART_PANEL = getUiColor('chartPanel', 'rgba(255,253,249,0.96)');
   const CHART_BASE = getUiColor('chartBaseFill', '#d6d0c5');
   const CHART_WATER = '#ffffff';
   const CHART_NODATA = getUiColor('chartNoDataFill', '#c3baad');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
   // Manteniamo una scala arancione esplicita per la choropleth FGM.
   const RISK_STOPS = ['#fff1df', '#fdc980', '#f59e42', '#e97817', '#b8550f'];
   const HIGHLIGHT = shadeColor(UI_ACTIVE, 0.2);

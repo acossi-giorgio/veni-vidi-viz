@@ -22,8 +22,6 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
 
   const clMap = new Map();
   clRaw.forEach(d => {

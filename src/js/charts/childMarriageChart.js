@@ -65,8 +65,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
-  const TOOLTIP_BG = getUiColor('chartTooltipBg', 'rgba(28, 25, 23, 0.94)');
-  const TOOLTIP_INK = getUiColor('chartTooltipInk', '#fffdf8');
 
   let drillDown = false;
   let dotMode   = false;
@@ -136,7 +134,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const afNTot = d3.sum(africa, d => d.by18_n / (d.by18_pct / 100));
     const af15   = afNTot > 0 ? afN15 / afNTot * 100 : 0;
     const af18   = afNTot > 0 ? afN18 / afNTot * 100 : 0;
-    const n      = africa.length;
 
     const europe = filteredRaw.filter(d => d.continent === 'Europe' && d.by18_pct != null && d.by18_n != null && d.by18_pct > 0);
     const euN15  = d3.sum(europe, d => d.by15_n ?? 0);
@@ -172,7 +169,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('preserveAspectRatio', scaledMobileOverview ? 'xMidYMid meet' : 'none')
       .style('display', 'block').style('font-family', 'inherit');
 
-    function buildOverviewTooltip({ continent, titleColor, by15Color, by18Color, pct15, pct18, n15Value, n18Value, covered, total, showHint = false }) {
+    function buildOverviewTooltip({ continent, titleColor, pct15, pct18, n15Value, n18Value, covered, total }) {
       return {
         title: continent,
         titleColor,
@@ -231,21 +228,16 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const africaTooltipHtml = buildOverviewTooltip({
       continent: 'Africa',
       titleColor: AFRICA,
-      by15Color: C_BY15,
-      by18Color: C_BY18,
       pct15: af15,
       pct18: af18,
       n15Value: afN15,
       n18Value: afN18,
       covered: africa.length,
       total: continentTotals.get('Africa')?.size || 0,
-      showHint: true,
     });
     const europeTooltipHtml = buildOverviewTooltip({
       continent: 'Europe',
       titleColor: EUROPE,
-      by15Color: C_EU_BY15,
-      by18Color: C_EU_BY18,
       pct15: eu15,
       pct18: eu18,
       n15Value: euN15,
@@ -331,7 +323,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const colorBy15 = isEurope ? C_EU_BY15 : C_BY15;
     const colorBy18 = isEurope ? C_EU_BY18 : C_BY18;
     const titleColor = isEurope ? EUROPE : AFRICA;
-    const continentLabel = isEurope ? 'Europe' : 'Africa';
 
     data.forEach(d => {
       if (d.by18_pct > 0 && d.by18_n != null) {

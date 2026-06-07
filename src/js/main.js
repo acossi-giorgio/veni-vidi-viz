@@ -4,33 +4,10 @@
    ============================================================ */
 
 /* ── Utilities ───────────────────────────────────────────── */
-async function loadData(path) {
-  try {
-    const res = await fetch(path);
-    if (!res.ok) { console.error(`Failed to load ${path}:`, res.statusText); return []; }
-    return parseCSV(await res.text());
-  } catch (e) { console.error(`Error loading ${path}:`, e); return []; }
-}
-
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (!lines.length) return [];
-  const headers = lines[0].split(',').map(h => h.trim());
-  return lines.slice(1).filter(l => l.trim()).map(line => {
-    const vals = line.split(',').map(v => v.trim());
-    const row = {};
-    headers.forEach((h, i) => { row[h] = isNaN(vals[i]) ? vals[i] : Number(vals[i]); });
-    return row;
-  });
-}
 
 function debounce(fn, ms) {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
-}
-
-function formatNumber(n, d = 0) {
-  return new Intl.NumberFormat('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 }
 
 function getCssToken(name, fallback = '') {
@@ -436,12 +413,6 @@ function initHeroCarousel() {
   startAutoRotate();
 }
 
-const MOBILE_ROTATED_CHARTS = new Set([
-  'chart-1-1', // choropleth + controls
-  'chart-4-2', // map / regional trend hybrid
-  'chart-5-1', // chord / migration flows
-]);
-
 const DATASET_NOTES = {
   'chart-1-1': [
     'Income per capita'
@@ -587,7 +558,6 @@ const CHART_HELP_BUILDERS = {
       : 'Hover over points to read details and click on a continent to enter the country drill-down.',
   }),
   'chart-3-3': ({ chart }) => {
-    const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
     const outcomeLabel = chart.yMode === 'oos' ? 'primary out-of-school rate' : 'literacy';
     const xLabel = 'education spending as an estimated absolute value in USD';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
@@ -657,25 +627,12 @@ const CHART_HELP_BUILDERS = {
   },
 };
 
-const MISSING_DATA_ICON = `
-  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <ellipse cx="12" cy="5.5" rx="7.25" ry="2.75"></ellipse>
-    <path d="M4.75 5.5v5.2c0 1.5 3.25 2.75 7.25 2.75s7.25-1.25 7.25-2.75V5.5"></path>
-    <path d="M4.75 10.7v5.2c0 1.5 3.25 2.75 7.25 2.75s7.25-1.25 7.25-2.75v-5.2"></path>
-    <path d="M5 19l14-14"></path>
-  </svg>
-`;
-
 const DATASET_ICON = `
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <rect x="4.5" y="5.5" width="15" height="13" rx="2"></rect>
     <path d="M4.5 10h15M9.5 5.5v13M14.5 5.5v13"></path>
   </svg>
 `;
-
-function shouldRotateMobileChart(chartId) {
-  return MOBILE_ROTATED_CHARTS.has(chartId);
-}
 
 function syncMobilePlaceholder(chartId) {
   const chartEl = document.getElementById(chartId);
@@ -919,14 +876,74 @@ function initNarrativeCards() {
 }
 
 function initMissingDataHints() {
-  const setHintModalPayload = (btn, title, bodyText) => {
-    const lines = String(bodyText || '')
-      .split('\n')
-      .map(line => line.trim())
-      .filter(Boolean);
-    btn.dataset.modalTitle = title;
-    btn.dataset.modalLines = JSON.stringify(lines);
-    btn.setAttribute('aria-haspopup', 'dialog');
+  const DATASET_TOOLTIP_TITLE = 'Datasets used';
+  const datasetTooltip = window.ensureHoverTooltip('chart-dataset-tooltip', {
+    className: 'chart-hover-tooltip chart-hover-tooltip--light chart-dataset-tooltip',
+    maxWidth: 'min(92vw, 24rem)',
+  });
+  let activeDatasetHint = null;
+
+  const parseDatasetLines = (bodyText) => String(bodyText || '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  const getDatasetTooltipLines = (triggerBtn) => {
+    if (!triggerBtn) return [];
+    try {
+      const parsed = JSON.parse(triggerBtn.dataset.tooltipLines || '[]');
+      if (Array.isArray(parsed)) return parsed.map(line => String(line || '').trim()).filter(Boolean);
+    } catch (err) {
+      // Fall back to plain-text parsing if the dataset payload is not valid JSON.
+    }
+    return parseDatasetLines(triggerBtn.dataset.tooltipLines || '');
+  };
+
+  const positionDatasetTooltip = (triggerBtn) => {
+    if (!triggerBtn) return;
+    const rect = triggerBtn.getBoundingClientRect();
+    window.positionHoverTooltip(datasetTooltip, {
+      clientX: rect.right,
+      clientY: rect.top + (rect.height / 2),
+    }, {
+      offsetX: 12,
+      offsetY: -18,
+      margin: 12,
+    });
+  };
+
+  const hideDatasetTooltip = () => {
+    if (activeDatasetHint) activeDatasetHint.setAttribute('aria-expanded', 'false');
+    activeDatasetHint = null;
+    window.hideHoverTooltip(datasetTooltip);
+  };
+
+  const showDatasetTooltip = (triggerBtn) => {
+    if (!triggerBtn) return;
+    const rows = getDatasetTooltipLines(triggerBtn);
+    if (!rows.length) {
+      hideDatasetTooltip();
+      return;
+    }
+    if (activeDatasetHint && activeDatasetHint !== triggerBtn) {
+      activeDatasetHint.setAttribute('aria-expanded', 'false');
+    }
+    activeDatasetHint = triggerBtn;
+    triggerBtn.setAttribute('aria-expanded', 'true');
+    window.showHoverTooltip(datasetTooltip, {
+      clientX: triggerBtn.getBoundingClientRect().right,
+      clientY: triggerBtn.getBoundingClientRect().top + (triggerBtn.getBoundingClientRect().height / 2),
+    }, {
+      title: DATASET_TOOLTIP_TITLE,
+      rows: rows.map(line => ({
+        html: `<span class="chart-dataset-tooltip__item">${window.escapeHtml(line)}</span>`,
+      })),
+    }, {
+      offsetX: 12,
+      offsetY: -18,
+      margin: 12,
+    });
+    positionDatasetTooltip(triggerBtn);
   };
 
   const mountDatasetHint = (host, chartId) => {
@@ -942,8 +959,26 @@ function initMissingDataHints() {
     datasetBtn.type = 'button';
     datasetBtn.className = 'chart-dataset-hint';
     datasetBtn.setAttribute('aria-label', 'Datasets used');
+    datasetBtn.setAttribute('aria-expanded', 'false');
     datasetBtn.innerHTML = DATASET_ICON;
-    setHintModalPayload(datasetBtn, 'Datasets used', datasetNote);
+    datasetBtn.dataset.tooltipLines = JSON.stringify(parseDatasetLines(datasetNote));
+    datasetBtn.addEventListener('mouseenter', () => showDatasetTooltip(datasetBtn));
+    datasetBtn.addEventListener('focus', () => showDatasetTooltip(datasetBtn));
+    datasetBtn.addEventListener('mousemove', () => positionDatasetTooltip(datasetBtn));
+    datasetBtn.addEventListener('mouseleave', () => {
+      if (activeDatasetHint === datasetBtn && document.activeElement !== datasetBtn) hideDatasetTooltip();
+    });
+    datasetBtn.addEventListener('blur', () => {
+      window.setTimeout(() => {
+        if (document.activeElement !== datasetBtn && activeDatasetHint === datasetBtn) hideDatasetTooltip();
+      }, 0);
+    });
+    datasetBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (activeDatasetHint === datasetBtn) hideDatasetTooltip();
+      else showDatasetTooltip(datasetBtn);
+    });
     host.appendChild(datasetBtn);
   };
 
@@ -970,6 +1005,24 @@ function initMissingDataHints() {
   });
 
   window.mountDatasetHint = mountDatasetHint;
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!activeDatasetHint) return;
+    if (event.target.closest('.chart-dataset-hint') === activeDatasetHint) return;
+    hideDatasetTooltip();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && activeDatasetHint) hideDatasetTooltip();
+  });
+
+  window.addEventListener('scroll', () => {
+    if (activeDatasetHint) positionDatasetTooltip(activeDatasetHint);
+  }, { passive: true });
+
+  window.addEventListener('resize', () => {
+    if (activeDatasetHint) positionDatasetTooltip(activeDatasetHint);
+  });
 }
 
 function initChartInfoModal() {
@@ -1125,7 +1178,7 @@ function initChartInfoModal() {
   };
 
   document.addEventListener('click', (event) => {
-    const trigger = event.target.closest('.chart-dataset-hint, .chart-help-hint');
+    const trigger = event.target.closest('.chart-help-hint');
     if (!trigger) return;
     event.preventDefault();
     event.stopPropagation();

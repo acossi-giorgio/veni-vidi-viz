@@ -53,7 +53,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
-  const CHART_PANEL = getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)');
   const CHORO_COLORS = ['#e3f0ff', '#b8d8ff', '#79b5f2', '#3f8fda', '#145ea8'];
   const CONT_ORDER = ['Africa', 'Europe'];
   const INTERACTIVE_CONTINENTS = new Set(CONT_ORDER);
@@ -304,24 +303,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .on('end', () => svg.style('cursor', 'grab'));
   svg.call(zoom);
 
-  function zoomToFeatureSet(features, options = {}) {
-    if (!features?.length) return;
-    const {
-      maxScale = 2.1,
-      padding = compact ? 28 : 44,
-      duration = 520,
-    } = options;
-    const collection = { type: 'FeatureCollection', features };
-    const [[x0, y0], [x1, y1]] = geoPath.bounds(collection);
-    const width = Math.max(1, x1 - x0);
-    const height = Math.max(1, y1 - y0);
-    const scale = Math.max(1, Math.min(maxScale, 0.92 / Math.max(width / W, height / H)));
-    const tx = (W - scale * (x0 + x1)) / 2;
-    const ty = (H - scale * (y0 + y1)) / 2 + (compact ? 8 : 14);
-    const transform = d3.zoomIdentity.translate(tx, ty).scale(scale);
-    svg.transition().duration(duration).call(zoom.transform, transform);
-  }
-
   const tipEl = window.ensureHoverTooltip('income-choropleth-tooltip');
 
   const colorScale = d3.scaleQuantile().range(CHORO_COLORS);
@@ -330,16 +311,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     const ys = incomeYears;
     const best = ys.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
     return incomeMap[best] || {};
-  }
-
-  function getYearDomain(data) {
-    const yearVals = Object.entries(data)
-      .filter(([code, v]) => mappableCodes.has(code) && v != null && v > 0)
-      .map(([, v]) => v);
-    const [lo, hi] = d3.extent(yearVals);
-    if (lo == null || hi == null) return [0, 1];
-    if (lo === hi) return [Math.max(0, lo - 1), hi + 1];
-    return [lo, hi];
   }
 
   function getYearValues(data) {
@@ -353,13 +324,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     if (v >= 1e3) return `$${Math.round(v / 1e3)}k`;
     return `$${Math.round(v)}`;
   }
-  function fmtRatio(v) {
-    if (!isFinite(v) || v <= 0) return 'x-';
-    if (v >= 100) return `x${Math.round(v)}`;
-    if (v >= 10) return `x${v.toFixed(1)}`;
-    return `x${v.toFixed(2)}`;
-  }
-
   function isInteractiveCountry(code) {
     return INTERACTIVE_CONTINENTS.has(codeToContinent[code]);
   }
@@ -726,19 +690,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('GDP per capita (USD)');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
-    const TREND_WINDOW = 5;
-    function movingAverage(series, windowSize = TREND_WINDOW) {
-      const half = Math.floor(windowSize / 2);
-      return series.map((d, i) => {
-        const start = Math.max(0, i - half);
-        const end = Math.min(series.length - 1, i + half);
-        const avgVals = series.slice(start, end + 1)
-          .map(p => p.mean)
-          .filter(v => v != null && isFinite(v) && v > 0);
-        return { year: d.year, mean: avgVals.length ? d3.mean(avgVals) : null };
-      });
-    }
-
     CONT_ORDER.forEach((continent, ci) => {
       const stats = (incomeStats.get(continent) || []).filter(pt => pt.year >= 2000 && pt.year <= 2023);
       if (!stats.length) return;
@@ -792,7 +743,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
         .attr('opacity', 0).style('pointer-events', 'none'),
     }));
 
-    const overlay = g.append('rect')
+    g.append('rect')
       .attr('width', iw).attr('height', ih).attr('fill', 'transparent').style('cursor', 'crosshair')
       .on('mousemove', function(event) {
         const [mx] = d3.pointer(event);
@@ -822,7 +773,6 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
           meta: `Year: ${nearYear}`,
           sections: CONT_ORDER.map(cont => {
             const v = yearData[cont];
-            const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
             const covered = ((incomeStats.get(cont) || []).find(pt => pt.year === nearYear)?.n) || 0;
             const total = incomeEligibleByCont.get(cont)?.size || 0;
             return {
@@ -887,8 +837,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     return btn;
   }
 
-  const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = visibleYears[0]; updateColors(false); });
-  const btnPrev  = mkCtrlBtn('&#8249;', 'Previous year').style('font-size', '18px').on('click', () => {
+  mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = visibleYears[0]; updateColors(false); });
+  mkCtrlBtn('&#8249;', 'Previous year').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = visibleYears.indexOf(currentYear);
     if (i > 0) { currentYear = visibleYears[i - 1]; updateColors(); }
@@ -905,7 +855,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>')
     .on('click', () => playing ? stopPlay() : startPlay());
 
-  const btnNext = mkCtrlBtn('&#8250;', 'Next year').style('font-size', '18px').on('click', () => {
+  mkCtrlBtn('&#8250;', 'Next year').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = visibleYears.indexOf(currentYear);
     if (i < visibleYears.length - 1) { currentYear = visibleYears[i + 1]; updateColors(); }

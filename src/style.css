@@ -1157,6 +1157,52 @@ input[type="range"]::-moz-range-thumb {
   opacity: 1;
 }
 
+.chart-dataset-tooltip {
+  --tooltip-max-width: min(92vw, 28rem);
+  padding: 0.95rem 1rem 1rem;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow:
+    0 22px 48px rgba(15, 23, 42, 0.16),
+    0 2px 8px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.chart-dataset-tooltip .chart-hover-tooltip__panel {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.chart-dataset-tooltip .chart-hover-tooltip__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.chart-dataset-tooltip .chart-hover-tooltip__body {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.chart-dataset-tooltip .chart-hover-tooltip__row--text {
+  margin: 0;
+}
+
+.chart-dataset-tooltip__item {
+  display: block;
+  padding: 0.62rem 0.78rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #334155;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.45;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
 .chart-hover-tooltip__trend-item {
   display: flex;
   flex-direction: column;
@@ -1697,7 +1743,7 @@ div[id^="fullscreen-chart-"] {
   height: var(--hint-size);
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
+  background: #ffffff;
   color: var(--ink-muted);
   display: inline-flex;
   align-items: center;
@@ -1705,6 +1751,7 @@ div[id^="fullscreen-chart-"] {
   transform: translateY(-50%);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 .chart-dataset-hint {
@@ -1716,7 +1763,7 @@ div[id^="fullscreen-chart-"] {
   height: var(--hint-size);
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
+  background: #ffffff;
   color: var(--ink-muted);
   display: inline-flex;
   align-items: center;
@@ -1724,6 +1771,7 @@ div[id^="fullscreen-chart-"] {
   transform: translateY(-50%);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 .chart-dataset-hint:hover,

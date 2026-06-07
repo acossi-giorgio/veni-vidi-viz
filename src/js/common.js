@@ -278,24 +278,12 @@ function mountChartWarningHint(host, message, options = {}) {
   if (!tooltip) {
     tooltip = document.createElement('div');
     tooltip.id = 'chart-warning-tooltip';
-    Object.assign(tooltip.style, {
-      position: 'fixed',
-      display: 'none',
-      pointerEvents: 'none',
-      zIndex: '10030',
-      maxWidth: '280px',
-      padding: '0.82rem 0.95rem 0.88rem',
-      borderRadius: '14px',
-      background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 250, 252, 0.96))',
-      color: '#1f2937',
-      fontSize: '11px',
-      lineHeight: '1.55',
-      boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
-      border: '1px solid rgba(148, 163, 184, 0.28)',
-      whiteSpace: 'normal',
-    });
     document.body.appendChild(tooltip);
   }
+  tooltip.className = 'chart-hover-tooltip chart-hover-tooltip--light chart-warning-tooltip';
+  tooltip.style.display = 'none';
+  tooltip.style.pointerEvents = 'none';
+  tooltip.style.setProperty('--tooltip-max-width', 'min(92vw, 28rem)');
 
   const btn = document.createElement('button');
   btn.type = 'button';
@@ -324,22 +312,24 @@ function mountChartWarningHint(host, message, options = {}) {
     boxShadow: '0 1px 6px rgba(0,0,0,0.10)',
   });
 
-  const safeHtml = escapeHtml(message).replace(/\n/g, '<br>');
   const show = () => {
-    tooltip.innerHTML = `<strong style="display:block;margin-bottom:0.2rem;color:#0f172a">Warning</strong>${safeHtml}`;
-    tooltip.style.display = 'block';
     const rect = btn.getBoundingClientRect();
-    const box = tooltip.getBoundingClientRect();
-    let x = rect.left - box.width - 10;
-    let y = rect.top + (rect.height - box.height) / 2;
-    if (x < 8) x = rect.right + 10;
-    if (x + box.width > window.innerWidth - 8) x = Math.max(8, window.innerWidth - box.width - 8);
-    if (y < 8) y = 8;
-    if (y + box.height > window.innerHeight - 8) y = Math.max(8, window.innerHeight - box.height - 8);
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
+    showHoverTooltip(tooltip, {
+      clientX: rect.left,
+      clientY: rect.top + (rect.height / 2),
+    }, {
+      title: 'Warning',
+      rows: String(message || '')
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean),
+    }, {
+      offsetX: -18,
+      offsetY: -18,
+      margin: 8,
+    });
   };
-  const hide = () => { tooltip.style.display = 'none'; };
+  const hide = () => { hideHoverTooltip(tooltip); };
 
   btn.addEventListener('mouseenter', show);
   btn.addEventListener('focus', show);

@@ -56,7 +56,7 @@ const _MIG_AFRICA_TOPIC_COUNTRIES = [
   { code: 'UGA', name: 'Uganda' }, { code: 'ZMB', name: 'Zambia' }, { code: 'ZWE', name: 'Zimbabwe' },
 ];
 
-async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = false) {
+async function renderMigrationChart(selector = '#chart-5-1') {
   const container = d3.select(selector);
   if (container.empty()) return;
   container.html('');
@@ -65,7 +65,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
   const migRaw = await d3.csv('datasets/processed/migration.csv', d3.autoType);
 
   const DATA_YEARS = [...new Set(migRaw.map(d => d.year))].sort((a, b) => a - b);
-  const MIN_YEAR = DATA_YEARS[0];
   const MAX_YEAR = DATA_YEARS[DATA_YEARS.length - 1];
   const MIG_TOPIC_ALL = migRaw.filter(d =>
     d.origin_continent === 'Africa' &&
@@ -87,23 +86,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     return migRaw.filter(d => d.year === year);
   }
 
-  function clampYearToAvailable(year) {
-    let closest = DATA_YEARS[0];
-    let minDiff = Math.abs(year - closest);
-    for (const candidate of DATA_YEARS) {
-      const diff = Math.abs(year - candidate);
-      if (diff < minDiff) {
-        closest = candidate;
-        minDiff = diff;
-      }
-    }
-    return closest;
-  }
-
-  function yearToIndex(year) {
-    return Math.max(0, DATA_YEARS.indexOf(clampYearToAvailable(year)));
-  }
-
   const CONT_COLOR = {
     'Africa': getContinentColor('Africa', '#c96a3d'),
     'Asia': '#6f86c9',
@@ -114,12 +96,9 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
   };
   const UI_ACTIVE = getActColor(4, getUiColor('controlActive', '#5169b2'));
   const UI_ACTIVE_STRONG = getActColorStrong(4, getUiColor('controlActiveStrong', '#314685'));
-  const UI_MUTED = getUiColor('controlMuted', '#f4efe7');
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const UI_MUTED_INK = getUiColor('controlMutedInk', '#75695d');
-  const CHART_WATER = getUiColor('chartWater', '#ece8e0');
   const CHART_BASE_FILL = getUiColor('chartBaseFill', '#d6d0c5');
-  const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const wrap = container.append('div')
     .style('width', '100%').style('height', '100%').style('position', 'relative');
 
@@ -288,26 +267,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
   }
-  function mapTooltipRowsToHtml(title, rows = [], nameKey, valueKey = 'stock') {
-    if (!rows.length) return '';
-    const fmt = d3.format(',.0f');
-    const columns = chunkRows(rows, 10).map(columnRows => `
-      <div style="display:flex;flex-direction:column;row-gap:2px;min-width:0;">
-        ${columnRows.map(r => `
-          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
-            <span style="opacity:.82;min-width:0;">${escapeHtml(r[nameKey])}</span>
-            <strong>${fmt(r[valueKey])}</strong>
-          </div>
-        `).join('')}
-      </div>
-    `);
-    return [
-      `<div style="margin-top:6px;opacity:.5;font-size:9px;letter-spacing:.05em;text-transform:uppercase">Countries included: ${rows.length}</div>`,
-      `<div style="margin-top:6px;opacity:.45;font-size:9px;letter-spacing:.05em;text-transform:uppercase">${title}</div>`,
-      `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
-    ].join('');
-  }
-
   function mapTooltipListHtml(title, rows = [], nameKey, valueKey = 'stock') {
     if (!rows.length) return '';
     const fmt = d3.format(',.0f');
@@ -411,201 +370,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       drawSankey(W, sankeyH);
       svgArea.select('svg').style('margin-top', HEADER_H + 'px');
     }
-  }
-
-  /* ── Network: expand/collapse in-place ────────────────────── */
-  let _sim         = null;
-  let _expandedSrc = false;
-  let _expandedDst = new Set();
-  let _posCache    = new Map();
-
-  function drawNetwork(W, H) {
-    if (_sim) { _sim.stop(); _sim = null; }
-
-    const yearData = getYearData(currentYear).filter(d =>
-      d.origin_continent === 'Africa' &&
-      d.dest_continent !== 'Africa' && d.stock > 0
-    );
-
-    let srcNodes;
-    if (!_expandedSrc) {
-      const total = d3.sum(yearData, d => d.stock);
-      const pos   = _posCache.get('AFRICA') || { x: W * 0.35, y: H / 2 };
-      srcNodes = [{ code: 'AFRICA', name: 'Africa', total, type: 'src', expandable: true, x: pos.x, y: pos.y }];
-    } else {
-      const m = new Map();
-      yearData.forEach(d => {
-        if (!m.has(d.origin_code))
-          m.set(d.origin_code, { code: d.origin_code, name: d.origin_country, total: 0, type: 'src', collapsible: true, parentCode: 'AFRICA' });
-        m.get(d.origin_code).total += d.stock;
-      });
-      const ref = _posCache.get('AFRICA') || { x: W * 0.35, y: H / 2 };
-      srcNodes = Array.from(m.values()).map(n => ({
-        ...n,
-        x: _posCache.get(n.code)?.x ?? ref.x + (Math.random()-.5)*80,
-        y: _posCache.get(n.code)?.y ?? ref.y + (Math.random()-.5)*80,
-      }));
-    }
-
-    const destConts = [...new Set(yearData.map(d => d.dest_continent))];
-    let dstNodes = [];
-    destConts.forEach(cont => {
-      if (_expandedDst.has(cont)) {
-        const m = new Map();
-        yearData.filter(d => d.dest_continent === cont).forEach(d => {
-          if (!m.has(d.dest_code))
-            m.set(d.dest_code, { code: d.dest_code, name: d.dest_country, continent: cont, total: 0, type: 'dst', collapsible: true, parentCode: cont });
-          m.get(d.dest_code).total += d.stock;
-        });
-        const ref = _posCache.get(cont) || { x: W * 0.65, y: H / 2 };
-        Array.from(m.values()).forEach(n => dstNodes.push({
-          ...n,
-          x: _posCache.get(n.code)?.x ?? ref.x + (Math.random()-.5)*80,
-          y: _posCache.get(n.code)?.y ?? ref.y + (Math.random()-.5)*80,
-        }));
-      } else {
-        const total = d3.sum(yearData.filter(d => d.dest_continent === cont), d => d.stock);
-        const pos   = _posCache.get(cont) || { x: W * 0.65, y: H / 2 };
-        dstNodes.push({ code: cont, name: cont, continent: cont, total, type: 'dst', expandable: true, x: pos.x, y: pos.y });
-      }
-    });
-
-    const allNodes = [...srcNodes, ...dstNodes];
-    allNodes.forEach((n, i) => { n.index = i; });
-
-    const srcByCode = new Map(srcNodes.map(n => [n.code, n]));
-    const dstByCode = new Map(dstNodes.map(n => [n.code, n]));
-    const lMap = new Map();
-    yearData.forEach(d => {
-      const sk = srcByCode.has(d.origin_code) ? d.origin_code : 'AFRICA';
-      const dk = dstByCode.has(d.dest_code)   ? d.dest_code   : d.dest_continent;
-      const src = srcByCode.get(sk), dst = dstByCode.get(dk);
-      if (!src || !dst) return;
-      const key = `${sk}||${dk}`;
-      if (!lMap.has(key)) lMap.set(key, { source: src, target: dst, value: 0 });
-      lMap.get(key).value += d.stock;
-    });
-    const links = Array.from(lMap.values()).filter(l => l.value > 0);
-
-    const maxStock = d3.max(links, d => d.value) || 1;
-    const wScale   = d3.scaleSqrt().domain([0, maxStock]).range([0.5, 10]);
-    const rSrc     = _expandedSrc
-      ? d3.scaleSqrt().domain([0, d3.max(srcNodes, n => n.total)||1]).range([4, 14])
-      : () => 26;
-    const rDst     = d3.scaleSqrt().domain([0, d3.max(dstNodes, n => n.total)||1]).range([10, 26]);
-
-    const svg = svgArea.append('svg').attr('width', W).attr('height', H)
-      .style('display','block').style('font-family','inherit').style('background', getCssToken('surface-raised', '#ffffff'));
-    const g = svg.append('g');
-    const zoom = d3.zoom().scaleExtent([0.1, 4]).on('zoom', e => g.attr('transform', e.transform));
-    svg.call(zoom).on('dblclick.zoom', null);
-
-    const ctrl = svgArea.append('div')
-      .style('position','absolute').style('top','8px').style('right','8px')
-      .style('display','flex').style('flex-direction','column').style('gap','3px').style('z-index','5');
-    [['＋', () => svg.transition().duration(220).call(zoom.scaleBy, 1.4)],
-     ['－', () => svg.transition().duration(220).call(zoom.scaleBy, 0.7)],
-     ['⌂',  () => svg.transition().duration(280).call(zoom.transform, d3.zoomIdentity)],
-    ].forEach(([lbl, fn]) => ctrl.append('button').text(lbl)
-      .style('width','26px').style('height','26px').style('font-size','14px').style('line-height','1')
-      .style('border',`1px solid ${UI_MUTED_BORDER}`).style('border-radius','5px').style('background',getCssToken('surface-raised', '#ffffff'))
-      .style('cursor','pointer').style('color',UI_MUTED_INK).on('click', fn));
-
-    const linkLayer  = g.append('g');
-    const nodeLayer  = g.append('g');
-    const labelLayer = g.append('g');
-
-    const linkEls = linkLayer.selectAll('line').data(links).join('line')
-      .attr('stroke',CHART_BASE_FILL).attr('stroke-linecap','round')
-      .attr('stroke-width', d => wScale(d.value)).attr('opacity', 0.55)
-      .on('mousemove', (e, d) => showTip(e,
-        `<strong style="color:${CONT_COLOR.Africa}">${d.source.name}</strong> → <strong style="color:${CONT_COLOR[d.target.continent]||getCssToken('ink', '#1f1d1a')}">${d.target.name}</strong><br>` +
-        `Stock: <strong>${d3.format(',.0f')(d.value)}</strong>`
-      )).on('mouseleave', hideTip);
-
-    function savePos() { allNodes.forEach(n => _posCache.set(n.code, { x: n.x, y: n.y })); }
-
-    const nodeEls = nodeLayer.selectAll('g').data(allNodes).join('g')
-      .style('cursor', d => (d.expandable || d.collapsible) ? 'pointer' : 'grab')
-      .call(d3.drag()
-        .on('start', function(e, d) { if (!e.active) _sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-        .on('drag',  function(e, d) { d.fx = e.x; d.fy = e.y; })
-        .on('end',   function(e, d) { if (!e.active) _sim.alphaTarget(0); d.fx = null; d.fy = null; })
-      )
-      .on('click', (e, d) => {
-        e.stopPropagation();
-        savePos();
-        if (d.expandable && d.code === 'AFRICA') {
-          _expandedSrc = true; draw();
-        } else if (d.collapsible && d.type === 'src') {
-          _posCache.set('AFRICA', { x: d3.mean(srcNodes, n => n.x), y: d3.mean(srcNodes, n => n.y) });
-          _expandedSrc = false; draw();
-        } else if (d.expandable && d.type === 'dst') {
-          _expandedDst.add(d.code); draw();
-        } else if (d.collapsible && d.type === 'dst') {
-          const siblings = dstNodes.filter(n => n.parentCode === d.parentCode);
-          _posCache.set(d.parentCode, { x: d3.mean(siblings, n => n.x), y: d3.mean(siblings, n => n.y) });
-          _expandedDst.delete(d.parentCode); draw();
-        }
-      })
-      .on('mouseover', (e, d) => {
-        linkEls
-          .attr('stroke', l => (l.source===d||l.target===d) ? (d.type==='src' ? CONT_COLOR.Africa : CONT_COLOR[d.continent]||CONT_COLOR.Asia) : CHART_GRID)
-          .attr('opacity', l => (l.source===d||l.target===d) ? 0.9 : 0.08);
-        const col  = d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia);
-        const hint = d.expandable ? ' <span style="opacity:.5;font-size:9px">· expand</span>'
-                   : d.collapsible ? ' <span style="opacity:.5;font-size:9px">· collapse</span>' : '';
-        const countLine = d.countryCount && d.countryCount > 1
-          ? `<br><span style="opacity:.7;font-size:10px">Countries included: ${d.countryCount}</span>`
-          : '';
-        showTip(e,
-          `<strong style="color:${col}">${d.name}</strong>${hint}<br>` +
-          (d.type==='src' ? 'Emigrants: ' : 'Received from Africa: ') +
-          `<strong>${d3.format(',.0f')(d.total)}</strong>` +
-          countLine
-        );
-      })
-      .on('mouseleave', () => { linkEls.attr('stroke',CHART_BASE_FILL).attr('opacity',0.55); hideTip(); });
-
-    nodeEls.append('circle')
-      .attr('r', d => d.type==='src' ? rSrc(d.total) : rDst(d.total))
-      .attr('fill', d => d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia))
-      .attr('stroke','#fff').attr('stroke-width', 2);
-
-    nodeEls.filter(d => d.expandable || d.collapsible).append('circle')
-      .attr('r', d => (d.type==='src' ? rSrc(d.total) : rDst(d.total)) + 4)
-      .attr('fill','none')
-      .attr('stroke', d => d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia))
-      .attr('stroke-width', 1.5)
-      .attr('stroke-dasharray', d => d.expandable ? '4,3' : '2,2')
-      .attr('opacity', 0.45);
-
-    const topSrcSet = _expandedSrc
-      ? new Set(srcNodes.slice().sort((a,b)=>b.total-a.total).slice(0,6).map(n=>n.code))
-      : new Set(['AFRICA']);
-    const labelEls = labelLayer.selectAll('text')
-      .data(allNodes.filter(d => d.type==='dst' || topSrcSet.has(d.code))).join('text')
-      .attr('font-size', d => (!d.collapsible && d.type==='dst') ? 11 : 9)
-      .attr('font-weight', d => (!d.collapsible && d.type==='dst') || d.code==='AFRICA' ? '700' : '400')
-      .attr('fill', d => d.type==='src' ? CONT_COLOR.Africa : getCssToken('ink', '#1f1d1a'))
-      .style('pointer-events','none')
-      .text(d => d.name.length > 14 ? d.name.slice(0,13)+'…' : d.name);
-
-    _sim = d3.forceSimulation(allNodes)
-      .force('link', d3.forceLink(links).id(d => d.index).distance(d => 90 + rDst(d.target.total)*2).strength(0.25))
-      .force('charge', d3.forceManyBody().strength(d => d.type==='src' ? -160 : -380))
-      .force('center', d3.forceCenter(W/2, H/2).strength(0.04))
-      .force('collide', d3.forceCollide(d => (d.type==='src' ? rSrc(d.total) : rDst(d.total)) + 16))
-      .force('x', d3.forceX(d => d.type==='dst' ? W*0.65 : W*0.35).strength(0.04))
-      .on('tick', () => {
-        linkEls.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-               .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-        nodeEls.attr('transform', d => `translate(${d.x},${d.y})`);
-        labelEls
-          .attr('x', d => d.x + (d.type==='dst' ? rDst(d.total)+5 : -(rSrc(d.total)+5)))
-          .attr('y', d => d.y + 4)
-          .attr('text-anchor', d => d.type==='dst' ? 'start' : 'end');
-      });
   }
 
   /* ── Sankey: Africa → Dest Continents → Top Countries ─────── */
@@ -740,20 +504,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
 
     function linkKey(d) {
       return `${d.source.id}->${d.target.id}`;
-    }
-
-    function nodeStartTransform(d, action = {}) {
-      const parent = lastNodePos.get(d.parentId || action.parentId);
-      if (!parent) return `translate(${d.x0},${d.y0})`;
-      const h = Math.max(1, d.y1 - d.y0);
-      return `translate(${parent.x0},${(parent.y0 + parent.y1) / 2 - h / 2})`;
-    }
-
-    function nodeExitTransform(d, action = {}) {
-      const parent = lastNodePos.get(d.parentId || action.parentId);
-      if (!parent) return `translate(${d.x0},${d.y0})`;
-      const h = Math.max(1, d.y1 - d.y0);
-      return `translate(${parent.x0},${(parent.y0 + parent.y1) / 2 - h / 2})`;
     }
 
     function revealFlow(path, direction = 'right', duration = 900, delay = 0) {
@@ -1040,7 +790,6 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       pairMap.get(key).stock += d.stock;
     });
     const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
-    const maxPair = d3.max(pairs, d => d.stock) || 1;
     // Countries with any valid flow in the selected year (for map coloring/tooltip).
     const countrySrcCodes = new Set(yearData.map(d => d.origin_code));
     const countryDstCodes = new Set(yearData.map(d => d.dest_code));
@@ -1203,7 +952,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINATION</span><br>Total migrants: <strong>${fmt(total)}</strong>`;
     }
 
-    function buildArcPopupConfig(a3, anchor) {
+    function buildArcPopupConfig(a3) {
       const fmt = d3.format(',.0f');
       const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
       if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
@@ -1257,7 +1006,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     }
 
     function openArcPopup(anchor, a3) {
-      showPinnedTip(anchor, buildArcPopupConfig(a3, anchor));
+      showPinnedTip(anchor, buildArcPopupConfig(a3));
     }
     const HOVER_ARC_OPACITY = 0.52;
     const ARC_STROKE_WIDTH = 1.2;
@@ -1331,7 +1080,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       { label: 'Hover on the country', value: 'show the flows' },
       { label: 'Click on the country', value: 'opens the details' },
     ];
-    const note = wrap.append('div')
+    wrap.append('div')
       .attr('class', 'migration-scale-note')
       .style('position', 'absolute')
       .style('left', '12px')
