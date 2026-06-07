@@ -1290,17 +1290,54 @@ function initNavbar() {
 
   const menu = navbar.querySelector('.site-navbar-menu');
   const toggle = navbar.querySelector('.site-navbar-toggle');
+  const titleEl = navbar.querySelector('[data-navbar-title]');
+  const brandEl = navbar.querySelector('[data-navbar-brand]');
   const storyNav = document.querySelector('[data-story-nav]');
   const storyToggle = storyNav?.querySelector('.story-nav-toggle');
   const storyPanel = storyNav?.querySelector('.story-nav-panel');
   const sectionLinks = Array.from(document.querySelectorAll('.story-nav-link[data-act-link]'));
-  const actAnchors = document.querySelectorAll('.act-header[data-act], .chart-section[data-act]');
+  const actAnchors = Array.from(document.querySelectorAll('.act-header[data-act], .chart-section[data-act]'));
   const isHome = document.body.classList.contains('home-page');
   const hero = document.querySelector('.hero');
+  const homeTitle = isHome
+    ? document.querySelector('.hero-title')?.textContent?.trim() || 'The weight of being born here'
+    : '';
+  const actTitles = new Map(
+    Array.from(document.querySelectorAll('.act-header[data-act]'))
+      .map((section) => [section.dataset.act, getNavbarSectionTitle(section)])
+      .filter(([, title]) => title)
+  );
+  const staticPageTitle = !isHome
+    ? document.querySelector('.page-hero h1, .page-hero h2, .site-navbar-link.is-current')?.textContent?.trim() || ''
+    : '';
 
   const syncNavbarHeight = () => {
     const navbarHeight = Math.round(navbar.getBoundingClientRect().height);
     document.documentElement.style.setProperty('--navbar-h', `${navbarHeight}px`);
+  };
+
+  const setNavbarTitle = (title = '', mode = 'default') => {
+    if (!titleEl) return;
+    if (brandEl && homeTitle) brandEl.textContent = homeTitle;
+    titleEl.textContent = title;
+    titleEl.classList.toggle('is-empty', !title);
+    navbar.classList.toggle('has-section-title', mode === 'section' && !!title);
+  };
+
+  const isHeroVisible = () => {
+    if (!isHome || !hero) return false;
+    const heroBottom = hero.offsetTop + hero.offsetHeight - navbar.getBoundingClientRect().height;
+    return window.scrollY < Math.max(heroBottom, 1);
+  };
+
+  const getActiveSectionTitle = () => {
+    if (!actAnchors.length) return '';
+    const probe = window.scrollY + navbar.getBoundingClientRect().height + Math.min(window.innerHeight * 0.18, 160);
+    let activeAct = actAnchors[0]?.dataset.act || '';
+    actAnchors.forEach((section) => {
+      if (section.offsetTop <= probe && section.dataset.act) activeAct = section.dataset.act;
+    });
+    return actTitles.get(activeAct) || '';
   };
 
   const closeMenu = () => {
@@ -1324,10 +1361,17 @@ function initNavbar() {
   };
 
   const updateNavbarTheme = () => {
-    const isInHero = isHome && window.scrollY <= 0;
-    const isScrolled = !isInHero;
+    const isAtTop = isHome && window.scrollY <= 0;
+    const isInHero = isHeroVisible();
+    const isScrolled = !isAtTop;
     navbar.classList.toggle('is-scrolled', isScrolled);
-    navbar.classList.toggle('is-transparent', isInHero);
+    navbar.classList.toggle('is-transparent', isAtTop);
+    if (isHome) {
+      if (isInHero) setNavbarTitle('', 'default');
+      else setNavbarTitle(getActiveSectionTitle(), 'section');
+    } else {
+      setNavbarTitle(staticPageTitle, 'default');
+    }
 
     if (!storyNav || !sectionLinks.length || !actAnchors.length) return;
 
@@ -1399,6 +1443,15 @@ function initNavbar() {
 
   syncNavbarHeight();
   updateNavbarTheme();
+}
+
+function getNavbarSectionTitle(section) {
+  if (!section) return '';
+  return (
+    section.querySelector('.act-title')?.textContent?.trim() ||
+    section.querySelector('h2, h3')?.textContent?.trim() ||
+    ''
+  );
 }
 
 /* ── Fullscreen Modal ────────────────────────────────────── */

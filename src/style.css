@@ -194,21 +194,62 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   margin: 0 auto;
   width: 100%;
   padding: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 36vw) minmax(0, 1fr);
+  position: relative;
   align-items: center;
-  justify-content: center;
+  justify-content: stretch;
   gap: 1.8rem;
   background: transparent;
   border: 0;
   box-shadow: none;
 }
+.site-navbar-brand {
+  min-width: 0;
+  max-width: min(34vw, 520px);
+  justify-self: start;
+  color: #ffffff;
+  font-size: clamp(0.98rem, 1.05vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.site-navbar-title {
+  min-width: 0;
+  width: 100%;
+  justify-self: center;
+  color: #ffffff;
+  font-size: clamp(0.98rem, 1.05vw, 1.12rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.site-navbar-title.is-empty {
+  opacity: 0;
+}
+.site-navbar.has-section-title .site-navbar-title {
+  color: #ffffff;
+}
 .site-navbar-menu {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   flex-direction: row;
   gap: 1.7rem;
   min-width: 0;
+  justify-self: end;
+  margin-left: 0;
 }
 .site-navbar-link,
 .site-navbar-section-link {
@@ -2738,8 +2779,27 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   .site-navbar-inner {
     position: relative;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
+  }
+  .site-navbar-title {
+    flex: 1 1 100%;
+    width: 100%;
+    white-space: normal;
+  }
+  .site-navbar-brand {
+    flex: 1 1 100%;
+    margin-left: 0;
+    max-width: none;
+    width: 100%;
+    white-space: normal;
+    text-align: left;
+  }
+  .site-navbar.has-section-title .site-navbar-title {
+    text-align: left;
+    pointer-events: auto;
   }
   .site-navbar-toggle {
     display: none;
@@ -2761,6 +2821,10 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     transform: none;
     transition: none;
     gap: 0.55rem;
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
   .site-navbar.is-open .site-navbar-menu {
     opacity: 1;
