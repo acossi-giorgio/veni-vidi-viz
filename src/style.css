@@ -499,7 +499,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   inset: 0;
   opacity: 0;
   pointer-events: none;
-  transform: translateX(28px) scale(0.985);
+  transform: scale(0.985);
   transition: opacity 0.45s ease, transform 0.45s ease;
 }
 .hero-carousel-slide.is-active {
@@ -517,13 +517,13 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 }
 .hero-carousel-slide img {
   position: absolute;
-  top: -26px;
-  left: -26px;
-  width: calc(100% + 52px);
-  height: calc(100% + 52px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
-  filter: blur(7px) brightness(0.6);
+  filter: blur(3px) brightness(0.68);
 }
 /* ── ACT HEADERS ─────────────────────────────────────────── */
 
@@ -617,18 +617,18 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(17, 15, 12, 0.3) 0%, rgba(17, 15, 12, 0.4) 45%, rgba(17, 15, 12, 0.68) 100%),
-    linear-gradient(90deg, rgba(17, 15, 12, 0.58) 0%, rgba(17, 15, 12, 0.24) 48%, rgba(17, 15, 12, 0.5) 100%);
+    linear-gradient(180deg, rgba(17, 15, 12, 0.12) 0%, rgba(17, 15, 12, 0.28) 42%, rgba(17, 15, 12, 0.82) 100%),
+    linear-gradient(90deg, rgba(17, 15, 12, 0.16) 0%, rgba(17, 15, 12, 0.02) 46%, rgba(17, 15, 12, 0.44) 100%);
 }
 .act-header-media img {
   position: absolute;
-  top: -24px;
-  left: -24px;
-  width: calc(100% + 48px);
-  height: calc(100% + 48px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
-  filter: blur(7px) brightness(0.58);
+  filter: blur(3px) brightness(0.68);
 }
 .act-header-credit {
   display: none;
