@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Method — Veni Vidi Viz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class="page-shell">
+
+    <nav class="site-navbar is-scrolled" aria-label="Main navigation" data-navbar>
+      <div class="site-navbar-inner">
+        <div class="site-navbar-brand" data-navbar-brand>The weight of being born here</div>
+        <div class="site-navbar-title" data-navbar-title aria-live="polite"></div>
+        <button class="site-navbar-toggle" type="button" aria-expanded="false" aria-controls="site-navbar-menu" aria-label="Open navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="site-navbar-menu" id="site-navbar-menu">
+          <a class="site-navbar-link" href="index.html">Home</a>
+          <a class="site-navbar-link" href="datasets.html">Datasets</a>
+          <a class="site-navbar-link is-current" href="process.html" aria-current="page">Method</a>
+          <a class="site-navbar-link" href="about.html">About Us</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+
+      <section class="page-hero">
+        <div class="page-hero-inner page-hero-inner--narrow">
+          <span class="page-eyebrow">Method</span>
+          <h1>Method</h1>
+         </div>
+      </section>
+
+      <div class="page-body page-body--narrow">
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Project framing</h2>
+          <div class="section-prose">
+            <p>Our work started from one question: how can we clearly explain the link between economic vulnerability, school exclusion, human cost, and migration?</p>
+            <p>From that question we built a four-chapter story, each one focusing on a different dimension of the problem through a set of visualizations. We were aware of how difficult it was to obtain complete datasets, due to weak local collaboration at both institutional and community level, but we still chose to move forward and work around these limits while keeping a good level of transparency for the user.</p>
+            <p>The goal is to find <em>(veni)</em>, investigate <em>(vidi)</em>, and show <em>(viz)</em> a phenomenon that is widely known but often described too superficially.</p>
+            <br>
+          </div>
+          <div class="methodology-flow">
+            <article class="method-step">
+              <h3>The foundations of inequality</h3>
+              <p>The starting point is the distribution of income and inequality at the continental level. Income per capita, life expectancy, and the MPI show how unfavorable the initial conditions are, and how this is the context in which all the other phenomena described later take shape.</p>
+            </article>
+            <article class="method-step">
+              <h3>School as a luxury for the few</h3>
+              <p>The second chapter addresses the problem of a dysfunctional education system: too few resources invested and many children excluded. Public spending on education, literacy rates, out-of-school children, and the GPI show a picture of missed opportunities.</p>
+            </article>
+            <article class="method-step">
+              <h3>Stolen childhood</h3>
+              <p>The third chapter looks at the most direct forms of childhood deprivation: child labor, child marriage, and female genital mutilation. These data show how poverty turns into forced choices that make children grow up too early.</p>
+            </article>
+            <article class="method-step">
+              <h3>Escape</h3>
+              <p>The final chapter explores international migration as a response to the conditions documented in the previous chapters. Mobility becomes both a sign of hope and an indicator of the depth of the global divide.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">ETL Process</h2>
+            <div class="methodology-flow">
+            <article class="method-step">
+              <h3>Extract</h3>
+              <p>In this phase we collected and checked the original sources, keeping track of the format and available coverage for each indicator. We selected datasets from Our World in Data, the World Bank, UNICEF, the United Nations, UNDP, HDX, UNESCO, and World Population Prospects, bringing together heterogeneous sources in formats such as CSV, XLSX, and tables published on institutional portals.</p>
+            </article>
+
+            <article class="method-step">
+              <h3>Transform</h3>
+              <p>The transformation phase made heterogeneous datasets comparable, preparing each table for consistent use across the narrative and the charts. We cleaned values, standardized country names, and aligned ISO3 codes to avoid duplication and inconsistencies across sources. Time fields were normalized by distinguishing historical series from snapshots, and for each indicator we kept only the years that were truly comparable. Columns were reorganized into a shared structure with homogeneous variables.</p>
+            </article>
+
+            <article class="method-step">
+              <h3>Load</h3>
+              <p>The load phase turned the transformation work into final files that the site could use directly, with no additional technical steps in the frontend. The datasets were exported as lightweight CSV files already ready for client-side loading, with simple and consistent columns across files so that the D3 modules could read predictable structures, removing the need for extra browser-side transformations and reducing complexity, error risk, and duplicated chart logic.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="dataset-section">
+          <h2 class="page-section-title">Tech stack</h2>
+          <div class="methodology-flow methodology-flow--row">
+            <article class="method-step">
+              <h3>Visualization</h3>
+              <p><strong>D3.js</strong> with any plugin.</p>
+            </article>
+            <article class="method-step">
+              <h3>Frontend</h3>
+              <p><strong>HTML</strong>, <strong>CSS3</strong> e <strong>JavaScript</strong> vanilla.</p>
+            </article>
+            <article class="method-step">
+              <h3>Data processing</h3>
+              <p><strong>Python</strong> with libraries dedicated to data processing.</p>
+            </article>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-meta">&copy; UniGE - Data Visualization - 2026 Veni Vidi Viz
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>

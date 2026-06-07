@@ -1,0 +1,2149 @@
+code,country,continent,year,value
+ABW,Aruba,North America,2000,0.94863
+ABW,Aruba,North America,2001,0.97475
+ABW,Aruba,North America,2002,0.98288
+ABW,Aruba,North America,2003,1.02465
+ABW,Aruba,North America,2005,0.94558
+AGO,Angola,Africa,2008,0.80662
+AGO,Angola,Africa,2009,0.80282
+AGO,Angola,Africa,2010,0.7682
+AIA,Anguilla,North America,2022,1.03016
+ALB,Albania,Europe,2017,0.9777
+ALB,Albania,Europe,2019,0.96114
+ALB,Albania,Europe,2020,0.94837
+ALB,Albania,Europe,2023,0.93186
+AND,Andorra,Europe,2014,0.96188
+AND,Andorra,Europe,2015,0.95491
+AND,Andorra,Europe,2016,0.99603
+AND,Andorra,Europe,2017,0.98101
+AND,Andorra,Europe,2018,0.9879
+AND,Andorra,Europe,2019,1.00449
+AND,Andorra,Europe,2020,0.98635
+AND,Andorra,Europe,2021,1.02073
+AND,Andorra,Europe,2022,0.99609
+AND,Andorra,Europe,2023,0.98764
+ARE,United Arab Emirates,Asia,2018,0.98629
+ARE,United Arab Emirates,Asia,2019,1.00311
+ARE,United Arab Emirates,Asia,2021,1.02343
+ARM,Armenia,Asia,2011,0.95254
+ARM,Armenia,Asia,2016,0.97666
+ARM,Armenia,Asia,2017,0.97939
+ARM,Armenia,Asia,2018,0.97709
+ARM,Armenia,Asia,2019,0.96776
+ARM,Armenia,Asia,2020,0.96635
+ARM,Armenia,Asia,2021,0.96245
+ARM,Armenia,Asia,2022,0.96745
+ARM,Armenia,Asia,2023,0.96641
+AUS,Australia,Oceania,2020,1.00799
+AUS,Australia,Oceania,2021,1.00797
+AUS,Australia,Oceania,2022,1.00505
+AUS,Australia,Oceania,2023,1.00265
+AUT,Austria,Europe,2000,0.99927
+AUT,Austria,Europe,2002,0.9987
+AUT,Austria,Europe,2003,0.99831
+AUT,Austria,Europe,2004,0.99595
+AUT,Austria,Europe,2005,0.99693
+AUT,Austria,Europe,2006,0.99718
+AUT,Austria,Europe,2007,0.99838
+AUT,Austria,Europe,2008,0.99759
+AUT,Austria,Europe,2009,0.99792
+AUT,Austria,Europe,2010,0.99893
+AUT,Austria,Europe,2011,0.99969
+AUT,Austria,Europe,2012,1.00361
+AUT,Austria,Europe,2013,1.00345
+AUT,Austria,Europe,2014,1.0019
+AUT,Austria,Europe,2015,1.00228
+AUT,Austria,Europe,2016,1.00005
+AUT,Austria,Europe,2017,0.99877
+AUT,Austria,Europe,2018,0.99847
+AUT,Austria,Europe,2019,0.99792
+AUT,Austria,Europe,2020,0.99914
+AUT,Austria,Europe,2021,0.99865
+AUT,Austria,Europe,2022,0.99919
+AUT,Austria,Europe,2023,0.99861
+AZE,Azerbaijan,Asia,2006,0.98202
+AZE,Azerbaijan,Asia,2007,0.98016
+AZE,Azerbaijan,Asia,2008,0.98434
+AZE,Azerbaijan,Asia,2009,0.9775
+AZE,Azerbaijan,Asia,2010,0.97897
+AZE,Azerbaijan,Asia,2011,0.97628
+AZE,Azerbaijan,Asia,2012,0.98607
+AZE,Azerbaijan,Asia,2013,0.97496
+AZE,Azerbaijan,Asia,2014,0.97783
+AZE,Azerbaijan,Asia,2015,0.97649
+AZE,Azerbaijan,Asia,2016,0.97614
+AZE,Azerbaijan,Asia,2017,0.99938
+AZE,Azerbaijan,Asia,2018,0.99295
+AZE,Azerbaijan,Asia,2019,0.99766
+AZE,Azerbaijan,Asia,2020,0.99811
+AZE,Azerbaijan,Asia,2021,0.99203
+AZE,Azerbaijan,Asia,2022,0.99003
+AZE,Azerbaijan,Asia,2023,0.9936
+BDI,Burundi,Africa,2009,0.89276
+BDI,Burundi,Africa,2010,0.93647
+BDI,Burundi,Africa,2011,0.97902
+BDI,Burundi,Africa,2012,1.00968
+BDI,Burundi,Africa,2014,1.05736
+BDI,Burundi,Africa,2015,1.07666
+BDI,Burundi,Africa,2016,1.0594
+BDI,Burundi,Africa,2017,1.07406
+BDI,Burundi,Africa,2018,1.06926
+BDI,Burundi,Africa,2019,1.07189
+BDI,Burundi,Africa,2020,1.08871
+BEL,Belgium,Europe,2000,0.99683
+BEL,Belgium,Europe,2002,0.99801
+BEL,Belgium,Europe,2004,0.99813
+BEL,Belgium,Europe,2006,0.99378
+BEL,Belgium,Europe,2007,0.99568
+BEL,Belgium,Europe,2008,0.9967
+BEL,Belgium,Europe,2009,0.9953
+BEL,Belgium,Europe,2010,0.99699
+BEL,Belgium,Europe,2011,0.99596
+BEL,Belgium,Europe,2012,0.99577
+BEL,Belgium,Europe,2013,0.9974
+BEL,Belgium,Europe,2014,0.99573
+BEL,Belgium,Europe,2015,0.99434
+BEL,Belgium,Europe,2016,0.99441
+BEL,Belgium,Europe,2017,0.99565
+BEL,Belgium,Europe,2018,0.99699
+BEL,Belgium,Europe,2019,0.99625
+BEL,Belgium,Europe,2020,0.99772
+BEL,Belgium,Europe,2021,0.99761
+BEL,Belgium,Europe,2022,0.9998
+BEN,Benin,Africa,2013,0.78895
+BEN,Benin,Africa,2020,0.87331
+BEN,Benin,Africa,2021,0.89393
+BEN,Benin,Africa,2022,0.90856
+BFA,Burkina Faso,Africa,2001,0.68938
+BFA,Burkina Faso,Africa,2003,0.71254
+BFA,Burkina Faso,Africa,2004,0.70443
+BFA,Burkina Faso,Africa,2005,0.72706
+BFA,Burkina Faso,Africa,2006,0.73288
+BFA,Burkina Faso,Africa,2007,0.74698
+BFA,Burkina Faso,Africa,2008,0.76688
+BFA,Burkina Faso,Africa,2009,0.77978
+BFA,Burkina Faso,Africa,2010,0.83811
+BFA,Burkina Faso,Africa,2011,0.85541
+BFA,Burkina Faso,Africa,2012,0.89162
+BFA,Burkina Faso,Africa,2013,0.9355
+BFA,Burkina Faso,Africa,2014,0.968286
+BFA,Burkina Faso,Africa,2015,0.99373
+BFA,Burkina Faso,Africa,2016,1.01856
+BFA,Burkina Faso,Africa,2017,1.03228
+BFA,Burkina Faso,Africa,2018,1.04036
+BFA,Burkina Faso,Africa,2019,1.0658
+BFA,Burkina Faso,Africa,2020,1.08252
+BFA,Burkina Faso,Africa,2021,1.11192
+BFA,Burkina Faso,Africa,2022,1.13931
+BFA,Burkina Faso,Africa,2023,1.14848
+BGD,Bangladesh,Asia,2005,1.10203
+BGD,Bangladesh,Asia,2006,1.0978
+BGD,Bangladesh,Asia,2009,1.05632
+BGD,Bangladesh,Asia,2010,1.08398
+BGD,Bangladesh,Asia,2017,1.1810595
+BGD,Bangladesh,Asia,2021,1.2123529
+BGD,Bangladesh,Asia,2022,1.1946633
+BGD,Bangladesh,Asia,2023,1.2427714
+BGR,Bulgaria,Europe,2000,0.97794
+BGR,Bulgaria,Europe,2001,0.97611
+BGR,Bulgaria,Europe,2006,0.97845
+BGR,Bulgaria,Europe,2007,0.98593
+BGR,Bulgaria,Europe,2008,0.97275
+BGR,Bulgaria,Europe,2009,0.98354
+BGR,Bulgaria,Europe,2010,0.99845
+BGR,Bulgaria,Europe,2011,1.01198
+BGR,Bulgaria,Europe,2012,1.01233
+BGR,Bulgaria,Europe,2013,0.98908
+BGR,Bulgaria,Europe,2014,0.98642
+BGR,Bulgaria,Europe,2015,0.98552
+BGR,Bulgaria,Europe,2016,0.99395
+BGR,Bulgaria,Europe,2017,1.00356
+BGR,Bulgaria,Europe,2018,1.00552
+BGR,Bulgaria,Europe,2019,1.00428
+BGR,Bulgaria,Europe,2020,0.99972
+BGR,Bulgaria,Europe,2021,1.00421
+BGR,Bulgaria,Europe,2022,0.99948
+BGR,Bulgaria,Europe,2023,0.99854
+BHR,Bahrain,Asia,2000,1.05672
+BHR,Bahrain,Asia,2002,1.11296
+BHR,Bahrain,Asia,2003,1.1062
+BHR,Bahrain,Asia,2004,1.08725
+BHR,Bahrain,Asia,2005,1.06116
+BHR,Bahrain,Asia,2006,1.0194
+BHR,Bahrain,Asia,2011,1.01046
+BHR,Bahrain,Asia,2012,1.00946
+BHR,Bahrain,Asia,2015,0.98803
+BHR,Bahrain,Asia,2016,0.99895
+BHR,Bahrain,Asia,2017,1.00866
+BHR,Bahrain,Asia,2018,1.0086
+BHS,Bahamas,North America,2004,1.05981
+BHS,Bahamas,North America,2005,0.94937
+BHS,Bahamas,North America,2006,1.00819
+BHS,Bahamas,North America,2007,1.02744
+BHS,Bahamas,North America,2008,1.01915
+BHS,Bahamas,North America,2009,1.00934
+BHS,Bahamas,North America,2010,1.04012
+BHS,Bahamas,North America,2011,1.03546
+BHS,Bahamas,North America,2012,1.05057
+BHS,Bahamas,North America,2013,1.03503
+BHS,Bahamas,North America,2014,1.00664
+BIH,Bosnia and Herzegovina,Europe,2015,1.01513
+BIH,Bosnia and Herzegovina,Europe,2016,1.01445
+BIH,Bosnia and Herzegovina,Europe,2017,1.01195
+BIH,Bosnia and Herzegovina,Europe,2018,1.01616
+BIH,Bosnia and Herzegovina,Europe,2019,1.01757
+BIH,Bosnia and Herzegovina,Europe,2020,1.01398
+BIH,Bosnia and Herzegovina,Europe,2021,1.01528
+BLR,Belarus,Europe,2017,1.00445
+BLR,Belarus,Europe,2018,1.00376
+BLR,Belarus,Europe,2019,1.00575
+BLR,Belarus,Europe,2020,1.00081
+BLR,Belarus,Europe,2021,1.005
+BLR,Belarus,Europe,2022,0.98494
+BLR,Belarus,Europe,2023,1.00396
+BLZ,Belize,North America,2000,1.0264
+BLZ,Belize,North America,2001,0.98209
+BLZ,Belize,North America,2003,0.97884
+BLZ,Belize,North America,2005,0.95052
+BLZ,Belize,North America,2006,0.98862
+BLZ,Belize,North America,2007,0.98467
+BLZ,Belize,North America,2008,1.00077
+BLZ,Belize,North America,2009,0.98841
+BLZ,Belize,North America,2010,0.98537
+BLZ,Belize,North America,2011,1.00219
+BLZ,Belize,North America,2012,0.97088
+BLZ,Belize,North America,2013,0.99142
+BLZ,Belize,North America,2014,1.0014
+BLZ,Belize,North America,2015,0.9943
+BLZ,Belize,North America,2016,0.99215
+BLZ,Belize,North America,2017,0.99897
+BLZ,Belize,North America,2018,1.00747
+BLZ,Belize,North America,2019,0.98277
+BLZ,Belize,North America,2020,0.97954
+BLZ,Belize,North America,2021,0.98024
+BLZ,Belize,North America,2022,0.98527
+BLZ,Belize,North America,2023,0.9916
+BMU,Bermuda,North America,2011,1.11727
+BOL,Bolivia,North America,2009,0.9946
+BOL,Bolivia,North America,2010,0.99663
+BOL,Bolivia,North America,2011,0.99788
+BOL,Bolivia,North America,2012,0.99626
+BOL,Bolivia,North America,2013,0.99361
+BOL,Bolivia,North America,2014,0.99534
+BOL,Bolivia,North America,2015,0.99796
+BOL,Bolivia,North America,2016,0.99755
+BOL,Bolivia,North America,2017,1.00213
+BOL,Bolivia,North America,2018,0.99333
+BOL,Bolivia,North America,2019,0.9918
+BOL,Bolivia,North America,2020,1.00303
+BOL,Bolivia,North America,2021,1.00795
+BOL,Bolivia,North America,2022,1.00546
+BOL,Bolivia,North America,2023,1.00347
+BRA,Brazil,North America,2012,0.9869
+BRA,Brazil,North America,2013,1.01713
+BRA,Brazil,North America,2014,1.00917
+BRA,Brazil,North America,2015,1.00385
+BRA,Brazil,North America,2016,1.00145
+BRA,Brazil,North America,2017,1.00474
+BRA,Brazil,North America,2018,0.99463
+BRA,Brazil,North America,2019,1.01183
+BRA,Brazil,North America,2020,1.02216
+BRA,Brazil,North America,2021,1.00865
+BRA,Brazil,North America,2022,1.02786
+BRB,Barbados,North America,2003,0.93835
+BRB,Barbados,North America,2004,0.97377
+BRB,Barbados,North America,2008,0.98911
+BRB,Barbados,North America,2009,0.97304
+BRB,Barbados,North America,2010,0.99395
+BRB,Barbados,North America,2011,1.04774
+BRB,Barbados,North America,2019,1.0211
+BRB,Barbados,North America,2020,1.00701
+BRB,Barbados,North America,2022,1.01753
+BRB,Barbados,North America,2023,0.99372
+BRN,Brunei,Asia,2018,1.0217956
+BTN,Bhutan,Asia,2000,0.90972
+BTN,Bhutan,Asia,2001,0.9608
+BTN,Bhutan,Asia,2005,1.01778
+BTN,Bhutan,Asia,2006,1.05234
+BTN,Bhutan,Asia,2008,1.08588
+BTN,Bhutan,Asia,2009,1.16383
+BTN,Bhutan,Asia,2010,1.18692
+BTN,Bhutan,Asia,2011,1.18768
+BTN,Bhutan,Asia,2012,1.18588
+BTN,Bhutan,Asia,2013,1.18499
+BTN,Bhutan,Asia,2015,1.15067
+BTN,Bhutan,Asia,2016,1.15316
+BTN,Bhutan,Asia,2017,1.15453
+BTN,Bhutan,Asia,2018,1.15808
+BTN,Bhutan,Asia,2021,1.1600106
+BTN,Bhutan,Asia,2022,1.1625824
+BTN,Bhutan,Asia,2024,1.1620078
+BWA,Botswana,Africa,2000,1.02926
+BWA,Botswana,Africa,2002,1.0235
+BWA,Botswana,Africa,2003,1.02422
+BWA,Botswana,Africa,2012,1.0352405
+BWA,Botswana,Africa,2013,1.0226562
+BWA,Botswana,Africa,2014,0.9233119
+BWA,Botswana,Africa,2015,1.017207
+BWA,Botswana,Africa,2017,1.00984
+BWA,Botswana,Africa,2022,1.0080948
+CAF,Central African Republic,Africa,2009,0.64374
+CAF,Central African Republic,Africa,2011,0.61937
+CAF,Central African Republic,Africa,2012,0.61917
+CAF,Central African Republic,Africa,2017,0.68577176
+CHE,Switzerland,Europe,2000,1.01056
+CHE,Switzerland,Europe,2001,1.00917
+CHE,Switzerland,Europe,2002,1.00277
+CHE,Switzerland,Europe,2003,1.00577
+CHE,Switzerland,Europe,2004,1.00476
+CHE,Switzerland,Europe,2005,1.00343
+CHE,Switzerland,Europe,2006,1.00489
+CHE,Switzerland,Europe,2013,0.99861
+CHE,Switzerland,Europe,2014,0.99802
+CHE,Switzerland,Europe,2015,1.00058
+CHE,Switzerland,Europe,2016,0.99948
+CHE,Switzerland,Europe,2017,0.99953
+CHE,Switzerland,Europe,2018,1.00155
+CHE,Switzerland,Europe,2019,1.00104
+CHE,Switzerland,Europe,2020,1.00084
+CHE,Switzerland,Europe,2021,1.00086
+CHE,Switzerland,Europe,2022,0.99996
+CHL,Chile,North America,2007,0.99476
+CHL,Chile,North America,2008,0.9919
+CHL,Chile,North America,2009,0.99299
+CHL,Chile,North America,2010,0.99249
+CHL,Chile,North America,2011,0.99416
+CHL,Chile,North America,2012,0.99579
+CHL,Chile,North America,2013,0.99409
+CHL,Chile,North America,2014,0.9938
+CHL,Chile,North America,2015,0.99638
+CHL,Chile,North America,2016,0.9973
+CHL,Chile,North America,2017,0.99279
+CHL,Chile,North America,2018,0.98833
+CHL,Chile,North America,2019,0.99004
+CHL,Chile,North America,2020,0.98963
+CHL,Chile,North America,2021,0.987
+CHL,Chile,North America,2022,0.98615
+CIV,Côte d'Ivoire,Africa,2013,0.79313934
+CIV,Côte d'Ivoire,Africa,2014,0.80936
+CIV,Côte d'Ivoire,Africa,2015,0.82701594
+CIV,Côte d'Ivoire,Africa,2016,0.83637
+CIV,Côte d'Ivoire,Africa,2017,0.85825
+CIV,Côte d'Ivoire,Africa,2018,0.9098
+CIV,Côte d'Ivoire,Africa,2019,0.9266
+CIV,Côte d'Ivoire,Africa,2020,0.92636
+CIV,Côte d'Ivoire,Africa,2021,0.95698
+CIV,Côte d'Ivoire,Africa,2022,1.06049
+CIV,Côte d'Ivoire,Africa,2023,0.99845
+CMR,Cameroon,Africa,2012,0.85762
+CMR,Cameroon,Africa,2014,0.86853
+CMR,Cameroon,Africa,2015,0.87442
+CMR,Cameroon,Africa,2016,0.88451
+CMR,Cameroon,Africa,2017,0.8958634
+CMR,Cameroon,Africa,2018,0.8932966
+CMR,Cameroon,Africa,2020,0.9044009
+CMR,Cameroon,Africa,2021,0.90868
+CMR,Cameroon,Africa,2022,0.92769
+CMR,Cameroon,Africa,2023,0.9323
+COG,Congo,Africa,2018,0.9438384
+COK,Cook Islands,Oceania,2012,1.01457
+COK,Cook Islands,Oceania,2013,1.0633801
+COK,Cook Islands,Oceania,2014,0.97838
+COK,Cook Islands,Oceania,2015,0.97567
+COL,Colombia,North America,2005,1.01336
+COL,Colombia,North America,2006,1.0266
+COL,Colombia,North America,2007,1.02471
+COL,Colombia,North America,2008,1.01845
+COL,Colombia,North America,2009,1.01136
+COL,Colombia,North America,2010,1.00721
+COL,Colombia,North America,2011,1.00458
+COL,Colombia,North America,2012,1.01007
+COL,Colombia,North America,2013,1.01119
+COL,Colombia,North America,2014,1.01339
+COL,Colombia,North America,2015,1.01389
+COL,Colombia,North America,2016,1.0133
+COL,Colombia,North America,2017,1.01146
+COL,Colombia,North America,2018,1.00995
+COL,Colombia,North America,2019,1.01045
+COL,Colombia,North America,2020,1.01249
+COL,Colombia,North America,2021,1.01284
+COL,Colombia,North America,2022,1.01487
+COM,Comoros,Africa,2013,1.0165143
+COM,Comoros,Africa,2014,1.0447036
+COM,Comoros,Africa,2017,1.051685
+COM,Comoros,Africa,2018,1.058276
+COM,Comoros,Africa,2021,1.056145
+COM,Comoros,Africa,2023,1.0113606
+CPV,Cabo Verde,Africa,2002,1.02005
+CPV,Cabo Verde,Africa,2003,1.03729
+CPV,Cabo Verde,Africa,2004,1.03071
+CPV,Cabo Verde,Africa,2005,1.03534
+CPV,Cabo Verde,Africa,2006,1.05023
+CPV,Cabo Verde,Africa,2007,1.03951
+CPV,Cabo Verde,Africa,2009,1.02953
+CPV,Cabo Verde,Africa,2010,1.026808
+CPV,Cabo Verde,Africa,2011,1.0243118
+CPV,Cabo Verde,Africa,2012,1.03984
+CPV,Cabo Verde,Africa,2013,1.04059
+CPV,Cabo Verde,Africa,2014,1.0508
+CPV,Cabo Verde,Africa,2015,1.05437
+CPV,Cabo Verde,Africa,2016,1.06509
+CPV,Cabo Verde,Africa,2017,1.06797
+CPV,Cabo Verde,Africa,2018,1.07241
+CPV,Cabo Verde,Africa,2019,1.04816
+CPV,Cabo Verde,Africa,2020,1.03252
+CPV,Cabo Verde,Africa,2021,1.04215
+CRI,Costa Rica,North America,2011,0.98916
+CRI,Costa Rica,North America,2012,0.98951
+CRI,Costa Rica,North America,2013,0.99115
+CRI,Costa Rica,North America,2014,0.99348
+CRI,Costa Rica,North America,2015,0.98016
+CRI,Costa Rica,North America,2016,0.97957
+CRI,Costa Rica,North America,2017,0.99612
+CRI,Costa Rica,North America,2018,1.00113
+CRI,Costa Rica,North America,2019,1.00693
+CRI,Costa Rica,North America,2020,1.00371
+CRI,Costa Rica,North America,2021,1.00186
+CRI,Costa Rica,North America,2022,1.00706
+CRI,Costa Rica,North America,2023,1.00053
+CUB,Cuba,North America,2000,1.0123
+CUB,Cuba,North America,2001,1.01145
+CUB,Cuba,North America,2002,0.99847
+CUB,Cuba,North America,2005,1.00651
+CUB,Cuba,North America,2006,0.99378
+CUB,Cuba,North America,2007,0.99473
+CUB,Cuba,North America,2008,0.98198
+CUB,Cuba,North America,2009,0.98441
+CUB,Cuba,North America,2010,0.99034
+CUB,Cuba,North America,2011,0.98923
+CUB,Cuba,North America,2012,0.98803
+CUB,Cuba,North America,2013,0.99382
+CUB,Cuba,North America,2014,0.98008
+CUB,Cuba,North America,2015,0.98548
+CUB,Cuba,North America,2016,0.99734
+CUB,Cuba,North America,2017,0.98731
+CUB,Cuba,North America,2018,0.99105
+CUB,Cuba,North America,2019,0.99054
+CUB,Cuba,North America,2020,0.99896
+CUB,Cuba,North America,2021,0.99573
+CUB,Cuba,North America,2022,0.99112
+CUB,Cuba,North America,2023,0.98881
+CYM,Cayman Islands,North America,2001,0.99188
+CYM,Cayman Islands,North America,2002,1.00626
+CYM,Cayman Islands,North America,2004,1.0517
+CYM,Cayman Islands,North America,2006,1.01681
+CYM,Cayman Islands,North America,2011,0.98157
+CYM,Cayman Islands,North America,2012,1.02944
+CYM,Cayman Islands,North America,2013,0.99768
+CYM,Cayman Islands,North America,2014,1.0173817
+CYM,Cayman Islands,North America,2015,1.0364573
+CYM,Cayman Islands,North America,2018,0.98783
+CYM,Cayman Islands,North America,2019,0.97094
+CYM,Cayman Islands,North America,2020,0.99269
+CYM,Cayman Islands,North America,2021,1.00466
+CYM,Cayman Islands,North America,2022,1.00244
+CYM,Cayman Islands,North America,2023,0.98271
+CYP,Cyprus,Asia,2000,0.99553
+CYP,Cyprus,Asia,2001,0.98717
+CYP,Cyprus,Asia,2002,0.99932
+CYP,Cyprus,Asia,2003,1.01351
+CYP,Cyprus,Asia,2006,1.0113
+CYP,Cyprus,Asia,2007,1.01314
+CYP,Cyprus,Asia,2008,1.01178
+CYP,Cyprus,Asia,2009,1.00578
+CYP,Cyprus,Asia,2010,1.00266
+CYP,Cyprus,Asia,2011,1.00529
+CYP,Cyprus,Asia,2012,1.01514
+CYP,Cyprus,Asia,2015,0.99928
+CYP,Cyprus,Asia,2016,1.00128
+CZE,Czechia,Europe,2001,1.00037
+CZE,Czechia,Europe,2008,0.99332
+CZE,Czechia,Europe,2013,1.00082
+CZE,Czechia,Europe,2014,1.0015
+CZE,Czechia,Europe,2015,1.00166
+CZE,Czechia,Europe,2016,1.00194
+CZE,Czechia,Europe,2017,1.0011
+CZE,Czechia,Europe,2018,1.00023
+CZE,Czechia,Europe,2019,0.99988
+CZE,Czechia,Europe,2020,1.0001
+DEU,Germany,Europe,2002,1.00248
+DEU,Germany,Europe,2003,1.00267
+DEU,Germany,Europe,2004,1.00295
+DEU,Germany,Europe,2005,1.00188
+DEU,Germany,Europe,2006,1.00267
+DEU,Germany,Europe,2007,1.00215
+DEU,Germany,Europe,2008,1.00287
+DEU,Germany,Europe,2009,1.00371
+DEU,Germany,Europe,2010,1.0056
+DEU,Germany,Europe,2011,1.0017
+DEU,Germany,Europe,2012,1.00407
+DEU,Germany,Europe,2013,1.00317
+DEU,Germany,Europe,2014,1.00373
+DEU,Germany,Europe,2015,1.00448
+DEU,Germany,Europe,2016,1.00988
+DEU,Germany,Europe,2017,1.00628
+DEU,Germany,Europe,2018,1.00727
+DEU,Germany,Europe,2019,1.00663
+DEU,Germany,Europe,2020,1.00764
+DEU,Germany,Europe,2021,1.01036
+DEU,Germany,Europe,2022,1.0096
+DEU,Germany,Europe,2023,1.01064
+DMA,Dominica,North America,2001,0.9881
+DMA,Dominica,North America,2006,1.02193
+DMA,Dominica,North America,2009,1.08497
+DMA,Dominica,North America,2015,0.94474
+DMA,Dominica,North America,2023,0.90099
+DNK,Denmark,Europe,2000,1.00521
+DNK,Denmark,Europe,2001,1.03222
+DNK,Denmark,Europe,2002,1.03938
+DNK,Denmark,Europe,2004,1.00875
+DNK,Denmark,Europe,2005,1.00398
+DNK,Denmark,Europe,2006,0.99984
+DNK,Denmark,Europe,2007,1.0056
+DNK,Denmark,Europe,2008,1.00334
+DNK,Denmark,Europe,2009,1.00253
+DNK,Denmark,Europe,2010,1.00327
+DNK,Denmark,Europe,2011,1.00278
+DNK,Denmark,Europe,2012,1.00118
+DNK,Denmark,Europe,2013,1.00184
+DNK,Denmark,Europe,2014,1.00225
+DNK,Denmark,Europe,2015,1.0016
+DNK,Denmark,Europe,2016,1.00147
+DNK,Denmark,Europe,2017,1.00086
+DNK,Denmark,Europe,2018,0.99954
+DNK,Denmark,Europe,2019,1.00047
+DNK,Denmark,Europe,2020,1.00043
+DNK,Denmark,Europe,2021,0.99997
+DNK,Denmark,Europe,2022,0.99969
+DNK,Denmark,Europe,2023,0.99986
+DOM,Dominican Republic,North America,2000,1.01418
+DOM,Dominican Republic,North America,2004,1.00585
+DOM,Dominican Republic,North America,2005,1.02585
+DOM,Dominican Republic,North America,2007,1.02638
+DOM,Dominican Republic,North America,2008,1.02252
+DOM,Dominican Republic,North America,2009,0.98663
+DOM,Dominican Republic,North America,2010,0.96761
+DOM,Dominican Republic,North America,2011,0.97972
+DOM,Dominican Republic,North America,2012,0.97385
+DOM,Dominican Republic,North America,2013,0.97882
+DOM,Dominican Republic,North America,2014,0.97848
+DOM,Dominican Republic,North America,2016,0.97782
+DOM,Dominican Republic,North America,2017,0.98299
+DOM,Dominican Republic,North America,2018,0.9959
+DOM,Dominican Republic,North America,2019,0.99837
+DOM,Dominican Republic,North America,2020,1.014
+DOM,Dominican Republic,North America,2021,1.01717
+DOM,Dominican Republic,North America,2022,1.01205
+DOM,Dominican Republic,North America,2023,1.01348
+DZA,Algeria,Africa,2023,0.99349
+DZA,Algeria,Africa,2024,0.99954
+ECU,Ecuador,North America,2000,0.98868
+ECU,Ecuador,North America,2001,0.99365
+ECU,Ecuador,North America,2002,0.97868
+ECU,Ecuador,North America,2003,0.9895
+ECU,Ecuador,North America,2005,0.9808
+ECU,Ecuador,North America,2006,0.98659
+ECU,Ecuador,North America,2007,0.9814
+ECU,Ecuador,North America,2009,0.98997
+ECU,Ecuador,North America,2010,0.98645
+ECU,Ecuador,North America,2011,0.98815
+ECU,Ecuador,North America,2012,0.99222
+ECU,Ecuador,North America,2013,1.00331
+ECU,Ecuador,North America,2015,1.02699
+ECU,Ecuador,North America,2016,1.0304
+ECU,Ecuador,North America,2017,1.03032
+ECU,Ecuador,North America,2018,1.03366
+ECU,Ecuador,North America,2019,1.03713
+ECU,Ecuador,North America,2020,1.03486
+ECU,Ecuador,North America,2021,1.02886
+ECU,Ecuador,North America,2022,1.03227
+ECU,Ecuador,North America,2023,1.02236
+EGY,Egypt,Africa,2003,0.96214
+EGY,Egypt,Africa,2004,0.96459
+EGY,Egypt,Africa,2014,1.02187
+EGY,Egypt,Africa,2016,0.9974
+EGY,Egypt,Africa,2017,0.99839
+EGY,Egypt,Africa,2018,0.9966
+EGY,Egypt,Africa,2019,0.99844
+EGY,Egypt,Africa,2020,0.99933
+EGY,Egypt,Africa,2021,0.99927
+EGY,Egypt,Africa,2023,1.00007
+ERI,Eritrea,Africa,2000,0.80436
+ERI,Eritrea,Africa,2001,0.81236
+ERI,Eritrea,Africa,2002,0.77929
+ERI,Eritrea,Africa,2003,0.77999
+ERI,Eritrea,Africa,2004,0.74875
+ERI,Eritrea,Africa,2005,0.73698
+ERI,Eritrea,Africa,2006,0.71908
+ERI,Eritrea,Africa,2007,0.75228
+ERI,Eritrea,Africa,2008,0.75888
+ERI,Eritrea,Africa,2009,0.77288
+ERI,Eritrea,Africa,2010,0.80203
+ERI,Eritrea,Africa,2011,0.79568
+ERI,Eritrea,Africa,2012,0.79019
+ERI,Eritrea,Africa,2013,0.80702
+ERI,Eritrea,Africa,2014,0.80971
+ERI,Eritrea,Africa,2015,0.82164
+ERI,Eritrea,Africa,2017,0.84815
+ERI,Eritrea,Africa,2018,0.85577
+ERI,Eritrea,Africa,2019,0.85929316
+ERI,Eritrea,Africa,2022,0.84997
+ESP,Spain,Europe,2011,1.00112
+ESP,Spain,Europe,2012,1.00161
+ESP,Spain,Europe,2013,1.00391
+ESP,Spain,Europe,2014,1.00305
+ESP,Spain,Europe,2015,1.00206
+ESP,Spain,Europe,2016,1.00152
+ESP,Spain,Europe,2017,1.00203
+ESP,Spain,Europe,2018,1.00236
+ESP,Spain,Europe,2019,1.00208
+ESP,Spain,Europe,2020,1.0006
+ESP,Spain,Europe,2021,0.99953
+ESP,Spain,Europe,2022,0.99794
+ESP,Spain,Europe,2023,0.9972
+EST,Estonia,Europe,2014,1.00211
+EST,Estonia,Europe,2015,1.00161
+EST,Estonia,Europe,2016,1.0
+EST,Estonia,Europe,2017,0.99962
+EST,Estonia,Europe,2018,1.00147
+EST,Estonia,Europe,2019,1.00142
+EST,Estonia,Europe,2020,1.00045
+EST,Estonia,Europe,2021,0.99833
+EST,Estonia,Europe,2022,0.99904
+EST,Estonia,Europe,2023,1.00316
+ETH,Ethiopia,Africa,2000,0.5917
+ETH,Ethiopia,Africa,2001,0.59527
+ETH,Ethiopia,Africa,2002,0.59841
+ETH,Ethiopia,Africa,2003,0.60009
+ETH,Ethiopia,Africa,2004,0.635
+ETH,Ethiopia,Africa,2005,0.6757
+ETH,Ethiopia,Africa,2006,0.72708
+ETH,Ethiopia,Africa,2007,0.76999
+ETH,Ethiopia,Africa,2008,0.81684
+ETH,Ethiopia,Africa,2009,0.88074
+ETH,Ethiopia,Africa,2010,0.90903
+ETH,Ethiopia,Africa,2011,0.92564
+ETH,Ethiopia,Africa,2012,0.95787
+ETH,Ethiopia,Africa,2014,0.9584244
+ETH,Ethiopia,Africa,2015,0.92731
+FIN,Finland,Europe,2000,0.99776
+FIN,Finland,Europe,2001,1.00108
+FIN,Finland,Europe,2002,0.9998
+FIN,Finland,Europe,2003,0.99927
+FIN,Finland,Europe,2004,1.00211
+FIN,Finland,Europe,2005,0.99957
+FIN,Finland,Europe,2006,1.00098
+FIN,Finland,Europe,2007,1.00057
+FIN,Finland,Europe,2008,1.00055
+FIN,Finland,Europe,2009,0.99876
+FIN,Finland,Europe,2010,1.00136
+FIN,Finland,Europe,2011,1.00078
+FIN,Finland,Europe,2012,0.99955
+FIN,Finland,Europe,2013,0.99927
+FIN,Finland,Europe,2014,0.99713
+FIN,Finland,Europe,2015,0.9992
+FIN,Finland,Europe,2016,0.99958
+FIN,Finland,Europe,2017,1.00124
+FIN,Finland,Europe,2018,0.99993
+FIN,Finland,Europe,2019,0.99762
+FIN,Finland,Europe,2020,1.00379
+FIN,Finland,Europe,2021,0.9995
+FIN,Finland,Europe,2022,1.00061
+FIN,Finland,Europe,2023,1.00113
+FJI,Fiji,Oceania,2000,1.01307
+FJI,Fiji,Oceania,2001,1.01107
+FJI,Fiji,Oceania,2002,1.03003
+FJI,Fiji,Oceania,2003,1.02613
+FJI,Fiji,Oceania,2004,1.00196
+FJI,Fiji,Oceania,2006,1.01837
+FJI,Fiji,Oceania,2007,1.0368
+FJI,Fiji,Oceania,2009,1.03737
+FJI,Fiji,Oceania,2011,1.01986
+FJI,Fiji,Oceania,2012,1.05023
+FJI,Fiji,Oceania,2013,0.99464566
+FJI,Fiji,Oceania,2016,0.98334724
+FRA,France,Europe,2000,1.00773
+FRA,France,Europe,2001,1.01021
+FRA,France,Europe,2002,1.01133
+FRA,France,Europe,2003,1.01083
+FRA,France,Europe,2004,1.0083
+FRA,France,Europe,2005,1.00339
+FRA,France,Europe,2006,0.99896
+FRA,France,Europe,2007,0.99928
+FRA,France,Europe,2008,1.00091
+FRA,France,Europe,2009,1.00021
+FRA,France,Europe,2010,0.99981
+FRA,France,Europe,2011,1.00404
+FRA,France,Europe,2012,1.00414
+FRA,France,Europe,2013,1.003
+FRA,France,Europe,2014,1.00287
+FRA,France,Europe,2015,1.00261
+FRA,France,Europe,2016,1.00125
+FRA,France,Europe,2017,0.99954
+FRA,France,Europe,2018,1.00002
+FRA,France,Europe,2019,0.99922
+FRA,France,Europe,2020,1.0007
+FRA,France,Europe,2022,1.00228
+FSM,Micronesia,Oceania,2014,1.0438
+FSM,Micronesia,Oceania,2016,0.97801125
+FSM,Micronesia,Oceania,2017,1.004162
+FSM,Micronesia,Oceania,2018,0.769865
+FSM,Micronesia,Oceania,2019,0.875927
+FSM,Micronesia,Oceania,2020,0.9888759
+FSM,Micronesia,Oceania,2021,0.99813485
+FSM,Micronesia,Oceania,2022,1.0174135
+FSM,Micronesia,Oceania,2023,1.02006
+FSM,Micronesia,Oceania,2024,1.0193413
+GAB,Gabon,Africa,2019,1.0322037
+GBR,United Kingdom,Europe,2000,1.00093
+GBR,United Kingdom,Europe,2001,1.00437
+GBR,United Kingdom,Europe,2003,1.00321
+GBR,United Kingdom,Europe,2006,1.01436
+GBR,United Kingdom,Europe,2007,1.01506
+GBR,United Kingdom,Europe,2008,1.00317
+GBR,United Kingdom,Europe,2011,1.00169
+GBR,United Kingdom,Europe,2012,1.00096
+GBR,United Kingdom,Europe,2013,0.99898
+GBR,United Kingdom,Europe,2014,0.99755
+GBR,United Kingdom,Europe,2015,0.99964
+GBR,United Kingdom,Europe,2017,1.00431
+GBR,United Kingdom,Europe,2018,1.00474
+GBR,United Kingdom,Europe,2019,1.00311
+GBR,United Kingdom,Europe,2020,1.00254
+GBR,United Kingdom,Europe,2021,1.00028
+GBR,United Kingdom,Europe,2022,0.99885
+GHA,Ghana,Africa,2000,0.86673
+GHA,Ghana,Africa,2001,0.88745
+GHA,Ghana,Africa,2002,0.89148
+GHA,Ghana,Africa,2003,0.92066
+GHA,Ghana,Africa,2005,0.9034
+GHA,Ghana,Africa,2006,0.95835
+GHA,Ghana,Africa,2007,0.97083
+GHA,Ghana,Africa,2008,0.9694
+GHA,Ghana,Africa,2009,0.96744
+GHA,Ghana,Africa,2013,0.91878
+GHA,Ghana,Africa,2014,0.97196
+GHA,Ghana,Africa,2015,0.97028
+GHA,Ghana,Africa,2016,0.97272
+GHA,Ghana,Africa,2017,0.98743
+GHA,Ghana,Africa,2018,1.00156
+GHA,Ghana,Africa,2019,1.02828
+GHA,Ghana,Africa,2020,1.0132
+GHA,Ghana,Africa,2021,0.98937
+GIN,Guinea,Africa,2001,0.49052
+GIN,Guinea,Africa,2002,0.52257
+GIN,Guinea,Africa,2004,0.58925
+GIN,Guinea,Africa,2005,0.62916
+GIN,Guinea,Africa,2006,0.66379
+GIN,Guinea,Africa,2010,0.6932463
+GIN,Guinea,Africa,2011,0.70634
+GIN,Guinea,Africa,2012,0.7070652
+GIN,Guinea,Africa,2013,0.70121497
+GIN,Guinea,Africa,2014,0.71117
+GIN,Guinea,Africa,2015,0.7135375
+GIN,Guinea,Africa,2016,0.71144587
+GIN,Guinea,Africa,2018,0.73224425
+GIN,Guinea,Africa,2019,0.74704283
+GIN,Guinea,Africa,2020,0.74393064
+GIN,Guinea,Africa,2021,0.7783446
+GMB,Gambia,Africa,2006,0.97253
+GMB,Gambia,Africa,2007,0.98378
+GMB,Gambia,Africa,2008,1.01725
+GMB,Gambia,Africa,2010,1.02558
+GMB,Gambia,Africa,2011,1.0317618
+GMB,Gambia,Africa,2012,0.99711525
+GMB,Gambia,Africa,2013,1.0224743
+GMB,Gambia,Africa,2014,1.0364379
+GMB,Gambia,Africa,2015,1.0569803
+GMB,Gambia,Africa,2016,1.0643059
+GMB,Gambia,Africa,2017,1.0975889
+GMB,Gambia,Africa,2018,1.1216213
+GMB,Gambia,Africa,2019,1.1323394
+GMB,Gambia,Africa,2020,1.1452143
+GMB,Gambia,Africa,2021,1.1579394
+GMB,Gambia,Africa,2022,1.169579
+GMB,Gambia,Africa,2023,1.1829469
+GNB,Guinea-Bissau,Africa,2000,0.60607
+GRC,Greece,Europe,2000,1.00537
+GRC,Greece,Europe,2002,0.99243
+GRC,Greece,Europe,2003,0.9942
+GRC,Greece,Europe,2004,1.00321
+GRC,Greece,Europe,2005,1.00531
+GRC,Greece,Europe,2006,1.0042
+GRC,Greece,Europe,2007,0.95506
+GRC,Greece,Europe,2013,0.98617
+GRC,Greece,Europe,2014,0.98054
+GRC,Greece,Europe,2015,0.9852
+GRC,Greece,Europe,2016,0.98729
+GRC,Greece,Europe,2017,0.99735
+GRC,Greece,Europe,2018,0.99574
+GRC,Greece,Europe,2019,0.9973
+GRC,Greece,Europe,2020,1.00139
+GRC,Greece,Europe,2021,0.99532
+GRC,Greece,Europe,2022,1.00054
+GRD,Grenada,North America,2002,1.05316
+GRD,Grenada,North America,2003,0.93097
+GRD,Grenada,North America,2004,0.9952
+GRD,Grenada,North America,2005,0.96393
+GRD,Grenada,North America,2013,1.07346
+GRD,Grenada,North America,2014,0.96063
+GTM,Guatemala,North America,2000,0.80653
+GTM,Guatemala,North America,2001,0.82883
+GTM,Guatemala,North America,2002,0.82641
+GTM,Guatemala,North America,2008,0.88205
+GTM,Guatemala,North America,2009,0.8996
+GTM,Guatemala,North America,2010,0.89945
+GTM,Guatemala,North America,2011,0.89935
+GTM,Guatemala,North America,2012,0.89777
+GTM,Guatemala,North America,2013,0.89
+GTM,Guatemala,North America,2014,0.89454
+GTM,Guatemala,North America,2015,0.89687
+GTM,Guatemala,North America,2016,0.89287
+GTM,Guatemala,North America,2017,0.90038
+GTM,Guatemala,North America,2018,0.91144
+GTM,Guatemala,North America,2020,0.92187
+GTM,Guatemala,North America,2021,0.93287
+GTM,Guatemala,North America,2022,0.94748
+GTM,Guatemala,North America,2023,0.9601
+GUY,Guyana,North America,2009,0.99873
+GUY,Guyana,North America,2012,1.00854
+GUY,Guyana,North America,2020,1.03606
+GUY,Guyana,North America,2021,1.03328
+GUY,Guyana,North America,2023,0.96402
+HKG,Hong Kong,Asia,2001,0.98992
+HKG,Hong Kong,Asia,2002,0.98608
+HKG,Hong Kong,Asia,2003,1.00177
+HKG,Hong Kong,Asia,2004,1.00537
+HKG,Hong Kong,Asia,2005,1.00115
+HKG,Hong Kong,Asia,2006,0.98385
+HKG,Hong Kong,Asia,2007,0.98139
+HKG,Hong Kong,Asia,2008,0.98092
+HKG,Hong Kong,Asia,2009,0.98613
+HKG,Hong Kong,Asia,2010,0.9831
+HKG,Hong Kong,Asia,2011,0.97797
+HKG,Hong Kong,Asia,2012,0.97306
+HKG,Hong Kong,Asia,2013,0.98161435
+HKG,Hong Kong,Asia,2017,0.9654
+HKG,Hong Kong,Asia,2018,0.9817552
+HKG,Hong Kong,Asia,2019,0.98092
+HKG,Hong Kong,Asia,2020,0.97264
+HKG,Hong Kong,Asia,2021,0.97315
+HKG,Hong Kong,Asia,2022,0.9950272
+HND,Honduras,North America,2011,1.0493839
+HND,Honduras,North America,2012,1.0489643
+HND,Honduras,North America,2013,1.04594
+HND,Honduras,North America,2014,1.0438
+HND,Honduras,North America,2015,1.04395
+HND,Honduras,North America,2016,1.04047
+HND,Honduras,North America,2017,1.0405
+HND,Honduras,North America,2018,1.0458524
+HND,Honduras,North America,2019,1.19533
+HND,Honduras,North America,2020,1.0666
+HND,Honduras,North America,2021,1.0996
+HND,Honduras,North America,2022,1.08584
+HND,Honduras,North America,2023,1.07062
+HUN,Hungary,Europe,2000,0.9919
+HUN,Hungary,Europe,2001,0.99661
+HUN,Hungary,Europe,2010,0.99963
+HUN,Hungary,Europe,2012,1.00072
+HUN,Hungary,Europe,2013,0.99924
+HUN,Hungary,Europe,2014,0.99925
+HUN,Hungary,Europe,2015,1.0003
+HUN,Hungary,Europe,2016,0.9988
+HUN,Hungary,Europe,2017,0.99745
+HUN,Hungary,Europe,2018,0.99896
+HUN,Hungary,Europe,2019,0.99622
+HUN,Hungary,Europe,2020,0.99604
+HUN,Hungary,Europe,2021,0.99844
+HUN,Hungary,Europe,2022,0.9974
+HUN,Hungary,Europe,2023,1.00065
+IDN,Indonesia,Asia,2001,0.98055
+IDN,Indonesia,Asia,2002,1.00641
+IDN,Indonesia,Asia,2003,1.02742
+IDN,Indonesia,Asia,2004,1.03739
+IDN,Indonesia,Asia,2005,1.02218
+IDN,Indonesia,Asia,2006,1.03906
+IDN,Indonesia,Asia,2007,1.0333
+IDN,Indonesia,Asia,2008,1.01891
+IDN,Indonesia,Asia,2009,1.01988
+IDN,Indonesia,Asia,2010,1.01808
+IDN,Indonesia,Asia,2011,1.00662
+IDN,Indonesia,Asia,2012,1.02578
+IDN,Indonesia,Asia,2013,1.00927
+IDN,Indonesia,Asia,2014,1.03094
+IDN,Indonesia,Asia,2018,1.05694
+IDN,Indonesia,Asia,2021,1.0656809
+IDN,Indonesia,Asia,2022,1.0657158
+IDN,Indonesia,Asia,2023,1.0569936
+IND,India,Asia,2013,1.04369
+IND,India,Asia,2020,1.0216298
+IND,India,Asia,2021,1.0186208
+IND,India,Asia,2022,1.0177057
+IND,India,Asia,2023,1.0141829
+IND,India,Asia,2024,1.0135266
+IRN,Iran,Asia,2009,0.98885
+IRN,Iran,Asia,2010,0.9851
+IRN,Iran,Asia,2011,0.98522
+IRN,Iran,Asia,2012,0.99054
+IRN,Iran,Asia,2013,0.99926
+IRN,Iran,Asia,2014,0.97076
+IRN,Iran,Asia,2016,0.96705
+IRN,Iran,Asia,2017,0.97126
+IRN,Iran,Asia,2020,0.98601
+IRQ,Iraq,Asia,2000,0.63431
+IRQ,Iraq,Asia,2003,0.7391
+IRQ,Iraq,Asia,2004,0.71387
+IRQ,Iraq,Asia,2007,0.74839
+ISL,Iceland,Europe,2000,0.99531
+ISL,Iceland,Europe,2001,0.99715
+ISL,Iceland,Europe,2003,0.99524
+ISL,Iceland,Europe,2004,0.99452
+ISL,Iceland,Europe,2005,0.9983
+ISL,Iceland,Europe,2006,0.99491
+ISL,Iceland,Europe,2007,0.99799
+ISL,Iceland,Europe,2008,1.00016
+ISL,Iceland,Europe,2009,0.99731
+ISL,Iceland,Europe,2010,0.99967
+ISL,Iceland,Europe,2011,0.99744
+ISL,Iceland,Europe,2012,0.99928
+ISL,Iceland,Europe,2013,0.99787
+ISL,Iceland,Europe,2014,0.99625
+ISL,Iceland,Europe,2015,0.99393
+ISL,Iceland,Europe,2016,0.99915
+ISL,Iceland,Europe,2017,0.99938
+ISL,Iceland,Europe,2018,1.0032
+ISL,Iceland,Europe,2019,1.00375
+ISL,Iceland,Europe,2020,1.00014
+ISL,Iceland,Europe,2021,0.9989
+ISL,Iceland,Europe,2022,0.99851
+ISR,Israel,Asia,2000,0.99083
+ISR,Israel,Asia,2001,0.989
+ISR,Israel,Asia,2002,0.98719
+ISR,Israel,Asia,2003,0.98458
+ISR,Israel,Asia,2004,0.98523
+ISR,Israel,Asia,2005,0.99256
+ISR,Israel,Asia,2006,0.99291
+ISR,Israel,Asia,2007,0.99308
+ISR,Israel,Asia,2008,0.99985
+ISR,Israel,Asia,2009,0.99933
+ISR,Israel,Asia,2010,0.99479
+ISR,Israel,Asia,2011,0.99421
+ISR,Israel,Asia,2012,0.99442
+ISR,Israel,Asia,2013,0.99235
+ISR,Israel,Asia,2014,0.99246
+ISR,Israel,Asia,2015,0.99141
+ISR,Israel,Asia,2016,0.99682
+ISR,Israel,Asia,2017,0.99933
+ISR,Israel,Asia,2018,0.99705
+ISR,Israel,Asia,2019,0.99846
+ISR,Israel,Asia,2020,0.99677
+ISR,Israel,Asia,2021,0.99518
+ISR,Israel,Asia,2022,0.9975
+ITA,Italy,Europe,2012,0.99823
+ITA,Italy,Europe,2013,0.99943
+ITA,Italy,Europe,2014,0.99905
+ITA,Italy,Europe,2015,0.99816
+ITA,Italy,Europe,2016,0.99848
+ITA,Italy,Europe,2017,0.99853
+ITA,Italy,Europe,2018,0.99812
+ITA,Italy,Europe,2019,0.99854
+ITA,Italy,Europe,2020,0.99857
+ITA,Italy,Europe,2021,0.99904
+ITA,Italy,Europe,2022,0.99849
+ITA,Italy,Europe,2023,0.99832
+JAM,Jamaica,North America,2000,1.04102
+JAM,Jamaica,North America,2001,1.02068
+JAM,Jamaica,North America,2002,1.0284
+JAM,Jamaica,North America,2003,1.02391
+JAM,Jamaica,North America,2004,1.00552
+JAM,Jamaica,North America,2005,1.01205
+JAM,Jamaica,North America,2013,1.06524
+JAM,Jamaica,North America,2014,1.05483
+JAM,Jamaica,North America,2015,1.05942
+JAM,Jamaica,North America,2016,1.05959
+JAM,Jamaica,North America,2017,1.04552
+JAM,Jamaica,North America,2018,1.01758
+JAM,Jamaica,North America,2019,1.01621
+JAM,Jamaica,North America,2021,1.05816
+JAM,Jamaica,North America,2022,1.04212
+JAM,Jamaica,North America,2023,1.01489
+JOR,Jordan,Asia,2000,1.02497
+JOR,Jordan,Asia,2002,1.02559
+JOR,Jordan,Asia,2003,1.03332
+JOR,Jordan,Asia,2004,1.01258
+JOR,Jordan,Asia,2005,1.04067
+JOR,Jordan,Asia,2006,1.02294
+JOR,Jordan,Asia,2008,1.04519
+JOR,Jordan,Asia,2011,1.03241
+JOR,Jordan,Asia,2013,1.02924
+JOR,Jordan,Asia,2014,1.03905
+JOR,Jordan,Asia,2017,1.01027
+JOR,Jordan,Asia,2018,1.01617
+JOR,Jordan,Asia,2019,1.01799
+JOR,Jordan,Asia,2020,1.01255
+JOR,Jordan,Asia,2021,1.01582
+JOR,Jordan,Asia,2022,1.01519
+JOR,Jordan,Asia,2023,0.98378
+KAZ,Kazakhstan,Asia,2000,1.00022
+KAZ,Kazakhstan,Asia,2001,0.9536
+KAZ,Kazakhstan,Asia,2002,0.95695
+KAZ,Kazakhstan,Asia,2003,0.95728
+KAZ,Kazakhstan,Asia,2012,0.9815129
+KAZ,Kazakhstan,Asia,2013,0.99160224
+KAZ,Kazakhstan,Asia,2014,0.9969655
+KAZ,Kazakhstan,Asia,2015,1.0093039
+KAZ,Kazakhstan,Asia,2016,1.0056435
+KAZ,Kazakhstan,Asia,2017,1.003594
+KAZ,Kazakhstan,Asia,2018,1.0016035
+KAZ,Kazakhstan,Asia,2019,1.0011958
+KAZ,Kazakhstan,Asia,2020,0.99131256
+KAZ,Kazakhstan,Asia,2021,0.9913003
+KAZ,Kazakhstan,Asia,2022,0.99019885
+KAZ,Kazakhstan,Asia,2023,0.9894857
+KAZ,Kazakhstan,Asia,2024,0.9855196
+KEN,Kenya,Africa,2000,1.02092
+KEN,Kenya,Africa,2002,1.03788
+KEN,Kenya,Africa,2003,0.93874
+KEN,Kenya,Africa,2004,0.9347
+KEN,Kenya,Africa,2005,0.96044
+KEN,Kenya,Africa,2006,0.97615
+KGZ,Kyrgyzstan,Asia,2004,0.92047
+KGZ,Kyrgyzstan,Asia,2005,0.91339
+KGZ,Kyrgyzstan,Asia,2006,0.92069
+KGZ,Kyrgyzstan,Asia,2007,0.95175
+KGZ,Kyrgyzstan,Asia,2008,0.96986
+KGZ,Kyrgyzstan,Asia,2010,0.99326634
+KGZ,Kyrgyzstan,Asia,2011,0.9972865
+KGZ,Kyrgyzstan,Asia,2012,0.99062175
+KGZ,Kyrgyzstan,Asia,2013,0.9931517
+KGZ,Kyrgyzstan,Asia,2014,0.9968789
+KGZ,Kyrgyzstan,Asia,2015,0.995292
+KGZ,Kyrgyzstan,Asia,2016,0.9930735
+KGZ,Kyrgyzstan,Asia,2017,0.99222416
+KGZ,Kyrgyzstan,Asia,2018,0.99259907
+KGZ,Kyrgyzstan,Asia,2019,0.99039334
+KGZ,Kyrgyzstan,Asia,2020,1.0001816
+KGZ,Kyrgyzstan,Asia,2021,1.0141674
+KGZ,Kyrgyzstan,Asia,2022,1.0154366
+KGZ,Kyrgyzstan,Asia,2023,1.0138574
+KGZ,Kyrgyzstan,Asia,2024,1.011974
+KHM,Cambodia,Asia,2000,0.69237
+KHM,Cambodia,Asia,2001,0.71057
+KHM,Cambodia,Asia,2002,0.76007
+KHM,Cambodia,Asia,2003,0.81069
+KHM,Cambodia,Asia,2004,0.88166
+KHM,Cambodia,Asia,2005,0.91357
+KHM,Cambodia,Asia,2006,0.8901
+KHM,Cambodia,Asia,2007,0.9264
+KHM,Cambodia,Asia,2008,0.96305
+KHM,Cambodia,Asia,2010,0.96339
+KHM,Cambodia,Asia,2011,0.99659
+KHM,Cambodia,Asia,2012,0.9954
+KHM,Cambodia,Asia,2014,0.97161
+KHM,Cambodia,Asia,2015,0.99588
+KHM,Cambodia,Asia,2020,1.06948
+KHM,Cambodia,Asia,2021,1.085766
+KHM,Cambodia,Asia,2023,0.8635964
+KIR,Kiribati,Oceania,2021,1.06772
+KIR,Kiribati,Oceania,2022,1.04187
+KIR,Kiribati,Oceania,2023,1.0017
+KNA,Saint Kitts and Nevis,North America,2002,1.03763
+KNA,Saint Kitts and Nevis,North America,2003,1.03892
+KNA,Saint Kitts and Nevis,North America,2004,1.0645
+KNA,Saint Kitts and Nevis,North America,2012,0.99446
+KOR,South Korea,Asia,2000,1.01562
+KOR,South Korea,Asia,2002,1.00499
+KOR,South Korea,Asia,2003,1.01023
+KOR,South Korea,Asia,2004,1.01036
+KOR,South Korea,Asia,2005,1.00826
+KOR,South Korea,Asia,2006,1.00827
+KOR,South Korea,Asia,2007,1.00259
+KOR,South Korea,Asia,2008,0.99887
+KOR,South Korea,Asia,2015,0.99656
+KOR,South Korea,Asia,2016,0.99718
+KOR,South Korea,Asia,2017,0.99508
+KOR,South Korea,Asia,2019,0.99592
+KOR,South Korea,Asia,2020,0.99701
+KOR,South Korea,Asia,2021,0.99852
+KOR,South Korea,Asia,2022,1.00077
+KWT,Kuwait,Asia,2000,0.97657
+KWT,Kuwait,Asia,2001,1.01172
+KWT,Kuwait,Asia,2003,1.0305
+KWT,Kuwait,Asia,2004,1.02303
+KWT,Kuwait,Asia,2010,1.04543
+KWT,Kuwait,Asia,2011,1.02335
+KWT,Kuwait,Asia,2012,1.03382
+KWT,Kuwait,Asia,2013,1.04717
+KWT,Kuwait,Asia,2014,1.05004
+KWT,Kuwait,Asia,2015,1.05815
+LAO,Laos,Asia,2000,0.81306
+LAO,Laos,Asia,2001,0.82815
+LAO,Laos,Asia,2002,0.83622
+LAO,Laos,Asia,2003,0.84255
+LAO,Laos,Asia,2004,0.85335
+LAO,Laos,Asia,2005,0.85743
+LAO,Laos,Asia,2006,0.8623
+LAO,Laos,Asia,2007,0.87487
+LAO,Laos,Asia,2008,0.88246
+LAO,Laos,Asia,2009,0.89483
+LAO,Laos,Asia,2010,0.89057
+LAO,Laos,Asia,2011,0.9081837
+LAO,Laos,Asia,2012,0.92744124
+LAO,Laos,Asia,2013,0.9408975
+LAO,Laos,Asia,2014,0.9544816
+LAO,Laos,Asia,2015,0.9673829
+LAO,Laos,Asia,2016,0.98034936
+LAO,Laos,Asia,2017,0.9806088
+LAO,Laos,Asia,2018,0.98704594
+LAO,Laos,Asia,2019,0.99428964
+LAO,Laos,Asia,2020,0.99692875
+LAO,Laos,Asia,2021,1.0047204
+LAO,Laos,Asia,2022,1.0137287
+LAO,Laos,Asia,2023,1.0052346
+LAO,Laos,Asia,2024,1.0050613
+LBN,Lebanon,Asia,2023,1.05558
+LBR,Liberia,Africa,2014,0.88331
+LBR,Liberia,Africa,2016,0.98998356
+LBR,Liberia,Africa,2017,0.9820596
+LBR,Liberia,Africa,2020,1.02315
+LBR,Liberia,Africa,2021,1.0366651
+LBR,Liberia,Africa,2022,1.0406375
+LCA,Saint Lucia,North America,2000,1.08033
+LCA,Saint Lucia,North America,2001,1.07083
+LCA,Saint Lucia,North America,2002,1.18456
+LCA,Saint Lucia,North America,2003,1.15172
+LCA,Saint Lucia,North America,2004,0.97878
+LCA,Saint Lucia,North America,2005,1.13834
+LCA,Saint Lucia,North America,2006,1.06686
+LCA,Saint Lucia,North America,2007,1.08193
+LCA,Saint Lucia,North America,2008,1.01613
+LCA,Saint Lucia,North America,2009,1.03052
+LCA,Saint Lucia,North America,2010,1.01487
+LCA,Saint Lucia,North America,2011,1.07302
+LCA,Saint Lucia,North America,2012,1.03125
+LCA,Saint Lucia,North America,2013,0.98512
+LCA,Saint Lucia,North America,2016,1.06765
+LCA,Saint Lucia,North America,2017,1.0073
+LCA,Saint Lucia,North America,2018,1.0368
+LCA,Saint Lucia,North America,2019,1.00453
+LCA,Saint Lucia,North America,2020,1.01716
+LCA,Saint Lucia,North America,2021,1.0764035
+LCA,Saint Lucia,North America,2022,1.09266
+LCA,Saint Lucia,North America,2023,1.09764
+LIE,Liechtenstein,Europe,2003,1.02323
+LIE,Liechtenstein,Europe,2008,0.95858
+LIE,Liechtenstein,Europe,2009,0.94416
+LIE,Liechtenstein,Europe,2010,0.94012
+LIE,Liechtenstein,Europe,2011,0.93208
+LIE,Liechtenstein,Europe,2012,0.94957
+LIE,Liechtenstein,Europe,2015,0.94718
+LIE,Liechtenstein,Europe,2016,0.93902
+LIE,Liechtenstein,Europe,2018,0.94799
+LIE,Liechtenstein,Europe,2020,0.98326
+LIE,Liechtenstein,Europe,2021,0.96964
+LKA,Sri Lanka,Asia,2010,1.01122
+LKA,Sri Lanka,Asia,2011,1.01489
+LKA,Sri Lanka,Asia,2012,1.01564
+LKA,Sri Lanka,Asia,2013,1.015439
+LKA,Sri Lanka,Asia,2015,1.0163926
+LKA,Sri Lanka,Asia,2016,1.0136553
+LKA,Sri Lanka,Asia,2017,1.0135866
+LKA,Sri Lanka,Asia,2018,1.0166606
+LKA,Sri Lanka,Asia,2021,1.0085862
+LKA,Sri Lanka,Asia,2022,1.0136497
+LKA,Sri Lanka,Asia,2023,1.0176547
+LSO,Lesotho,Africa,2000,1.13984
+LSO,Lesotho,Africa,2001,1.10435
+LSO,Lesotho,Africa,2002,1.0976
+LSO,Lesotho,Africa,2003,1.10448
+LSO,Lesotho,Africa,2004,1.09345
+LSO,Lesotho,Africa,2005,1.07931
+LSO,Lesotho,Africa,2006,1.08672
+LSO,Lesotho,Africa,2007,1.08672
+LSO,Lesotho,Africa,2008,1.07475
+LSO,Lesotho,Africa,2009,1.10279
+LSO,Lesotho,Africa,2010,1.086465
+LSO,Lesotho,Africa,2011,1.10166
+LSO,Lesotho,Africa,2012,1.0854884
+LSO,Lesotho,Africa,2013,1.0981864
+LSO,Lesotho,Africa,2014,1.094994
+LSO,Lesotho,Africa,2015,1.0871907
+LSO,Lesotho,Africa,2016,1.0956686
+LSO,Lesotho,Africa,2017,1.0899205
+LSO,Lesotho,Africa,2018,1.0755986
+LSO,Lesotho,Africa,2019,1.088916
+LSO,Lesotho,Africa,2020,1.0956459
+LSO,Lesotho,Africa,2021,1.1034633
+LSO,Lesotho,Africa,2022,1.099315
+LSO,Lesotho,Africa,2023,1.1116198
+LTU,Lithuania,Europe,2009,1.00186
+LTU,Lithuania,Europe,2010,1.00145
+LTU,Lithuania,Europe,2011,1.00136
+LTU,Lithuania,Europe,2012,1.00105
+LTU,Lithuania,Europe,2014,1.00051
+LTU,Lithuania,Europe,2015,1.00256
+LTU,Lithuania,Europe,2016,1.01079
+LTU,Lithuania,Europe,2017,1.00772
+LTU,Lithuania,Europe,2018,1.01007
+LUX,Luxembourg,Europe,2000,1.03554
+LUX,Luxembourg,Europe,2001,1.03165
+LUX,Luxembourg,Europe,2002,1.024
+LUX,Luxembourg,Europe,2003,1.04337
+LUX,Luxembourg,Europe,2004,1.03088
+LUX,Luxembourg,Europe,2005,1.03508
+LUX,Luxembourg,Europe,2006,1.02485
+LUX,Luxembourg,Europe,2007,0.99535
+LUX,Luxembourg,Europe,2008,1.01267
+LUX,Luxembourg,Europe,2010,1.02926
+LUX,Luxembourg,Europe,2011,1.02232
+LUX,Luxembourg,Europe,2012,1.01355
+LUX,Luxembourg,Europe,2013,1.02482
+LUX,Luxembourg,Europe,2014,1.02408
+LUX,Luxembourg,Europe,2015,1.02627
+LUX,Luxembourg,Europe,2016,1.02101
+LUX,Luxembourg,Europe,2017,1.01967
+LUX,Luxembourg,Europe,2018,1.01872
+LUX,Luxembourg,Europe,2019,1.00651
+LUX,Luxembourg,Europe,2020,1.00492
+LUX,Luxembourg,Europe,2021,0.99767
+LUX,Luxembourg,Europe,2022,1.00872
+LVA,Latvia,Europe,2009,0.99595
+LVA,Latvia,Europe,2010,0.99969
+LVA,Latvia,Europe,2011,1.00079
+LVA,Latvia,Europe,2012,1.00127
+LVA,Latvia,Europe,2013,1.00209
+LVA,Latvia,Europe,2014,1.00007
+LVA,Latvia,Europe,2015,1.00493
+LVA,Latvia,Europe,2016,1.00835
+LVA,Latvia,Europe,2017,1.00989
+LVA,Latvia,Europe,2018,1.00507
+LVA,Latvia,Europe,2019,1.00536
+LVA,Latvia,Europe,2020,1.00815
+LVA,Latvia,Europe,2021,1.00826
+LVA,Latvia,Europe,2022,1.00634
+LVA,Latvia,Europe,2023,1.00496
+MAC,Macao,Asia,2000,0.96658
+MAC,Macao,Asia,2001,1.00587
+MAC,Macao,Asia,2002,1.01153
+MAC,Macao,Asia,2003,0.99435
+MAC,Macao,Asia,2004,0.99938
+MAC,Macao,Asia,2005,0.9965
+MAC,Macao,Asia,2006,0.99869
+MAC,Macao,Asia,2007,0.98038
+MAC,Macao,Asia,2008,0.99265
+MAC,Macao,Asia,2009,1.00577
+MAC,Macao,Asia,2010,1.01019
+MAC,Macao,Asia,2011,0.9993
+MAC,Macao,Asia,2012,1.01403
+MAC,Macao,Asia,2013,0.99893
+MAC,Macao,Asia,2014,1.02083
+MAC,Macao,Asia,2015,1.02772
+MAC,Macao,Asia,2016,1.10905
+MAC,Macao,Asia,2017,1.07147
+MAC,Macao,Asia,2018,1.04978
+MAC,Macao,Asia,2019,1.00645
+MAC,Macao,Asia,2020,1.03495
+MAC,Macao,Asia,2021,1.00762
+MAC,Macao,Asia,2022,0.96502
+MAC,Macao,Asia,2023,0.97091
+MAR,Morocco,Africa,2000,0.76917
+MAR,Morocco,Africa,2003,0.84251
+MAR,Morocco,Africa,2005,0.86432
+MAR,Morocco,Africa,2006,0.86433
+MAR,Morocco,Africa,2007,0.87134
+MAR,Morocco,Africa,2008,0.87083
+MAR,Morocco,Africa,2010,0.88777
+MAR,Morocco,Africa,2011,0.89809
+MAR,Morocco,Africa,2012,0.91155
+MAR,Morocco,Africa,2017,0.95008
+MAR,Morocco,Africa,2018,0.94743
+MAR,Morocco,Africa,2019,0.95571
+MAR,Morocco,Africa,2020,0.96799
+MAR,Morocco,Africa,2021,0.96936
+MAR,Morocco,Africa,2022,0.97733
+MAR,Morocco,Africa,2023,0.98743
+MDA,Moldova,Europe,2013,0.98994
+MDG,Madagascar,Africa,2001,0.95472
+MDG,Madagascar,Africa,2003,0.95277
+MDG,Madagascar,Africa,2010,0.972499
+MDG,Madagascar,Africa,2011,0.978321
+MDG,Madagascar,Africa,2012,0.98783505
+MDG,Madagascar,Africa,2013,1.0059484
+MDG,Madagascar,Africa,2014,1.0064182
+MDG,Madagascar,Africa,2015,1.0112605
+MDG,Madagascar,Africa,2016,1.0185318
+MDG,Madagascar,Africa,2017,1.019018
+MDG,Madagascar,Africa,2018,1.0264091
+MDG,Madagascar,Africa,2019,1.0376737
+MDG,Madagascar,Africa,2020,1.0433075
+MDG,Madagascar,Africa,2021,1.0523094
+MDG,Madagascar,Africa,2022,1.0262882
+MDG,Madagascar,Africa,2023,1.0402162
+MDG,Madagascar,Africa,2024,1.0514704
+MDV,Maldives,Asia,2000,1.08212
+MDV,Maldives,Asia,2001,1.09164
+MDV,Maldives,Asia,2002,1.06773
+MDV,Maldives,Asia,2011,1.1279114
+MDV,Maldives,Asia,2012,1.0249379
+MDV,Maldives,Asia,2013,1.0156653
+MDV,Maldives,Asia,2014,0.9594446
+MDV,Maldives,Asia,2015,0.99877644
+MDV,Maldives,Asia,2016,1.0648544
+MDV,Maldives,Asia,2017,1.0757241
+MDV,Maldives,Asia,2018,1.05061
+MDV,Maldives,Asia,2019,1.03096
+MEX,Mexico,North America,2000,0.95575
+MEX,Mexico,North America,2002,0.97708
+MEX,Mexico,North America,2003,0.98524
+MEX,Mexico,North America,2004,0.99009
+MEX,Mexico,North America,2005,0.99122
+MEX,Mexico,North America,2006,0.99772
+MEX,Mexico,North America,2007,1.00287
+MEX,Mexico,North America,2008,1.00696
+MEX,Mexico,North America,2009,1.00906
+MEX,Mexico,North America,2010,1.00655
+MEX,Mexico,North America,2011,1.0046
+MEX,Mexico,North America,2012,1.00457
+MEX,Mexico,North America,2013,1.0043
+MEX,Mexico,North America,2014,1.0059
+MEX,Mexico,North America,2015,1.00968
+MEX,Mexico,North America,2016,1.01351
+MEX,Mexico,North America,2017,1.01725
+MEX,Mexico,North America,2018,1.02014
+MEX,Mexico,North America,2019,1.02262
+MEX,Mexico,North America,2020,1.02428
+MEX,Mexico,North America,2021,1.02459
+MEX,Mexico,North America,2022,1.03033
+MHL,Marshall Islands,Oceania,2015,1.00996
+MHL,Marshall Islands,Oceania,2016,1.02774
+MKD,North Macedonia,Europe,2005,1.0014
+MLI,Mali,Africa,2009,0.68798
+MLI,Mali,Africa,2010,0.7129
+MLI,Mali,Africa,2011,0.72685
+MLI,Mali,Africa,2014,0.80799
+MLI,Mali,Africa,2015,0.89133
+MLI,Mali,Africa,2016,0.80228
+MLI,Mali,Africa,2017,0.86202
+MLI,Mali,Africa,2018,0.86237
+MLT,Malta,Europe,2013,0.9978
+MLT,Malta,Europe,2014,1.03457
+MLT,Malta,Europe,2015,1.04116
+MLT,Malta,Europe,2016,1.03734
+MLT,Malta,Europe,2017,1.02134
+MLT,Malta,Europe,2018,0.99936
+MLT,Malta,Europe,2019,0.9972
+MLT,Malta,Europe,2020,0.99599
+MLT,Malta,Europe,2021,0.99065
+MLT,Malta,Europe,2022,0.99932
+MLT,Malta,Europe,2023,0.99933
+MMR,Myanmar,Asia,2000,1.03306
+MMR,Myanmar,Asia,2001,0.96574
+MMR,Myanmar,Asia,2002,0.9643
+MMR,Myanmar,Asia,2003,0.95973
+MMR,Myanmar,Asia,2004,0.98085
+MMR,Myanmar,Asia,2005,1.00781
+MMR,Myanmar,Asia,2006,1.01145
+MMR,Myanmar,Asia,2007,1.04243
+MMR,Myanmar,Asia,2009,1.03667
+MMR,Myanmar,Asia,2010,1.06409
+MMR,Myanmar,Asia,2017,1.06246
+MMR,Myanmar,Asia,2018,1.06629
+MNE,Montenegro,Europe,2015,1.00432
+MNE,Montenegro,Europe,2016,1.0039
+MNE,Montenegro,Europe,2017,0.99809
+MNE,Montenegro,Europe,2018,0.99823
+MNE,Montenegro,Europe,2019,1.00227
+MNE,Montenegro,Europe,2020,0.99694
+MNE,Montenegro,Europe,2021,0.99949
+MNG,Mongolia,Asia,2000,1.11527
+MNG,Mongolia,Asia,2001,1.09345
+MNG,Mongolia,Asia,2002,1.07859
+MNG,Mongolia,Asia,2003,1.05374
+MNG,Mongolia,Asia,2004,1.042
+MNG,Mongolia,Asia,2005,1.04829
+MNG,Mongolia,Asia,2006,1.05548
+MNG,Mongolia,Asia,2007,1.04655
+MNG,Mongolia,Asia,2008,1.04662
+MNG,Mongolia,Asia,2018,1.0355369
+MNG,Mongolia,Asia,2019,1.0472097
+MNG,Mongolia,Asia,2020,1.044802
+MNG,Mongolia,Asia,2021,1.0405666
+MNG,Mongolia,Asia,2022,1.0371487
+MNG,Mongolia,Asia,2023,1.0311998
+MOZ,Mozambique,Africa,2000,0.63437
+MOZ,Mozambique,Africa,2001,0.64731
+MOZ,Mozambique,Africa,2002,0.68825
+MOZ,Mozambique,Africa,2004,0.70184
+MOZ,Mozambique,Africa,2005,0.73029
+MOZ,Mozambique,Africa,2006,0.75666
+MOZ,Mozambique,Africa,2007,0.76766
+MOZ,Mozambique,Africa,2008,0.79144
+MOZ,Mozambique,Africa,2009,0.81038
+MOZ,Mozambique,Africa,2010,0.82309
+MOZ,Mozambique,Africa,2011,0.83342
+MOZ,Mozambique,Africa,2012,0.83884
+MOZ,Mozambique,Africa,2013,0.84964
+MOZ,Mozambique,Africa,2014,0.86228
+MOZ,Mozambique,Africa,2015,0.87469
+MOZ,Mozambique,Africa,2020,0.910928
+MOZ,Mozambique,Africa,2022,0.9291402
+MRT,Mauritania,Africa,2001,0.90693
+MRT,Mauritania,Africa,2002,0.91877
+MRT,Mauritania,Africa,2004,0.93068
+MRT,Mauritania,Africa,2005,0.9796
+MRT,Mauritania,Africa,2006,0.97749
+MRT,Mauritania,Africa,2012,0.88601
+MRT,Mauritania,Africa,2013,0.90406
+MRT,Mauritania,Africa,2014,0.94532
+MRT,Mauritania,Africa,2016,1.04669
+MRT,Mauritania,Africa,2017,1.03815
+MRT,Mauritania,Africa,2018,1.04481
+MRT,Mauritania,Africa,2019,1.03337
+MSR,Montserrat,North America,2000,0.88959
+MSR,Montserrat,North America,2023,1.0489308
+MUS,Mauritius,Africa,2000,1.05737
+MUS,Mauritius,Africa,2001,0.99775
+MUS,Mauritius,Africa,2002,1.04872
+MUS,Mauritius,Africa,2004,1.04568
+MUS,Mauritius,Africa,2011,1.0060625
+MUS,Mauritius,Africa,2013,1.0221598
+MUS,Mauritius,Africa,2014,1.0209345
+MUS,Mauritius,Africa,2015,1.01771
+MUS,Mauritius,Africa,2016,1.01382
+MUS,Mauritius,Africa,2017,1.03138
+MUS,Mauritius,Africa,2018,1.02618
+MUS,Mauritius,Africa,2019,1.02327
+MUS,Mauritius,Africa,2020,1.02822
+MWI,Malawi,Africa,2002,0.83462
+MWI,Malawi,Africa,2004,0.85579
+MWI,Malawi,Africa,2005,0.88976
+MWI,Malawi,Africa,2006,0.91228
+MWI,Malawi,Africa,2007,0.9083
+MWI,Malawi,Africa,2008,0.91578
+MWI,Malawi,Africa,2009,0.94448
+MWI,Malawi,Africa,2010,0.95796096
+MWI,Malawi,Africa,2011,0.9669664
+MWI,Malawi,Africa,2012,0.95686847
+MWI,Malawi,Africa,2013,0.96649253
+MWI,Malawi,Africa,2014,0.9718696
+MWI,Malawi,Africa,2015,0.9668614
+MWI,Malawi,Africa,2016,0.96737
+MWI,Malawi,Africa,2018,1.07484
+MWI,Malawi,Africa,2019,0.99127
+MYS,Malaysia,Asia,2000,1.05928
+MYS,Malaysia,Asia,2001,1.05202
+MYS,Malaysia,Asia,2002,1.06662
+MYS,Malaysia,Asia,2003,1.08615
+MYS,Malaysia,Asia,2004,1.07613
+MYS,Malaysia,Asia,2005,1.04068
+MYS,Malaysia,Asia,2006,1.03815
+MYS,Malaysia,Asia,2007,1.03746
+MYS,Malaysia,Asia,2008,1.04348
+MYS,Malaysia,Asia,2009,1.04759
+MYS,Malaysia,Asia,2010,1.0475
+MYS,Malaysia,Asia,2011,1.05701
+MYS,Malaysia,Asia,2012,1.05622
+MYS,Malaysia,Asia,2013,1.06502
+MYS,Malaysia,Asia,2014,1.07448
+MYS,Malaysia,Asia,2015,1.08364
+MYS,Malaysia,Asia,2016,1.07584
+MYS,Malaysia,Asia,2017,1.07178
+MYS,Malaysia,Asia,2018,1.0752
+MYS,Malaysia,Asia,2019,1.06637
+MYS,Malaysia,Asia,2020,1.05979
+MYS,Malaysia,Asia,2021,1.051977
+MYS,Malaysia,Asia,2022,1.0511352
+MYS,Malaysia,Asia,2023,1.0558923
+NAM,Namibia,Africa,2000,1.04395
+NAM,Namibia,Africa,2001,1.04433
+NAM,Namibia,Africa,2002,1.03369
+NAM,Namibia,Africa,2003,1.03664
+NAM,Namibia,Africa,2004,1.03035
+NAM,Namibia,Africa,2005,1.03088
+NAM,Namibia,Africa,2006,1.04186
+NAM,Namibia,Africa,2007,1.05715
+NAM,Namibia,Africa,2012,1.0205263
+NAM,Namibia,Africa,2015,1.0188481
+NAM,Namibia,Africa,2016,1.0180408
+NAM,Namibia,Africa,2017,1.0261469
+NAM,Namibia,Africa,2018,1.0327573
+NER,Niger,Africa,2001,0.64894
+NER,Niger,Africa,2002,0.65437
+NER,Niger,Africa,2003,0.65253
+NER,Niger,Africa,2004,0.65835
+NER,Niger,Africa,2005,0.69252
+NER,Niger,Africa,2007,0.65172
+NER,Niger,Africa,2008,0.64924
+NER,Niger,Africa,2009,0.65797
+NER,Niger,Africa,2010,0.74255
+NER,Niger,Africa,2011,0.73064
+NER,Niger,Africa,2014,0.75223
+NER,Niger,Africa,2015,0.75369
+NER,Niger,Africa,2016,0.78014
+NER,Niger,Africa,2017,0.79438
+NER,Niger,Africa,2018,0.82345426
+NER,Niger,Africa,2019,0.8422722
+NER,Niger,Africa,2021,0.88032603
+NER,Niger,Africa,2022,0.92253023
+NER,Niger,Africa,2023,0.95622
+NIC,Nicaragua,North America,2000,1.07798
+NIC,Nicaragua,North America,2001,1.05846
+NIC,Nicaragua,North America,2002,1.04303
+NIC,Nicaragua,North America,2004,1.0009
+NIC,Nicaragua,North America,2005,1.01836
+NIC,Nicaragua,North America,2006,0.99062
+NIC,Nicaragua,North America,2010,1.00046
+NIC,Nicaragua,North America,2023,0.90447
+NLD,Netherlands,Europe,2002,1.00105
+NLD,Netherlands,Europe,2005,1.01042
+NLD,Netherlands,Europe,2011,1.00314
+NLD,Netherlands,Europe,2012,1.00326
+NLD,Netherlands,Europe,2015,1.00241
+NLD,Netherlands,Europe,2016,1.00248
+NLD,Netherlands,Europe,2017,1.0032
+NLD,Netherlands,Europe,2018,1.00322
+NLD,Netherlands,Europe,2019,1.00317
+NLD,Netherlands,Europe,2020,1.00357
+NLD,Netherlands,Europe,2021,1.00333
+NLD,Netherlands,Europe,2022,1.00324
+NOR,Norway,Europe,2000,1.0084
+NOR,Norway,Europe,2001,1.00609
+NOR,Norway,Europe,2002,1.00888
+NOR,Norway,Europe,2003,1.00673
+NOR,Norway,Europe,2004,1.00917
+NOR,Norway,Europe,2005,1.00685
+NOR,Norway,Europe,2006,1.00597
+NOR,Norway,Europe,2007,1.00422
+NOR,Norway,Europe,2013,1.00039
+NOR,Norway,Europe,2014,0.99855
+NOR,Norway,Europe,2015,1.00087
+NOR,Norway,Europe,2016,0.99888
+NOR,Norway,Europe,2017,0.9959
+NOR,Norway,Europe,2018,0.99625
+NOR,Norway,Europe,2019,0.99865
+NOR,Norway,Europe,2020,0.99781
+NOR,Norway,Europe,2021,0.99852
+NOR,Norway,Europe,2022,0.99999
+NOR,Norway,Europe,2023,0.99965
+NPL,Nepal,Asia,2016,1.06196
+NPL,Nepal,Asia,2017,1.05617
+NPL,Nepal,Asia,2021,0.98034525
+NPL,Nepal,Asia,2022,0.9954441
+NPL,Nepal,Asia,2023,0.9734444
+NPL,Nepal,Asia,2024,0.9951937
+NRU,Nauru,Oceania,2014,1.01923
+NRU,Nauru,Oceania,2016,1.08959
+NRU,Nauru,Oceania,2019,1.18681
+NRU,Nauru,Oceania,2022,1.05566
+NRU,Nauru,Oceania,2023,1.07417
+NZL,New Zealand,Oceania,2013,1.00351
+NZL,New Zealand,Oceania,2014,1.00285
+NZL,New Zealand,Oceania,2015,1.00198
+NZL,New Zealand,Oceania,2016,1.00271
+NZL,New Zealand,Oceania,2017,1.00255
+NZL,New Zealand,Oceania,2018,1.00017
+NZL,New Zealand,Oceania,2019,1.00062
+NZL,New Zealand,Oceania,2020,1.00163
+NZL,New Zealand,Oceania,2021,1.00165
+NZL,New Zealand,Oceania,2022,1.00228
+NZL,New Zealand,Oceania,2023,1.0013
+OMN,Oman,Asia,2000,0.97711
+OMN,Oman,Asia,2001,0.97492
+OMN,Oman,Asia,2002,0.95029
+OMN,Oman,Asia,2003,0.99428
+OMN,Oman,Asia,2016,1.00534
+OMN,Oman,Asia,2017,1.01425
+OMN,Oman,Asia,2018,1.00477
+OMN,Oman,Asia,2019,1.00769
+OMN,Oman,Asia,2020,1.00539
+OMN,Oman,Asia,2021,1.00616
+OMN,Oman,Asia,2022,1.00617
+PAK,Pakistan,Asia,2021,0.82508117
+PAK,Pakistan,Asia,2022,0.83663344
+PAN,Panama,North America,2000,0.99432
+PAN,Panama,North America,2001,1.00408
+PAN,Panama,North America,2002,1.01506
+PAN,Panama,North America,2004,1.00989
+PAN,Panama,North America,2005,1.00844
+PAN,Panama,North America,2008,1.01475
+PAN,Panama,North America,2009,1.02165
+PAN,Panama,North America,2010,1.00932
+PAN,Panama,North America,2011,1.01725
+PAN,Panama,North America,2013,1.01946
+PAN,Panama,North America,2014,1.0073
+PAN,Panama,North America,2015,1.01242
+PAN,Panama,North America,2017,1.01874
+PER,Peru,North America,2000,0.96807
+PER,Peru,North America,2001,0.9657
+PER,Peru,North America,2002,0.96884
+PER,Peru,North America,2004,0.9764
+PER,Peru,North America,2005,0.97186
+PER,Peru,North America,2006,0.97123
+PER,Peru,North America,2012,0.94494
+PER,Peru,North America,2013,0.96614
+PER,Peru,North America,2014,0.97204
+PER,Peru,North America,2015,0.97846
+PER,Peru,North America,2016,0.98618
+PER,Peru,North America,2017,0.99462
+PER,Peru,North America,2018,0.994
+PER,Peru,North America,2019,0.99742
+PER,Peru,North America,2020,1.00059
+PER,Peru,North America,2021,1.00571
+PHL,Philippines,Asia,2001,1.0777
+PHL,Philippines,Asia,2002,1.0588
+PHL,Philippines,Asia,2003,1.05755
+PHL,Philippines,Asia,2004,1.05523
+PHL,Philippines,Asia,2005,1.06188
+PHL,Philippines,Asia,2006,1.05931
+PHL,Philippines,Asia,2007,1.05558
+PHL,Philippines,Asia,2008,1.05083
+PHL,Philippines,Asia,2009,1.04409
+PHL,Philippines,Asia,2014,1.0490006
+PHL,Philippines,Asia,2015,1.0444628
+PHL,Philippines,Asia,2016,1.0324762
+PHL,Philippines,Asia,2018,1.0378118
+PHL,Philippines,Asia,2019,1.0375564
+PHL,Philippines,Asia,2020,1.0231634
+PHL,Philippines,Asia,2021,1.026513
+PHL,Philippines,Asia,2022,1.0119431
+PHL,Philippines,Asia,2023,1.0027114
+PLW,Palau,Oceania,2022,1.0810663
+PNG,Papua New Guinea,Oceania,2018,0.9387
+POL,Poland,Europe,2001,1.00063
+POL,Poland,Europe,2002,1.00199
+POL,Poland,Europe,2003,1.00087
+POL,Poland,Europe,2004,0.99938
+POL,Poland,Europe,2005,0.99836
+POL,Poland,Europe,2006,0.99936
+POL,Poland,Europe,2007,0.99875
+POL,Poland,Europe,2008,0.99897
+POL,Poland,Europe,2009,0.99934
+POL,Poland,Europe,2010,1.0001
+POL,Poland,Europe,2011,0.99969
+POL,Poland,Europe,2012,1.00041
+POL,Poland,Europe,2013,0.9983
+POL,Poland,Europe,2014,0.99963
+POL,Poland,Europe,2015,1.00019
+POL,Poland,Europe,2016,1.00052
+POL,Poland,Europe,2017,1.00118
+POL,Poland,Europe,2018,0.98467
+POL,Poland,Europe,2019,0.9869
+POL,Poland,Europe,2020,1.00066
+PRI,Puerto Rico,North America,2011,0.99605
+PRI,Puerto Rico,North America,2012,1.02745
+PRI,Puerto Rico,North America,2013,1.00924
+PRI,Puerto Rico,North America,2014,1.02147
+PRI,Puerto Rico,North America,2015,1.03686
+PRI,Puerto Rico,North America,2016,1.03637
+PRI,Puerto Rico,North America,2018,1.04668
+PRI,Puerto Rico,North America,2023,1.02532
+PRT,Portugal,Europe,2015,1.00229
+PRT,Portugal,Europe,2016,1.0033
+PRT,Portugal,Europe,2017,1.0001
+PRT,Portugal,Europe,2018,1.00066
+PRY,Paraguay,North America,2001,0.97487
+PRY,Paraguay,North America,2002,0.97393
+PRY,Paraguay,North America,2003,0.9855
+PRY,Paraguay,North America,2004,0.98369
+PRY,Paraguay,North America,2005,0.99078
+PRY,Paraguay,North America,2006,0.99246
+PRY,Paraguay,North America,2007,0.99005
+PRY,Paraguay,North America,2008,0.99676
+PRY,Paraguay,North America,2009,0.99707
+PRY,Paraguay,North America,2010,1.00345
+PRY,Paraguay,North America,2011,1.00367
+PRY,Paraguay,North America,2016,1.00074
+PRY,Paraguay,North America,2020,1.00654
+PRY,Paraguay,North America,2021,1.01956
+PRY,Paraguay,North America,2022,1.01041
+PRY,Paraguay,North America,2023,1.0094
+PSE,Palestine,Asia,2000,1.02787
+PSE,Palestine,Asia,2001,1.04756
+PSE,Palestine,Asia,2002,1.02121
+PSE,Palestine,Asia,2003,1.01589
+PSE,Palestine,Asia,2004,1.00296
+PSE,Palestine,Asia,2005,1.00088
+PSE,Palestine,Asia,2006,1.01306
+PSE,Palestine,Asia,2007,0.9998
+PSE,Palestine,Asia,2008,0.99191
+PSE,Palestine,Asia,2009,0.98666
+PSE,Palestine,Asia,2010,0.98577
+PSE,Palestine,Asia,2011,1.00543
+PSE,Palestine,Asia,2012,0.99382
+PSE,Palestine,Asia,2013,0.98913
+PSE,Palestine,Asia,2014,0.98548
+PSE,Palestine,Asia,2015,0.98164
+PSE,Palestine,Asia,2016,0.98378
+PSE,Palestine,Asia,2017,0.98984
+PSE,Palestine,Asia,2018,0.98304
+PSE,Palestine,Asia,2019,0.98991
+PSE,Palestine,Asia,2020,0.99703
+PSE,Palestine,Asia,2021,0.9956
+PSE,Palestine,Asia,2022,1.00841
+PSE,Palestine,Asia,2023,1.01473
+QAT,Qatar,Asia,2001,1.19558
+QAT,Qatar,Asia,2002,1.20956
+QAT,Qatar,Asia,2006,1.11889
+QAT,Qatar,Asia,2007,1.09496
+QAT,Qatar,Asia,2009,1.0314
+QAT,Qatar,Asia,2011,0.99288
+QAT,Qatar,Asia,2012,1.01861
+QAT,Qatar,Asia,2013,0.98734
+QAT,Qatar,Asia,2014,1.00438
+QAT,Qatar,Asia,2015,1.02284
+QAT,Qatar,Asia,2016,1.03257
+QAT,Qatar,Asia,2017,0.98731
+QAT,Qatar,Asia,2019,0.99954
+QAT,Qatar,Asia,2020,1.00092
+QAT,Qatar,Asia,2021,1.00707
+QAT,Qatar,Asia,2022,1.01499
+ROU,Romania,Europe,2000,0.9999
+ROU,Romania,Europe,2001,0.99882
+ROU,Romania,Europe,2002,0.99987
+ROU,Romania,Europe,2003,1.00287
+ROU,Romania,Europe,2004,0.99912
+ROU,Romania,Europe,2005,0.99716
+ROU,Romania,Europe,2006,0.9964
+ROU,Romania,Europe,2007,0.99399
+ROU,Romania,Europe,2008,0.99435
+ROU,Romania,Europe,2009,1.00235
+ROU,Romania,Europe,2010,0.99643
+ROU,Romania,Europe,2011,0.99672
+ROU,Romania,Europe,2012,0.99364
+ROU,Romania,Europe,2014,0.996
+ROU,Romania,Europe,2015,0.9932
+ROU,Romania,Europe,2016,0.9971
+ROU,Romania,Europe,2017,0.99461
+ROU,Romania,Europe,2018,0.99578
+ROU,Romania,Europe,2019,0.99203
+ROU,Romania,Europe,2022,0.99616
+ROU,Romania,Europe,2023,0.99602
+RUS,Russia,Europe,2013,1.01365
+RUS,Russia,Europe,2014,1.01578
+RUS,Russia,Europe,2015,1.02036
+RUS,Russia,Europe,2016,1.02427
+RUS,Russia,Europe,2017,1.01387
+RUS,Russia,Europe,2018,1.01446
+RUS,Russia,Europe,2019,1.01208
+RWA,Rwanda,Africa,2017,1.04484
+RWA,Rwanda,Africa,2018,1.0181
+RWA,Rwanda,Africa,2019,1.02981
+RWA,Rwanda,Africa,2021,1.04749
+RWA,Rwanda,Africa,2022,1.05557
+RWA,Rwanda,Africa,2023,1.02773
+SAU,Saudi Arabia,Asia,2013,1.08583
+SAU,Saudi Arabia,Asia,2022,0.99959
+SDN,Sudan,Africa,2011,0.87922
+SDN,Sudan,Africa,2018,0.96142
+SDN,Sudan,Africa,2019,0.93764
+SEN,Senegal,Africa,2004,0.81763
+SEN,Senegal,Africa,2005,0.8335
+SEN,Senegal,Africa,2006,0.8526
+SEN,Senegal,Africa,2012,1.0161394
+SEN,Senegal,Africa,2013,1.0405043
+SEN,Senegal,Africa,2014,1.0622247
+SEN,Senegal,Africa,2022,1.21845
+SEN,Senegal,Africa,2023,1.2372
+SGP,Singapore,Asia,2017,0.99187833
+SGP,Singapore,Asia,2018,0.99258
+SGP,Singapore,Asia,2019,1.00219
+SGP,Singapore,Asia,2020,0.99723
+SGP,Singapore,Asia,2021,1.00328
+SLB,Solomon Islands,Oceania,2006,0.90719
+SLB,Solomon Islands,Oceania,2007,0.93098
+SLB,Solomon Islands,Oceania,2017,1.0140594
+SLB,Solomon Islands,Oceania,2018,1.017729
+SLB,Solomon Islands,Oceania,2020,0.9890065
+SLB,Solomon Islands,Oceania,2023,1.0351759
+SLE,Sierra Leone,Africa,2013,0.9618053
+SLE,Sierra Leone,Africa,2015,1.01033
+SLE,Sierra Leone,Africa,2016,1.017386
+SLE,Sierra Leone,Africa,2017,1.0315901
+SLE,Sierra Leone,Africa,2018,1.0066609
+SLE,Sierra Leone,Africa,2019,1.014208
+SLE,Sierra Leone,Africa,2020,1.0384227
+SLE,Sierra Leone,Africa,2021,1.04188
+SLE,Sierra Leone,Africa,2022,1.0614886
+SLE,Sierra Leone,Africa,2023,1.1408972
+SLV,El Salvador,North America,2000,0.90516
+SLV,El Salvador,North America,2001,0.91926
+SLV,El Salvador,North America,2002,0.92085
+SLV,El Salvador,North America,2005,0.96967
+SLV,El Salvador,North America,2006,0.97609
+SLV,El Salvador,North America,2007,0.98705
+SLV,El Salvador,North America,2008,0.98972
+SLV,El Salvador,North America,2009,0.99762
+SLV,El Salvador,North America,2010,0.99514
+SLV,El Salvador,North America,2011,0.99749
+SLV,El Salvador,North America,2012,1.00174
+SLV,El Salvador,North America,2013,1.00705
+SLV,El Salvador,North America,2014,1.01272
+SLV,El Salvador,North America,2015,1.01331
+SLV,El Salvador,North America,2016,1.01301
+SLV,El Salvador,North America,2017,1.01327
+SLV,El Salvador,North America,2018,1.0211
+SLV,El Salvador,North America,2019,1.03242
+SLV,El Salvador,North America,2020,1.03464
+SLV,El Salvador,North America,2021,1.05379
+SLV,El Salvador,North America,2022,1.05384
+SLV,El Salvador,North America,2023,1.05091
+SMR,San Marino,Europe,2000,1.0054
+SMR,San Marino,Europe,2018,1.01978
+SMR,San Marino,Europe,2019,1.01817
+SMR,San Marino,Europe,2020,1.02918
+SMR,San Marino,Europe,2021,0.99728
+SMR,San Marino,Europe,2022,0.98486
+SMR,San Marino,Europe,2023,0.98759
+SRB,Serbia,Europe,2008,0.9991
+SRB,Serbia,Europe,2010,0.996
+SRB,Serbia,Europe,2013,1.00478
+SRB,Serbia,Europe,2014,1.00328
+SRB,Serbia,Europe,2015,1.00213
+SRB,Serbia,Europe,2016,1.00358
+SRB,Serbia,Europe,2017,0.99747
+SRB,Serbia,Europe,2018,0.99731
+SRB,Serbia,Europe,2019,0.99912
+SRB,Serbia,Europe,2020,1.00621
+SRB,Serbia,Europe,2021,0.99851
+SSD,South Sudan,Africa,2011,0.68257
+SSD,South Sudan,Africa,2015,0.72486
+STP,Sao Tome and Principe,Africa,2003,0.96489
+STP,Sao Tome and Principe,Africa,2004,0.93777
+STP,Sao Tome and Principe,Africa,2005,0.99231
+STP,Sao Tome and Principe,Africa,2007,0.992
+STP,Sao Tome and Principe,Africa,2008,0.96748
+STP,Sao Tome and Principe,Africa,2009,0.99354
+STP,Sao Tome and Principe,Africa,2010,0.97394
+STP,Sao Tome and Principe,Africa,2011,1.0223125
+STP,Sao Tome and Principe,Africa,2012,1.0058001
+STP,Sao Tome and Principe,Africa,2013,1.01362
+STP,Sao Tome and Principe,Africa,2014,1.01165
+STP,Sao Tome and Principe,Africa,2015,1.02432
+STP,Sao Tome and Principe,Africa,2018,0.9829642
+STP,Sao Tome and Principe,Africa,2021,0.9910602
+SUR,Suriname,North America,2009,1.01507
+SUR,Suriname,North America,2010,1.01577
+SUR,Suriname,North America,2011,1.01287
+SUR,Suriname,North America,2012,1.02646
+SUR,Suriname,North America,2013,1.03961
+SUR,Suriname,North America,2014,1.03039
+SUR,Suriname,North America,2015,1.043
+SVK,Slovakia,Europe,2002,1.00015
+SVK,Slovakia,Europe,2003,0.99695
+SVK,Slovakia,Europe,2004,0.99898
+SVK,Slovakia,Europe,2005,0.99567
+SVK,Slovakia,Europe,2006,0.99525
+SVK,Slovakia,Europe,2007,0.99839
+SVK,Slovakia,Europe,2008,0.99932
+SVK,Slovakia,Europe,2009,1.00096
+SVK,Slovakia,Europe,2010,1.00134
+SVK,Slovakia,Europe,2011,1.00072
+SVK,Slovakia,Europe,2012,1.00137
+SVK,Slovakia,Europe,2013,0.99889
+SVK,Slovakia,Europe,2014,1.00071
+SVK,Slovakia,Europe,2015,1.00189
+SVK,Slovakia,Europe,2016,1.00148
+SVK,Slovakia,Europe,2017,1.00127
+SVK,Slovakia,Europe,2018,1.00279
+SVK,Slovakia,Europe,2019,1.00333
+SVK,Slovakia,Europe,2020,1.00419
+SVK,Slovakia,Europe,2021,1.00481
+SVK,Slovakia,Europe,2022,1.00115
+SVK,Slovakia,Europe,2023,1.00173
+SVN,Slovenia,Europe,2000,1.03532
+SVN,Slovenia,Europe,2001,1.00245
+SVN,Slovenia,Europe,2002,0.99946
+SVN,Slovenia,Europe,2003,1.00774
+SVN,Slovenia,Europe,2004,0.99792
+SVN,Slovenia,Europe,2005,0.99501
+SVN,Slovenia,Europe,2006,1.00284
+SVN,Slovenia,Europe,2007,0.99748
+SVN,Slovenia,Europe,2008,0.99508
+SVN,Slovenia,Europe,2009,0.9995
+SVN,Slovenia,Europe,2010,1.00384
+SVN,Slovenia,Europe,2011,1.00021
+SVN,Slovenia,Europe,2012,1.00235
+SVN,Slovenia,Europe,2013,1.00135
+SVN,Slovenia,Europe,2014,1.00097
+SVN,Slovenia,Europe,2015,1.00479
+SVN,Slovenia,Europe,2016,1.00256
+SVN,Slovenia,Europe,2017,1.00499
+SVN,Slovenia,Europe,2018,1.00071
+SVN,Slovenia,Europe,2019,1.00258
+SVN,Slovenia,Europe,2020,1.00206
+SVN,Slovenia,Europe,2021,1.00238
+SVN,Slovenia,Europe,2022,1.00239
+SVN,Slovenia,Europe,2023,1.0014
+SWE,Sweden,Europe,2004,1.00471
+SWE,Sweden,Europe,2006,1.01243
+SWE,Sweden,Europe,2007,1.01115
+SWE,Sweden,Europe,2008,1.01035
+SWE,Sweden,Europe,2009,1.00945
+SWE,Sweden,Europe,2010,1.00876
+SWE,Sweden,Europe,2011,1.00557
+SWE,Sweden,Europe,2012,1.0072
+SWE,Sweden,Europe,2013,0.99751
+SWE,Sweden,Europe,2014,0.99908
+SWE,Sweden,Europe,2015,0.99779
+SWE,Sweden,Europe,2018,0.99487
+SWE,Sweden,Europe,2019,0.99784
+SWE,Sweden,Europe,2020,0.99925
+SWE,Sweden,Europe,2021,0.99826
+SWE,Sweden,Europe,2022,0.99908
+SWE,Sweden,Europe,2023,0.9984
+SWZ,Eswatini,Africa,2009,0.93414
+SWZ,Eswatini,Africa,2010,0.9525
+SWZ,Eswatini,Africa,2011,0.92373
+SWZ,Eswatini,Africa,2012,0.96066
+SWZ,Eswatini,Africa,2013,0.97803
+SWZ,Eswatini,Africa,2014,1.00789
+SWZ,Eswatini,Africa,2015,1.01717
+SYC,Seychelles,Africa,2023,0.97689
+SYR,Syria,Asia,2000,0.87912
+SYR,Syria,Asia,2001,0.86551
+SYR,Syria,Asia,2002,0.87443
+SYR,Syria,Asia,2003,0.92289
+SYR,Syria,Asia,2004,0.92523
+SYR,Syria,Asia,2005,0.93482
+SYR,Syria,Asia,2006,0.94199
+SYR,Syria,Asia,2007,0.95897
+SYR,Syria,Asia,2008,0.96365
+SYR,Syria,Asia,2009,0.97975
+SYR,Syria,Asia,2010,0.97897
+SYR,Syria,Asia,2011,0.96632
+SYR,Syria,Asia,2012,0.96861
+SYR,Syria,Asia,2013,0.96267
+SYR,Syria,Asia,2020,1.06007
+SYR,Syria,Asia,2021,1.05926
+SYR,Syria,Asia,2022,1.08427
+SYR,Syria,Asia,2023,1.08339
+SYR,Syria,Asia,2024,1.10789
+TCA,Turks and Caicos Islands,North America,2014,0.80397
+TCA,Turks and Caicos Islands,North America,2015,0.8803237
+TCA,Turks and Caicos Islands,North America,2017,0.8499641
+TCD,Chad,Africa,2000,0.41539
+TCD,Chad,Africa,2001,0.45293
+TCD,Chad,Africa,2002,0.47907
+TCD,Chad,Africa,2003,0.47198
+TCD,Chad,Africa,2015,0.62517
+TCD,Chad,Africa,2016,0.62874
+TCD,Chad,Africa,2017,0.66825
+TCD,Chad,Africa,2018,0.6771
+TCD,Chad,Africa,2019,0.69382
+TCD,Chad,Africa,2021,0.72613
+TCD,Chad,Africa,2023,0.76488
+TGO,Togo,Africa,2001,0.63487
+TGO,Togo,Africa,2003,0.66138
+TGO,Togo,Africa,2004,0.6773
+TGO,Togo,Africa,2005,0.68553
+TGO,Togo,Africa,2007,0.69985
+TGO,Togo,Africa,2017,0.86553
+TGO,Togo,Africa,2021,0.94517
+TGO,Togo,Africa,2023,0.95276
+THA,Thailand,Asia,2006,1.09561
+THA,Thailand,Asia,2007,1.04967
+THA,Thailand,Asia,2009,1.02021
+THA,Thailand,Asia,2017,1.0981716
+THA,Thailand,Asia,2018,1.1045301
+THA,Thailand,Asia,2019,1.0382838
+THA,Thailand,Asia,2020,1.0349444
+THA,Thailand,Asia,2021,1.0165796
+TJK,Tajikistan,Asia,2000,0.81939
+TJK,Tajikistan,Asia,2001,0.79862
+TJK,Tajikistan,Asia,2002,0.80359
+TKL,Tokelau,Oceania,2016,1.00028
+TKL,Tokelau,Oceania,2019,1.13793
+TKL,Tokelau,Oceania,2020,1.10916
+TKL,Tokelau,Oceania,2021,1.08192
+TKL,Tokelau,Oceania,2023,1.01779
+TKM,Turkmenistan,Asia,2022,1.00718
+TLS,Timor-Leste,Asia,2008,0.99541
+TLS,Timor-Leste,Asia,2009,1.00235
+TLS,Timor-Leste,Asia,2010,1.004196
+TLS,Timor-Leste,Asia,2011,1.0167556
+TLS,Timor-Leste,Asia,2012,1.0022587
+TLS,Timor-Leste,Asia,2013,1.0081077
+TLS,Timor-Leste,Asia,2014,1.0107459
+TLS,Timor-Leste,Asia,2015,1.0170966
+TLS,Timor-Leste,Asia,2016,1.0303253
+TLS,Timor-Leste,Asia,2017,1.0321313
+TLS,Timor-Leste,Asia,2018,1.0455143
+TLS,Timor-Leste,Asia,2019,1.0508525
+TLS,Timor-Leste,Asia,2020,1.059519
+TON,Tonga,Oceania,2001,0.98052
+TON,Tonga,Oceania,2013,1.0789156
+TON,Tonga,Oceania,2019,1.07848
+TON,Tonga,Oceania,2020,1.0976007
+TTO,Trinidad and Tobago,North America,2004,1.01885
+TTO,Trinidad and Tobago,North America,2023,1.03404
+TUR,Türkiye,Asia,2000,0.83678
+TUR,Türkiye,Asia,2009,0.97539
+TUR,Türkiye,Asia,2010,0.98569
+TUR,Türkiye,Asia,2011,0.99086
+TUR,Türkiye,Asia,2012,0.99399
+TUR,Türkiye,Asia,2013,0.9972
+TUR,Türkiye,Asia,2014,0.99843
+TUR,Türkiye,Asia,2015,0.99831
+TUR,Türkiye,Asia,2016,0.99864
+TUR,Türkiye,Asia,2017,0.99669
+TUV,Tuvalu,Oceania,2014,1.09657
+TUV,Tuvalu,Oceania,2015,1.1607908
+TUV,Tuvalu,Oceania,2016,1.16933
+TUV,Tuvalu,Oceania,2018,1.05792
+TUV,Tuvalu,Oceania,2019,1.07628
+TUV,Tuvalu,Oceania,2020,0.96021
+TZA,Tanzania,Africa,2012,1.0017883
+TZA,Tanzania,Africa,2013,1.0187582
+TZA,Tanzania,Africa,2014,1.1118468
+TZA,Tanzania,Africa,2015,1.0450678
+TZA,Tanzania,Africa,2017,0.99752975
+TZA,Tanzania,Africa,2018,1.016889
+TZA,Tanzania,Africa,2019,1.0313237
+TZA,Tanzania,Africa,2020,0.96564674
+TZA,Tanzania,Africa,2021,1.0623472
+TZA,Tanzania,Africa,2022,1.1424534
+TZA,Tanzania,Africa,2023,1.0928757
+UGA,Uganda,Africa,2012,0.96135145
+UGA,Uganda,Africa,2013,0.95708424
+UGA,Uganda,Africa,2014,0.9617216
+UGA,Uganda,Africa,2015,0.97101694
+UGA,Uganda,Africa,2016,0.98028815
+UGA,Uganda,Africa,2017,0.98080707
+UKR,Ukraine,Europe,2002,1.044
+UKR,Ukraine,Europe,2003,1.04034
+UKR,Ukraine,Europe,2004,1.00215
+UKR,Ukraine,Europe,2006,1.00476
+UKR,Ukraine,Europe,2007,1.00171
+UKR,Ukraine,Europe,2008,1.00631
+UKR,Ukraine,Europe,2009,1.00285
+UKR,Ukraine,Europe,2010,1.00249
+UKR,Ukraine,Europe,2011,1.00269
+UKR,Ukraine,Europe,2012,1.00579
+UKR,Ukraine,Europe,2013,1.00696
+UKR,Ukraine,Europe,2014,1.01064
+UKR,Ukraine,Europe,2015,1.0126
+UKR,Ukraine,Europe,2016,1.01378
+UKR,Ukraine,Europe,2017,1.01579
+UKR,Ukraine,Europe,2018,1.01319
+UKR,Ukraine,Europe,2019,1.01321
+UKR,Ukraine,Europe,2020,1.01455
+UKR,Ukraine,Europe,2021,1.013
+URY,Uruguay,North America,2007,0.9988
+URY,Uruguay,North America,2008,1.00245
+URY,Uruguay,North America,2009,1.01177
+URY,Uruguay,North America,2011,1.00408
+URY,Uruguay,North America,2012,1.00684
+URY,Uruguay,North America,2014,1.00978
+URY,Uruguay,North America,2015,1.01223
+URY,Uruguay,North America,2016,1.0134
+URY,Uruguay,North America,2017,1.0057
+URY,Uruguay,North America,2019,1.01442
+URY,Uruguay,North America,2020,1.02132
+URY,Uruguay,North America,2022,1.0220355
+URY,Uruguay,North America,2023,1.0048561
+USA,United States,North America,2013,1.00194
+USA,United States,North America,2014,1.01543
+USA,United States,North America,2022,1.00857
+UZB,Uzbekistan,Asia,2007,0.98873
+UZB,Uzbekistan,Asia,2008,0.99651
+UZB,Uzbekistan,Asia,2009,0.99855
+UZB,Uzbekistan,Asia,2010,0.99795
+UZB,Uzbekistan,Asia,2011,0.99492
+UZB,Uzbekistan,Asia,2012,0.99530697
+UZB,Uzbekistan,Asia,2013,0.9950613
+UZB,Uzbekistan,Asia,2014,0.9902778
+UZB,Uzbekistan,Asia,2015,0.9955183
+UZB,Uzbekistan,Asia,2016,0.99756485
+UZB,Uzbekistan,Asia,2017,0.9965213
+UZB,Uzbekistan,Asia,2018,0.996124
+UZB,Uzbekistan,Asia,2019,0.9856816
+UZB,Uzbekistan,Asia,2020,0.9950979
+UZB,Uzbekistan,Asia,2021,0.994503
+UZB,Uzbekistan,Asia,2022,0.99579376
+UZB,Uzbekistan,Asia,2023,0.9963276
+UZB,Uzbekistan,Asia,2024,0.99893266
+VCT,Saint Vincent and the Grenadines,North America,2002,1.05013
+VCT,Saint Vincent and the Grenadines,North America,2003,0.978
+VCT,Saint Vincent and the Grenadines,North America,2004,0.99661
+VEN,Venezuela,North America,2000,1.04832
+VEN,Venezuela,North America,2001,1.03865
+VEN,Venezuela,North America,2002,1.04612
+VEN,Venezuela,North America,2003,1.047
+VEN,Venezuela,North America,2004,1.04871
+VEN,Venezuela,North America,2005,1.04978
+VEN,Venezuela,North America,2006,1.05206
+VEN,Venezuela,North America,2007,1.04989
+VEN,Venezuela,North America,2008,1.04198
+VEN,Venezuela,North America,2009,1.04024
+VEN,Venezuela,North America,2010,1.03782
+VEN,Venezuela,North America,2011,1.04172
+VEN,Venezuela,North America,2012,1.0536
+VEN,Venezuela,North America,2013,1.05529
+VEN,Venezuela,North America,2014,1.04216
+VEN,Venezuela,North America,2015,1.03376
+VEN,Venezuela,North America,2016,1.03502
+VEN,Venezuela,North America,2017,1.03125
+VGB,Virgin Islands,North America,2000,0.92876
+VGB,Virgin Islands,North America,2011,0.97938
+VGB,Virgin Islands,North America,2013,0.97563
+VGB,Virgin Islands,North America,2017,0.99541
+VGB,Virgin Islands,North America,2018,0.92227
+VGB,Virgin Islands,North America,2019,0.99161
+VGB,Virgin Islands,North America,2020,0.99482
+VGB,Virgin Islands,North America,2021,0.90698
+VGB,Virgin Islands,North America,2022,1.08469
+VGB,Virgin Islands,North America,2024,0.99049
+VNM,Vietnam,Asia,2014,0.98961836
+VNM,Vietnam,Asia,2015,1.0069525
+VNM,Vietnam,Asia,2016,0.98648226
+VNM,Vietnam,Asia,2017,0.981767
+VNM,Vietnam,Asia,2018,0.9753034
+VNM,Vietnam,Asia,2019,0.9654892
+VNM,Vietnam,Asia,2020,0.9632556
+VNM,Vietnam,Asia,2021,0.99420166
+VNM,Vietnam,Asia,2022,0.9696844
+VNM,Vietnam,Asia,2023,0.9631723
+VUT,Vanuatu,Oceania,2000,1.05427
+VUT,Vanuatu,Oceania,2001,0.89092
+VUT,Vanuatu,Oceania,2002,0.91268
+VUT,Vanuatu,Oceania,2003,0.85461
+VUT,Vanuatu,Oceania,2004,0.86254
+VUT,Vanuatu,Oceania,2020,1.01582
+VUT,Vanuatu,Oceania,2021,1.00541
+VUT,Vanuatu,Oceania,2023,0.9679494
+WSM,Samoa,Oceania,2000,1.04023
+WSM,Samoa,Oceania,2001,0.96708
+WSM,Samoa,Oceania,2009,0.99255
+WSM,Samoa,Oceania,2014,0.9972059
+YEM,Yemen,Asia,2010,0.6822
+YEM,Yemen,Asia,2012,0.69815
+YEM,Yemen,Asia,2013,0.74053
+YEM,Yemen,Asia,2016,0.85535
+ZAF,South Africa,Africa,2000,1.0291
+ZAF,South Africa,Africa,2001,1.02888
+ZAF,South Africa,Africa,2002,1.02246
+ZAF,South Africa,Africa,2003,1.02898
+ZAF,South Africa,Africa,2004,1.03228
+ZAF,South Africa,Africa,2005,1.0312
+ZAF,South Africa,Africa,2017,0.94574
+ZAF,South Africa,Africa,2018,1.03996
+ZAF,South Africa,Africa,2019,1.01823
+ZAF,South Africa,Africa,2020,1.02567
+ZAF,South Africa,Africa,2021,0.98568
+ZAF,South Africa,Africa,2022,0.97849
+ZWE,Zimbabwe,Africa,2000,0.86715
+ZWE,Zimbabwe,Africa,2001,0.86533
+ZWE,Zimbabwe,Africa,2002,0.89872
+ZWE,Zimbabwe,Africa,2003,0.89405
+ZWE,Zimbabwe,Africa,2012,0.9461498
+ZWE,Zimbabwe,Africa,2013,0.94811386
+ZWE,Zimbabwe,Africa,2014,0.94564444
+ZWE,Zimbabwe,Africa,2015,0.9634161
+ZWE,Zimbabwe,Africa,2016,0.9775443
+ZWE,Zimbabwe,Africa,2017,0.9916268
+ZWE,Zimbabwe,Africa,2018,0.99844563
+ZWE,Zimbabwe,Africa,2019,1.0098168
+ZWE,Zimbabwe,Africa,2020,1.028319
+ZWE,Zimbabwe,Africa,2021,1.0075047
+ZWE,Zimbabwe,Africa,2022,1.0171465
+ZWE,Zimbabwe,Africa,2023,1.0280225
