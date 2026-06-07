@@ -548,6 +548,15 @@ const DATASET_NOTES = {
   ].join('\n'),
 };
 
+const CHART_WARNING_NOTES = {
+  'chart-2-1': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-3-2': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-3-3': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-4-1': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-4-2': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-4-3': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
+};
+
 function getChartContext(chartId) {
   const chartEl = document.getElementById(chartId);
   return chartEl && typeof chartEl._getHelpContext === 'function'
@@ -983,25 +992,47 @@ function initMissingDataHints() {
     btn.setAttribute('aria-haspopup', 'dialog');
   };
 
+  const mountDatasetHint = (host, chartId) => {
+    if (!host || !chartId) return;
+    const datasetNote = DATASET_NOTES[chartId];
+
+    host.querySelectorAll('.chart-dataset-hint, .chart-help-hint')
+      .forEach((el) => el.remove());
+
+    if (!datasetNote || host.querySelector('.chart-dataset-hint')) return;
+
+    const datasetBtn = document.createElement('button');
+    datasetBtn.type = 'button';
+    datasetBtn.className = 'chart-dataset-hint';
+    datasetBtn.setAttribute('aria-label', 'Dataset utilizzati');
+    datasetBtn.innerHTML = DATASET_ICON;
+    setHintModalPayload(datasetBtn, 'Dataset utilizzati', datasetNote);
+    host.appendChild(datasetBtn);
+  };
+
+  const mountStaticWarningHint = (host, chartId) => {
+    if (!host || !chartId || typeof window.mountChartWarningHint !== 'function') return;
+    const warningNote = CHART_WARNING_NOTES[chartId];
+    if (!warningNote) {
+      host.classList.remove('has-warning-hint');
+      return;
+    }
+    if (host.querySelector('.chart-warning-hint-inline')) {
+      host.classList.add('has-warning-hint');
+      return;
+    }
+    window.mountChartWarningHint(host, warningNote);
+  };
+
   const chartBoxes = document.querySelectorAll('.chart-box');
   chartBoxes.forEach((box) => {
     const chartEl = box.querySelector('div[id^="chart-"]');
     if (!chartEl) return;
-    const datasetNote = DATASET_NOTES[chartEl.id];
-
-    box.querySelectorAll('.chart-dataset-hint, .chart-help-hint')
-      .forEach((el) => el.remove());
-
-    if (datasetNote && !box.querySelector('.chart-dataset-hint')) {
-      const datasetBtn = document.createElement('button');
-      datasetBtn.type = 'button';
-      datasetBtn.className = 'chart-dataset-hint';
-      datasetBtn.setAttribute('aria-label', 'Dataset utilizzati');
-      datasetBtn.innerHTML = DATASET_ICON;
-      setHintModalPayload(datasetBtn, 'Dataset utilizzati', datasetNote);
-      box.appendChild(datasetBtn);
-    }
+    mountStaticWarningHint(box, chartEl.id);
+    mountDatasetHint(box, chartEl.id);
   });
+
+  window.mountDatasetHint = mountDatasetHint;
 }
 
 function initChartInfoModal() {

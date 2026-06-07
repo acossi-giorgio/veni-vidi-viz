@@ -1,8 +1,6 @@
 import os
 import unicodedata
 import re
-import json
-import urllib.request
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,7 +9,7 @@ OUT = os.path.join(ROOT, "src", "datasets", "processed")
 os.makedirs(OUT, exist_ok=True)
 
 MIN_YEAR, MAX_YEAR = 2000, 2025
-HISTORY_MIN_YEAR = 1995
+HISTORY_MIN_YEAR = 2000
 YEAR_MAX_LIFE = 2023
 YEAR_MAX_POP  = 2023
 YEAR_MAX_EDU  = 2022

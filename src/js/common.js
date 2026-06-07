@@ -272,6 +272,7 @@ function mountChartWarningHint(host, message, options = {}) {
 
   const existing = anchorHost.querySelector('.chart-warning-hint-inline');
   if (existing) existing.remove();
+  anchorHost.classList.add('has-warning-hint');
 
   let tooltip = document.getElementById('chart-warning-tooltip');
   if (!tooltip) {
