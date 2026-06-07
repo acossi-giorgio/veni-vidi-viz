@@ -198,8 +198,8 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('z-index', '20');
 
     [
-      ['Bar chart medio', 'bar'],
-      ['Mappa', 'map'],
+      ['Average bar chart', 'bar'],
+      ['Map', 'map'],
     ].forEach(([label, value]) => {
       const active = mode === value;
       tabs.append('button')
@@ -231,7 +231,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       ? options.series
       : [{
           key: 'value',
-          label: options.series?.[0]?.label || 'Media africana',
+          label: options.series?.[0]?.label || 'African average',
           color: HIGHLIGHT,
           variant: 'primary',
           values,
@@ -297,7 +297,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
         .attr('font-size', 11)
         .attr('font-weight', 600)
         .attr('fill', CHART_AXIS)
-        .text('Ragazze africane minori di 14 anni che hanno subito FGM (%)');
+        .text('African girls under 14 who experienced FGM (%)');
 
       chartG.append('text')
         .attr('class', 'chart-axis-label-x')
@@ -307,7 +307,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
         .attr('font-size', 11)
         .attr('font-weight', 600)
         .attr('fill', CHART_AXIS)
-        .text('Quintile di reddito');
+        .text('Income quintile');
     }
 
     chartG.append('g')
@@ -408,7 +408,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
     drawBarChart(chartWrap, globalMean, {
       series: [{
-        label: 'Media africana',
+        label: 'African average',
         color: HIGHLIGHT,
         variant: 'primary',
         values: globalMean,
@@ -416,10 +416,10 @@ async function renderFgmChart(selector, isFullscreen = false) {
       maxValue: OVERVIEW_MAX_BAR_VALUE,
       showAxisLabels: true,
       coverage: {
-        'Media africana': {
+        'African average': {
           covered: recentRows.length,
           total: africaCodes.size,
-          label: 'Copertura media africana',
+          label: 'African average coverage',
           includePercent: false,
         },
       },
@@ -542,7 +542,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
     head.append('button')
       .attr('type', 'button')
-      .attr('aria-label', 'Chiudi dettaglio paese')
+      .attr('aria-label', 'Close country detail')
       .text('×')
       .style('border', 'none')
       .style('background', 'transparent')
@@ -557,14 +557,14 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('font-size', '12px')
       .style('font-weight', '600')
       .style('color', CHART_AXIS)
-      .text(`Media quintili: ${row.quintile_mean.toFixed(1)}%`);
+      .text(`Quintile average: ${row.quintile_mean.toFixed(1)}%`);
     
       popup.append('div')
       .style('padding', '0 16px 4px')
       .style('font-size', '12px')
       .style('font-weight', '600')
       .style('color', CHART_AXIS)
-      .text(`Anno: ${row.reference_year || 'n/d'}`);
+      .text(`Year: ${row.reference_year || 'n/a'}`);
 
     const chartWrap = popup.append('div')
       .style('min-height', '0')
@@ -573,15 +573,15 @@ async function renderFgmChart(selector, isFullscreen = false) {
 
     drawBarChart(chartWrap, row, {
       series: [
-        { label: 'Paese selezionato', color: HIGHLIGHT, variant: 'primary', values: row },
-        { label: 'Media africana', color: colorToRgba(CHART_LABEL, 0.7, CHART_LABEL), variant: 'reference', values: globalMean },
+        { label: 'Selected country', color: HIGHLIGHT, variant: 'primary', values: row },
+        { label: 'African average', color: colorToRgba(CHART_LABEL, 0.7, CHART_LABEL), variant: 'reference', values: globalMean },
       ],
       maxValue: MAX_BAR_VALUE,
       coverage: {
-        'Media africana': {
+        'African average': {
           covered: recentRows.length,
           total: africaCodes.size,
-          label: 'Copertura media africana',
+          label: 'African average coverage',
           includePercent: false,
         },
       },
@@ -699,9 +699,9 @@ async function renderFgmChart(selector, isFullscreen = false) {
           event,
           {
             title: row.country,
-            meta: `Anno: ${row.reference_year || 'N/D'}`,
+            meta: `Year: ${row.reference_year || 'N/A'}`,
             rows: [
-              { label: 'Media quintili', value: `${row.quintile_mean.toFixed(1)}%` },
+              { label: 'Quintile average', value: `${row.quintile_mean.toFixed(1)}%` },
             ],
           },
         );

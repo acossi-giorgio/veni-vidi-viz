@@ -57,10 +57,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   // label all countries with data
 
   const QUADRANT = [
-    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Povero - alto lavoro minorile', color: RISK_HIGH, anchor: 'start'  },
-    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Ricco - alto lavoro minorile',  color: RISK_MID, anchor: 'end'    },
-    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Povero - basso lavoro minorile',color: LOW_NEUTRAL, anchor: 'start'  },
-    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Ricco - basso lavoro minorile', color: LOW_NEUTRAL_SOFT, anchor: 'end'    },
+    { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Poorer - high child labor', color: RISK_HIGH, anchor: 'start'  },
+    { id: 'q2', xSide: 'right', ySide: 'top',    label: 'Richer - high child labor',  color: RISK_MID, anchor: 'end'    },
+    { id: 'q3', xSide: 'left',  ySide: 'bottom', label: 'Poorer - low child labor',color: LOW_NEUTRAL, anchor: 'start'  },
+    { id: 'q4', xSide: 'right', ySide: 'bottom', label: 'Richer - low child labor', color: LOW_NEUTRAL_SOFT, anchor: 'end'    },
   ];
 
   function getQuadrant(d) {
@@ -76,10 +76,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
     window.showHoverTooltip(tooltip, e, {
       title: d.country,
       titleColor: q.color,
-      meta: `Anno: ${d.year}`,
+      meta: `Year: ${d.year}`,
       rows: [
-        { label: 'Lavoro minorile', value: `${d.labor.toFixed(1)}%` },
-        { label: 'Reddito', value: `$${d3.format(',.0f')(d.income)}` },
+        { label: 'Child labor', value: `${d.labor.toFixed(1)}%` },
+        { label: 'Income', value: `$${d3.format(',.0f')(d.income)}` },
       ],
     }, { offsetX: 12, offsetY: 8 });
   }
@@ -220,9 +220,9 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
 
     // Median labels
     g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 7).attr('fill', CHART_AXIS)
-      .text(`mediana $${d3.format(',.0f')(medIncome)}`);
+      .text(`median $${d3.format(',.0f')(medIncome)}`);
     g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 7).attr('fill', CHART_AXIS)
-      .text(`mediana ${medLabor.toFixed(1)}%`);
+      .text(`median ${medLabor.toFixed(1)}%`);
 
     // Quadrant labels (corner)
     qBg.forEach(({ x, y, w, h, q }) => {
@@ -248,7 +248,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
             title: q.label,
             titleColor: q.color,
             rows: [
-              { label: 'Paesi', value: `${n}/${data.length}` },
+              { label: 'Countries', value: `${n}/${data.length}` },
             ],
           }, { offsetX: 12, offsetY: 8 });
         })
@@ -304,10 +304,10 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
 
     g.append('text').attr('x', iw / 2).attr('y', ih + 40)
       .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-      .text(compact ? 'Reddito pro capite (USD, log)' : 'PIL pro capite (USD, scala logaritmica)');
+      .text(compact ? 'Income per capita (USD, log)' : 'GDP per capita (USD, logarithmic scale)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
       .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-      .text('Lavoro minorile (%)');
+      .text('Child labor (%)');
 
     // Count per quadrant (corners, below the quadrant label)
     qBg.forEach(({ x, y, w, h, q }) => {
@@ -343,7 +343,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .style('letter-spacing', '0.07em')
       .style('text-transform', 'uppercase')
       .style('margin-bottom', compact ? '6px' : '8px')
-      .text('Sezione');
+      .text('Section');
 
     QUADRANT.forEach((q) => {
       const row = legDiv.append('div')
@@ -392,7 +392,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       const mY = ih + 50;
       g.append('text').attr('x', 0).attr('y', mY - 10)
         .attr('font-size', 7).attr('fill', CHART_AXIS).attr('font-style', 'italic')
-        .text(`Paesi senza dati reddito (${missingNames.length}):`);
+        .text(`Countries without income data (${missingNames.length}):`);
       const DOT_GAP = 14, dotsPerRow = Math.floor(iw / DOT_GAP);
       missingNames.forEach((name, mi) => {
         const cx = (mi % dotsPerRow) * DOT_GAP + 6;
@@ -402,7 +402,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
           .on('mouseover', function(ev) {
             window.showHoverTooltip(tooltip, ev, {
               title: name,
-              rows: [{ label: 'Reddito', value: 'N/D' }],
+              rows: [{ label: 'Income', value: 'N/A' }],
             }, { offsetX: 12, offsetY: 8 });
           })
           .on('mousemove', function(ev) { window.positionHoverTooltip(tooltip, ev, { offsetX: 12, offsetY: 8 }); })

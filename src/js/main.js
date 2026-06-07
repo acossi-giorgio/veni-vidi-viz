@@ -30,7 +30,7 @@ function debounce(fn, ms) {
 }
 
 function formatNumber(n, d = 0) {
-  return new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+  return new Intl.NumberFormat('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 }
 
 function getCssToken(name, fallback = '') {
@@ -444,117 +444,117 @@ const MOBILE_ROTATED_CHARTS = new Set([
 
 const CHART_HELP_NOTES = {
   'chart-1-1': [
-    'Questo grafico è una mappa mondiale multi-metrica: ogni paese è colorato in base al valore selezionato (reddito, aspettativa di vita, povertà o disuguaglianza).',
-    'La legenda mostra il significato dei colori: tonalità più intense indicano valori più alti nella metrica attiva.',
-    'Con slider e play puoi cambiare anno e vedere come la distribuzione evolve nel tempo.',
-    'Interazioni: hover su un paese per il tooltip, click su un paese per aprire il pannello con la sua serie storica, zoom/pan per esplorare aree specifiche.'
+    'This chart is a multi-metric world map: each country is colored according to the selected value (income, life expectancy, poverty, or inequality).',
+    'The legend explains the color scale: stronger tones indicate higher values in the active metric.',
+    'With the slider and play button you can change the year and see how the distribution evolves over time.',
+    'Interactions: hover over a country for the tooltip, click a country to open its historical series panel, and use zoom/pan to explore specific areas.'
   ].join('\n'),
   'chart-1-2': [
-    'Ogni bolla rappresenta un paese: la posizione orizzontale (asse X) è il reddito pro capite, la posizione verticale (asse Y) è l\'aspettativa di vita o la metrica selezionata.',
-    'La dimensione della bolla rappresenta la popolazione: bolle più grandi = paesi più popolosi.',
+    'Each bubble represents a country: horizontal position (X axis) is income per capita, vertical position (Y axis) is life expectancy or the selected metric.',
+    'Bubble size represents population: larger bubbles = more populous countries.',
     'Play e slider animano la traiettoria 2000-2023 per mostrare spostamenti nel tempo.',
-    'Interazioni: hover per tooltip dettagliato e filtri/toggle per cambiare lettura degli assi.'
+    'Interactions: hover for a detailed tooltip and use filters/toggles to change how the axes are read.'
   ].join('\n'),
   'chart-2-1': [
-    'Il grafico ha due viste: distribuzione (istogramma) e mappa.',
-    'Nella distribuzione, asse X = valore MPI, asse Y = numero di paesi in ogni intervallo; serve a capire dove si concentra la povertà multidimensionale.',
-    'Nella mappa, il colore mostra l\'intensità del MPI paese per paese.',
-    'Interazioni: toggle distribuzione/mappa, hover per tooltip, e card narrative che cambiano focus interpretativo.'
+    'The chart has two views: distribution (histogram) and map.',
+    'In the distribution view, X axis = MPI value and Y axis = number of countries in each interval; it helps identify where multidimensional poverty is concentrated.',
+    'In the map view, color shows MPI intensity country by country.',
+    'Interactions: distribution/map toggle, hover for tooltip, and narrative cards that shift interpretive focus.'
   ].join('\n'),
   'chart-3-1': [
-    'Le linee mostrano l\'andamento medio della spesa pubblica in istruzione per continente nel tempo.',
-    'Asse X = anno; asse Y = spesa, visualizzabile come % del PIL o come valore assoluto in USD tramite toggle.',
-    'La distanza tra le linee indica il gap tra continenti; la pendenza indica accelerazioni o rallentamenti nel periodo.',
-    'Interazioni: hover per leggere i valori puntuali e cambio metrica con i pulsanti in alto.'
+    'The lines show the average trend in public spending on education by continent over time.',
+    'X axis = year; Y axis = spending, shown either as % of GDP or as an absolute USD value through the toggle.',
+    'The distance between the lines indicates the continental gap; the slope indicates acceleration or slowdown over the period.',
+    'Interactions: hover to read exact values and switch metric with the top buttons.'
   ].join('\n'),
   'chart-3-2': [
-    'Questo grafico mostra il gap di genere nella scuola secondaria usando il GPI.',
-    'Asse X = distanza dalla parità (GPI = 1): valori a sinistra indicano svantaggio per le bambine, a destra svantaggio per i bambini.',
-    'La vista iniziale confronta i continenti; con click su un continente entri nel drill-down per paese.',
-    'Interazioni: hover per dettagli, click per drill-down e pulsante back per tornare alla vista aggregata.'
+    'This chart shows the gender gap in secondary school using the GPI.',
+    'X axis = distance from parity (GPI = 1): values on the left indicate disadvantage for girls, values on the right indicate disadvantage for boys.',
+    'The initial view compares continents; click on a continent to enter the country drill-down.',
+    'Interactions: hover for details, click for drill-down, and use the back button to return to the aggregate view.'
   ].join('\n'),
   'chart-3-3': [
-    'Il grafico mostra una sola traiettoria annuale aggregata per l\'Africa.',
-    'Ogni punto corrisponde a un anno aggregato. L\'asse X usa la spesa in istruzione come valore assoluto stimato in USD. Sull\'asse Y trovi l\'outcome selezionato: alfabetizzazione o fuori scuola primaria.',
-    'La linea collega il percorso nel tempo, mentre la diagonale tratteggiata riassume la tendenza media complessiva con una regressione lineare.',
-    'Se la traiettoria si avvolge o cambia direzione, significa che gli aumenti di spesa non si traducono sempre in miglioramenti regolari e stabili.',
-    'Interazioni: usa i toggle per cambiare metrica. Passa sui punti per leggere valori annuali e copertura dati.'
+    'The chart shows a single annual trajectory aggregated for Africa.',
+    'Each point corresponds to an aggregated year. The X axis uses education spending as an estimated absolute USD value. On the Y axis you find the selected outcome: literacy or primary out-of-school rate.',
+    'The line connects the path over time, while the dashed diagonal summarizes the overall average trend through a linear regression.',
+    'If the trajectory loops back or changes direction, spending increases are not always producing regular and stable improvements.',
+    'Interactions: use the toggles to change metric. Hover over points to read annual values and data coverage.'
   ].join('\n'),
   'chart-4-1': [
-    'Scatter per paesi africani: ogni punto è un paese.',
-    'Asse X (logaritmico) = reddito pro capite; asse Y = quota di lavoro minorile (%).',
-    'Le linee mediane dividono il grafico in quattro quadranti per identificare i profili di rischio relativi.',
-    'Interazioni: hover sui punti per dettagli e lettura rapida dei quadranti con etichette e conteggi.'
+    'Scatter plot for African countries: each point is a country.',
+    'X axis (log scale) = income per capita; Y axis = share of child labor (%).',
+    'Median lines divide the chart into four quadrants to identify relative risk profiles.',
+    'Interactions: hover over points for details and use quadrant labels and counts for a quick read.'
   ].join('\n'),
   'chart-4-2': [
-    'La vista principale è un waffle: ogni cella vale 1% di donne 20-24 sposate prima dei 18 anni.',
-    'I colori distinguono i matrimoni prima dei 15 anni e tra 15-18 anni.',
-    'La lettura combina percentuali e volumi assoluti per evitare interpretazioni distorte.',
-    'Interazioni: hover per dettagli, click sul continente per drill-down per paese e confronto più fine.'
+    'The main view is a waffle chart: each cell equals 1% of women aged 20-24 married before 18.',
+    'Colors separate marriages before age 15 from those between 15 and 18.',
+    'The reading combines percentages and absolute volumes to avoid distorted interpretations.',
+    'Interactions: hover for details, click on a continent for country drill-down and finer comparison.'
   ].join('\n'),
   'chart-4-3': [
-    'Confronto temporale tra Africa ed Europa su due metriche: mortalità materna e mortalità infantile.',
-    'Asse X = anno; asse Y = livello di mortalità della metrica selezionata.',
-    'Il toggle cambia metrica mantenendo lo stesso impianto di lettura, così il confronto tra aree resta immediato.',
-    'Interazioni: hover sui punti per valori annuali e rapporto tra continenti.'
+    'This chart compares FGM prevalence by wealth quintile and country.',
+    'In bar mode, the bars show prevalence across the five wealth quintiles. In map mode, color intensity summarizes the country average.',
+    'The toggle changes between aggregate bar view and country map while keeping the same interpretation framework.',
+    'Interactions: hover to read exact values, click countries on the map to open local detail.'
   ].join('\n'),
   'chart-5-1': [
-    'Questo grafico ha due modalità: rete dei collegamenti migratori e mappa delle rotte geografiche.',
-    'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio tra origine e destinazione.',
-    'L\'anno di riferimento e\' fisso al 2020.',
-    'Interazioni: hover per valori dei collegamenti, filtri/toggle vista e funzioni di esplorazione spaziale.'
+    'This chart has two modes: a migration link network and a map of geographic routes.',
+    'Link thickness represents the intensity of migrant stock between origin and destination.',
+    'The reference year is fixed at 2020.',
+    'Interactions: hover for link values, use view filters/toggles, and explore spatial patterns.'
   ].join('\n'),
 };
 
 const DATASET_NOTES = {
   'chart-1-1': [
-    'Reddito pro capite'
+    'Income per capita'
   ].join('\n'),
   'chart-1-2': [
-    'Reddito pro capite',
-    'Aspettativa di vita',
-    'Popolazione'
+    'Income per capita',
+    'Life expectancy',
+    'Population'
   ].join('\n'),
   'chart-2-1': [
-    'Indice di Poverta Multidimensionale (MPI)'
+    'Multidimensional Poverty Index (MPI)'
   ].join('\n'),
   'chart-3-1': [
-    'Spesa pubblica in istruzione',
-    'Reddito pro capite',
-    'Popolazione'
+    'Public spending on education',
+    'Income per capita',
+    'Population'
   ].join('\n'),
   'chart-3-2': [
-    'Parita\' di genere (GPI secondaria)',
+    'Gender parity (secondary GPI)',
   ].join('\n'),
   'chart-3-3': [
-    'Spesa pubblica in istruzione',
-    'Alfabetizzazione giovanile',
-    'Bambini fuori dalla scuola',
-    'Reddito pro capite',
-    'Popolazione'
+    'Public spending on education',
+    'Youth literacy',
+    'Out-of-school children',
+    'Income per capita',
+    'Population'
   ].join('\n'),
   'chart-4-1': [
-    'Lavoro minorile',
-    'Reddito pro capite'
+    'Child labor',
+    'Income per capita'
   ].join('\n'),
   'chart-4-2': [
-    'Matrimonio precoce'
+    'Child marriage'
   ].join('\n'),
   'chart-4-3': [
-    'Mutilazione genitale femminile (FGM)'
+    'Female genital mutilation (FGM)'
   ].join('\n'),
   'chart-5-1': [
-    'Migrazione internazionale'
+    'International migration'
   ].join('\n'),
 };
 
 const CHART_WARNING_NOTES = {
-  'chart-2-1': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
-  'chart-3-2': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
-  'chart-3-3': 'I dati mostrano l’ultimo anno disponibile per ciascun paese. Le annate non sono perfettamente allineate.',
-  'chart-4-1': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
-  'chart-4-2': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
-  'chart-4-3': 'I dati mostrano l’ultimo anno campionato per ciascun paese. Le annate non sono perfettamente allineate.',
+  'chart-2-1': 'The data show the latest available year for each country. Years are not perfectly aligned.',
+  'chart-3-2': 'The data show the latest available year for each country. Years are not perfectly aligned.',
+  'chart-3-3': 'The data show the latest available year for each country. Years are not perfectly aligned.',
+  'chart-4-1': 'The data show the latest sampled year for each country. Years are not perfectly aligned.',
+  'chart-4-2': 'The data show the latest sampled year for each country. Years are not perfectly aligned.',
+  'chart-4-3': 'The data show the latest sampled year for each country. Years are not perfectly aligned.',
 };
 
 function getChartContext(chartId) {
@@ -586,9 +586,9 @@ function getChartHelpPayload(chartId) {
   const builder = CHART_HELP_BUILDERS[chartId];
   if (typeof builder === 'function') return builder(ctx);
   return {
-    description: 'Questo grafico non ha ancora una guida contestuale dedicata.',
-    reading: 'Osserva assi, legenda e vista attiva per interpretare il dato mostrato.',
-    interactions: 'Usa hover, filtri e controlli del grafico per approfondire.',
+    description: 'This chart does not yet have a dedicated contextual guide.',
+    reading: 'Use axes, legend, and the active view to interpret the data being shown.',
+    interactions: 'Use hover, filters, and chart controls to explore further.',
   };
 }
 
@@ -597,125 +597,126 @@ const CHART_HELP_BUILDERS = {
     const isTrend = chart.viewType === 'trend';
     return {
       description: isTrend
-        ? 'La vista attuale mostra l\'andamento medio del reddito pro capite in Africa ed Europa nel tempo. Serve a confrontare la distanza tra le due traiettorie, non il singolo paese.'
-        : 'La vista attuale mostra il reddito pro capite per paese su mappa. Colori più intensi indicano paesi con valori più alti nell\'anno selezionato.',
+        ? 'The current view shows the average trend of income per capita in Africa and Europe over time. It is meant to compare the distance between the two trajectories, not individual countries.'
+        : 'The current view shows income per capita by country on a map. Stronger colors indicate countries with higher values in the selected year.',
       reading: isTrend
-        ? 'Asse X = anno. Asse Y = reddito pro capite medio. Le due linee confrontano Africa ed Europa; la loro distanza mostra il divario tra le aree.'
-        : 'La legenda colore traduce il reddito pro capite: toni più chiari = livelli più bassi, toni più intensi = livelli più alti. L\'anno attivo è ' + (chart.currentYear || 'quello selezionato') + '.',
+        ? 'X axis = year. Y axis = average income per capita. The two lines compare Africa and Europe; the distance between them shows the gap between the areas.'
+        : 'The color legend encodes income per capita: lighter tones = lower levels, stronger tones = higher levels. The active year is ' + (chart.currentYear || 'the selected one') + '.',
       interactions: isTrend
-        ? 'Usa il toggle in alto per tornare alla mappa. Nella vista mappa puoi usare hover sui paesi, click per aprire il dettaglio e player per cambiare anno.'
-        : 'Puoi usare slider e play per cambiare anno, hover per leggere il valore del paese, click per aprire il dettaglio laterale e toggle per passare alla vista trend.',
+        ? 'Use the top toggle to return to the map. In map view you can hover over countries, click to open details, and use the player to change year.'
+        : 'You can use the slider and play button to change year, hover to read country values, click to open the side detail, and use the toggle to switch to trend view.',
     };
   },
   'chart-1-2': ({ chart }) => ({
-    description: 'Ogni bolla rappresenta un paese di Africa o Europa con reddito, aspettativa di vita e popolazione disponibili nello stesso anno. I paesi senza un trio completo per l\'anno selezionato vengono esclusi dalla vista.',
-    reading: 'Asse X = reddito pro capite in scala logaritmica. Asse Y = aspettativa di vita. La dimensione della bolla rappresenta la popolazione. L\'anno mostrato ora è ' + (chart.currentYear || 'quello selezionato') + '.',
-    interactions: 'Usa play e slider per far scorrere il tempo. Passa sulle bolle per leggere i dettagli del paese. La nota di copertura indica quanti paesi restano nel frame dopo il filtro sui tre valori.',
+    description: 'Each bubble represents a country in Africa or Europe with income, life expectancy, and population available for the same year. Countries without a complete trio for the selected year are excluded from the view.',
+    reading: 'X axis = income per capita on a logarithmic scale. Y axis = life expectancy. Bubble size represents population. The year currently shown is ' + (chart.currentYear || 'the selected one') + '.',
+    interactions: 'Use play and the slider to move through time. Hover over bubbles to read country details. The coverage note shows how many countries remain in frame after the three-value filter.',
   }),
   'chart-2-1': ({ chart }) => {
     const isMap = chart.viewType === 'map';
     const severe = chart.mode === 'severe';
     return {
       description: isMap
-        ? 'La vista attuale mostra l\'MPI su mappa. È utile per capire dove la povertà multidimensionale si concentra nello spazio.'
+        ? 'The current view shows the MPI on a map. It is useful for understanding where multidimensional poverty is concentrated in space.'
         : severe
-          ? 'La vista attuale mostra la distribuzione dell\'MPI con focus sui paesi africani più esposti. Serve a capire quanti paesi si accumulano nella fascia più critica.'
-          : 'La vista attuale mostra la distribuzione dell\'MPI. Serve a leggere come i paesi si distribuiscono lungo il livello di povertà multidimensionale.',
+          ? 'The current view shows the distribution of MPI with a focus on the most exposed African countries. It helps show how many countries accumulate in the most critical range.'
+          : 'The current view shows the distribution of MPI. It helps read how countries are distributed along the multidimensional poverty scale.',
       reading: isMap
-        ? 'La mappa non usa assi cartesiani: la lettura passa da posizione geografica, legenda colore e tooltip sui singoli paesi.'
-        : 'Asse X = valore MPI. Asse Y = numero di paesi presenti in ogni intervallo. Barre più alte indicano fasce in cui si concentrano più paesi.',
+        ? 'The map does not use Cartesian axes: interpretation depends on geographic position, color legend, and country tooltips.'
+        : 'X axis = MPI value. Y axis = number of countries in each interval. Higher bars indicate ranges where more countries are concentrated.',
       interactions: isMap
-        ? 'Usa il toggle per passare alla distribuzione. Passa sui paesi per vedere il valore e confrontare rapidamente aree vicine.'
-        : 'Usa il toggle per passare alla mappa. Hover e card narrative cambiano il focus tra vista generale e lettura più severa.',
+        ? 'Use the toggle to switch to the distribution. Hover over countries to see the value and quickly compare nearby areas.'
+        : 'Use the toggle to switch to the map. Hover and narrative cards shift the focus between the general view and a harsher reading.',
     };
   },
   'chart-3-1': ({ chart }) => {
     const abs = chart.viewMetric === 'abs';
     return {
       description: abs
-        ? 'La vista attuale confronta la spesa pubblica in istruzione come valore assoluto stimato in USD. È utile per capire la massa di risorse mobilitata.'
-        : 'La vista attuale confronta la spesa pubblica in istruzione come quota del PIL. È utile per capire il peso relativo dell\'istruzione nelle economie considerate.',
-      reading: 'Asse X = anno. Asse Y = ' + (abs ? 'spesa totale stimata in USD.' : 'spesa in istruzione come % del PIL.') + ' Le linee mostrano le medie continentali di Africa ed Europa.',
-      interactions: 'Usa i pulsanti in alto per passare da % PIL a USD assoluti. I pallini restano sempre visibili lungo le linee. Nel tooltip trovi anche la percentuale di copertura per Africa ed Europa nell\'anno selezionato.',
+        ? 'The current view compares public spending on education as an estimated absolute value in USD. It is useful for understanding the total mass of resources mobilized.'
+        : 'The current view compares public spending on education as a share of GDP. It is useful for understanding the relative weight of education in the economies considered.',
+      reading: 'X axis = year. Y axis = ' + (abs ? 'estimated total spending in USD.' : 'education spending as % of GDP.') + ' The lines show continental averages for Africa and Europe.',
+      interactions: 'Use the top buttons to switch from % of GDP to absolute USD. The dots remain visible along the lines. The tooltip also reports coverage percentage for Africa and Europe in the selected year.',
     };
   },
   'chart-3-2': ({ chart }) => ({
     description: chart.drill
-      ? `La vista attuale è il drill-down su ${chart.drill}. Mostra i singoli paesi, così puoi vedere chi è sotto la fascia di parità, chi vi rientra e chi la supera.`
-      : 'La vista attuale confronta Africa ed Europa sul GPI della scuola secondaria. Serve a leggere se il divario penalizza di più bambine o bambini.',
+      ? `The current view is the drill-down for ${chart.drill}. It shows individual countries so you can see who is below the parity band, who falls inside it, and who exceeds it.`
+      : 'The current view compares Africa and Europe on the secondary-school GPI. It helps show whether the gap penalizes girls or boys more.',
     reading: chart.drill
-      ? 'Asse X = paesi della regione selezionata. Asse Y = valore del GPI. La parità è rappresentata come fascia tra 0.97 e 1.03: sotto 0.97 c\'è svantaggio per le bambine, sopra 1.03 per i bambini.'
-      : 'Asse X = valore del GPI rispetto alla fascia di parità. A sinistra di 0.97 prevale lo svantaggio per le bambine, tra 0.97 e 1.03 il paese è in parità, oltre 1.03 prevale lo svantaggio per i bambini.',
+      ? 'X axis = countries in the selected region. Y axis = GPI value. Parity is represented as a band between 0.97 and 1.03: below 0.97 there is disadvantage for girls, above 1.03 for boys.'
+      : 'X axis = GPI value relative to the parity band. Left of 0.97 disadvantage for girls prevails, between 0.97 and 1.03 the country is in parity, above 1.03 disadvantage for boys prevails.',
     interactions: chart.drill
-      ? 'Usa hover per leggere il valore del singolo paese e il pulsante back per tornare al confronto aggregato.'
-      : 'Passa sui punti per leggere il dettaglio e clicca su un continente per entrare nel drill-down per paese.',
+      ? 'Use hover to read the value for each country and the back button to return to the aggregate comparison.'
+      : 'Hover over points to read details and click on a continent to enter the country drill-down.',
   }),
   'chart-3-3': ({ chart }) => {
     const outcome = chart.yMode === 'oos' ? 'tasso di fuori scuola primaria' : 'alfabetizzazione';
-    const xLabel = 'spesa in istruzione come valore assoluto stimato in USD';
+    const outcomeLabel = chart.yMode === 'oos' ? 'primary out-of-school rate' : 'literacy';
+    const xLabel = 'education spending as an estimated absolute value in USD';
     const focus = chart.focusCont ? ` con focus su ${chart.focusCont}` : '';
     return {
       sections: [
         {
-          label: 'Descrizione del grafico',
-          text: `Il grafico mostra una sola traiettoria annuale aggregata${focus}. La spesa e' espressa come valore assoluto stimato in USD e viene messa in relazione con ${outcome}.`,
+          label: 'Chart Description',
+          text: `The chart shows a single annual aggregated trajectory${focus ? focus.replace(' con focus su ', ' with a focus on ') : ''}. Spending is expressed as an estimated absolute value in USD and is related to ${outcomeLabel}.`,
         },
         {
-          label: 'Come si legge',
-          text: `Asse X = ${xLabel}. Asse Y = ${outcome}. Ogni punto corrisponde a un anno e la linea unisce la sequenza temporale dell'Africa, cosi puoi vedere insieme livello, direzione e irregolarita del cambiamento.`,
+          label: 'How To Read It',
+          text: `X axis = ${xLabel}. Y axis = ${outcomeLabel}. Each point corresponds to one year and the line links Africa's time sequence, so you can read level, direction, and irregularity of change together.`,
         },
         {
-          label: 'Retta di regressione',
-          text: 'La diagonale tratteggiata riassume la tendenza media complessiva. Serve a distinguere la direzione generale del fenomeno dalle oscillazioni locali del percorso.',
+          label: 'Regression Line',
+          text: 'The dashed diagonal summarizes the overall average trend. It helps distinguish the general direction of the phenomenon from local oscillations in the path.',
         },
         {
-          label: 'Interazioni possibili',
-          text: 'Puoi cambiare metrica con i pulsanti in alto. Passa sui punti per leggere anno, valori e copertura dati disponibile.',
+          label: 'Available Interactions',
+          text: 'You can change metric with the top buttons. Hover over points to read year, values, and available data coverage.',
         },
       ],
     };
   },
   'chart-4-1': () => ({
-    description: 'Ogni punto rappresenta un paese africano. Il grafico mette in relazione reddito pro capite e lavoro minorile per individuare aree di rischio relativo.',
-    reading: 'Asse X = reddito pro capite in scala logaritmica. Asse Y = quota di lavoro minorile. Le due linee mediane dividono il piano in quattro quadranti, che aiutano a leggere i profili più critici o più protetti.',
-    interactions: 'Passa sui punti per leggere il dettaglio del paese. Puoi anche fermarti sui quadranti per vedere quante osservazioni cadono in ciascuna area.',
+    description: 'Each point represents an African country. The chart relates income per capita and child labor to identify areas of relative risk.',
+    reading: 'X axis = income per capita on a logarithmic scale. Y axis = share of child labor. The two median lines divide the plane into four quadrants, helping read the most critical or protected profiles.',
+    interactions: 'Hover over points to read country details. You can also stop on the quadrants to see how many observations fall into each area.',
   }),
   'chart-4-2': ({ chart }) => ({
     description: chart.drillDown
-      ? `La vista attuale entra nei singoli paesi di ${chart.selectedContinent || 'Africa'}. Serve a confrontare la quota di matrimoni precoci paese per paese.`
-      : 'La vista attuale mostra un waffle aggregato: ogni cella vale 1% di donne 20-24 sposate prima dei 18 anni. Serve a capire subito il peso del fenomeno.',
+      ? `The current view drills into individual countries in ${chart.selectedContinent || 'Africa'}. It is used to compare the share of child marriage country by country.`
+      : 'The current view shows an aggregated waffle chart: each cell equals 1% of women aged 20-24 married before 18. It helps show the weight of the phenomenon immediately.',
     reading: chart.drillDown
-      ? 'Asse X = paesi del continente selezionato. Asse Y = quota di matrimoni precoci. I colori distinguono il contributo prima dei 15 anni e tra 15 e 18 anni.'
-      : 'Non ci sono assi cartesiani. La lettura passa dalla griglia percentuale e dalla legenda colore: una tonalità rappresenta i matrimoni prima dei 15 anni, l\'altra quelli tra 15 e 18.',
+      ? 'X axis = countries in the selected continent. Y axis = share of child marriage. Colors distinguish the contribution before age 15 and between 15 and 18.'
+      : 'There are no Cartesian axes. Interpretation relies on the percentage grid and the color legend: one tone represents marriages before 15, the other those between 15 and 18.',
     interactions: chart.drillDown
-      ? 'Usa hover per leggere i dettagli dei singoli paesi e il pulsante back per tornare alla vista aggregata.'
-      : 'Passa sulla griglia per leggere percentuali e volumi. Clicca su Africa o Europa per aprire il dettaglio per paese.',
+      ? 'Use hover to read individual country details and the back button to return to the aggregated view.'
+      : 'Hover over the grid to read percentages and volumes. Click on Africa or Europe to open the country detail.',
   }),
   'chart-4-3': ({ chart }) => {
     const isMap = chart.mode === 'map';
-    const selected = chart.selectedCountry ? `Paese selezionato: ${chart.selectedCountry}.` : '';
+    const selected = chart.selectedCountry ? `Selected country: ${chart.selectedCountry}.` : '';
     return {
       description: isMap
-        ? 'La vista attuale mostra una mappa coropletica dell\'Africa con intensita colore basata sulla media dei quintili FGM per paese.'
-        : 'La vista attuale mostra un bar chart con la media africana per quintile di ricchezza sul fenomeno FGM tra ragazze 0-14 anni.',
+        ? 'The current view shows a choropleth map of Africa with color intensity based on the average FGM quintile value for each country.'
+        : 'The current view shows a bar chart with the African average by wealth quintile for FGM among girls aged 0-14.',
       reading: isMap
-        ? 'La mappa non usa assi cartesiani: il colore sintetizza la media dei cinque quintili (Poorest->Richest). Cliccando un paese, il popup mostra un grouped bar chart locale con confronto rispetto alla media africana.'
-        : 'Il bar chart mostra cinque barre (Poorest, Second, Middle, Fourth, Richest). Barre piu alte significano prevalenza percentuale piu alta in quel quintile.',
+        ? 'The map does not use Cartesian axes: color summarizes the average across the five quintiles (Poorest -> Richest). Clicking a country opens a local grouped bar chart compared with the African average.'
+        : 'The bar chart shows five bars (Poorest, Second, Middle, Fourth, Richest). Higher bars mean higher prevalence in that quintile.',
       interactions: isMap
-        ? `Clicca un paese per aggiornare il grouped bar chart locale. ${selected}Usa hover per leggere media e anno di riferimento.`
-        : 'Usa il toggle in alto per passare alla mappa. In entrambe le viste, hover sulle barre per vedere i valori puntuali.',
+        ? `Click a country to update the local grouped bar chart. ${selected}Use hover to read average and reference year.`
+        : 'Use the top toggle to switch to the map. In both views, hover over bars to see exact values.',
     };
   },
   'chart-5-1': ({ chart }) => {
     const isMap = chart.mode === 'map';
     return {
       description: isMap
-        ? 'La vista attuale mostra le rotte migratorie su base geografica. Serve a vedere dove si concentrano origine, destinazione e intensità dei collegamenti.'
-        : 'La vista attuale mostra la rete dei collegamenti migratori. Serve a capire quali corridoi sono più forti e come si distribuiscono tra le aree.',
+        ? 'The current view shows migration routes on a geographic basis. It helps reveal where origins, destinations, and connection intensity are concentrated.'
+        : 'The current view shows the network of migration links. It helps identify which corridors are stronger and how they are distributed across areas.',
       reading: isMap
-        ? 'La geografia conta più degli assi: leggi la mappa attraverso posizione, direzione delle rotte e spessore degli archi. Archi più spessi indicano stock migratori più elevati.'
-        : 'Lo spessore dei collegamenti rappresenta l\'intensità dello stock migratorio. I nodi e i collegamenti aiutano a leggere quali aree pesano di più nella rete.',
-      interactions: 'L\'anno resta fisso al 2020. Puoi passare da rete a mappa con i toggle in alto e usare hover sui collegamenti per leggere i valori.',
+        ? 'Geography matters more than axes: read the map through position, route direction, and arc thickness. Thicker arcs indicate higher migrant stocks.'
+        : 'Link thickness represents the intensity of migrant stock. Nodes and links help identify which areas carry more weight in the network.',
+      interactions: 'The year stays fixed at 2020. You can switch from network to map with the top toggles and use hover on links to read values.',
     };
   },
 };
@@ -751,20 +752,20 @@ function syncMobilePlaceholder(chartId) {
   const stateEl = placeholder.querySelector('.chart-mobile-placeholder-state');
   const hintEl = placeholder.querySelector('.chart-mobile-placeholder-hint');
   const rotateEl = placeholder.querySelector('.chart-mobile-placeholder-rotate');
-  const title = activeCard?.querySelector('h3')?.textContent?.trim() || 'Vista iniziale';
+  const title = activeCard?.querySelector('h3')?.textContent?.trim() || 'Initial view';
   const needsRotate = isMobileViewport();
 
   placeholder.dataset.hasSelection = activeCard ? 'true' : 'false';
   placeholder.dataset.needsRotate = needsRotate ? 'true' : 'false';
   if (stateEl) stateEl.textContent = title;
-  placeholder.setAttribute('aria-label', `Apri il grafico interattivo nella vista "${title}"`);
+  placeholder.setAttribute('aria-label', `Open the interactive chart in the "${title}" view`);
   if (hintEl) {
     hintEl.textContent = isMobileViewport()
-      ? (needsRotate ? 'Tocca per aprire il grafico' : 'Tocca per aprire il grafico a schermo intero')
-      : 'Apri il grafico';
+      ? (needsRotate ? 'Tap to open the chart' : 'Tap to open the chart fullscreen')
+      : 'Open the chart';
   }
   if (rotateEl) {
-    rotateEl.textContent = 'Questo grafico rende meglio in orizzontale. Se puoi, ruota il telefono prima di aprirlo.';
+    rotateEl.textContent = 'This chart works better in landscape mode. If possible, rotate your phone before opening it.';
   }
 }
 
@@ -785,9 +786,9 @@ function updateFullscreenModalMeta(chartId) {
 
   modal.style.setProperty('--fullscreen-accent', 'var(--control-active)');
 
-  kickerEl.textContent = act ? `Atto ${act}` : 'Grafico interattivo';
-  titleEl.textContent = chartTitle || activeCard?.querySelector('h3')?.textContent?.trim() || 'Grafico interattivo';
-  hintEl.textContent = chartSubtitle || 'Usa i controlli del grafico per esplorare i dati a schermo intero.';
+  kickerEl.textContent = act ? `Act ${act}` : 'Interactive chart';
+  titleEl.textContent = chartTitle || activeCard?.querySelector('h3')?.textContent?.trim() || 'Interactive chart';
+  hintEl.textContent = chartSubtitle || 'Use the chart controls to explore the data in fullscreen.';
 }
 
 function syncAllMobilePlaceholders() {
@@ -1004,9 +1005,9 @@ function initMissingDataHints() {
     const datasetBtn = document.createElement('button');
     datasetBtn.type = 'button';
     datasetBtn.className = 'chart-dataset-hint';
-    datasetBtn.setAttribute('aria-label', 'Dataset utilizzati');
+    datasetBtn.setAttribute('aria-label', 'Datasets used');
     datasetBtn.innerHTML = DATASET_ICON;
-    setHintModalPayload(datasetBtn, 'Dataset utilizzati', datasetNote);
+    setHintModalPayload(datasetBtn, 'Datasets used', datasetNote);
     host.appendChild(datasetBtn);
   };
 
@@ -1044,7 +1045,7 @@ function initChartInfoModal() {
   modal.hidden = true;
   modal.innerHTML = `
     <div class="chart-info-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="chartInfoModalTitle">
-      <button type="button" class="chart-info-modal-close" aria-label="Chiudi informazioni">×</button>
+      <button type="button" class="chart-info-modal-close" aria-label="Close information">×</button>
       <h3 id="chartInfoModalTitle" class="chart-info-modal-title"></h3>
       <div id="chartInfoModalContent" class="chart-info-modal-content"></div>
     </div>
@@ -1071,7 +1072,7 @@ function initChartInfoModal() {
     if (!triggerBtn) return;
     lastTrigger = triggerBtn;
     const modalKind = triggerBtn.dataset.modalKind || '';
-    const title = triggerBtn.dataset.modalTitle || triggerBtn.getAttribute('aria-label') || 'Informazioni';
+    const title = triggerBtn.dataset.modalTitle || triggerBtn.getAttribute('aria-label') || 'Information';
     let payload;
 
     if (modalKind === 'chart-help') {
@@ -1085,7 +1086,7 @@ function initChartInfoModal() {
       }
       payload = Array.isArray(lines) && lines.length
         ? lines
-        : ['Informazioni non disponibili.'];
+        : ['Information not available.'];
     }
 
     const renderStructuredContent = (host, sectionTitle, sectionPayload) => {
@@ -1096,9 +1097,9 @@ function initChartInfoModal() {
         const sections = Array.isArray(sectionPayload.sections) && sectionPayload.sections.length
           ? sectionPayload.sections
           : [
-              { label: 'Descrizione del grafico', text: sectionPayload.description || '' },
-              { label: 'Assi, legenda e chiavi di lettura', text: sectionPayload.reading || '' },
-              { label: 'Interazioni possibili', text: sectionPayload.interactions || '' },
+              { label: 'Chart description', text: sectionPayload.description || '' },
+              { label: 'Axes, legend, and reading keys', text: sectionPayload.reading || '' },
+              { label: 'Possible interactions', text: sectionPayload.interactions || '' },
             ].filter(section => section.text);
 
         sections.forEach((section) => {
@@ -1264,13 +1265,13 @@ function initMobilePlaceholders() {
     ph.dataset.hasSelection = 'false';
     ph.setAttribute('role', 'button');
     ph.setAttribute('tabindex', '0');
-    ph.setAttribute('aria-label', 'Apri grafico interattivo a schermo intero');
+    ph.setAttribute('aria-label', 'Open interactive chart fullscreen');
     ph.innerHTML = `
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" fill="none"/><path d="M2 12h20M12 2v20" stroke="currentColor" stroke-dasharray="4 3"/></svg>
-      <span class="chart-mobile-placeholder-title">Grafico interattivo</span>
-      <span class="chart-mobile-placeholder-state">Vista iniziale</span>
-      <span class="chart-mobile-placeholder-hint">Tocca per esplorare a schermo intero</span>
-      <span class="chart-mobile-placeholder-rotate">Questo grafico rende meglio in orizzontale. Se puoi, ruota il telefono prima di aprirlo.</span>
+      <span class="chart-mobile-placeholder-title">Interactive chart</span>
+      <span class="chart-mobile-placeholder-state">Initial view</span>
+      <span class="chart-mobile-placeholder-hint">Tap to explore fullscreen</span>
+      <span class="chart-mobile-placeholder-rotate">This chart works better in landscape mode. If possible, rotate your phone before opening it.</span>
     `;
     ph.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -1346,7 +1347,7 @@ function initNavbar() {
     navbar.classList.remove('is-open');
     document.body.classList.remove('nav-open');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Apri navigazione');
+    toggle.setAttribute('aria-label', 'Open navigation');
   };
 
   const closeStoryNav = () => {
@@ -1400,7 +1401,7 @@ function initNavbar() {
       navbar.classList.toggle('is-open', nextExpanded);
       document.body.classList.toggle('nav-open', nextExpanded);
       toggle.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
-      toggle.setAttribute('aria-label', nextExpanded ? 'Chiudi navigazione' : 'Apri navigazione');
+      toggle.setAttribute('aria-label', nextExpanded ? 'Close navigation' : 'Open navigation');
     });
 
     menu.querySelectorAll('a').forEach((link) => {

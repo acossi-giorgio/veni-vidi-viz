@@ -161,7 +161,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .on('click', () => { viewType = val; updateViewToggle(); renderView(); });
   }
 
-  const btnMap   = mkPill('Mappa', 'map');
+  const btnMap   = mkPill('Map', 'map');
   const btnTrend = mkPill('Trend', 'trend');
 
   function updateViewToggle() {
@@ -273,7 +273,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
 
   mountInteractionNote(mapDiv, [
-    { label: 'Click sul paese', value: 'apre il dettaglio' },
+    { label: 'Click on a country', value: 'opens the detail view' },
   ]);
 
   const svg = mapDiv.append('svg')
@@ -525,8 +525,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       .style('font-size', '18px').style('color', CHART_AXIS).style('line-height', '1').style('padding', '0 0 0 8px')
       .style('flex-shrink', '0').text('×').on('click', closePanel);
 
-    if (!s) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
-    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('PIL pro capite (USD)');
+    if (!s) { panel.append('p').style('font-size', '11px').style('color', '#999').text('No data'); return; }
+    panel.append('div').style('font-size', '10px').style('color', CHART_AXIS).style('margin-bottom', '10px').text('GDP per capita (USD)');
 
     const pw = PANEL_W - 28, ph = 170, pm = { top: 8, right: 22, bottom: 24, left: 48 };
     const iw = pw - pm.left - pm.right, ih = ph - pm.top - pm.bottom;
@@ -534,7 +534,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     const pg = psvg.append('g').attr('transform', `translate(${pm.left},${pm.top})`);
 
     const pts = s.pts.filter(p => p.year >= PANEL_MIN_YEAR && p.year <= PANEL_MAX_YEAR && p.value != null && p.value > 0);
-    if (!pts.length) { panel.append('p').style('font-size', '11px').style('color', '#999').text('Nessun dato'); return; }
+    if (!pts.length) { panel.append('p').style('font-size', '11px').style('color', '#999').text('No data'); return; }
 
     const valueByYear = new Map(pts.map(p => [p.year, p.value]));
     const panelSeries = d3.range(PANEL_MIN_YEAR, PANEL_MAX_YEAR + 1).map(year => ({
@@ -642,9 +642,9 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
       const fv   = v != null ? `$${d3.format(',.0f')(v)}` : 'N/D';
       window.showHoverTooltip(tipEl, event, {
         title: name,
-        meta: `Anno: ${currentYear}`,
+        meta: `Year: ${currentYear}`,
         rows: [
-          { label: 'PIL pro capite', value: fv },
+          { label: 'GDP per capita', value: fv },
         ],
       });
     })
@@ -722,8 +722,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(v => `$${d3.format('.2s')(v)}`))
       .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick text').attr('font-size', 9).attr('fill', CHART_AXIS); ax.selectAll('.tick line').remove(); });
-    g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Anno');
-    g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('PIL pro capite (USD)');
+    g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('Year');
+    g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_LABEL).text('GDP per capita (USD)');
 
     const lineFn = d3.line().x(d => xS(d.year)).y(d => yS(d.mean)).curve(d3.curveMonotoneX).defined(d => d.mean != null && d.mean > 0);
     const TREND_WINDOW = 5;
@@ -815,11 +815,11 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
         const titleHtml = `
           <span style="color:${CONT_COLOR.Africa}">Africa</span>
           <span style="color:#334155"> vs </span>
-          <span style="color:${CONT_COLOR.Europe}">Europa</span>
+          <span style="color:${CONT_COLOR.Europe}">Europe</span>
         `;
         window.showHoverTooltip(trendTip, event, {
           titleHtml,
-          meta: `Anno: ${nearYear}`,
+          meta: `Year: ${nearYear}`,
           sections: CONT_ORDER.map(cont => {
             const v = yearData[cont];
             const col = CONT_COLOR[cont] || 'rgba(255,255,255,0.94)';
@@ -828,8 +828,8 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
             return {
               title: cont,
               rows: [
-                { label: 'PIL pro capite', value: v != null ? `$${d3.format(',.0f')(v)}` : 'N/D' },
-                { label: 'Copertura dati', value: `${covered}/${total} paesi` },
+                { label: 'GDP per capita', value: v != null ? `$${d3.format(',.0f')(v)}` : 'N/A' },
+                { label: 'Data coverage', value: `${covered}/${total} countries` },
               ],
             };
           }),
@@ -888,7 +888,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   }
 
   const btnReset = mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = visibleYears[0]; updateColors(false); });
-  const btnPrev  = mkCtrlBtn('&#8249;', 'Anno precedente').style('font-size', '18px').on('click', () => {
+  const btnPrev  = mkCtrlBtn('&#8249;', 'Previous year').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = visibleYears.indexOf(currentYear);
     if (i > 0) { currentYear = visibleYears[i - 1]; updateColors(); }
@@ -905,7 +905,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>')
     .on('click', () => playing ? stopPlay() : startPlay());
 
-  const btnNext = mkCtrlBtn('&#8250;', 'Anno successivo').style('font-size', '18px').on('click', () => {
+  const btnNext = mkCtrlBtn('&#8250;', 'Next year').style('font-size', '18px').on('click', () => {
     stopPlay();
     const i = visibleYears.indexOf(currentYear);
     if (i < visibleYears.length - 1) { currentYear = visibleYears[i + 1]; updateColors(); }

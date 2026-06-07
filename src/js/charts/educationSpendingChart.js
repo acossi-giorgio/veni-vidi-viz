@@ -146,7 +146,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   // Metric pills
   const metricBar = makePillBar(ctrlRow);
   const btnPct = makePillBtn(metricBar, '% PIL');
-  const btnAbs = makePillBtn(metricBar, '$ Assoluto');
+  const btnAbs = makePillBtn(metricBar, '$ Absolute');
 
   btnPct.on('click', () => { viewMetric = 'pct'; updateMetricPills(); redraw(); });
   btnAbs.on('click', () => { viewMetric = 'abs'; updateMetricPills(); redraw(); });
@@ -177,7 +177,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
-  g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Anno');
+  g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Year');
   const yLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
 
   // Crosshair
@@ -241,7 +241,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9);
     });
 
-    yLabelEl.text(viewMetric === 'pct' ? 'Spesa pubblica in istruzione (% PIL)' : 'Spesa pubblica in istruzione (USD assoluti)');
+    yLabelEl.text(viewMetric === 'pct' ? 'Public spending on education (% of GDP)' : 'Public spending on education (absolute USD)');
 
     coverageByYear = new Map(allYears.map((year) => {
       const stats = CONTS.map((cont) => {
@@ -345,14 +345,14 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       const titleHtml = `
         <span style="color:${CONT_COLOR.Africa}">Africa</span>
         <span style="color:#334155"> vs </span>
-        <span style="color:${CONT_COLOR.Europe}">Europa</span>
+        <span style="color:${CONT_COLOR.Europe}">Europe</span>
       `;
       const africaCoverage = coverage?.stats?.find(item => item.cont === 'Africa') || { covered: 0, total: 0 };
       const europeCoverage = coverage?.stats?.find(item => item.cont === 'Europe') || { covered: 0, total: 0 };
-      const metricLabel = viewMetric === 'abs' ? 'Spesa totale' : 'Spesa media';
+      const metricLabel = viewMetric === 'abs' ? 'Total spending' : 'Average spending';
       window.showHoverTooltip(tipEl, event, {
         titleHtml,
-        meta: `Anno: ${nearYear}`,
+        meta: `Year: ${nearYear}`,
         sections: [
           {
             title: 'Africa',
@@ -362,21 +362,21 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
                 value: meanByContYear.get(nearYear)?.Africa != null ? fmtY(meanByContYear.get(nearYear).Africa) : 'N/D',
               },
               {
-                label: 'Copertura dati',
-                value: `${africaCoverage.covered}/${africaCoverage.total} paesi`,
+                label: 'Data coverage',
+                value: `${africaCoverage.covered}/${africaCoverage.total} countries`,
               },
             ],
           },
           {
-            title: 'Europa',
+            title: 'Europe',
             rows: [
               {
                 label: metricLabel,
                 value: meanByContYear.get(nearYear)?.Europe != null ? fmtY(meanByContYear.get(nearYear).Europe) : 'N/D',
               },
               {
-                label: 'Copertura dati',
-                value: `${europeCoverage.covered}/${europeCoverage.total} paesi`,
+                label: 'Data coverage',
+                value: `${europeCoverage.covered}/${europeCoverage.total} countries`,
               },
             ],
           },

@@ -87,8 +87,8 @@ function escapeHtml(value) {
 
 function formatCoverageCount(covered, total, options = {}) {
   const {
-    label = 'Copertura dati',
-    unit = 'paesi',
+    label = 'Data coverage',
+    unit = 'countries',
     includePercent = false,
     precision = 0,
   } = options;
@@ -101,7 +101,7 @@ function formatCoverageCount(covered, total, options = {}) {
 
 function formatCoverageBlock(lines = [], options = {}) {
   const {
-    title = 'Copertura dati',
+    title = 'Data coverage',
     titleTag = 'div',
     titleClass = 'tooltip-coverage__title',
     lineClass = 'tooltip-coverage__line',
@@ -300,7 +300,7 @@ function mountChartWarningHint(host, message, options = {}) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'chart-warning-hint-inline';
-  btn.setAttribute('aria-label', 'Attenzione: dati da ultimo anno disponibile');
+  btn.setAttribute('aria-label', 'Warning: data from the latest available year');
   btn.innerHTML = '<span aria-hidden="true">!</span>';
   Object.assign(btn.style, {
     position: 'absolute',
@@ -326,7 +326,7 @@ function mountChartWarningHint(host, message, options = {}) {
 
   const safeHtml = escapeHtml(message).replace(/\n/g, '<br>');
   const show = () => {
-    tooltip.innerHTML = `<strong style="display:block;margin-bottom:0.2rem;color:#0f172a">Attenzione</strong>${safeHtml}`;
+    tooltip.innerHTML = `<strong style="display:block;margin-bottom:0.2rem;color:#0f172a">Warning</strong>${safeHtml}`;
     tooltip.style.display = 'block';
     const rect = btn.getBoundingClientRect();
     const box = tooltip.getBoundingClientRect();

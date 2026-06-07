@@ -146,12 +146,12 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const eu18   = euNTot > 0 ? euN18 / euNTot * 100 : 0;
 
     const africaRows = [
-      { label: 'Prima dei 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
-      { label: 'Prima dei 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
+      { label: 'Before 15', pct: fmt(af15, '%'), n: fmtN(afN15), color: C_BY15 },
+      { label: 'Before 18', pct: fmt(af18, '%'), n: fmtN(afN18), color: C_BY18 },
     ];
     const europeRows = [
-      { label: 'Prima dei 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_EU_BY15 },
-      { label: 'Prima dei 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_EU_BY18 },
+      { label: 'Before 15', pct: fmt(eu15, '%'), n: fmtN(euN15), color: C_EU_BY15 },
+      { label: 'Before 18', pct: fmt(eu18, '%'), n: fmtN(euN18), color: C_EU_BY18 },
     ];
 
     const PAD  = compact ? { top: 12, bottom: 12, left: 12, right: 12 } : { top: 16, bottom: 16, left: 24, right: 20 };
@@ -177,9 +177,9 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         title: continent,
         titleColor,
         rows: [
-          { label: 'Prima dei 15', value: `${fmt(pct15, '%')} (${fmtN(n15Value)})` },
-          { label: 'Prima dei 18', value: `${fmt(pct18, '%')} (${fmtN(n18Value)})` },
-          { label: 'Copertura dati', value: `${covered}/${total} paesi` },
+          { label: 'Before 15', value: `${fmt(pct15, '%')} (${fmtN(n15Value)})` },
+          { label: 'Before 18', value: `${fmt(pct18, '%')} (${fmtN(n18Value)})` },
+          { label: 'Data coverage', value: `${covered}/${total} countries` },
         ]
       };
     }
@@ -242,7 +242,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       showHint: true,
     });
     const europeTooltipHtml = buildOverviewTooltip({
-      continent: 'Europa',
+      continent: 'Europe',
       titleColor: EUROPE,
       by15Color: C_EU_BY15,
       by18Color: C_EU_BY18,
@@ -270,7 +270,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     svg.append('text').attr('x', euX + euW / 2).attr('y', euY - 10)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 11).attr('font-weight', '700').attr('fill', EUROPE)
-      .text('Europa');
+      .text('Europe');
 
     svg.append('rect').attr('x', afX).attr('y', afY).attr('width', afW).attr('height', afW)
       .attr('fill', 'rgba(255,255,255,0.001)')
@@ -290,7 +290,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 6 : 7).attr('font-weight', '700').attr('fill', CHART_AXIS)
-      .text('Clicca per esplorare →');
+      .text('Click to explore →');
 
     /* ── Pannello stats sinistra ────────────────────────────── */
     const px0    = panelX;
@@ -314,7 +314,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     const europeTitleY = dividerY + 12;
     svg.append('text').attr('x', panelLeft).attr('y', europeTitleY)
-      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', EUROPE).text('Europa');
+      .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', EUROPE).text('Europe');
 
     drawPanelRows(europeRows, panelLeft + 14, europeTitleY + 18);
 
@@ -331,7 +331,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const colorBy15 = isEurope ? C_EU_BY15 : C_BY15;
     const colorBy18 = isEurope ? C_EU_BY18 : C_BY18;
     const titleColor = isEurope ? EUROPE : AFRICA;
-    const continentLabel = isEurope ? 'Europa' : 'Africa';
+    const continentLabel = isEurope ? 'Europe' : 'Africa';
 
     data.forEach(d => {
       if (d.by18_pct > 0 && d.by18_n != null) {
@@ -383,8 +383,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     controlRow.append('button')
       .attr('class', 'chart-back-btn chart-back-btn--icon')
-      .attr('aria-label', 'Torna alla panoramica')
-      .attr('title', 'Torna alla panoramica')
+      .attr('aria-label', 'Back to overview')
+      .attr('title', 'Back to overview')
       .html('<span class="chart-back-icon" aria-hidden="true"></span>')
       .on('click', () => { drillDown = false; dotMode = false; draw(); });
 
@@ -410,7 +410,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       dotMode = false;
       draw();
     });
-    mkToggleBtn('Assoluto', dotMode).on('click', () => {
+    mkToggleBtn('Absolute', dotMode).on('click', () => {
       if (dotMode) return;
       dotMode = true;
       draw();
@@ -590,10 +590,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
           activateColumn(i);
           showTip(e, {
             title: d.country,
-            meta: `Anno: ${d.year ?? 'N/D'}`,
+            meta: `Year: ${d.year ?? 'N/A'}`,
             rows: [
-              { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
-              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
+              { label: 'Before 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
+              { label: 'Before 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
             ],
           });
         })
@@ -607,10 +607,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
           activateColumn(i);
           showTip(e, {
             title: d.country,
-            meta: `Anno: ${d.year ?? 'N/D'}`,
+            meta: `Year: ${d.year ?? 'N/A'}`,
             rows: [
-              { label: 'Prima dei 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
-              { label: 'Prima dei 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
+              { label: 'Before 15', value: `${fmt(d.by15_pct, '%')}${d.by15_n != null ? ` (${fmtN(d.by15_n)})` : ''}` },
+              { label: 'Before 18', value: `${fmt(d.by18_pct, '%')}${d.by18_n != null ? ` (${fmtN(d.by18_n)})` : ''}` }
             ],
           });
         });
@@ -633,8 +633,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
 
     /* ── Axis labels ─────────────────────────────────────── */
     const yLabelText = dotMode
-      ? 'Donne sposate prima dei 15 e 18 anni (valore assoluto)'
-      : 'Donne sposate prima dei 15 e 18 anni (%)';
+      ? 'Women married before 15 and 18 (absolute value)'
+      : 'Women married before 15 and 18 (%)';
     const yLabelOffset = compact ? 34 : 44;
     // ensure Y label is inside the visible SVG area
     const tentativeYLabelX = axisX - yLabelOffset;
@@ -650,7 +650,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('fill', CHART_AXIS)
       .text(yLabelText);
 
-    const xLabelText = 'Paese';
+    const xLabelText = 'Country';
     const xLabelX = axisX + barsW / 2 + barsOffsetX;
     // force X label to sit lower (closer to bottom edge) while staying inside svg
     const xLabelY = Math.min(H - 4, frameY + frameH - 6);
@@ -668,8 +668,8 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     /* ── Legenda top-right ──────────────────────────────────── */
     if (!mobileFullscreen) {
       const LEG_ITEMS = [
-        { color: colorBy15, label: 'Prima dei 15 anni' },
-        { color: colorBy18, label: 'Tra 15 e 18 anni'  },
+        { color: colorBy15, label: 'Before 15 years' },
+        { color: colorBy18, label: 'Between 15 and 18 years'  },
       ];
       const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = compact ? 128 : 148;
       const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
@@ -680,7 +680,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
         .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
       legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
         .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS).attr('letter-spacing', '0.08em')
-        .text('FASCIA');
+        .text('RANGE');
       LEG_ITEMS.forEach((item, i) => {
         const ly = LP + LHH + 4 + i * LRH;
         legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)

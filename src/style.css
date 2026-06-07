@@ -501,23 +501,27 @@ body.nav-open {
   text-shadow: 0 3px 12px rgba(17, 15, 12, 0.55);
 }
 .hero-cta-wrap {
-  margin-top: 1.9rem;
+  position: absolute;
+  left: 50%;
+  bottom: clamp(2.2rem, 8vh, 4.5rem);
+  transform: translateX(-50%);
   display: flex;
-  width: 100%;
+  width: auto;
   justify-content: center;
+  z-index: 3;
 }
 .hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.9rem 1.6rem;
+  padding: 1.3rem 2.5rem;
   border: 1px solid rgba(44, 62, 80, 0.18);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   color: var(--control-active);
   text-decoration: none;
-  font-size: 0.96rem;
+  font-size: 1.2rem;
   font-weight: 700;
   transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }

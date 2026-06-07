@@ -224,7 +224,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
             </div>
             <div class="migration-popup__header-actions">
               ${actionLabel ? `<button type="button" class="migration-popup__action">${actionLabel}</button>` : ''}
-              <button type="button" class="migration-popup__close" aria-label="Chiudi dettaglio">×</button>
+              <button type="button" class="migration-popup__close" aria-label="Close detail">×</button>
             </div>
           </div>
           ${actionHint ? `<div class="migration-popup__hint migration-popup__hint--header">${actionHint}</div>` : ''}
@@ -284,7 +284,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       </div>
     `);
     return [
-      `<span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Paesi inclusi: ${detailRows.length}</span>`,
+      `<span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Countries included: ${detailRows.length}</span>`,
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
   }
@@ -302,7 +302,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       </div>
     `);
     return [
-      `<div style="margin-top:6px;opacity:.5;font-size:9px;letter-spacing:.05em;text-transform:uppercase">Paesi inclusi: ${rows.length}</div>`,
+      `<div style="margin-top:6px;opacity:.5;font-size:9px;letter-spacing:.05em;text-transform:uppercase">Countries included: ${rows.length}</div>`,
       `<div style="margin-top:6px;opacity:.45;font-size:9px;letter-spacing:.05em;text-transform:uppercase">${title}</div>`,
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
@@ -363,7 +363,7 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
   }
 
   const btnSankey = mkModeBtn('sankey', 'Sankey');
-  const btnMap    = mkModeBtn('map',    'Mappa');
+  const btnMap    = mkModeBtn('map',    'Map');
 
   function updateModeBtns() {
     const set = (btn, active) => btn
@@ -553,14 +553,14 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
           .attr('stroke', l => (l.source===d||l.target===d) ? (d.type==='src' ? CONT_COLOR.Africa : CONT_COLOR[d.continent]||CONT_COLOR.Asia) : CHART_GRID)
           .attr('opacity', l => (l.source===d||l.target===d) ? 0.9 : 0.08);
         const col  = d.type==='src' ? CONT_COLOR.Africa : (CONT_COLOR[d.continent]||CONT_COLOR.Asia);
-        const hint = d.expandable ? ' <span style="opacity:.5;font-size:9px">· espandi</span>'
-                   : d.collapsible ? ' <span style="opacity:.5;font-size:9px">· comprimi</span>' : '';
+        const hint = d.expandable ? ' <span style="opacity:.5;font-size:9px">· expand</span>'
+                   : d.collapsible ? ' <span style="opacity:.5;font-size:9px">· collapse</span>' : '';
         const countLine = d.countryCount && d.countryCount > 1
-          ? `<br><span style="opacity:.7;font-size:10px">Paesi inclusi: ${d.countryCount}</span>`
+          ? `<br><span style="opacity:.7;font-size:10px">Countries included: ${d.countryCount}</span>`
           : '';
         showTip(e,
           `<strong style="color:${col}">${d.name}</strong>${hint}<br>` +
-          (d.type==='src' ? 'Emigrati: ' : "Ricevuti dall'Africa: ") +
+          (d.type==='src' ? 'Emigrants: ' : 'Received from Africa: ') +
           `<strong>${d3.format(',.0f')(d.total)}</strong>` +
           countLine
         );
@@ -907,15 +907,15 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         .on('mousemove', (e, d) => {
           if (!d || !d.name) return;
           let html = `<strong style="color:${d.col||'#fff'}">${d.name}</strong><br>` +
-            `Stock totale: <strong>${d3.format(',.0f')(d.value)}</strong>`;
+            `Total stock: <strong>${d3.format(',.0f')(d.value)}</strong>`;
           if (d.role === 'africa') {
             html += sankeyDrillAfrica
-              ? '<br><em style="opacity:.6;font-size:10px">Clicca per comprimere →</em>'
-              : '<br><em style="opacity:.6;font-size:10px">Clicca per espandere ←</em>';
+              ? '<br><em style="opacity:.6;font-size:10px">Click to collapse →</em>'
+              : '<br><em style="opacity:.6;font-size:10px">Click to expand ←</em>';
           } else if (d.role === 'dest-cont') {
             html += sankeyDrillContinents.has(d.id)
-              ? '<br><em style="opacity:.6;font-size:10px">Clicca per comprimere ←</em>'
-              : '<br><em style="opacity:.6;font-size:10px">Clicca per espandere →</em>';
+              ? '<br><em style="opacity:.6;font-size:10px">Click to collapse ←</em>'
+              : '<br><em style="opacity:.6;font-size:10px">Click to expand →</em>';
           }
           if (d.detail) html += detailRowsToHtml(d.detail);
           showTip(e, html, {
@@ -1188,19 +1188,19 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       const fmt = d3.format(',.0f');
       const countryName = TOPIC_NAME_BY_CODE.get(a3) || origNameMap.get(a3) || destNameMap.get(a3) || a3;
       if (topicSrcCodes.has(a3) && !countrySrcCodes.has(a3)) {
-        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Stock migratorio: <em>N/D</em>`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGIN</span><br>Migration stock: <em>N/A</em>`;
       }
       if (topicDstCodes.has(a3) && !countryDstCodes.has(a3)) {
-        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Stock migratorio: <em>N/D</em>`;
+        return `<strong>${countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINATION</span><br>Migration stock: <em>N/A</em>`;
       }
       if (countrySrcCodes.has(a3)) {
         const total = origStockMap.get(a3) || 0;
-        return `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGINE</span><br>Totale emigrati: <strong>${fmt(total)}</strong>`;
+        return `<strong style="color:${CONT_COLOR.Africa}">${origNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">ORIGIN</span><br>Total emigrants: <strong>${fmt(total)}</strong>`;
       }
       const total = stockByDest.get(a3) || 0;
       const cont = destContMap.get(a3);
       const col = CONT_COLOR[cont] || '#607d8b';
-      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINAZIONE</span><br>Totale migranti: <strong>${fmt(total)}</strong>`;
+      return `<strong style="color:${col}">${destNameMap.get(a3) || countryName}</strong> <span style="opacity:.5;font-size:9px">DESTINATION</span><br>Total migrants: <strong>${fmt(total)}</strong>`;
     }
 
     function buildArcPopupConfig(a3, anchor) {
@@ -1210,8 +1210,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         return {
           key: `migration-map-${a3}`,
           title: `<span style="color:${CONT_COLOR.Africa}">${countryName}</span>`,
-          meta: 'Origine',
-          bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
+          meta: 'Origin',
+          bodyHtml: `<div><strong>Migration stock:</strong> <em>No data</em> (${currentYear})</div>`,
           onClose: () => clearArcSelection(),
         };
       }
@@ -1219,8 +1219,8 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         return {
           key: `migration-map-${a3}`,
           title: escapeHtml(countryName),
-          meta: 'Destinazione',
-          bodyHtml: `<div><strong>Stock migratorio:</strong> <em>No data</em> (${currentYear})</div>`,
+          meta: 'Destination',
+          bodyHtml: `<div><strong>Migration stock:</strong> <em>No data</em> (${currentYear})</div>`,
           onClose: () => clearArcSelection(),
         };
       }
@@ -1230,11 +1230,11 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
         return {
           key: `migration-map-${a3}`,
           title: `<span style="color:${CONT_COLOR.Africa}">${escapeHtml(origNameMap.get(a3) || countryName)}</span>`,
-          meta: 'Origine',
+          meta: 'Origin',
           bodyHtml: `
-            <div><strong>Totale emigrati:</strong> ${fmt(total)}</div>
-            ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Paesi inclusi: ${rows.length}</div>` : ''}
-            ${mapTooltipListHtml('Destinazioni', rows, 'dstName')}
+            <div><strong>Total emigrants:</strong> ${fmt(total)}</div>
+            ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Countries included: ${rows.length}</div>` : ''}
+            ${mapTooltipListHtml('Destinations', rows, 'dstName')}
           `,
           onClose: () => clearArcSelection(),
         };
@@ -1246,11 +1246,11 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
       return {
         key: `migration-map-${a3}`,
         title: `<span style="color:${col}">${escapeHtml(destNameMap.get(a3) || countryName)}</span>`,
-        meta: 'Destinazione',
+        meta: 'Destination',
         bodyHtml: `
-          <div><strong>Totale migranti africani:</strong> ${fmt(total)}</div>
-          ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Paesi inclusi: ${rows.length}</div>` : ''}
-          ${mapTooltipListHtml('Per paese di origine', rows, 'srcName')}
+          <div><strong>Total African migrants:</strong> ${fmt(total)}</div>
+          ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Countries included: ${rows.length}</div>` : ''}
+          ${mapTooltipListHtml('By country of origin', rows, 'srcName')}
         `,
         onClose: () => clearArcSelection(),
       };
@@ -1383,4 +1383,3 @@ async function renderMigrationChart(selector = '#chart-5-1', isFullscreen = fals
     currentYear,
   });
 }
-

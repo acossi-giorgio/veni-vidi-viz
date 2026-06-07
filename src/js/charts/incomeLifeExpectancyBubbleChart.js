@@ -132,11 +132,11 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
   const xLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
   g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Aspettativa di vita (anni)');
+  g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -(compact ? 34 : 46)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Life expectancy (years)');
 
   xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  xLabelEl.text('PIL pro capite (USD)');
+  xLabelEl.text('GDP per capita (USD)');
 
   const bgHoverRect = g.append('rect')
     .attr('x', 0)
@@ -284,11 +284,11 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .on('mouseover', function(event, d) {
         showTooltipAt(event, {
           title: d.country,
-          meta: `Anno: ${currentYear}`,
+          meta: `Year: ${currentYear}`,
           rows: [
-            { label: 'Reddito pro capite', value: `$${d3.format(',.0f')(d.income)}` },
-            { label: 'Aspettativa di vita', value: `${d.lifeVal.toFixed(1)} anni` },
-            { label: 'Popolazione', value: d3.format(',.0f')(d.pop) },
+            { label: 'Income per capita', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'Life expectancy', value: `${d.lifeVal.toFixed(1)} years` },
+            { label: 'Population', value: d3.format(',.0f')(d.pop) },
           ],
         });
         d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
@@ -296,11 +296,11 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .on('mousemove', (event, d) => {
         showTooltipAt(event, {
           title: d.country,
-          meta: `Anno: ${currentYear}`,
+          meta: `Year: ${currentYear}`,
           rows: [
-            { label: 'Reddito pro capite', value: `$${d3.format(',.0f')(d.income)}` },
-            { label: 'Aspettativa di vita', value: `${d.lifeVal.toFixed(1)} anni` },
-            { label: 'Popolazione', value: d3.format(',.0f')(d.pop) },
+            { label: 'Income per capita', value: `$${d3.format(',.0f')(d.income)}` },
+            { label: 'Life expectancy', value: `${d.lifeVal.toFixed(1)} years` },
+            { label: 'Population', value: d3.format(',.0f')(d.pop) },
           ],
         });
       })
@@ -312,15 +312,15 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
         const summary = getYearSummary(currentYear);
         const html = [
           {
-            title: 'Africa vs Europa',
-            meta: `Anno: ${currentYear}`,
+            title: 'Africa vs Europe',
+            meta: `Year: ${currentYear}`,
             sections: summary.map((item) => ({
               title: item.continent,
               rows: [
-                { label: 'Reddito medio', value: item.meanIncome != null ? `$${d3.format(',.0f')(item.meanIncome)}` : 'N/D' },
-                { label: 'Aspettativa media', value: item.meanLife != null ? `${item.meanLife.toFixed(1)} anni` : 'N/D' },
-                { label: 'Popolazione totale', value: formatPopulationTotal(item.totalPopulation) },
-                { label: 'Copertura dati', value: `${item.covered}/${item.total} paesi` },
+                { label: 'Average income', value: item.meanIncome != null ? `$${d3.format(',.0f')(item.meanIncome)}` : 'N/A' },
+                { label: 'Average life expectancy', value: item.meanLife != null ? `${item.meanLife.toFixed(1)} years` : 'N/A' },
+                { label: 'Total population', value: formatPopulationTotal(item.totalPopulation) },
+                { label: 'Data coverage', value: `${item.covered}/${item.total} countries` },
               ],
             })),
           },
@@ -346,7 +346,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
         .style('font-size', compact ? '11px' : '12px')
         .style('line-height', '1.5')
         .style('color', UI_MUTED_INK);
-      empty.html('Nessun paese ha tutti e tre i valori nello stesso anno per il frame selezionato.');
+      empty.html('No country has all three values in the same year for the selected frame.');
     } else {
       chartDiv.selectAll('.gapminder-empty-state').remove();
     }
@@ -392,7 +392,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   }
 
   mkCtrlBtn('&#8635;', 'Reset').on('click', () => { stopPlay(); currentYear = YEAR_MIN; draw(false); });
-  mkCtrlBtn('&#8249;', 'Precedente').style('font-size', '18px').on('click', () => {
+  mkCtrlBtn('&#8249;', 'Previous').style('font-size', '18px').on('click', () => {
     stopPlay(); const i = visibleYears.indexOf(currentYear);
     if (i > 0) { currentYear = visibleYears[i - 1]; draw(false); }
   });
@@ -407,7 +407,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>')
     .on('click', () => playing ? stopPlay() : startPlay());
 
-  mkCtrlBtn('&#8250;', 'Successivo').style('font-size', '18px').on('click', () => {
+  mkCtrlBtn('&#8250;', 'Next').style('font-size', '18px').on('click', () => {
     stopPlay(); const i = visibleYears.indexOf(currentYear);
     if (i < visibleYears.length - 1) { currentYear = visibleYears[i + 1]; draw(false); }
   });

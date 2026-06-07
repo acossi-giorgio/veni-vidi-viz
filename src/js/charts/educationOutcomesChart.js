@@ -186,16 +186,16 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
 
   function showTip(event, point) {
     const spendValue = fmtSpend(point.spendB);
-    const outcomeLabel = yMode === 'literacy' ? 'Alfabetizzazione' : 'Fuori scuola primaria';
+    const outcomeLabel = yMode === 'literacy' ? 'Literacy' : 'Out of primary school';
     const outcomeValue = `${point[yMode === 'literacy' ? 'litPct' : 'oosPct'].toFixed(2)}%`;
     const coverage = activeCoverage(point);
     window.showHoverTooltip(tooltip, event, window.buildHoverTooltipHtml({
       title: AFRICA,
-      meta: `Anno: ${point.year}`,
+      meta: `Year: ${point.year}`,
       rows: [
-        { label: 'Spesa', value: spendValue },
+        { label: 'Spending', value: spendValue },
         { label: outcomeLabel, value: outcomeValue },
-        { label: 'Copertura dati', value: coverage },
+        { label: 'Data coverage', value: coverage },
       ],
     }), {
       offsetX: 14,
@@ -234,12 +234,12 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .on('click', onClick);
   }
 
-  const btnLit = mkBtn('Alfabetizzazione', () => {
+  const btnLit = mkBtn('Literacy', () => {
     yMode = 'literacy';
     updateBtns();
     draw();
   });
-  const btnOos = mkBtn('Fuori scuola primaria', () => {
+  const btnOos = mkBtn('Out of primary school', () => {
     yMode = 'oos';
     updateBtns();
     draw();
@@ -343,7 +343,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle')
       .attr('font-size', compact ? 9 : 10)
       .attr('fill', CHART_AXIS)
-      .text('Spesa pubblica in istruzione (USD assoluti)');
+      .text('Public spending on education (absolute USD)');
 
     g.append('text')
       .attr('transform', 'rotate(-90)')
@@ -353,7 +353,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle')
       .attr('font-size', compact ? 9 : 10)
       .attr('fill', CHART_AXIS)
-      .text(yMode === 'literacy' ? 'Alfabetizzazione (%)' : 'Bambini fuori dalla scuola primaria (%)');
+      .text(yMode === 'literacy' ? 'Literacy (%)' : 'Children out of primary school (%)');
 
     const line = d3.line()
       .x((d) => xScale(d.spendB))

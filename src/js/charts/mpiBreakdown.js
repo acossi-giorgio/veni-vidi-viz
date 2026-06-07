@@ -122,8 +122,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       });
   }
 
-  const btnDist = makeToggleBtn('Distribuzione', 'dist');
-  const btnMap = makeToggleBtn('Mappa', 'map');
+  const btnDist = makeToggleBtn('Distribution', 'dist');
+  const btnMap = makeToggleBtn('Map', 'map');
 
   function updateToggle() {
     [[btnDist, 'dist'], [btnMap, 'map']].forEach(([btn, val]) => {
@@ -337,12 +337,12 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     g.append('text')
       .attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 24 : 28))
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
-      .text('Indice di Poverta Multidimensionale (MPI)');
+      .text('Multidimensional Poverty Index (MPI)');
     g.append('text')
       .attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)')
       .attr('x', -ih / 2).attr('y', compact ? -30 : -40)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS)
-      .text('N° paesi');
+      .text('No. of countries');
 
     const dirInk = shadeColor(COL_AFRICA, 0.18);
     const dirFont = compact ? 9 : 10;
@@ -358,7 +358,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       .attr('font-size', dirFont)
       .attr('font-weight', '600')
       .attr('fill', dirInk)
-      .text('Verso destra l’MPI peggiora →');
+      .text('Moving right, MPI worsens →');
 
     if (severeCut) {
       g.append('line')
@@ -391,7 +391,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
             title: `MPI ${bin.x0.toFixed(2)}-${bin.x1.toFixed(2)}`,
             titleColor: COL_AFRICA,
             sections: [{
-              title: 'Paesi inclusi',
+              title: 'Included countries',
               rows: sorted.map(d => ({
                 label: d.country,
                 value: d.value.toFixed(3),
@@ -438,7 +438,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       g.append('text')
         .attr('x', 18).attr('y', 28)
         .attr('font-size', compact ? 11 : 13).attr('fill', UI_MUTED_INK)
-        .text('Mappa non disponibile: errore nel caricamento del world atlas.');
+        .text('Map not available: error loading the world atlas.');
       return;
     }
 
@@ -492,7 +492,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           window.showHoverTooltip(tipEl, ev, {
             title: name,
             titleColor: COL_AFRICA,
-            meta: `Anno: ${rec.year}`,
+            meta: `Year: ${rec.year}`,
             rows: [{ label: 'MPI', value: rec.value.toFixed(3) }],
           });
         }
