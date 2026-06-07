@@ -304,18 +304,6 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    g.append('text')
-      .attr('x', 0)
-      .attr('y', compact ? -12 : -14)
-      .attr('font-size', compact ? 9 : 10)
-      .attr('font-weight', 700)
-      .attr('fill', CHART_AXIS)
-      .text(
-        yMode === 'literacy'
-          ? "Traiettoria della spesa e dell'alfabetizzazione in Africa"
-          : 'Traiettoria della spesa e del tasso di fuori scuola primaria in Africa'
-      );
-
     g.append('g')
       .call(d3.axisLeft(yScale).ticks(yMode === 'literacy' ? 5 : 6).tickSize(-innerW).tickFormat(''))
       .call((axis) => {
@@ -355,7 +343,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle')
       .attr('font-size', compact ? 9 : 10)
       .attr('fill', CHART_AXIS)
-      .text('Spesa pubblica istruzione (USD totali stimati)');
+      .text('Spesa pubblica in istruzione (USD assoluti)');
 
     g.append('text')
       .attr('transform', 'rotate(-90)')
@@ -365,7 +353,7 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .attr('text-anchor', 'middle')
       .attr('font-size', compact ? 9 : 10)
       .attr('fill', CHART_AXIS)
-      .text(yMode === 'literacy' ? 'Tasso di alfabetizzazione (%)' : 'Tasso di fuori scuola primaria (%)');
+      .text(yMode === 'literacy' ? 'Alfabetizzazione (%)' : 'Bambini fuori dalla scuola primaria (%)');
 
     const line = d3.line()
       .x((d) => xScale(d.spendB))

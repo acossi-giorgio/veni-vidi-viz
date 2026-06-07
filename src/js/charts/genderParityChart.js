@@ -315,7 +315,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     g.append('text').attr('x', (parityMinX + parityMaxX) / 2).attr('y', parityLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('font-weight','700')
       .attr('fill', COL_PARITY).style('pointer-events','none')
-      .text('parità');
+      .text('Parità');
     g.append('text').attr('x', parityMaxX + (iw - parityMaxX) / 2).attr('y', zoneLabelY)
       .attr('text-anchor','middle').attr('font-size',compact ? 9 : 10).attr('font-weight','700')
       .attr('fill', COL_BOYS).style('pointer-events','none')
@@ -353,7 +353,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('font-size', compact ? 8.5 : 10)
       .attr('font-weight', '600')
       .attr('fill', CHART_AXIS)
-      .text('Indice di parità di genere (GPI)');
+      .text('Indice di Parità di Genere (GPI)');
 
     const interactionHint = g.append('text')
       .attr('x', iw + (compact ? 10 : 18))
@@ -489,8 +489,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const gpis  = rows.map(d => d.gpi);
 
     const M  = compact
-      ? { top: 44, right: 14, bottom: 74, left: 42 }
-      : { top: 52, right: 30, bottom: 90, left: 52 };
+      ? { top: 44, right: 14, bottom: 92, left: 42 }
+      : { top: 52, right: 30, bottom: 118, left: 52 };
     const iw = W - M.left - M.right;
     const ih = H - M.top  - M.bottom;
 
@@ -533,7 +533,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
 
     root.append('text').attr('x', W / 2).attr('y', hintY + (compact ? 0 : 1))
       .attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('font-weight', '700').attr('fill', CHART_AXIS)
-      .text('parità');
+      .text('Parità');
 
     root.append('text').attr('x', hintRightX).attr('y', hintY)
       .attr('text-anchor', 'start').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_BOYS)
@@ -564,7 +564,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       });
     g.append('text').attr('class', 'chart-axis-label').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
-      .text('GPI (indice di parità di genere)');
+      .text('Indice di Parità di Genere (GPI)');
 
     /* bars */
     const BASE_BAR_OPACITY = 0.78;

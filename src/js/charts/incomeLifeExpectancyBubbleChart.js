@@ -136,7 +136,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
 
   xAxisG.call(d3.axisBottom(xS).tickValues(xTicks).tickFormat(v => v >= 1000 ? `$${v/1000}k` : `$${v}`))
     .call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
-  xLabelEl.text('PIL pro capite');
+  xLabelEl.text('PIL pro capite (USD)');
 
   const bgHoverRect = g.append('rect')
     .attr('x', 0)

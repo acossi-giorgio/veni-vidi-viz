@@ -241,7 +241,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       ax.selectAll('.tick text').attr('fill', CHART_AXIS).attr('font-size', compact ? 8 : 9);
     });
 
-    yLabelEl.text(viewMetric === 'pct' ? 'Spesa istruzione (% PIL)' : 'Spesa istruzione (USD totale)');
+    yLabelEl.text(viewMetric === 'pct' ? 'Spesa pubblica in istruzione (% PIL)' : 'Spesa pubblica in istruzione (USD assoluti)');
 
     coverageByYear = new Map(allYears.map((year) => {
       const stats = CONTS.map((cont) => {
