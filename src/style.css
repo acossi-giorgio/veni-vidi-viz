@@ -127,6 +127,7 @@
   --page-max: 1360px;
   --page-pad: clamp(1.5rem, 4vw, 4rem);
   --offset:   var(--navbar-h);
+  --chart-sticky-top: calc(var(--offset) + 4rem);
 }
 
 
@@ -858,7 +859,7 @@ input[type="range"]::-moz-range-thumb {
 
 .chart-viz {
   position: sticky;
-  top: calc(var(--offset) + 1.5rem);
+  top: var(--chart-sticky-top);
   align-self: start;
 }
 

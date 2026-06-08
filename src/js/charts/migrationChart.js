@@ -258,7 +258,6 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       </div>
     `);
     return [
-      `<span style="opacity:.5;font-size:9px;text-transform:uppercase;letter-spacing:.05em">Countries included: ${detailRows.length}</span>`,
       `<div style="margin-top:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));column-gap:18px;row-gap:8px;max-width:min(88vw,1040px);">${columns.join('')}</div>`,
     ].join('');
   }
@@ -286,7 +285,8 @@ async function renderMigrationChart(selector = '#chart-5-1') {
   let mode = 'sankey';
   let animTimer = null;
   let sankeyDrillAfrica = false;
-  let sankeyDrillContinents = new Set();
+  let sankeyDrillContinents = new Set();
+
   const header = wrap.append('div')
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', '8px 10px 4px')
@@ -330,7 +330,8 @@ async function renderMigrationChart(selector = '#chart-5-1') {
 
   const svgArea = wrap.append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
-    .style('right', '0').style('bottom', '0');
+    .style('right', '0').style('bottom', '0');
+
   wrap.append('div')
     .style('position', 'absolute').style('right', '12px').style('bottom', '6px').style('z-index', '20')
     .style('display', 'flex').style('align-items', 'center')
@@ -745,7 +746,8 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     const geoCountries = topojson.feature(_migWorldData, _migWorldData.objects.countries).features;
     const projection   = d3.geoNaturalEarth1()
       .fitSize([W, H], { type: 'FeatureCollection', features: geoCountries });
-    const pathGen      = d3.geoPath().projection(projection);
+    const pathGen      = d3.geoPath().projection(projection);
+
     function largestPolyCentroid(feature) {
       if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
         let best = null, bestArea = -1;
@@ -765,37 +767,43 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       if (!a3) return;
       const c = largestPolyCentroid(f);
       if (!isNaN(c[0]) && !isNaN(c[1])) centroidByA3.set(a3, c);
-    });
+    });
+
     const pairMap = new Map();
     yearData.forEach(d => {
       const key = `${d.origin_code}||${d.dest_code}`;
       if (!pairMap.has(key)) pairMap.set(key, { srcCode: d.origin_code, srcName: d.origin_country, dstCode: d.dest_code, dstName: d.dest_country, stock: 0 });
       pairMap.get(key).stock += d.stock;
     });
-    const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
+    const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
+
     const countrySrcCodes = new Set(yearData.map(d => d.origin_code));
     const countryDstCodes = new Set(yearData.map(d => d.dest_code));
     const renderPairs = pairs.filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode));
     const arcSrcCodes = new Set(renderPairs.map(p => p.srcCode));
-    const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
+    const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
+
     const byDest = new Map();
     pairs.forEach(p => {
       if (!byDest.has(p.dstCode)) byDest.set(p.dstCode, []);
       byDest.get(p.dstCode).push({ srcName: p.srcName, stock: p.stock });
     });
-    byDest.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+    byDest.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+
     const bySrc = new Map();
     pairs.forEach(p => {
       if (!bySrc.has(p.srcCode)) bySrc.set(p.srcCode, []);
       bySrc.get(p.srcCode).push({ dstName: p.dstName, stock: p.stock });
     });
-    bySrc.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+    bySrc.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
+
     const destContMap = new Map();
     yearData.forEach(d => destContMap.set(d.dest_code, d.dest_continent));
 
     const maxDest = d3.max(stockByDest.values()) || 1;
     const maxOrig = d3.max(origStockMap.values()) || 1;
-    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.62, 0.98]);
+    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.62, 0.98]);
+
     const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.38, 1.00]);
 
     function hexToRgba(hex, op) {
@@ -838,7 +846,8 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         if (p.dstCode === a3) linked.add(p.srcCode);
       });
       return linked;
-    }
+    }
+
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
       .style('border-radius', '0').style('cursor', 'grab');
@@ -846,7 +855,9 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     const zoom = d3.zoom().scaleExtent([0.5, 12])
       .on('zoom', e => { g.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
       .on('end',  () => svg.style('cursor', 'grab'));
-    svg.call(zoom).on('dblclick.zoom', null);
+    svg.call(zoom).on('dblclick.zoom', null);
+
+
     const countriesSel = g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
@@ -898,7 +909,8 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         if (activeCodes && activeCodes.has(a3)) return activeCountryFill(a3);
         return baseCountryFill(a3);
       });
-    }
+    }
+
     let arcHoverA3 = null;
 
     function arcHoverHtml(a3) {
@@ -950,7 +962,6 @@ async function renderMigrationChart(selector = '#chart-5-1') {
           meta: 'Origin',
           bodyHtml: `
             <div><strong>Total emigrants:</strong> ${fmt(total)}</div>
-            ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Countries included: ${rows.length}</div>` : ''}
             ${mapTooltipListHtml('Destinations', rows, 'dstName')}
           `,
           onClose: () => clearArcSelection(),
@@ -966,7 +977,6 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         meta: 'Destination',
         bodyHtml: `
           <div><strong>Total African migrants:</strong> ${fmt(total)}</div>
-          ${rows.length ? `<div style="margin-top:4px;opacity:.7;font-size:10px">Countries included: ${rows.length}</div>` : ''}
           ${mapTooltipListHtml('By country of origin', rows, 'srcName')}
         `,
         onClose: () => clearArcSelection(),
@@ -1013,13 +1023,15 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       updateCountryHighlight();
       g.selectAll('.mig-arc').interrupt()
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
-    }
+    }
+
     function arcPath(src, dst) {
       const srcGeo = projection.invert(src);
       const dstGeo = projection.invert(dst);
       if (!srcGeo || !dstGeo) return `M${src[0]},${src[1]}`;
       return pathGen({ type: 'LineString', coordinates: [srcGeo, dstGeo] }) || `M${src[0]},${src[1]}`;
-    }
+    }
+
     renderPairs
       .sort((a, b) => a.stock - b.stock)
       .forEach(p => {
