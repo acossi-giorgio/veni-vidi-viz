@@ -416,6 +416,57 @@ async function renderEducationOutcomesChart(selector, isFullscreen = false) {
       .duration(180)
       .attr('opacity', 1);
 
+    const endpointLabels = series.length === 1
+      ? [{
+        point: series[0],
+        text: `Start / End · ${series[0].year}`,
+        dx: 10,
+        dy: -12,
+        anchor: 'start',
+      }]
+      : [
+        {
+          point: series[0],
+          text: `${series[0].year}`,
+          dx: 10,
+          dy: -12,
+          anchor: 'start',
+        },
+        {
+          point: series[series.length - 1],
+          text: `${series[series.length - 1].year}`,
+          dx: -10,
+          dy: -12,
+          anchor: 'end',
+        },
+      ];
+
+    const labelGroups = g.selectAll('.edu-endpoint-label')
+      .data(endpointLabels)
+      .join('g')
+      .attr('class', 'edu-endpoint-label')
+      .attr('transform', (d) => `translate(${xScale(d.point.spendB)},${yScale(d.point[yKey])})`)
+      .attr('opacity', 0);
+
+    labelGroups.append('text')
+      .attr('x', (d) => d.dx)
+      .attr('y', (d) => d.dy)
+      .attr('text-anchor', (d) => d.anchor)
+      .attr('font-size', compact ? 9 : 10)
+      .attr('font-weight', '700')
+      .attr('fill', CHART_AXIS)
+      .attr('paint-order', 'stroke')
+      .attr('stroke', '#fffdf8')
+      .attr('stroke-width', 4)
+      .attr('stroke-linejoin', 'round')
+      .text((d) => d.text);
+
+    labelGroups
+      .transition()
+      .delay((d, index) => 2350 + (index * 120))
+      .duration(220)
+      .attr('opacity', 1);
+
     g.selectAll('.edu-top-hit')
       .data(series)
       .join('circle')
