@@ -1,9 +1,3 @@
-/* ============================================================
-   VENI VIDI VIZ — common.js
-   Sorgente unica dei colori per tutti i grafici.
-   Le sezioni del sito restano gestite dal CSS.
-   ============================================================ */
-
 const CHART_COLORS = {
   countries: [
     '#aeb6bf',

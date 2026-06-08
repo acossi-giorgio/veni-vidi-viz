@@ -1,7 +1,3 @@
-/* ============================================================
-   Grafico 3-3 (Atto II) — Scatter: spesa × alfabetizzazione / fuori scuola
-   Mostra solo la traiettoria principale dell'Africa con retta di regressione.
-   ============================================================ */
 async function renderEducationOutcomesChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;

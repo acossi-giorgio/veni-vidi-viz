@@ -1,8 +1,3 @@
-/* ============================================================
-   Grafico 4-2 (Atto III) — Matrimoni precoci (Africa)
-   Overview: waffle Africa 10×10 (by15 + by18) + pannello stats
-   Drill-down: stacked bar per paese — toggle % / Assoluto
-   ============================================================ */
 async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = false) {
   const container = d3.select(selector);
   if (container.empty()) return;
@@ -78,20 +73,14 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     if (v >= 1e3) return (v / 1e3).toFixed(0) + ' K';
     return Math.round(v).toString();
   }
-
-  /* ── Tooltip ────────────────────────────────────────────── */
   const tooltip = window.ensureHoverTooltip('child-marriage-tooltip', { maxWidth: 'min(92vw, 20rem)' });
 
   function showTip(e, html) {
     window.showHoverTooltip(tooltip, e, html, { offsetX: 14, offsetY: 10 });
   }
   function hideTip() { window.hideHoverTooltip(tooltip); }
-
-  /* ── Viz container ──────────────────────────────────────── */
   const vizDiv = container.append('div')
     .style('flex', '1 1 0').style('position', 'relative').style('overflow', 'hidden');
-
-  /* ── Waffle helper ──────────────────────────────────────── */
   function drawWaffle(svg, x0, y0, pct15, pct18, cs, gap, COLS, ROWS, colors = {}, interactions = {}) {
     const total = COLS * ROWS;
     const n15   = Math.round(Math.min(total, pct15));
@@ -121,8 +110,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       }
     }
   }
-
-  /* ── OVERVIEW ───────────────────────────────────────────── */
   function drawOverview(W, H) {
     const mobileFullscreen = isFullscreen && compact;
     const scaledMobileOverview = mobileFullscreen;
@@ -283,8 +270,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     svg.append('text').attr('x', afX + afW / 2).attr('y', afY + afW + 14)
       .attr('text-anchor', 'middle').attr('font-size', compact ? 6 : 7).attr('font-weight', '700').attr('fill', CHART_AXIS)
       .text('Click to explore →');
-
-    /* ── Pannello stats sinistra ────────────────────────────── */
     const px0    = panelX;
     const panelH = compact ? 118 : 126;
     const py0    = blockY + (blockH - panelH) / 2;
@@ -311,8 +296,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     drawPanelRows(europeRows, panelLeft + 14, europeTitleY + 18);
 
   }
-
-  /* ── DRILL-DOWN: stacked bar ────────────────────────────── */
   function drawDrillDown(W, H) {
     const mobileFullscreen = isFullscreen && compact;
     const data = filteredRaw
@@ -331,9 +314,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       } else {
         d._total_n = null; d._notby18_n = null;
       }
-    });
-
-    // Reserve a dedicated header lane for controls so they never overlap bars/axes
+    });
     const CONTROL_LANE_H = compact ? 34 : 38;
     const frameW = W;
     const frameH = mobileFullscreen
@@ -353,9 +334,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const plotAvailW = Math.max(220, frameW - PAD.left - PAD.right - LEGEND_W - LEGEND_GAP);
     const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(22, (plotAvailW - BAR_G * (data.length - 1)) / data.length));
     const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
-    const contentW = PAD.left + barsW + PAD.right + LEGEND_GAP + LEGEND_W;
-
-    // Center the full block (axis + bars + legend), not only the bars.
+    const contentW = PAD.left + barsW + PAD.right + LEGEND_GAP + LEGEND_W;
     const svgW = Math.max(frameW, contentW);
     const contentOffsetX = svgW > contentW ? (svgW - contentW) / 2 : 0;
 
@@ -367,8 +346,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const svg = vizDiv.append('svg')
       .attr('width', svgW).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit');
-
-    /* ── Toggle % / Assoluto — top-left pill (after back btn) ─ */
     const controlRow = vizDiv.append('div')
       .style('position', 'absolute').style('top', compact ? '6px' : '8px').style('left', compact ? '6px' : '8px')
       .style('display', 'flex').style('align-items', 'center').style('gap', compact ? '4px' : '6px')
@@ -408,8 +385,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       dotMode = true;
       draw();
     });
-
-    /* ── Scale Y ──────────────────────────────────────────── */
     const yScale = dotMode
       ? d3.scaleLinear().domain([0, 25e6]).range([chartH, 0])
       : d3.scaleLinear().domain([0, 100]).range([chartH, 0]);
@@ -624,13 +599,10 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       clearActiveColumn();
       hideTip();
     });
-
-    /* ── Axis labels ─────────────────────────────────────── */
     const yLabelText = dotMode
       ? 'Women married before 15 and 18 (absolute value)'
       : 'Women married before 15 and 18 (%)';
-    const yLabelOffset = compact ? 34 : 44;
-    // ensure Y label is inside the visible SVG area
+    const yLabelOffset = compact ? 34 : 44;
     const tentativeYLabelX = axisX - yLabelOffset;
     const yLabelX = Math.max(12, tentativeYLabelX);
     const yLabelY = frameY + PAD.top + chartH / 2;
@@ -645,8 +617,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .text(yLabelText);
 
     const xLabelText = 'Country';
-    const xLabelX = axisX + barsW / 2;
-    // force X label to sit lower (closer to bottom edge) while staying inside svg
+    const xLabelX = axisX + barsW / 2;
     const xLabelY = Math.min(H - 4, frameY + frameH - 6);
 
     svg.append('text')
@@ -658,8 +629,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('font-weight', '600')
       .attr('fill', CHART_AXIS)
       .text(xLabelText);
-
-    /* ── Legenda top-right ──────────────────────────────────── */
     if (!mobileFullscreen) {
       const LEG_ITEMS = [
         { color: colorBy15, label: 'Before 15 years' },
@@ -684,8 +653,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       });
     }
   }
-
-  /* ── Draw dispatcher ────────────────────────────────────── */
   function renderCurrentView() {
     vizDiv.selectAll('svg,div').remove();
     vizDiv.style('overflow-x', drillDown ? 'auto' : 'hidden').style('overflow-y', 'hidden');
@@ -711,8 +678,6 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
   }
 
   draw();
-
-  /* ── API triggerChartState ──────────────────────────────── */
   const el = container.node();
   el._marriageReset     = () => { selectedContinent = 'Africa'; drillDown = false; dotMode = false; draw(); };
   el._marriageHighlight = (continent = 'Africa') => { selectedContinent = continent; drillDown = false; draw(); };

@@ -1,9 +1,3 @@
-/* ============================================================
-   VENI VIDI VIZ — main.js v3
-   Scroll normale. Niente slide-mode, niente overlay card.
-   ============================================================ */
-
-/* ── Utilities ───────────────────────────────────────────── */
 
 function debounce(fn, ms) {
   let t;
@@ -357,10 +351,7 @@ function initChartInteractionAnimations() {
     if (!range) return;
     const chartId = getBaseChartIdFromElement(range);
     if (chartId) animateChartSwitch(chartId);
-  });
-
-  // Disable click pulse on chart canvas to avoid bounce effect during exploration.
-  // We keep animations only for explicit UI controls (buttons/select/slider release).
+  });
 }
 
 function initHeroCarousel() {
@@ -728,8 +719,6 @@ async function renderInlineChartsIfNeeded() {
     inlineChartsRendering = false;
   }
 }
-
-/* ── Init ────────────────────────────────────────────────── */
 async function init() {
   initNavbar();
   initHeroCarousel();
@@ -748,8 +737,6 @@ async function init() {
   }, 120));
   await renderInlineChartsIfNeeded();
 }
-
-/* ── Narrative Cards ─────────────────────────────────────── */
 function triggerChartState(chartId, state, targetEl = null, options = {}) {
   window._chartStates = window._chartStates || {};
   window._chartStates[chartId] = state;
@@ -893,8 +880,7 @@ function initMissingDataHints() {
     try {
       const parsed = JSON.parse(triggerBtn.dataset.tooltipLines || '[]');
       if (Array.isArray(parsed)) return parsed.map(line => String(line || '').trim()).filter(Boolean);
-    } catch (err) {
-      // Fall back to plain-text parsing if the dataset payload is not valid JSON.
+    } catch (err) {
     }
     return parseDatasetLines(triggerBtn.dataset.tooltipLines || '');
   };
@@ -1241,8 +1227,6 @@ function initAdaptiveHintButtons() {
 
   document.querySelectorAll('.chart-box').forEach((box) => ro.observe(box));
 }
-
-/* ── Mobile Placeholders ─────────────────────────────────── */
 function initMobilePlaceholders() {
   document.querySelectorAll('.chart-box').forEach(box => {
     const chartDiv = box.querySelector('div[id^="chart-"]');
@@ -1272,8 +1256,6 @@ function initMobilePlaceholders() {
     syncMobilePlaceholder(chartDiv.id);
   });
 }
-
-/* ── Navbar ──────────────────────────────────────────────── */
 function initNavbar() {
   const navbar = document.querySelector('[data-navbar]');
   if (!navbar) return;
@@ -1448,8 +1430,6 @@ function getNavbarSectionTitle(section) {
     ''
   );
 }
-
-/* ── Fullscreen Modal ────────────────────────────────────── */
 function initFullscreenModal() {
   const modal = document.getElementById('fullscreenModal');
   const closeBtn = document.querySelector('.fullscreen-modal-close');
@@ -1499,15 +1479,11 @@ function initFullscreenModal() {
       wrap.innerHTML = '<p style="color:#c00;padding:2rem;">Errore nel caricamento del grafico.</p>';
     }
 
-    animateChartEntrance(chartId, wrap);
-
-    // Apply the last selected narrative state (if any) to the fullscreen chart
+    animateChartEntrance(chartId, wrap);
     const savedState = window._chartStates?.[chartId] ?? 0;
     const fsEl = document.getElementById(`fullscreen-${chartId}`);
     if (fsEl) triggerChartState(chartId, savedState, fsEl, { skipAnimation: true });
-  }
-
-  // Event delegation: handles both inline fullscreen buttons and mobile placeholders
+  }
   document.addEventListener('click', e => {
     const trigger = e.target.closest('.chart-fullscreen-btn, .chart-mobile-placeholder');
     if (!trigger) return;

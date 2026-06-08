@@ -1,8 +1,3 @@
-﻿/* ============================================================
-   Grafico 5-1 (Atto IV) — Migrazioni africane
-   Tab: Rete (force-directed) | Mappa (choropleth + archi)
-   ============================================================ */
-
 const _MIG_NUM_TO_A3 = {
   4:'AFG',8:'ALB',12:'DZA',16:'ASM',20:'AND',24:'AGO',28:'ATG',32:'ARG',36:'AUS',40:'AUT',
   31:'AZE',44:'BHS',48:'BHR',50:'BGD',52:'BRB',56:'BEL',60:'BMU',64:'BTN',68:'BOL',
@@ -34,7 +29,7 @@ const _MIG_NUM_TO_A3 = {
   887:'YEM',894:'ZMB',51:'ARM',
 };
 
-let _migWorldData = null; // world atlas cache
+let _migWorldData = null;
 const _MIG_AFRICA_TOPIC_COUNTRIES = [
   { code: 'DZA', name: 'Algeria' }, { code: 'AGO', name: 'Angola' }, { code: 'BEN', name: 'Benin' },
   { code: 'BWA', name: 'Botswana' }, { code: 'BFA', name: 'Burkina Faso' }, { code: 'BDI', name: 'Burundi' },
@@ -291,9 +286,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
   let mode = 'sankey';
   let animTimer = null;
   let sankeyDrillAfrica = false;
-  let sankeyDrillContinents = new Set(); // expanded dest continents
-
-  // ── Top header: pill buttons (overlay) ───────────────────────
+  let sankeyDrillContinents = new Set();
   const header = wrap.append('div')
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', '8px 10px 4px')
@@ -337,9 +330,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
 
   const svgArea = wrap.append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
-    .style('right', '0').style('bottom', '0');
-
-  // ── Fixed reference year badge ─────────────────────────────
+    .style('right', '0').style('bottom', '0');
   wrap.append('div')
     .style('position', 'absolute').style('right', '12px').style('bottom', '6px').style('z-index', '20')
     .style('display', 'flex').style('align-items', 'center')
@@ -353,7 +344,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     if (animTimer) { clearTimeout(animTimer); animTimer = null; }
   }
 
-  const HEADER_H = 44; // approximate height of the top pill-bar header
+  const HEADER_H = 44;
 
   function draw() {
     closePinnedTip();
@@ -371,8 +362,6 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       svgArea.select('svg').style('margin-top', HEADER_H + 'px');
     }
   }
-
-  /* ── Sankey: Africa → Dest Continents → Top Countries ─────── */
   function drawSankey(W, H) {
     const isCompact = W < 760;
     const isVeryCompact = W < 560;
@@ -724,11 +713,9 @@ async function renderMigrationChart(selector = '#chart-5-1') {
 
     renderSankey({ type: 'initial', direction: 'right' });
   }
-
-  /* ── Connection Map ────────────────────────────────────────── */
   async function drawMap(W, H) {
     if (!_migWorldData) {
-      _migWorldData = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json');
+      _migWorldData = await d3.json('datasets/raw/countries-110m.json');
     }
 
     const yearData = getYearData(currentYear).filter(d =>
@@ -758,9 +745,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     const geoCountries = topojson.feature(_migWorldData, _migWorldData.objects.countries).features;
     const projection   = d3.geoNaturalEarth1()
       .fitSize([W, H], { type: 'FeatureCollection', features: geoCountries });
-    const pathGen      = d3.geoPath().projection(projection);
-
-    // Projected centroids — for MultiPolygon use largest polygon to avoid overseas-territory skew
+    const pathGen      = d3.geoPath().projection(projection);
     function largestPolyCentroid(feature) {
       if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
         let best = null, bestArea = -1;
@@ -780,47 +765,37 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       if (!a3) return;
       const c = largestPolyCentroid(f);
       if (!isNaN(c[0]) && !isNaN(c[1])) centroidByA3.set(a3, c);
-    });
-
-    // Per-pair aggregation: (origin_code, dest_code) → stock
+    });
     const pairMap = new Map();
     yearData.forEach(d => {
       const key = `${d.origin_code}||${d.dest_code}`;
       if (!pairMap.has(key)) pairMap.set(key, { srcCode: d.origin_code, srcName: d.origin_country, dstCode: d.dest_code, dstName: d.dest_country, stock: 0 });
       pairMap.get(key).stock += d.stock;
     });
-    const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
-    // Countries with any valid flow in the selected year (for map coloring/tooltip).
+    const pairs = Array.from(pairMap.values()).sort((a, b) => a.stock - b.stock);
     const countrySrcCodes = new Set(yearData.map(d => d.origin_code));
     const countryDstCodes = new Set(yearData.map(d => d.dest_code));
     const renderPairs = pairs.filter(p => centroidByA3.has(p.srcCode) && centroidByA3.has(p.dstCode));
     const arcSrcCodes = new Set(renderPairs.map(p => p.srcCode));
-    const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
-
-    // breakdown: destCode → [{srcName, stock}] sorted desc
+    const arcDstCodes = new Set(renderPairs.map(p => p.dstCode));
     const byDest = new Map();
     pairs.forEach(p => {
       if (!byDest.has(p.dstCode)) byDest.set(p.dstCode, []);
       byDest.get(p.dstCode).push({ srcName: p.srcName, stock: p.stock });
     });
-    byDest.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
-
-    // breakdown: srcCode → [{dstName, stock}] sorted desc
+    byDest.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
     const bySrc = new Map();
     pairs.forEach(p => {
       if (!bySrc.has(p.srcCode)) bySrc.set(p.srcCode, []);
       bySrc.get(p.srcCode).push({ dstName: p.dstName, stock: p.stock });
     });
-    bySrc.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
-
-    // ── Color helpers: continent color + sqrt-opacity by stock ──────
+    bySrc.forEach(arr => arr.sort((a, b) => b.stock - a.stock));
     const destContMap = new Map();
     yearData.forEach(d => destContMap.set(d.dest_code, d.dest_continent));
 
     const maxDest = d3.max(stockByDest.values()) || 1;
     const maxOrig = d3.max(origStockMap.values()) || 1;
-    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.62, 0.98]);
-    // Keep low-stock origins visibly distinguishable from true no-data countries.
+    const destOpScale = d3.scaleSqrt().domain([0, maxDest]).range([0.62, 0.98]);
     const origOpScale = d3.scaleSqrt().domain([0, maxOrig]).range([0.38, 1.00]);
 
     function hexToRgba(hex, op) {
@@ -829,7 +804,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     }
     function destFill(a3) {
       const stock = stockByDest.get(a3);
-      if (!stock) return null; // no immigration → grey
+      if (!stock) return null;
       const cont = destContMap.get(a3);
       return hexToRgba(CONT_COLOR[cont] || '#607d8b', destOpScale(stock));
     }
@@ -863,9 +838,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         if (p.dstCode === a3) linked.add(p.srcCode);
       });
       return linked;
-    }
-
-    // ── SVG + zoom ───────────────────────────────────────────────
+    }
     const svg = svgArea.append('svg').attr('width', W).attr('height', H)
       .style('display', 'block').style('font-family', 'inherit').style('background', '#eef2f7')
       .style('border-radius', '0').style('cursor', 'grab');
@@ -873,10 +846,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
     const zoom = d3.zoom().scaleExtent([0.5, 12])
       .on('zoom', e => { g.attr('transform', e.transform); svg.style('cursor', 'grabbing'); })
       .on('end',  () => svg.style('cursor', 'grab'));
-    svg.call(zoom).on('dblclick.zoom', null);
-
-    // Countries — destinations by destination color, African origins in orange.
-    // Distinguish true no-flow African origins via no-data pattern.
+    svg.call(zoom).on('dblclick.zoom', null);
     const countriesSel = g.selectAll('.cty').data(geoCountries).join('path')
       .attr('class', 'cty')
       .attr('d', pathGen)
@@ -928,9 +898,7 @@ async function renderMigrationChart(selector = '#chart-5-1') {
         if (activeCodes && activeCodes.has(a3)) return activeCountryFill(a3);
         return baseCountryFill(a3);
       });
-    }
-
-    // Arc click state
+    }
     let arcHoverA3 = null;
 
     function arcHoverHtml(a3) {
@@ -1045,17 +1013,13 @@ async function renderMigrationChart(selector = '#chart-5-1') {
       updateCountryHighlight();
       g.selectAll('.mig-arc').interrupt()
         .attr('stroke-dasharray', null).attr('stroke-dashoffset', null).attr('opacity', 0);
-    }
-
-    // Great circle arcs via projection invert → GeoJSON LineString → pathGen
+    }
     function arcPath(src, dst) {
       const srcGeo = projection.invert(src);
       const dstGeo = projection.invert(dst);
       if (!srcGeo || !dstGeo) return `M${src[0]},${src[1]}`;
       return pathGen({ type: 'LineString', coordinates: [srcGeo, dstGeo] }) || `M${src[0]},${src[1]}`;
-    }
-
-    // draw small arcs first so large ones render on top
+    }
     renderPairs
       .sort((a, b) => a.stock - b.stock)
       .forEach(p => {

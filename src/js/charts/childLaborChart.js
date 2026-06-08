@@ -1,8 +1,3 @@
-/* ============================================================
-   Grafico 4-1 (Atto III) — Quadrant plot Africa
-   X = reddito pro capite (log), Y = lavoro minorile %
-   Mediane come separatori dei 4 quadranti
-   ============================================================ */
 async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = false) {
   const container = d3.select(selector);
   if (container.empty()) return;
@@ -50,9 +45,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
   }
 
   const medIncome = d3.median(data, d => d.income);
-  const medLabor  = d3.median(data, d => d.labor);
-
-  // label all countries with data
+  const medLabor  = d3.median(data, d => d.labor);
 
   const QUADRANT = [
     { id: 'q1', xSide: 'left',  ySide: 'top',    label: 'Poorer - high child labor', color: RISK_HIGH, anchor: 'start'  },
@@ -188,9 +181,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
 
     const svg = d3.select(containerNode).append('svg')
       .attr('width', W).attr('height', H).style('display', 'block').style('font-family', 'inherit').style('background', '#ffffff');
-    const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
-
-    // Quadrant backgrounds
+    const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
     const qBg = [
       { x: 0,  y: 0,  w: mx,    h: my,    q: QUADRANT[0] },
       { x: mx, y: 0,  w: iw-mx, h: my,    q: QUADRANT[1] },
@@ -208,21 +199,15 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .attr('fill', colorToRgba(q.color, 0.09, 'rgba(255,255,255,0.96)'))
         .attr('fill-opacity', 1)
         .attr('opacity', 1);
-    });
-
-    // Median lines
+    });
     g.append('line').attr('x1', mx).attr('x2', mx).attr('y1', 0).attr('y2', ih)
       .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
     g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', my).attr('y2', my)
-      .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
-
-    // Median labels
+      .attr('stroke', CHART_AXIS).attr('stroke-width', 1).attr('stroke-dasharray', '5,3');
     g.append('text').attr('x', mx + 4).attr('y', 10).attr('font-size', 7).attr('fill', CHART_AXIS)
       .text(`median $${d3.format(',.0f')(medIncome)}`);
     g.append('text').attr('x', 4).attr('y', my - 4).attr('font-size', 7).attr('fill', CHART_AXIS)
-      .text(`median ${medLabor.toFixed(1)}%`);
-
-    // Quadrant labels (corner)
+      .text(`median ${medLabor.toFixed(1)}%`);
     qBg.forEach(({ x, y, w, h, q }) => {
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
       const ly = q.ySide === 'top'  ? y + 14 : y + h - 6;
@@ -230,13 +215,9 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('font-weight', '600')
         .attr('fill', q.color).attr('opacity', q.ySide === 'top' ? 0.78 : 0.72)
         .text(veryCompact ? q.label.split('·')[0].trim() : q.label);
-    });
-
-    // Gridlines (light, behind dots)
+    });
     g.append('g').call(d3.axisLeft(yS).tickSize(-iw).tickFormat(''))
-      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke', CHART_GRID); });
-
-    // Quadrant background rects with hover tooltip
+      .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke', CHART_GRID); });
     qBg.forEach(({ x, y, w, h, q }) => {
       const n = data.filter(d => getQuadrant(d).id === q.id).length;
       g.append('rect').attr('x', x).attr('y', y).attr('width', w).attr('height', h)
@@ -251,9 +232,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
           }, { offsetX: 12, offsetY: 8 });
         })
         .on('mouseleave', hideTip);
-    });
-
-    // In this quadrant chart, dot color is part of the primary reading aid.
+    });
     g.selectAll('circle.dot').data(data, d => d.code).join(
       enter => enter.append('circle').attr('class', 'dot')
         .attr('cx', d => xS(d.income)).attr('cy', d => yS(d.labor))
@@ -287,10 +266,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .attr('stroke', '#ffffff')
         .attr('stroke-width', 0.9)
         .attr('fill-opacity', 0.84)
-    );
-
-    // Axes
-    // X axis: explicit ticks to avoid crowding at low end of log scale
+    );
     const xTicks = (compact ? [200, 1000, 5000, 10000] : [200, 500, 1000, 2000, 5000, 10000])
       .filter(v => v >= xS.domain()[0] * 0.9 && v <= xS.domain()[1] * 1.1);
     g.append('g').attr('transform', `translate(0,${ih})`).call(
@@ -305,9 +281,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .text(compact ? 'Income per capita (USD, log)' : 'GDP per capita (USD, logarithmic scale)');
     g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -50)
       .attr('class', 'chart-axis-label').attr('text-anchor', 'middle').attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL)
-      .text('Child labor (%)');
-
-    // Count per quadrant (corners, below the quadrant label)
+      .text('Child labor (%)');
     qBg.forEach(({ x, y, w, h, q }) => {
       const n = data.filter(d => getQuadrant(d).id === q.id).length;
       const lx = q.xSide === 'left' ? x + 6 : x + w - 6;
@@ -316,9 +290,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
         .attr('text-anchor', q.anchor).attr('font-size', compact ? 7 : 8).attr('fill', q.color).attr('opacity', 0.5)
         .style('pointer-events', 'none')
         .text(`${n} countries`);
-    });
-
-    // ── Legend top-right — panel style ───────────────────────
+    });
     d3.select(containerNode).selectAll('.section-legend, .section-interaction-hint').remove();
     const LEG_W = compact ? 160 : 196;
     const legDiv = d3.select(containerNode).append('div')
@@ -378,9 +350,7 @@ async function renderChildLaborChart(selector = '#chart-4-1', isFullscreen = fal
       .style('letter-spacing', '0.01em')
       .style('color', CHART_AXIS)
       .style('opacity', '0.88')
-      .style('pointer-events', 'none');
-
-    // ── Missing countries (no matching data) ──────────────────
+      .style('pointer-events', 'none');
     const presentCodes = new Set(data.map(d => d.code));
     const allCl = clRaw.filter(d => d.continent === 'Africa' && d.value != null);
     const missingCodes = [...new Set(allCl.map(d => d.code))].filter(c => !presentCodes.has(c));

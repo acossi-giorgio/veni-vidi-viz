@@ -1,9 +1,6 @@
-/* ============================================================
-   VENI VIDI VIZ — Stylesheet v3
-   Layout semplice, scroll normale, testo sempre visibile.
-   ============================================================ */
 
-/* ── DESIGN TOKENS ───────────────────────────────────────── */
+
+
 :root {
   --accent-1: #435364;
   --accent-1-strong: #25313d;
@@ -132,7 +129,7 @@
   --offset:   var(--navbar-h);
 }
 
-/* ── RESET ───────────────────────────────────────────────── */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {
   scroll-behavior: smooth;
@@ -164,7 +161,7 @@ button, input, select { font: inherit; }
   }
 }
 
-/* ── TYPOGRAPHY ──────────────────────────────────────────── */
+
 h1 { font-size: clamp(2.35rem, 4.2vw, 4rem);   line-height: 1.1; font-weight: 700; }
 h2 { font-size: clamp(1.4rem, 2.2vw, 2.2rem); line-height: 1.2; font-weight: 700; }
 h3 { font-size: clamp(1rem, 1.15vw, 1.12rem);   line-height: 1.7; font-weight: 600; }
@@ -172,7 +169,7 @@ p  { font-size: clamp(0.88rem, 0.95vw, 1rem);  line-height: 1.8;  color: var(--i
 a  { color: var(--ink); text-decoration: none; }
 svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 
-/* ── NAVBAR ──────────────────────────────────────────────── */
+
 .site-navbar {
   position: fixed;
   top: 0;
@@ -450,7 +447,7 @@ svg text { font-family: "Roboto Slab", serif !important; fill: #222; }
 body.nav-open {
   overflow: hidden;
 }
-/* ── HERO ────────────────────────────────────────────────── */
+
 .hero {
   min-height: 100vh;
   display: block;
@@ -589,9 +586,9 @@ body.nav-open {
   display: block;
   filter: blur(3px) brightness(0.68);
 }
-/* ── ACT HEADERS ─────────────────────────────────────────── */
 
-/* Keep anchors clear of the fixed navbar+bar when scrolled to */
+
+
 .act-header,
 .chart-section,
 .hero {
@@ -707,7 +704,7 @@ body.nav-open {
   margin-bottom: 0.75rem;
 }
 
-/* Linear range sliders */
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -757,7 +754,7 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 2px 8px rgba(17, 15, 12, 0.25);
 }
 
-/* ── CHART SECTIONS ──────────────────────────────────────── */
+
 .chart-section {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -775,7 +772,7 @@ input[type="range"]::-moz-range-thumb {
     linear-gradient(180deg, color-mix(in srgb, var(--section-accent) 42%, var(--bg)) 0%, var(--bg) 18%, var(--bg) 100%);
 }
 
-/* Default layout: text left (2fr) — chart right (3fr) */
+
 .chart-section-inner {
   max-width: var(--page-max);
   margin: 0 auto;
@@ -786,7 +783,7 @@ input[type="range"]::-moz-range-thumb {
   align-items: start;
 }
 
-/* Variant: chart left (3fr) — text right (2fr) */
+
 .chart-section-inner.layout-reversed {
   grid-template-columns: 3.4fr 1.6fr;
 }
@@ -794,13 +791,13 @@ input[type="range"]::-moz-range-thumb {
   order: -1;
 }
 
-/* Variant: chart on top, text below (stacked) */
+
 .chart-section-inner.layout-stacked {
   grid-template-columns: 1fr;
 }
 .chart-section-inner.layout-stacked .chart-viz {
   order: -1;
-  position: static;         /* no sticky in stacked layout */
+  position: static;
 }
 .chart-section-inner.layout-stacked .chart-box {
   height: clamp(320px, 50vh, 640px);
@@ -815,7 +812,7 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 0;
 }
 
-/* Section 11 custom: horizontal full-width chart with narrative cards below */
+
 #section-11 {
   padding: clamp(4.6rem, 8.2vh, 7.4rem) 0;
 }
@@ -849,7 +846,7 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-/* Left: text column */
+
 .chart-text h3 {
   color: var(--ink);
   margin-top: 2.25rem;
@@ -858,7 +855,7 @@ input[type="range"]::-moz-range-thumb {
 .chart-text h3:first-child { margin-top: 0; }
 .chart-text p { margin-bottom: 0; }
 
-/* Right: chart column — sticky while text scrolls */
+
 .chart-viz {
   position: sticky;
   top: calc(var(--offset) + 1.5rem);
@@ -938,7 +935,7 @@ input[type="range"]::-moz-range-thumb {
   --chart-svg-text-size: 10px;
 }
 
-/* Tipografia dei chart: aggiungi una di queste classi al wrapper `.chart-box` */
+
 .chart-box.chart-scale-xs,
 .fullscreen-chart-wrap.chart-scale-xs {
   --chart-title-size: 0.84rem;
@@ -979,12 +976,12 @@ input[type="range"]::-moz-range-thumb {
   --chart-svg-text-size: 12px;
 }
 
-/* Chart 2-1 (MPI): use a taller card to better exploit available space */
+
 #section-3 .chart-box {
   height: clamp(400px, 62vh, 720px);
 }
 
-/* Temporarily disabled chart (review state) */
+
 .chart-box.is-under-review .chart-canvas {
   filter: blur(7px) saturate(0.75);
   opacity: 0.55;
@@ -1640,7 +1637,7 @@ input[type="range"]::-moz-range-thumb {
   border-bottom: 1px solid rgba(222, 214, 201, 0.95);
 }
 
-/* Shared chart motion (load + selector switch) */
+
 div[id^="chart-"],
 div[id^="fullscreen-chart-"] {
   transform-origin: 50% 50%;
@@ -1710,7 +1707,7 @@ div[id^="fullscreen-chart-"] {
   }
 }
 
-/* Fullscreen button */
+
 .chart-fullscreen-btn {
   position: absolute;
   top: var(--header-controls-center-y);
@@ -1825,7 +1822,7 @@ div[id^="fullscreen-chart-"] {
   font-family: "Roboto Slab", serif;
 }
 
-/* Modal with chart metadata/help opened from hint buttons */
+
 .chart-info-modal {
   position: fixed;
   inset: 0;
@@ -1978,7 +1975,7 @@ div[id^="fullscreen-chart-"] {
   background: #fff;
 }
 
-/* Chart placeholder */
+
 .chart-placeholder {
   display: flex;
   flex-direction: column;
@@ -1998,7 +1995,7 @@ div[id^="fullscreen-chart-"] {
 }
 .chart-placeholder-icon { font-size: 2rem; opacity: 0.35; }
 
-/* Mobile-only placeholder: hidden on desktop via media query */
+
 .chart-mobile-placeholder { display: none; }
 .chart-mobile-placeholder,
 #fullscreenChartContainer {
@@ -2158,7 +2155,7 @@ div[id^="fullscreen-chart-"] {
   display: block;
 }
 
-/* ── FOOTER ──────────────────────────────────────────────── */
+
 .site-footer {
   background: #11161c;
   color: rgba(255,255,255,0.66);
@@ -2186,7 +2183,7 @@ div[id^="fullscreen-chart-"] {
   line-height: 1.45;
 }
 
-/* ── FULLSCREEN MODAL ────────────────────────────────────── */
+
 .fullscreen-modal {
   position: fixed; inset: 0;
   z-index: 9999;
@@ -2291,9 +2288,9 @@ div[id^="fullscreen-chart-"] {
   overflow: visible !important;
 }
 
-/* ── NARRATIVE CARDS (click to update chart) ─────────────── */
+
 .chart-text {
-  position: relative; /* stacking context for absolute panels */
+  position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -2325,7 +2322,7 @@ div[id^="fullscreen-chart-"] {
   font-size: clamp(0.98rem, 0.24vw + 0.92rem, 1.12rem);
 }
 
-/* Paragraph always visible inside the card */
+
 .narrative-card p {
   position: static;
   margin: 0;
@@ -2343,12 +2340,12 @@ div[id^="fullscreen-chart-"] {
 }
 .narrative-card:hover p {
   opacity: 1;
-  /* pointer-events stays none — text visible but mouse passes through */
+
 }
 
 section[data-act] .narrative-card.is-active { border-left-color: var(--control-active); }
 
-/* ── SECONDARY PAGES (about, datasets) ──────────────────── */
+
 .page-hero {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -2487,7 +2484,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   line-height: 1.72;
 }
 
-/* Card grid */
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -2505,7 +2502,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
 .info-card p  { margin-bottom: 0.75rem; }
 .info-card p:last-child { margin-bottom: 0; }
 
-/* Team card */
+
 .team-avatar {
   width: 200px;
   height: 200px;
@@ -2525,7 +2522,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   margin-bottom: 0.75rem !important;
 }
 
-/* Dataset list */
+
 .dataset-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2759,7 +2756,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   line-height: 1.4;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 @media (max-width: 1100px) {
   .hero {
     min-height: auto;
@@ -3142,7 +3139,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     overflow: hidden;
   }
 
-  /* Hide the inline chart visually (but keep it in DOM so APIs still exist) */
+
   .chart-canvas > div[id^="chart-"] {
     position: absolute;
     inset: 0;
@@ -3151,10 +3148,10 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     z-index: 0;
   }
 
-  /* Hide the inline fullscreen button – replaced by the placeholder */
+
   .chart-fullscreen-btn { display: none; }
 
-  /* Mobile placeholder shown in place of the chart */
+
   .chart-mobile-placeholder {
     display: flex;
     flex-direction: column;
@@ -3270,7 +3267,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     padding: 0.38rem 0.55rem;
   }
 
-  /* Narrative cards become descriptive-only on mobile */
+
   .narrative-card {
     opacity: 1;
     margin-bottom: 1rem;
@@ -3302,7 +3299,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
     font-size: 0.95rem;
   }
 
-  /* Fullscreen modal takes the whole screen on phones */
+
   .fullscreen-modal {
     padding: 0;
   }
@@ -3442,7 +3439,7 @@ section[data-act] .narrative-card.is-active { border-left-color: var(--control-a
   }
 }
 
-/* ── About Section ───────────────────────────────────────── */
+
 .about-section {
   background: var(--surface);
   border-top: 2px solid var(--border);

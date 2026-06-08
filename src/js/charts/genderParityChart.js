@@ -1,11 +1,3 @@
-/* ============================================================
-   Grafico 3-2 — GPI gap di genere nell'istruzione secondaria
-   Overview : dot strip Africa / Europe (X = GPI deviation da 1)
-   Drill-down: barre verticali per paese, fascia di parità tra 0.97 e 1.03
-               GPI < 0.97 → svantaggio per le bambine
-               0.97 ≤ GPI ≤ 1.03 → situazione di parità
-               GPI > 1.03 → svantaggio per i bambini
-   ============================================================ */
 async function renderGenderParityChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -16,8 +8,8 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     Africa: getContinentColor('Africa', '#2a9d8f'),
     Europe: getContinentColor('Europe', '#4c78a8'),
   };
-  const COL_GIRLS = '#7fc0f1';   // GPI < 1, invertito in azzurro pastello un po' piu acceso
-  const COL_BOYS  = '#eb95c0';   // GPI > 1, invertito in rosa pastello un po' piu acceso
+  const COL_GIRLS = '#7fc0f1';
+  const COL_BOYS  = '#eb95c0';
   const COL_PARITY = '#f3ddb3';
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
@@ -87,8 +79,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       {code:'CHE',country:'Switzerland'},{code:'UKR',country:'Ukraine'},{code:'GBR',country:'United Kingdom'},
     ],
   };
-
-  /* ── dati ───────────────────────────────────────────────── */
   const [gpiRaw] = await Promise.all([
     d3.csv('datasets/processed/gender_parity_secondary.csv', d3.autoType),
   ]);
@@ -118,15 +108,11 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       `The data shows the most recent year for which data is available for each country. The years are not perfectly aligned, but they fall within the range ${latestYearMin}-${latestYearMax}.`
     );
   }
-
-  /* ── layout base ────────────────────────────────────────── */
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
   const veryCompact = isFullscreen && (W < 620 || H < 360);
   const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
-  /* ── tooltip ────────────────────────────────────────────── */
   let tip = document.getElementById('qs-tip');
   if (!tip) {
     tip = window.ensureHoverTooltip('qs-tip');
@@ -142,7 +128,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .style('background', getCssToken('surface-raised', '#ffffff'));
   const root = svg.append('g');
 
-  let drill = null; // null = overview, string = continent name
+  let drill = null;
 
   function centerOutDelay(dev, maxAbsDev, duration = 760) {
     if (prefersReducedMotion || !Number.isFinite(dev) || !Number.isFinite(maxAbsDev) || maxAbsDev <= 0) return 0;
@@ -235,10 +221,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     }
     renderCurrentView({ animateDrillBars });
   }
-
-  /* ════════════════════════════════════════════════════════
-     OVERVIEW — dot strip
-  ════════════════════════════════════════════════════════ */
   function drawOverview() {
     const M  = compact
       ? { top: 42, right: 56, bottom: 38, left: veryCompact ? 62 : 76 }
@@ -439,10 +421,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     });
 
   }
-
-  /* ════════════════════════════════════════════════════════
-     DRILL-DOWN — barre verticali con baseline a 1 e soglia di parità 0.97–1.03
-  ════════════════════════════════════════════════════════ */
   function drawDrill(cont, options = {}) {
     const { animateBars: shouldAnimateBars = true } = options;
     const rows  = countries.filter(d => d.continent === cont).sort((a,b) => a.gpi - b.gpi);
@@ -452,9 +430,7 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       ? { top: 44, right: 14, bottom: 92, left: 42 }
       : { top: 52, right: 30, bottom: 118, left: 52 };
     const iw = W - M.left - M.right;
-    const ih = H - M.top  - M.bottom;
-
-    // Fixed domain [0.6, 1.4] — same for all continents so drill-downs are comparable
+    const ih = H - M.top  - M.bottom;
     const yS = d3.scaleLinear()
       .domain([0.6, 1.4])
       .range([ih, 0]);
@@ -466,8 +442,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     const bw  = xS.bandwidth();
 
     const g = root.append('g').attr('transform', `translate(${M.left},${M.top})`);
-
-    /* back button — rectangular text style matching chart 1 */
     const backBtn = d3.select(container).append('button')
       .attr('class', 'chart-back-btn chart-back-btn--icon qs-back')
       .attr('aria-label', 'Back to the view of all continents')
@@ -477,8 +451,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .style('z-index', '10')
       .html('<span class="chart-back-icon" aria-hidden="true"></span>')
       .on('click', () => { backBtn.remove(); drill = null; draw(); });
-
-    /* title */
     root.append('text').attr('x',W/2).attr('y',26)
       .attr('text-anchor','middle').attr('font-size',compact ? 11 : 13).attr('font-weight','700').attr('fill',color)
       .text(cont);
@@ -498,8 +470,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     root.append('text').attr('x', hintRightX).attr('y', hintY)
       .attr('text-anchor', 'start').attr('font-size', compact ? 8 : 9).attr('font-weight', '600').attr('fill', COL_BOYS)
       .text('More boys excluded →');
-
-    /* horizontal gridlines */
     yS.ticks(6).forEach(t => {
       g.append('line').attr('x1',0).attr('x2',iw).attr('y1',yS(t)).attr('y2',yS(t))
         .attr('stroke', CHART_GRID)
@@ -512,9 +482,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('stroke', CHART_AXIS).attr('stroke-width',1.5).attr('stroke-dasharray','6,3');
     g.append('line').attr('x1',0).attr('x2',iw).attr('y1',parityTopY).attr('y2',parityTopY)
       .attr('stroke', CHART_AXIS).attr('stroke-width',1.5).attr('stroke-dasharray','6,3');
-
-
-    /* Y axis */
     g.append('g')
       .call(d3.axisLeft(yS).ticks(6).tickFormat(d3.format('.2f')))
       .call(ax => {
@@ -525,8 +492,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
     g.append('text').attr('class', 'chart-axis-label').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-36)
       .attr('text-anchor','middle').attr('font-size',compact ? 8 : 9).attr('fill',CHART_AXIS)
       .text('Gender Parity Index (GPI)');
-
-    /* bars */
     const BASE_BAR_OPACITY = 0.78;
     const INACTIVE_BAR_OPACITY = 0.22;
     const animateBars = shouldAnimateBars && !prefersReducedMotion;
@@ -546,8 +511,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
         .attr('y', d => Math.min(yS(d.gpi), parY))
         .attr('height', d => Math.max(1, Math.abs(yS(d.gpi) - parY)));
     }
-
-    /* labels: tutti i paesi, testo verticale -90° */
     const labelFsz = Math.max(6, Math.min(compact ? 7.5 : 8.5, bw * (compact ? 0.68 : 0.75)));
     const labelSel = g.selectAll('.x-label').data(rows).join('text').attr('class', 'x-label')
       .attr('transform', d => `translate(${xS(d.code) + bw / 2},${ih + 4}) rotate(-90)`)
@@ -557,8 +520,6 @@ async function renderGenderParityChart(selector, isFullscreen = false) {
       .attr('opacity', 0.9)
       .style('pointer-events','none')
       .text(d => d.country.length > 16 ? d.country.slice(0,15)+'…' : d.country);
-
-    /* hit areas: colonna intera invisibile, cattura hover anche sopra/sotto la barra */
     const hitSel = g.selectAll('.hit').data(rows).join('rect').attr('class','hit')
       .attr('x', d => xS(d.code))
       .attr('y', 0)

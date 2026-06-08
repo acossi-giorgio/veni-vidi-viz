@@ -1,6 +1,3 @@
-/* ============================================================
-   Grafico 4-3 (Atto III) — FGM: barchart + choropleth Africa
-   ============================================================ */
 async function renderFgmChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -16,8 +13,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   const CHART_LABEL = getUiColor('chartLabel', '#73675c');
   const CHART_BASE = getUiColor('chartBaseFill', '#d6d0c5');
   const CHART_WATER = '#ffffff';
-  const CHART_NODATA = getUiColor('chartNoDataFill', '#c3baad');
-  // Manteniamo una scala arancione esplicita per la choropleth FGM.
+  const CHART_NODATA = getUiColor('chartNoDataFill', '#c3baad');
   const RISK_STOPS = ['#fff1df', '#fdc980', '#f59e42', '#e97817', '#b8550f'];
   const HIGHLIGHT = shadeColor(UI_ACTIVE, 0.2);
   const MAX_BAR_VALUE = 100;
@@ -42,7 +38,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
   ]);
   const [rowsRaw, atlas, countryCodeRaw] = await Promise.all([
     d3.csv('datasets/processed/fgm_quintile_prevalence.csv', d3.autoType),
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
+    d3.json('datasets/raw/countries-110m.json'),
     d3.csv('datasets/raw/country_codes_raw.csv', d3.autoType),
   ]);
 
@@ -554,7 +550,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
       .style('font-weight', '600')
       .style('color', CHART_AXIS)
       .text(`Quintile average: ${row.quintile_mean.toFixed(1)}%`);
-    
+
       popup.append('div')
       .style('padding', '0 16px 4px')
       .style('font-size', '12px')
@@ -761,7 +757,7 @@ async function renderFgmChart(selector, isFullscreen = false) {
     mode = 'map';
     render();
   };
-  
+
   container._mortalitySlope = () => {
     mode = 'map';
     if (!selectedCode) selectedCode = maxMeanRow.code;

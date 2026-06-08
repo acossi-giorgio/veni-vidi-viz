@@ -1,7 +1,3 @@
-/* ============================================================
-   Grafico 1-2 (Atto I) — Gapminder: reddito × aspettativa di vita
-   X = PIL pro capite (log/lin toggle), Y = aspettativa di vita, R = pop
-   ============================================================ */
 async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -86,9 +82,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   const yS = d3.scaleLinear().domain([d3.min(allLife) - 2, d3.max(allLife) + 2]).range([ih, 0]);
   const rS = d3.scaleSqrt().domain([0, d3.max(allPop)]).range([2, 28]);
   const xS = d3.scaleLog().domain(incomeDomain).range([0, iw]).clamp(true);
-  const xTicks = [500, 1000, 2000, 5000, 10000, 30000, 100000];
-
-  // ── Chart SVG ────────────────────────────────────────────
+  const xTicks = [500, 1000, 2000, 5000, 10000, 30000, 100000];
   const chartDiv = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
@@ -99,9 +93,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .style('background', getCssToken('surface-raised', '#ffffff')).style('border-radius', '10px 10px 0 0')
     .style('font-family', 'Roboto Slab, serif');
 
-  const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
-
-  // Gridlines
+  const g = svg.append('g').attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
   const gridG = g.append('g');
   yS.ticks(6).forEach(t => gridG.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', CHART_GRID).attr('stroke-width', 1));
   xTicks.forEach(t => {
@@ -110,9 +102,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .attr('x1', xS(t)).attr('x2', xS(t))
       .attr('y1', 0).attr('y2', ih)
       .attr('stroke', CHART_GRID).attr('stroke-width', 1);
-  });
-
-  // Reference guides requested for quick reading on the X axis.
+  });
   const refG = g.append('g').attr('class', 'gapminder-x-reference');
   [
     { x: 0 },
@@ -123,9 +113,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
       .attr('y1', 0).attr('y2', ih)
       .attr('stroke', CHART_GRID)
       .attr('stroke-width', 1);
-  });
-
-  // Axes (X rebuilt on scale toggle)
+  });
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
   const xLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 30 : 36)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
   g.append('g').call(d3.axisLeft(yS).ticks(6)).call(ax => ax.select('.domain').remove()).attr('font-size', compact ? 8 : 9);
@@ -141,9 +129,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .attr('width', iw)
     .attr('height', ih)
     .attr('fill', 'rgba(255,255,255,0.001)')
-    .style('pointer-events', 'all');
-
-  // ── Legend (bottom-right above player, choropleth style) ─
+    .style('pointer-events', 'all');
   const LEG_W = compact ? 96 : 120;
   const legDiv = d3.select(container).append('div')
     .attr('class', 'chart-legend')
@@ -178,9 +164,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
   });
 
   const backgroundBubblesG = g.append('g');
-  const bubblesG = g.append('g');
-
-  // Tooltip
+  const bubblesG = g.append('g');
   const tipEl = window.ensureHoverTooltip('income-life-tooltip');
 
   function getFrame(year) {
@@ -340,9 +324,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     } else {
       chartDiv.selectAll('.gapminder-empty-state').remove();
     }
-  }
-
-  // ── Player bar ────────────────────────────────────────────
+  }
   const playerBar = d3.select(container).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px').style('background', getCssToken('surface-raised', '#ffffff'))
@@ -459,9 +441,7 @@ async function renderIncomeLifeExpectancyBubbleChart(selector, isFullscreen = fa
     .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
     .style('letter-spacing', '-0.5px').text(currentYear);
 
-  draw(false);
-
-  // ── DOM API ───────────────────────────────────────────────
+  draw(false);
   container._gapminderPlay  = () => { if (!playing) startPlay(); };
   container._gapminderPause = stopPlay;
   container._gapminderReset = () => { stopPlay(); currentYear = YEAR_MAX; highlightContinent = null; draw(false); };

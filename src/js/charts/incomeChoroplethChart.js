@@ -1,7 +1,3 @@
-/* ============================================================
-   Grafico 1-1 (Atto I) — Choropleth reddito + trend continenti
-   Metrica fissa: income. Player esterno con timeline.
-   ============================================================ */
 async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -60,7 +56,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
   const [incomeRows, geoData] = await Promise.all([
     d3.csv('datasets/processed/income.csv', d3.autoType),
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'),
+    d3.json('datasets/raw/countries-110m.json'),
   ]);
   const incomeRaw = incomeRows.filter(d => d?.code && !EXCLUDED_CODES.has(d.code));
 
@@ -137,9 +133,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   const LABEL_FADE_MS = 220;
   const PLAYER_H = compact ? 64 : 72;
   const W = rawW;
-  const H = rawH - PLAYER_H;
-
-  // ── View toggle ───────────────────────────────────────────
+  const H = rawH - PLAYER_H;
   const viewToggle = d3.select(container).append('div')
     .style('position', 'absolute').style('top', compact ? '6px' : '10px').style('left', compact ? '6px' : '10px')
     .style('z-index', '20').style('display', 'flex').style('flex-direction', 'column')
@@ -264,9 +258,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     viewType = 'trend';
     updateViewToggle();
     renderView();
-  }
-
-  // ── Map SVG ───────────────────────────────────────────────
+  }
   const mapDiv = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', '100%').style('height', `calc(100% - ${PLAYER_H}px)`);
@@ -351,9 +343,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     sliderEl.property('value', currentYear);
     updateLegend();
     updatePanelYear();
-  }
-
-  // Legend — discrete stepped swatches
+  }
   const legG = svg.append('g').attr('class', 'chm-legend chart-legend');
   function updateLegend() {
     legG.selectAll('*').remove();
@@ -372,29 +362,25 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     const noDataGap = compact ? 6 : 8;
     const totalH = titleGap + stackH + noDataGap + SH + (compact ? 12 : 14);
     const totalW = compact ? 118 : 132;
-    const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
-
-    // Background panel
+    const px = W - totalW - (compact ? 6 : 10), py = H - totalH - (compact ? 6 : 10);
     legG.append('rect')
       .attr('x', px - 8).attr('y', py - 5)
       .attr('width', totalW + 10).attr('height', totalH + 6)
       .attr('rx', 8).attr('fill', 'rgba(255,255,255,0.92)')
-      .attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
-
-    // Title
+      .attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
     legG.append('text')
       .attr('x', px).attr('y', py + 10)
       .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS)
       .attr('letter-spacing', '0.07em').text('GDP PER CAPITA (USD)');
 
-    const q = colorScale.quantiles(); // ascending cut points, length STEPS-1
+    const q = colorScale.quantiles();
     const bins = [];
     for (let i = 0; i < STEPS; i++) {
       const lo = i === 0 ? vals[0] : q[i - 1];
       const hi = i === STEPS - 1 ? vals[vals.length - 1] : q[i];
       bins.push({ lo, hi, color: CHORO_COLORS[i] });
     }
-    bins.reverse(); // high -> low in legend
+    bins.reverse();
 
     const stackY = py + titleGap;
     bins.forEach((b, i) => {
@@ -415,9 +401,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
               ? `< ${fmtLegendValue(b.hi)}`
               : fmtLegendValue(b.hi)
         );
-    });
-
-    // No Data
+    });
     const ndY = stackY + stackH + noDataGap;
     legG.append('rect')
       .attr('x', px).attr('y', ndY)
@@ -428,18 +412,14 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     legG.append('text')
       .attr('x', px + LABEL_X).attr('y', ndY + SH / 2 + 4)
       .attr('font-size', compact ? 8 : 9).attr('fill', CHART_AXIS).text('No data');
-  }
-
-  // Country detail panel — floats near click position, reactive to year slider
+  }
   const PANEL_W = 346, PANEL_H = 260;
   const panel = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', PANEL_W + 'px').style('background', 'rgba(255,255,255,0.97)')
     .style('border', `1px solid ${UI_MUTED_BORDER}`).style('border-radius', '10px')
     .style('padding', '12px 14px').style('display', 'none').style('z-index', '30')
-    .style('box-shadow', '0 4px 18px rgba(0,0,0,0.16)').style('pointer-events', 'auto');
-
-  // Persistent refs for live updates
+    .style('box-shadow', '0 4px 18px rgba(0,0,0,0.16)').style('pointer-events', 'auto');
   let panelDot  = null;
   let panelLine = null;
   let panelVal  = null;
@@ -514,15 +494,11 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
 
     const xS = d3.scaleLinear().domain([PANEL_MIN_YEAR, PANEL_MAX_YEAR]).range([0, iw]);
     const yExt = d3.extent(pts, p => p.value);
-    const yS = d3.scaleLinear().domain([yExt[0] * 0.9, yExt[1] * 1.05]).range([ih, 0]);
-
-    // Gridlines
+    const yS = d3.scaleLinear().domain([yExt[0] * 0.9, yExt[1] * 1.05]).range([ih, 0]);
     yS.ticks(4).forEach(t => pg.append('line').attr('x1', 0).attr('x2', iw).attr('y1', yS(t)).attr('y2', yS(t)).attr('stroke', CHART_GRID).attr('stroke-width', 1));
 
     pg.append('g').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(xS).tickValues([2000, 2005, 2010, 2015, 2020, 2024]).tickFormat(d3.format('d'))).attr('font-size', 8).call(ax => ax.select('.domain').remove());
-    pg.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(v => `$${d3.format('.2s')(v)}`)).attr('font-size', 8).call(ax => ax.select('.domain').remove());
-
-    // Area fill
+    pg.append('g').call(d3.axisLeft(yS).ticks(4).tickFormat(v => `$${d3.format('.2s')(v)}`)).attr('font-size', 8).call(ax => ax.select('.domain').remove());
     pg.append('path').datum(panelSeries)
       .attr('fill', UI_ACTIVE).attr('fill-opacity', 0.08)
       .attr('d', d3.area().x(p => xS(p.year)).y0(ih).y1(p => yS(p.value)).defined(p => p.value != null && p.value > 0).curve(d3.curveMonotoneX));
@@ -551,28 +527,20 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
         .attr('fill', UI_ACTIVE);
     });
 
-    const near = pts.reduce((a, b) => Math.abs(b.year - currentYear) < Math.abs(a.year - currentYear) ? b : a);
-
-    // Vertical year line (reactive)
+    const near = pts.reduce((a, b) => Math.abs(b.year - currentYear) < Math.abs(a.year - currentYear) ? b : a);
     panelLine = pg.append('line')
       .attr('x1', xS(near.year)).attr('x2', xS(near.year)).attr('y1', 0).attr('y2', ih)
-      .attr('stroke', CONT_COLOR.Africa).attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0.7);
-
-    // Dot (reactive)
+      .attr('stroke', CONT_COLOR.Africa).attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0.7);
     panelDot = pg.append('circle')
       .attr('cx', xS(near.year)).attr('cy', yS(near.value))
       .attr('r', SERIES_DOT_R).attr('fill', CONT_COLOR.Africa).attr('stroke', SERIES_DOT_STROKE).attr('stroke-width', SERIES_DOT_STROKE_W);
 
     panelVal = panel.append('div')
       .style('font-size', '12px').style('color', CHART_LABEL).style('margin-top', '6px').style('font-weight', '600')
-      .text(`${near.year}: $${d3.format(',.0f')(near.value)}`);
-
-    // Save refs for live updates
+      .text(`${near.year}: $${d3.format(',.0f')(near.value)}`);
     panelXS  = xS;
     panelYS  = yS;
-    panelPts = pts;
-
-    // Hover overlay — drag orange line → updates whole map year
+    panelPts = pts;
     pg.append('rect')
       .attr('width', iw).attr('height', ih).attr('fill', 'transparent').style('cursor', 'ew-resize')
       .on('mousemove', function(event) {
@@ -631,9 +599,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
           .attr('stroke-width', dd => numericToAlpha3[+dd.id] === code ? 1.2 : 0.35);
         renderPanel(code, event);
       }
-    });
-
-  // ── Trend SVG ─────────────────────────────────────────────
+    });
   const trendDiv = d3.select(container).append('div')
     .style('position', 'absolute').style('top', '0').style('left', '0')
     .style('width', '100%').style('height', '100%')
@@ -664,9 +630,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     const meanVals = allPts.map(d => d.mean).filter(v => v != null && isFinite(v) && v > 0);
     const [mLo, mHi] = d3.extent(meanVals);
     const xS = d3.scaleLinear().domain(xDomain).range([0, iw]);
-    const yS = d3.scaleLinear().domain([Math.max(0, mLo * 0.95), mHi * 1.05]).range([ih, 0]).nice();
-
-    // Build per-year lookup for all continents
+    const yS = d3.scaleLinear().domain([Math.max(0, mLo * 0.95), mHi * 1.05]).range([ih, 0]).nice();
     const statsByContYear = new Map();
     CONT_ORDER.forEach(cont => {
       const stats = (incomeStats.get(cont) || []).filter(pt => pt.year >= 2000 && pt.year <= 2023);
@@ -727,10 +691,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
           .attr('opacity', 0).style('pointer-events', 'none').text(continent);
         lbl.transition().duration(LABEL_FADE_MS).delay(ci * 200 + TREND_LINE_DRAW_MS + DOT_FADE_MS + 120).attr('opacity', 0.9);
       }
-    });
-
-
-    // ── Crosshair overlay ────────────────────────────────────
+    });
     const crossLine = g.append('line')
       .attr('y1', 0).attr('y2', ih)
       .attr('stroke', '#333').attr('stroke-width', 1).attr('stroke-dasharray', '4,3')
@@ -790,9 +751,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
         crossDots.forEach(({ dot }) => dot.attr('opacity', 0));
         window.hideHoverTooltip(trendTip);
       });
-  }
-
-  // ── Player bar ────────────────────────────────────────────
+  }
   const playerBar = d3.select(container).append('div')
     .style('position', 'absolute').style('bottom', '0').style('left', '0').style('right', '0')
     .style('height', PLAYER_H + 'px')
@@ -801,9 +760,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     .style('border-top', `1px solid ${CHART_GRID}`)
     .style('display', 'flex').style('align-items', 'center')
     .style('padding', compact ? '0 10px' : '0 16px').style('gap', compact ? '10px' : '14px').style('z-index', '20')
-    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
-
-  // Control buttons
+    .style('box-shadow', '0 -2px 8px rgba(0,0,0,0.04)');
   const ctrlWrap = playerBar.append('div')
     .style('display', 'flex').style('align-items', 'center').style('gap', '6px').style('flex-shrink', '0');
 
@@ -876,37 +833,27 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
     playing = false;
     clearInterval(animTimer);
     btnPlay.html('<span class="player-play-icon"><svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><polygon points="1,0 11,7 1,14"/></svg></span>').style('background', UI_ACTIVE);
-  }
-
-  // Timeline
+  }
   const timelineWrap = playerBar.append('div')
-    .style('flex', '1').style('position', 'relative').style('padding', '0 4px');
-
-  // Tick labels
+    .style('flex', '1').style('position', 'relative').style('padding', '0 4px');
   const labelRow = timelineWrap.append('div')
     .style('display', 'flex').style('justify-content', 'space-between')
     .style('font-size', '8.5px').style('color', '#bbb').style('margin-bottom', '2px')
     .style('pointer-events', 'none');
 
   const tickYears = visibleYears.filter((y, i) => i % 5 === 0 || i === visibleYears.length - 1);
-  tickYears.forEach(y => labelRow.append('span').text(y));
-
-  // Slider
+  tickYears.forEach(y => labelRow.append('span').text(y));
   const sliderEl = timelineWrap.append('input')
     .attr('type', 'range')
     .attr('min', visibleYears[0]).attr('max', visibleYears[visibleYears.length - 1])
     .attr('step', 1).attr('value', currentYear)
     .style('width', '100%').style('height', '4px').style('cursor', 'pointer')
     .style('accent-color', UI_ACTIVE).style('outline', 'none').style('display', 'block')
-    .on('input', function () { stopPlay(); currentYear = +this.value; updateColors(); });
-
-  // Year display
+    .on('input', function () { stopPlay(); currentYear = +this.value; updateColors(); });
   const yearDisplay = playerBar.append('div')
     .style('font-size', compact ? '20px' : '24px').style('font-weight', '700').style('color', UI_ACTIVE_STRONG)
     .style('min-width', compact ? '42px' : '54px').style('text-align', 'right').style('flex-shrink', '0')
-    .style('letter-spacing', '-0.5px').text(currentYear);
-
-  // ── Switch views ──────────────────────────────────────────
+    .style('letter-spacing', '-0.5px').text(currentYear);
   function renderView() {
     if (viewType === 'map') {
       trendDiv.transition().duration(180).style('opacity', '0').on('end', () => {
@@ -931,9 +878,7 @@ async function renderIncomeChoroplethChart(selector, isFullscreen = false) {
   }
 
   updateColors(false);
-  svg.call(zoom.transform, getFocusZoomTransform());
-
-  // ── DOM API ───────────────────────────────────────────────
+  svg.call(zoom.transform, getFocusZoomTransform());
   container._choroplethSetMetric = () => {};
   container._choroplethSetYear = (y) => { currentYear = y; updateColors(); };
   container._choroplethShowPlayMap = () => showMapView({ autoplay: true });

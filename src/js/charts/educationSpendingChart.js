@@ -1,7 +1,3 @@
-/* ============================================================
-   Grafico 3-1 (Atto II) — Multi-line: spesa pubblica istruzione
-   Vista 1: % PIL  |  Vista 2: $ assoluto (% × PIL × pop)
-   ============================================================ */
 async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
@@ -35,9 +31,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const spendData = spendRaw.filter(d =>
     d.value != null && d.year >= MIN_YEAR && d.year <= MAX_YEAR &&
     (d.continent === 'Africa' || d.continent === 'Europe')
-  );
-
-  // Absolute: (spend% / 100) × GDP_per_capita × population → total USD
+  );
   const absData = spendData.map(d => {
     const gdp = incByYear.get(`${d.code}|${d.year}`);
     const pop = popByYear.get(`${d.code}|${d.year}`);
@@ -64,7 +58,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     ])),
   };
 
-  let viewMetric = 'pct'; // 'pct' | 'abs'
+  let viewMetric = 'pct';
 
   function currentData() { return viewMetric === 'pct' ? spendData : absData; }
 
@@ -92,9 +86,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   }
 
   const allYears = [...new Set(spendData.map(d => d.year))].sort((a, b) => a - b);
-  const xDomain  = [MIN_YEAR, MAX_YEAR];
-
-  // ── Layout ───────────────────────────────────────────────
+  const xDomain  = [MIN_YEAR, MAX_YEAR];
   const W = container.clientWidth  || (isFullscreen ? window.innerWidth  * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
@@ -113,9 +105,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
   const iw = W - MARGIN.left - MARGIN.right;
   const ih = H - MARGIN.top  - MARGIN.bottom;
 
-  const xS = d3.scaleLinear().domain(xDomain).range([0, iw]);
-
-  // ── Controls row (top-left) ───────────────────────────────
+  const xS = d3.scaleLinear().domain(xDomain).range([0, iw]);
   const ctrlRow = d3.select(container).append('div')
     .style('position', 'absolute').style('top', compact ? '8px' : '10px').style('left', compact ? '8px' : '10px')
     .style('display', 'flex').style('gap', compact ? '6px' : '8px').style('z-index', '20').style('align-items', 'center');
@@ -139,9 +129,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     btn.style('background', active ? UI_ACTIVE : 'transparent')
        .style('color', active ? '#fff' : UI_MUTED_INK)
        .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
-  }
-
-  // Metric pills
+  }
   const metricBar = makePillBar(ctrlRow);
   const btnPct = makePillBtn(metricBar, '% PIL');
   const btnAbs = makePillBtn(metricBar, '$ Absolute');
@@ -153,9 +141,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     setPillActive(btnPct, viewMetric === 'pct');
     setPillActive(btnAbs, viewMetric === 'abs');
   }
-  updateMetricPills();
-
-  // ── SVG ──────────────────────────────────────────────────
+  updateMetricPills();
   const svg = d3.select(container).append('svg')
     .attr('width', W).attr('height', H)
     .style('width', '100%').style('height', '100%').style('display', 'block');
@@ -168,24 +154,18 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     .attr('y', -10)
     .attr('width', iw + 20)
     .attr('height', ih + 20);
-  const chartG = g.append('g').attr('clip-path', `url(#edu-clip-${isFullscreen ? 'fs' : 'sm'})`);
-
-  // Axes groups (rebuilt on redraw)
+  const chartG = g.append('g').attr('clip-path', `url(#edu-clip-${isFullscreen ? 'fs' : 'sm'})`);
   const xAxisG = g.append('g').attr('transform', `translate(0,${ih})`);
   const yAxisG = g.append('g');
   const gridG  = chartG.append('g').attr('class', 'grid-lines');
 
   g.append('text').attr('class', 'chart-axis-label').attr('x', iw / 2).attr('y', ih + (compact ? 28 : 34)).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS).text('Year');
-  const yLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
-
-  // Crosshair
+  const yLabelEl = g.append('text').attr('class', 'chart-axis-label').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', compact ? -36 : -50).attr('text-anchor', 'middle').attr('font-size', compact ? 9 : 10).attr('fill', CHART_AXIS);
   const crossLine = g.append('line').attr('y1', 0).attr('y2', ih)
     .attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '4,3').attr('opacity', 0).style('pointer-events', 'none');
   const crossDots = CONTS.map(cont => ({
     cont, dot: g.append('circle').attr('r', SERIES_DOT_R).attr('fill', CONT_COLOR[cont]).attr('stroke', SERIES_DOT_STROKE).attr('stroke-width', SERIES_DOT_STROKE_W).attr('opacity', 0).style('pointer-events', 'none'),
-  }));
-
-  // Tooltip
+  }));
   const tipEl = window.ensureHoverTooltip('edu-ml-tip', { maxWidth: 'min(92vw, 21rem)' });
 
   let currentYS = null;
@@ -200,8 +180,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     return `$${d3.format(',.0f')(v)}`;
   }
 
-  function draw(cs) {
-    // Y domain from mean series only (not raw per-country values)
+  function draw(cs) {
     const allMeans = [];
     cs.forEach(s => s.mean.forEach(pt => { if (pt.mean != null) allMeans.push(pt.mean); }));
     const yMin = d3.min(allMeans) || 0;
@@ -209,17 +188,13 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
     const pad  = (yMax - yMin) * 0.10;
     currentYS = d3.scaleLinear()
       .domain([Math.max(0, yMin - pad), yMax + pad])
-      .range([ih, 0]).nice();
-
-    // Gridlines
+      .range([ih, 0]).nice();
     gridG.selectAll('.h-grid').remove();
     currentYS.ticks(5).forEach(t => {
       gridG.append('line').attr('class', 'h-grid')
         .attr('x1', 0).attr('x2', iw).attr('y1', currentYS(t)).attr('y2', currentYS(t))
         .attr('stroke', CHART_GRID).attr('stroke-width', 1);
-    });
-
-    // Rebuild axes
+    });
     xAxisG.call(
       d3.axisBottom(xS).ticks(6).tickFormat(d3.format('d'))
         .tickSize(4)
@@ -255,9 +230,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
         };
       });
       return [year, { year, stats }];
-    }));
-
-    // Rebuild crosshair lookup
+    }));
     meanByContYear = new Map();
     CONTS.forEach(cont => {
       (cs.get(cont)?.mean || []).forEach(pt => {
@@ -322,9 +295,7 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
 
   function redraw() {
     draw(buildSeries(currentData()));
-  }
-
-  // ── Crosshair overlay ────────────────────────────────────
+  }
   g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent').style('cursor', 'crosshair')
     .on('mousemove', function(event) {
       if (!currentYS) return;
@@ -385,12 +356,8 @@ async function renderEducationSpendingChart(selector, isFullscreen = false) {
       crossLine.attr('opacity', 0);
       crossDots.forEach(({ dot }) => dot.attr('opacity', 0));
       window.hideHoverTooltip(tipEl);
-    });
-
-  // Initial draw
-  redraw();
-
-  // ── DOM API ───────────────────────────────────────────────
+    });
+  redraw();
   container._treemapReset     = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
   container._treemapShowPct   = () => { viewMetric = 'pct'; updateMetricPills(); redraw(); };
   container._treemapShowAbs   = () => { viewMetric = 'abs'; updateMetricPills(); redraw(); };

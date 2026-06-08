@@ -1,14 +1,10 @@
-/* ============================================================
-   Grafico 2-1 (Atto I) — MPI Africa: distribuzione o mappa
-   Viste: istogramma ↔ choropleth
-   ============================================================ */
 async function renderMpiBreakdown(selector, isFullscreen = false) {
   const container = document.querySelector(selector);
   if (!container) return;
   container.innerHTML = '';
   container.style.position = 'relative';
 
-  const WORLD_ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
+  const WORLD_ATLAS_URL = 'datasets/raw/countries-110m.json';
   const AFRICA_BASE = getContinentColor('Africa', '#e66100');
   const GRADIENT_STOPS = [
     tintColor(AFRICA_BASE, 0.82),
@@ -23,12 +19,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const UI_MUTED_BORDER = getUiColor('controlMutedBorder', '#d9d0c3');
   const CHART_GRID = getUiColor('chartGrid', '#e8e1d7');
   const CHART_AXIS = getUiColor('chartAxis', '#a49788');
-  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
-
-  // Reuse the shared global mapping when available.
-  const numericToAlpha3 = typeof _MIG_NUM_TO_A3 !== 'undefined' ? _MIG_NUM_TO_A3 : {};
-
-  // All 54 recognized African sovereign states
+  const CHART_LABEL = getUiColor('chartLabel', '#73675c');
+  const numericToAlpha3 = typeof _MIG_NUM_TO_A3 !== 'undefined' ? _MIG_NUM_TO_A3 : {};
   const ALL_AFRICA = [
     {code:'DZA',country:'Algeria'},{code:'AGO',country:'Angola'},{code:'BEN',country:'Benin'},
     {code:'BWA',country:'Botswana'},{code:'BFA',country:'Burkina Faso'},{code:'BDI',country:'Burundi'},
@@ -85,8 +77,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
     .domain(mpiThresholds)
     .range(mpiBinColors);
 
-  let mode = 'africa'; // 'africa' | 'severe'
-  let viewType = 'dist'; // 'dist' | 'map'
+  let mode = 'africa';
+  let viewType = 'dist';
   let mapFocusAfrica = false;
 
   if (typeof window.mountChartWarningHint === 'function') {
@@ -96,9 +88,7 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
   const W = container.clientWidth || (isFullscreen ? window.innerWidth * 0.85 : 760);
   const H = container.clientHeight || (isFullscreen ? window.innerHeight * 0.82 : 480);
   const compact = isFullscreen && (W < 760 || H < 420);
-  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
-  // ── Toggle pills (top-left) ────────────────────────────────
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
   const toggleBar = d3.select(container).append('div')
     .style('position', 'absolute').style('top', compact ? '8px' : '10px').style('left', compact ? '8px' : '10px')
     .style('display', 'flex').style('background', 'rgba(255,255,255,0.92)')
@@ -130,14 +120,11 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
         .style('box-shadow', active ? `0 1px 4px ${colorToRgba(UI_ACTIVE, 0.3)}` : 'none');
     });
   }
-  updateToggle();
-
-  // ── Layout constants ────────────────────────────────────────
+  updateToggle();
   const PILL_H = compact ? 36 : 40;
   const MARGIN_DIST = compact
     ? { top: 14, right: 24, bottom: 38, left: 52 }
-    : { top: 16, right: 40, bottom: 44, left: 68 };
-  // Scrollable area
+    : { top: 16, right: 40, bottom: 44, left: 68 };
   const scrollWrap = d3.select(container).append('div')
     .style('position', 'absolute').style('top', PILL_H + 'px').style('left', '0')
     .style('width', '100%').style('height', `calc(100% - ${PILL_H}px)`)
@@ -278,16 +265,12 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
       drawMap();
     }
   }
-
-  /* ── Distribuzione (istogramma) ─────────────────────────── */
   function drawDist() {
     const topShift = compact ? 2 : 4;
     const bottomSpace = compact ? 30 : 48;
     const M = {
       ...MARGIN_DIST,
-      top: MARGIN_DIST.top + topShift,
-      // Keep a compact bottom margin so the X label sits close to the card edge
-      // and the plot can use more vertical space.
+      top: MARGIN_DIST.top + topShift,
       bottom: bottomSpace,
     };
     const iw = W - M.left - M.right;
@@ -406,12 +389,8 @@ async function renderMpiBreakdown(selector, isFullscreen = false) {
           .attr('height', targetH);
       }
 
-    });
-
-    // No-data chip grid intentionally omitted to preserve vertical space.
+    });
   }
-
-  /* ── Choropleth (world map) ─────────────────────────────── */
   function drawMap() {
     const iw = W;
     const ih = H;
