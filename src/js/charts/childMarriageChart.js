@@ -316,6 +316,7 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       }
     });
     const CONTROL_LANE_H = compact ? 34 : 38;
+    const LEGEND_ROW_H = mobileFullscreen ? 30 : (compact ? 34 : 38);
     const frameW = W;
     const frameH = mobileFullscreen
       ? Math.max(360, Math.min(H - 10, Math.round(H * 0.74)))
@@ -323,18 +324,16 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
     const frameX = 0;
     const frameY = mobileFullscreen ? 8 : 0;
     const PAD    = mobileFullscreen
-      ? { top: 28 + CONTROL_LANE_H, bottom: 90, left: 58, right: 10 }
+      ? { top: 24 + CONTROL_LANE_H + LEGEND_ROW_H, bottom: 90, left: 58, right: 10 }
       : compact
-        ? { top: 40 + CONTROL_LANE_H, bottom: 88, left: 56, right: 6 }
-        : { top: 44 + CONTROL_LANE_H, bottom: 96, left: 66, right: 8 };
+        ? { top: 34 + CONTROL_LANE_H + LEGEND_ROW_H, bottom: 88, left: 56, right: 6 }
+        : { top: 38 + CONTROL_LANE_H + LEGEND_ROW_H, bottom: 96, left: 66, right: 6 };
     const chartH = frameH - PAD.top - PAD.bottom;
     const BAR_G  = mobileFullscreen ? 1 : 2;
-    const LEGEND_W = mobileFullscreen ? 0 : (compact ? 136 : 156);
-    const LEGEND_GAP = mobileFullscreen ? 0 : (compact ? 12 : 18);
-    const plotAvailW = Math.max(220, frameW - PAD.left - PAD.right - LEGEND_W - LEGEND_GAP);
+    const plotAvailW = Math.max(220, frameW - PAD.left - PAD.right);
     const BAR_W  = Math.max(mobileFullscreen ? 12 : 10, Math.min(22, (plotAvailW - BAR_G * (data.length - 1)) / data.length));
     const barsW  = data.length * BAR_W + (data.length - 1) * BAR_G;
-    const contentW = PAD.left + barsW + PAD.right + LEGEND_GAP + LEGEND_W;
+    const contentW = PAD.left + barsW + PAD.right;
     const svgW = Math.max(frameW, contentW);
     const contentOffsetX = svgW > contentW ? (svgW - contentW) / 2 : 0;
 
@@ -629,29 +628,53 @@ async function renderChildMarriageChart(selector = '#chart-4-2', isFullscreen = 
       .attr('font-weight', '600')
       .attr('fill', CHART_AXIS)
       .text(xLabelText);
-    if (!mobileFullscreen) {
-      const LEG_ITEMS = [
-        { color: colorBy15, label: 'Before 15 years' },
-        { color: colorBy18, label: 'Between 15 and 18 years'  },
-      ];
-      const LP = compact ? 6 : 8, LHH = compact ? 12 : 14, LRH = compact ? 14 : 16, LW = LEGEND_W;
-      const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
-      const LX = barsRightX + LEGEND_GAP + LW;
-      const LY = frameY + PAD.top + 4;
-      const legG = svg.append('g').attr('transform', `translate(${LX},${LY})`);
-      legG.append('rect').attr('x', -LW).attr('y', 0).attr('width', LW).attr('height', LH)
-        .attr('rx', 6).attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)')).attr('stroke', UI_MUTED_BORDER).attr('stroke-width', 1);
-      legG.append('text').attr('x', -LW + 10).attr('y', LP + 9)
-        .attr('font-size', compact ? 7 : 8).attr('font-weight', '700').attr('fill', CHART_AXIS).attr('letter-spacing', '0.08em')
-        .text('RANGE');
-      LEG_ITEMS.forEach((item, i) => {
-        const ly = LP + LHH + 4 + i * LRH;
-        legG.append('circle').attr('cx', -LW + 14).attr('cy', ly + 5).attr('r', 4)
-          .attr('fill', item.color).attr('opacity', 0.85);
-        legG.append('text').attr('x', -LW + 23).attr('y', ly + 9)
-          .attr('font-size', compact ? 8 : 9).attr('fill', CHART_LABEL).text(item.label);
-      });
-    }
+    const LEG_ITEMS = [
+      { color: colorBy15, label: 'Before 15 years' },
+      { color: colorBy18, label: 'Between 15 and 18 years'  },
+    ];
+    const LP = compact ? 6 : 8;
+    const LHH = compact ? 12 : 14;
+    const LRH = compact ? 14 : 16;
+    const LW = compact ? 148 : 168;
+    const LH = LP + LHH + 4 + LEG_ITEMS.length * LRH + LP;
+    const legendY = frameY + CONTROL_LANE_H + (compact ? 6 : 8);
+    const legendX = axisX + Math.max(0, barsW - LW);
+    const legG = svg.append('g').attr('transform', `translate(${legendX},${legendY})`);
+
+    legG.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', LW)
+      .attr('height', LH)
+      .attr('rx', 6)
+      .attr('fill', getUiColor('chartPanel', 'rgba(255, 253, 249, 0.94)'))
+      .attr('stroke', UI_MUTED_BORDER)
+      .attr('stroke-width', 1);
+
+    legG.append('text')
+      .attr('x', 10)
+      .attr('y', LP + 9)
+      .attr('font-size', compact ? 7 : 8)
+      .attr('font-weight', '700')
+      .attr('fill', CHART_AXIS)
+      .attr('letter-spacing', '0.08em')
+      .text('RANGE');
+
+    LEG_ITEMS.forEach((item, i) => {
+      const ly = LP + LHH + 4 + i * LRH;
+      legG.append('circle')
+        .attr('cx', 14)
+        .attr('cy', ly + 5)
+        .attr('r', 4)
+        .attr('fill', item.color)
+        .attr('opacity', 0.85);
+      legG.append('text')
+        .attr('x', 23)
+        .attr('y', ly + 9)
+        .attr('font-size', compact ? 8 : 9)
+        .attr('fill', CHART_LABEL)
+        .text(item.label);
+    });
   }
   function renderCurrentView() {
     vizDiv.selectAll('svg,div').remove();
